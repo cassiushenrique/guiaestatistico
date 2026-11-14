@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#12372A" name="theme-color"/>
+<meta content="Redes neurais convolucionais (CNN): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
+<title>
+   Redes neurais convolucionais (CNN) | Estatística e Ciência de Dados
+  </title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../assets/style.css" rel="stylesheet"/>
+<script>
+   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
+  </script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+</head>
+<body>
+<header class="topbar">
+<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
+<span class="brand-mark">
+     Σ
+    </span>
+<span>
+<strong>
+      Estatística &amp; Ciência de Dados
+     </strong>
+<small>
+      Modelos, inferência e aplicações em R · UFLA
+     </small>
+</span>
+</a>
+<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
+    ☰
+   </button>
+<nav aria-label="Navegação principal" class="nav">
+<a href="../index.html#catalogo">
+     Modelos
+    </a><a href="../glossario.html">Glossário</a>
+<a href="../index.html#catalogo">
+     Catálogo
+    </a>
+<a href="../index.html#referencias">
+     Referências
+    </a>
+<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
+     Professor ↗
+    </a>
+</nav>
+</header>
+<main class="detail-main">
+<div class="breadcrumbs">
+<a href="../index.html#catalogo">
+     Catálogo de modelos
+    </a>
+<span>
+     ›
+    </span>
+<span>
+     Aprendizado supervisionado
+    </span>
+<span>
+     ›
+    </span>
+<span>
+     Redes neurais convolucionais (CNN)
+    </span>
+</div>
+<section class="detail-intro">
+<span class="eyebrow">
+     Aprendizado supervisionado · 18 · APRENDIZADO SUPERVISIONADO
+    </span>
+<h1>
+     Redes neurais convolucionais (CNN)
+    </h1>
+<p class="detail-lead">
+     Reconhece padrões locais em imagens e sinais para realizar previsões ou classificações.
+    </p>
+<div class="quick-actions">
+<a class="btn primary" href="#exemplo">
+      Ver exemplo em R ↓
+     </a>
+<a class="btn secondary" download="" href="../scripts/cnn.R">
+      Baixar script .R ↓
+     </a>
+</div>
+</section>
+<div class="detail-grid">
+<div class="detail-body">
+<section class="detail-panel">
+<h2>
+       01 · O que é?
+      </h2>
+<p>
+       Reconhece padrões locais em imagens e sinais para realizar previsões ou classificações.
+      </p>
+</section>
+<section class="detail-panel">
+<h2>
+       02 · Pressupostos e como verificá-los
+      </h2>
+<ul class="checklist"><li>Entradas com vizinhança espacial real, classes anotadas, divisão treino/teste sem vazamento espacial, quantidade de dados e regularização suficientes.</li><li>Exige backend computacional.</li></ul>
+<p>
+       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
+      </p>
+</section>
+<section class="detail-panel">
+<h2>
+       03 · Hipóteses e estatística de teste
+      </h2>
+<h3>
+       Hipóteses
+      </h3>
+<p>
+       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
+      </p>
+<h3>
+       Estatística, estimador ou critério de ajuste
+      </h3>
+<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
+       \[(W*K)_{ij}=\sum_{u,v}W_{uv}\,K_{i+u,j+v}\]
+      </div>
+<p class="formula-caption">
+<strong>
+        Em que:
+       </strong>
+</p>
+<dl class="formula-terms">
+<div>
+<dt>
+         \(\mathbf x\)
+        </dt>
+<dd>
+         vetor de entradas
+        </dd>
+</div>
+<div>
+<dt>
+         \(\mathbf W\)
+        </dt>
+<dd>
+         matriz de pesos ajustáveis
+        </dd>
+</div>
+<div>
+<dt>
+         \(\phi\)
+        </dt>
+<dd>
+         função de ativação
+        </dd>
+</div>
+<div>
+<dt>
+         \(\widehat y\)
+        </dt>
+<dd>
+         saída predita pela rede
+        </dd>
+</div>
+</dl>
+<p>
+       Camadas convolucionais, função de perda (p.ex., entropia cruzada) e otimização por gradiente; acurácia em teste, AUC etc.
+      </p>
+<p>
+       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
+      </p>
+</section>
+<section class="detail-panel">
+<h2>
+       04 · Como interpretar os resultados?
+      </h2>
+<p>
+       Não se usa automaticamente \(p&lt;0{,}05\) . Interprete a capacidade de classificar amostras espaciais não usadas no treino.
+      </p>
+<p>
+       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
+      </p>
+</section>
+<section class="detail-panel">
+<h2>
+       05 · Como executar no R?
+      </h2>
+<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
+<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
+</section>
+<section class="detail-panel example-panel" id="exemplo">
+<h2>
+       06 · Exemplo de aplicação
+      </h2>
+<div class="example-context-rich">
+<h3>
+        Contexto dos dados
+       </h3>
+<p>
+        A matriz volcano contém elevações topográficas em uma grade regular, com estrutura espacial.
+       </p>
+<h3>
+        Objetivo da análise
+       </h3>
+<p>
+        Classificação de patches \(5\times5\) de um mapa de elevação (volcano, conjunto disponível no R), analogia à detecção de regiões topográficas elevadas.
+       </p>
+</div>
+<div class="code-toolbar">
+<span>
+        R · executar o bloco completo
+       </span>
+<button class="copy-code" data-copy="code-cnn" type="button">
+        Copiar código
+       </button>
+</div>
+<pre id="code-cnn"><code># Redes neurais convolucionais (CNN) ----
+
+# Ajuste e resultados ----
+if (!requireNamespace("keras3", quietly = TRUE)) install.packages("keras3")
+library(keras3)
+set.seed(2026)
+mapa &lt;- as.matrix(volcano)
+pos &lt;- expand.grid(i = 3:(nrow(mapa)-2), j = 3:(ncol(mapa)-2))
+pos &lt;- pos[sample.int(nrow(pos), 600), ]
+x &lt;- array(0, dim = c(600, 5, 5, 1))
+y &lt;- numeric(600)
+for (k in seq_len(600)) {
+  i &lt;- pos$i[k]; j &lt;- pos$j[k]
+  x[k,,,1] &lt;- mapa[(i-2):(i+2), (j-2):(j+2)] / 200
+  x[k,3,3,1] &lt;- 0  # mascara altura central (alvo)
+  y[k] &lt;- as.integer(mapa[i,j] &gt; median(mapa))
+}
+i &lt;- sample.int(600, 480)
+modelo &lt;- keras_model_sequential(input_shape = c(5, 5, 1)) |&gt;
+  layer_conv_2d(filters = 8, kernel_size = 3, activation = "relu") |&gt;
+  layer_flatten() |&gt;
+  layer_dense(units = 1, activation = "sigmoid")
+modelo |&gt; compile(optimizer = "adam", loss = "binary_crossentropy",
+                  metrics = c("accuracy"))
+modelo |&gt; fit(x[i,,, , drop = FALSE], y[i], epochs = 12,
+              batch_size = 32, verbose = 0)
+print(modelo |&gt; evaluate(x[-i,,, , drop = FALSE], y[-i], verbose = 0))
+
+# Visualização e diagnóstico ----
+image(volcano, main = "Mapa de elevações")
+</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
+<h3>Resultados e interpretação</h3>
+
+
+<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
+<aside class="technical-note">
+<strong>
+       Nota metodológica
+      </strong>
+<p>
+       A CNN requer backend TensorFlow/Python, não incluído na instalação padrão do R. Os exemplos simples funcionam em R; este exemplo avançado exige instalação adicional e validação espacial apropriada.
+      </p>
+</aside>
+<aside class="technical-note">
+<strong>
+       Nota metodológica
+      </strong>
+<p>
+       A demonstração usa dados espaciais com vizinhanças sobrepostas. Para avaliação rigorosa, separe regiões espaciais independentes e impeça vazamento de informações.
+      </p>
+</aside>
+</div>
+<aside class="detail-aside">
+<div class="aside-card">
+<span class="aside-label">
+       TIPO DE MÉTODO
+      </span>
+<p>
+       Aprendizado supervisionado
+      </p>
+<a href="../index.html#referencias">
+       Referências científicas →
+      </a>
+</div>
+<div class="aside-card">
+<span class="aside-label">
+       CRITÉRIO DE DECISÃO
+      </span>
+<p>
+       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
+      </p>
+</div>
+<div class="aside-card">
+<span class="aside-label">
+       NAVEGAÇÃO
+      </span>
+<a href="../index.html#catalogo">
+       Ver todos os 97 métodos →
+      </a>
+</div>
+</aside>
+</div>
+<nav aria-label="Navegação entre métodos" class="method-pager">
+<a href="mlp.html">
+<span>
+      ← ANTERIOR
+     </span>
+     Rede neural multicamadas (MLP)
+    </a>
+<a href="rnn.html">
+<span>
+      PRÓXIMO →
+     </span>
+     Redes neurais recorrentes (RNN)
+    </a>
+</nav>
+<section class="profile-section">
+<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
+<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
+<div>
+<span>
+       SOBRE O PROFESSOR
+      </span>
+<h2>
+       Prof. Dr. Cássius Henrique Xavier Oliveira
+      </h2>
+<p>
+       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
+      </p>
+<b>
+       Conheça minha trajetória e projetos →
+      </b>
+</div>
+</a>
+</section>
+</main>
+<footer class="site-footer">
+<div>
+<strong>
+     Estatística &amp; Ciência de Dados
+    </strong>
+<div>
+     Material acadêmico de consulta · ICTIN/UFLA
+    </div>
+</div>
+<div>
+    Prof. Dr. Cássius Henrique Xavier Oliveira
+    <br/>
+    ©
+    <span class="year">
+     2026
+    </span>
+</div>
+</footer>
+<script defer="" src="../assets/script.js">
+</script>
+</body>
+</html>
