@@ -1,17 +1,30 @@
-# Correlação de Pearson ----
+# Correlação de Pearson: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: mtcars.
 
-# Ajuste e resultados ----
-summary(mtcars[, c("wt", "mpg")])
-resultado <- cor.test(mtcars$wt, mtcars$mpg, method = "pearson")
+# 1. Dados: peso (wt, em 1000 libras) e consumo (mpg) de 32 automóveis
+x <- mtcars$wt
+y <- mtcars$mpg
+n <- length(x)
+
+# 2. Gráfico de dispersão (sempre antes do coeficiente)
+plot(x, y, pch = 19, xlab = "Peso (1000 lb)", ylab = "Consumo (mpg)")
+abline(lm(y ~ x), col = "red", lwd = 2)
+
+# 3. Correlação de Pearson, teste de hipóteses e intervalo de confiança de 95%
+resultado <- cor.test(x, y, method = "pearson", conf.level = 0.95)
 print(resultado)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-abline(lm(mpg ~ wt, mtcars), col = "red", lwd = 2)
+# 4. Cálculo pela definição
+Sxy <- sum((x - mean(x)) * (y - mean(y)))
+Sxx <- sum((x - mean(x))^2); Syy <- sum((y - mean(y))^2)
+r <- Sxy / sqrt(Sxx * Syy)
+t <- r * sqrt((n - 2) / (1 - r^2))
+c(r = r, t = t, r2 = r^2)
 
+# 5. Intervalo de confiança pela transformação z de Fisher
+z <- atanh(r); ep <- 1 / sqrt(n - 3)
+tanh(z + c(-1, 1) * qnorm(0.975) * ep)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# H1: associacao linear positiva
-print(cor.test(mtcars$wt, mtcars$mpg, alternative = "greater"))
-# H1: associacao linear negativa
-print(cor.test(mtcars$wt, mtcars$mpg, alternative = "less"))
+# 6. Normalidade das duas variáveis (para o teste e o IC)
+shapiro.test(x)
+shapiro.test(y)
