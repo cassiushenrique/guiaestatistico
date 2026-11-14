@@ -4,8 +4,10 @@ COMO PUBLICAR
 Envie esta pasta para um repositório do GitHub e ative o GitHub Pages (Settings > Pages > Deploy from a branch > main / root). Abra index.html para navegar.
 
 STATUS DA REESCRITA (por lotes)
-Lote 1 (concluído): glossario.html + fichas de Diagnósticos reescritas: sw, ks, ad, levene, bartlett.
-Lotes seguintes (pendentes): demais fichas, na ordem do catálogo (mauchly, boxm, mardia, correlações, regressões, ...).
+Lote 1 (concluído): glossario.html + fichas sw, ks, ad, levene, bartlett.
+Lote 2 (concluído): mauchly, boxm, mardia, pearson, spearman, kendall, pontobisserial (+ 10 termos no glossário).
+Lote 3 (concluído): tetracorica, policorica, parcial, linear-simples, linear-multipla, logistica (+ 14 termos no glossário).
+Lotes seguintes (pendentes): demais fichas, na ordem do catálogo (multinomial, ordinal, poisson, nb, cox, ...).
 As fichas ainda não reescritas mantêm o conteúdo anterior (com seções numeradas) e já exibem o link do Glossário no menu.
 
 ESTRUTURA DAS FICHAS REESCRITAS
@@ -18,4 +20,5 @@ ESTRUTURA DAS FICHAS REESCRITAS
 OBSERVAÇÕES
 - Os resultados exibidos nas fichas vêm da execução dos scripts .py (numpy, scipy, matplotlib).
 - gerar-saidas-R.R é opcional: se executado no RStudio, roda scripts/*.R e insere a saída do R logo abaixo do bloco de código R do exemplo.
-- Pacotes R usados no Lote 1: stats (base), nortest, car.
+- Pacotes R usados nos Lotes 1 a 3: stats (base), nortest, car, biotools, psych; opcionais: MVN, polycor, ppcor, lmtest, pROC.
+- Python: numpy, scipy, matplotlib e, nas fichas boxm e mardia, scikit-learn (apenas para carregar o conjunto iris); todos já vêm no Google Colab.
