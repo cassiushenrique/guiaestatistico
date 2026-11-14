@@ -92,3 +92,4 @@ main,.detail-main{max-width:1200px;margin:0 auto;padding:0 25px}.eyebrow,.sectio
 .gloss-item dt{font:800 15px Manrope,sans-serif;color:var(--green);margin:0}
 .gloss-item dd{margin:.35rem 0 0;font-size:13.5px;line-height:1.75;color:#3d5042}
 .gloss-item dd a{color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.detail-panel .method-table a,.detail-panel p a,.detail-panel .checklist a,.callout a{color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:3px}
