@@ -4,372 +4,113 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Correlação de Pearson: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Correlação de Pearson | Estatística e Ciência de Dados
-  </title>
+<meta content="Correlação de Pearson: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Correlação de Pearson | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Correlação de Pearson
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 02 · ASSOCIAÇÃO
-    </span>
-<h1>
-     Correlação de Pearson
-    </h1>
-<p class="detail-lead">
-     Avalia se duas medidas quantitativas apresentam associação linear.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/pearson.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia se duas medidas quantitativas apresentam associação linear.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Pares independentes.</li><li>Relação aproximadamente linear.</li><li>Outliers influentes ausentes.</li><li>Para IC/teste t exato, normalidade bivariada.</li><li>Inspecione dispersão.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \rho=0\\ H_1&amp;:\ \rho\neq 0\end{aligned}\right.\]
-      </div>
-<h3>
-       Alternativas bilateral e unilaterais
-      </h3>
-<div class="tail-cases">
-<p>
-<strong>
-         Bilateral:
-        </strong>
-        \(\rho\neq 0\). Detecta desvios em qualquer direção.
-       </p>
-<p>
-<strong>
-         Unilateral à direita:
-        </strong>
-        \(\rho&gt;0\). Investiga aumento ou associação positiva.
-       </p>
-<p>
-<strong>
-         Unilateral à esquerda:
-        </strong>
-        \(\rho&lt;0\). Investiga redução ou associação negativa.
-       </p>
-<p>
-        A direção deve ser escolhida antes de observar os resultados. Para o teste t e os testes de associação, use
-        <code>
-         alternative = "two.sided"
-        </code>
-        ,
-        <code>
-         "greater"
-        </code>
-        ou
-        <code>
-         "less"
-        </code>
-        . Em testes com grupos ou pares, a interpretação da direção depende da ordem dos grupos ou da subtração.
-       </p>
-</div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[r=\frac{\sum_i(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum_i(x_i-\bar x)^2\sum_i(y_i-\bar y)^2}},\quad t=r\sqrt{\frac{n-2}{1-r^2}}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\rho)\approx\tanh\!\left[\operatorname{atanh}(r)\pm\frac{1{,}96}{\sqrt{n-3}}\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(r\)
-        </dt>
-<dd>
-         coeficiente de correlação amostral de Pearson
-        </dd>
-</div>
-<div>
-<dt>
-         \(x_i,y_i\)
-        </dt>
-<dd>
-         observações pareadas
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar x,\bar y\)
-        </dt>
-<dd>
-         médias amostrais
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         número de pares
-        </dd>
-</div>
-</dl>
-<p>
-       A aproximação de Fisher pressupõe amostra independente de população aproximadamente normal bivariada.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de correlação linear diferente de zero; IC de 95% para \(\rho\) quantifica sua precisão. Correlação não implica causalidade.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-<p>
-       Em um teste unilateral, a rejeição só sustenta a direção previamente definida. Um resultado de sinal contrário não autoriza inverter a hipótese após examinar os dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        No conjunto mtcars, wt é a massa do automóvel (em milhares de libras) e mpg é a autonomia (milhas por galão).
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Quantificar se veículos mais pesados tendem a apresentar menor autonomia e avaliar se a associação observada é aproximadamente linear.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-pearson" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-pearson"><code># Correlação de Pearson ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Correlação de Pearson</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ASSOCIAÇÃO</span><h1>Correlação de Pearson</h1><p class="detail-lead">Mede a força e o sentido da associação linear entre duas variáveis quantitativas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/pearson.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/pearson.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o coeficiente</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Carros mais pesados gastam mais combustível? Alunos que estudam mais horas tiram notas maiores? Perguntas assim tratam da <strong>associação entre duas medidas quantitativas</strong>. O coeficiente de correlação de Pearson resume, em um número entre −1 e 1, o quanto os pontos de um gráfico de dispersão se alinham em torno de uma reta.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Pearson" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Força e sentido da</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">associação linear</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Coeficiente r</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Entre −1 e 1</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Sem unidade de medida</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Relação linear</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Pares independentes</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade bivariada (teste e IC)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Sinal, magnitude e IC</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Correlação não é causa</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">cor(x, y)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">cor.test(x, y)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Spearman</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Kendall</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Correlação parcial</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Pearson</text></svg><figcaption>Visão geral da correlação de Pearson. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>A ideia de correlação nasceu com Francis Galton, ao estudar a altura de pais e filhos na década de 1880. Karl Pearson deu a ela, em 1896, a formulação matemática usada até hoje, razão pela qual o coeficiente é chamado de “momento-produto de Pearson”.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o coeficiente</h2><p>O coeficiente \(r\) mede a <strong>força</strong> e o <strong>sentido</strong> da relação <em>linear</em> entre duas variáveis quantitativas. O sinal indica o sentido (positivo: crescem juntas; negativo: uma cresce enquanto a outra diminui) e o valor absoluto indica o quanto os pontos se aproximam de uma reta.</p><figure class="fig"><img src="../assets/resultados/pearson-didatica.png" alt="Seis diagramas de dispersão com diferentes valores de r" loading="lazy"/><figcaption><strong>O que r mostra e o que r esconde.</strong> Na primeira linha, relações lineares de força decrescente. Na segunda, uma relação linear negativa e dois alertas: uma relação curva perfeita pode ter r próximo de zero, e um único ponto extremo pode produzir r alto em dados sem associação. Por isso o gráfico vem sempre antes do coeficiente. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>Correlação não implica causalidade</strong><p>Duas variáveis podem estar correlacionadas porque uma causa a outra, porque ambas dependem de uma terceira (variável de confusão) ou por coincidência. O coeficiente, sozinho, não distingue esses casos.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Necessário para</th><th>Como verificar</th></tr></thead><tbody><tr><td>Duas variáveis quantitativas medidas nas mesmas unidades</td><td>Calcular r</td><td>Estrutura dos dados: um par (x, y) por unidade.</td></tr><tr><td>Relação aproximadamente linear</td><td>r representar bem a associação</td><td>Gráfico de dispersão.</td></tr><tr><td>Ausência de valores extremos influentes</td><td>r não ser dominado por poucos pontos</td><td>Gráfico de dispersão; recalcular sem o ponto suspeito.</td></tr><tr><td>Pares independentes entre si</td><td>Teste e IC</td><td>Delineamento (não usar várias medidas da mesma unidade como se fossem unidades distintas).</td></tr><tr><td>Normalidade bivariada</td><td>Teste t e IC exatos em amostras pequenas</td><td>Q–Q de cada variável, <a href="sw.html">Shapiro–Wilk</a> e dispersão em formato elíptico. Com n grande, o teste é robusto.</td></tr><tr><td>Variabilidade semelhante ao longo da reta</td><td>IC e teste</td><td>Dispersão sem formato de funil.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \rho=0\quad\text{(não há associação linear na população)}\\ H_1&:\ \rho\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[r=\frac{\sum_{i=1}^{n}(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum_{i=1}^{n}(x_i-\bar x)^2\;\sum_{i=1}^{n}(y_i-\bar y)^2}}=\frac{S_{xy}}{\sqrt{S_{xx}\,S_{yy}}},\qquad t=r\sqrt{\frac{n-2}{1-r^2}}\sim t_{n-2}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(r\)</dt><dd>coeficiente de correlação amostral</dd></div><div><dt>\(\rho\)</dt><dd>coeficiente de correlação populacional (parâmetro)</dd></div><div><dt>\(x_i,\ y_i\)</dt><dd>valores das duas variáveis na unidade i</dd></div><div><dt>\(\bar x,\ \bar y\)</dt><dd>médias amostrais</dd></div><div><dt>\(S_{xy}\)</dt><dd>soma dos produtos dos desvios</dd></div><div><dt>\(S_{xx},\ S_{yy}\)</dt><dd>somas de quadrados dos desvios de x e de y</dd></div><div><dt>\(n\)</dt><dd>número de pares</dd></div><div><dt>\(t\)</dt><dd>estatística de teste, com \(n-2\) graus de liberdade sob \(H_0\)</dd></div></dl><h3>Exemplo numérico, passo a passo (n = 5)</h3><p>Pares (x; y): (1; 2), (2; 4), (3; 5), (4; 4) e (5; 5). As médias são \(\bar x=3\) e \(\bar y=4\).</p><div class="table-wrap"><table class="method-table"><caption>Cálculo das somas</caption><thead><tr><th>i</th><th>x</th><th>y</th><th>x − média</th><th>y − média</th><th>Produto</th><th>(x − média)²</th><th>(y − média)²</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>2</td><td>−2</td><td>−2</td><td>4</td><td>4</td><td>4</td></tr><tr><td>2</td><td>2</td><td>4</td><td>−1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>3</td><td>3</td><td>5</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td></tr><tr><td>4</td><td>4</td><td>4</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td></tr><tr><td>5</td><td>5</td><td>5</td><td>2</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Soma</td><td></td><td></td><td></td><td></td><td>6</td><td>10</td><td>6</td></tr></tbody></table></div><div class="worked"><strong>Resultado</strong><p>\(r=\dfrac{6}{\sqrt{10\times6}}=\dfrac{6}{7{,}746}=0{,}775\).</p><p>\(t=0{,}775\sqrt{\dfrac{3}{1-0{,}600}}=2{,}121\), com 3 g.l. ⇒ \(p=0{,}124\).</p><p>A correlação amostral é alta, mas com apenas cinco pares não há evidência suficiente de associação na população.</p></div><h3>Intervalo de confiança: transformação z de Fisher</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[z=\operatorname{arctanh}(r)=\frac12\ln\frac{1+r}{1-r},\qquad EP(z)=\frac{1}{\sqrt{n-3}},\qquad IC_{\rho}=\tanh\!\left(z\pm z_{1-\alpha/2}\,EP\right)\]</div><div class="worked"><strong>Exemplo com os dados do mtcars (r = −0,8677; n = 32)</strong><p>\(z=\operatorname{arctanh}(-0{,}8677)=-1{,}3235\) e \(EP=1/\sqrt{29}=0{,}1857\).</p><p>Limites em z: \(-1{,}3235\pm1{,}96\times0{,}1857\Rightarrow[-1{,}6875;\ -0{,}9595]\).</p><p>Voltando à escala de r: \([\tanh(-1{,}6875);\ \tanh(-0{,}9595)]=[-0{,}934;\ -0{,}744]\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(-1\leq r\leq1\); \(|r|=1\) apenas quando todos os pontos estão sobre uma reta.</li><li>Não tem unidade e não muda quando se troca a unidade de medida de x ou de y (por exemplo, libras por quilogramas).</li><li>É simétrico: a correlação entre x e y é igual à correlação entre y e x.</li><li>\(r^2\) é a proporção da variabilidade de uma variável explicada linearmente pela outra (coeficiente de determinação da regressão linear simples).</li><li>É sensível a valores extremos e mede apenas associação linear.</li><li>O intervalo de confiança não é simétrico em torno de r, porque r é limitado entre −1 e 1.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Sinal de r</td><td>Sentido da associação.</td><td></td></tr><tr><td>|r|</td><td>Proximidade dos pontos a uma reta.</td><td>Não informa a inclinação da reta.</td></tr><tr><td>Valor-p</td><td>Evidência contra ρ = 0.</td><td>Com n grande, correlações minúsculas ficam “significativas”.</td></tr><tr><td>Intervalo de confiança</td><td>Valores de ρ compatíveis com os dados.</td><td>É a melhor forma de comunicar a precisão.</td></tr><tr><td>r²</td><td>Fração da variabilidade compartilhada.</td><td>r = 0,5 corresponde a apenas 25%.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Referência usual para a magnitude (em valor absoluto)</caption><thead><tr><th>Valor</th><th>Descrição convencional</th><th>Observação</th></tr></thead><tbody><tr><td>0,10</td><td>Associação pequena</td><td>Pode ser relevante em fenômenos com muitas causas.</td></tr><tr><td>0,30</td><td>Associação moderada</td><td></td></tr><tr><td>0,50 ou mais</td><td>Associação grande</td><td>Em calibração de instrumentos, exige-se muito mais (acima de 0,99).</td></tr></tbody></table></div><p>Esses pontos de referência (COHEN, 1988) são convenções das ciências do comportamento. A interpretação depende sempre da área e do objetivo.</p><p>Reporte r, o intervalo de confiança, n e o valor-p, por exemplo: “r = −0,87; IC 95% [−0,93; −0,74]; n = 32; p &lt; 0,001”.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>cor()</code> calcula o coeficiente e <code>cor.test()</code> acrescenta o teste de hipóteses e o intervalo de confiança. Ambas pertencem ao pacote <code>stats</code>, já instalado com o R.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-pearson-min" type="button">Copiar código</button></div><pre id="code-pearson-min"><code>cor(mtcars$wt, mtcars$mpg)
+cor.test(mtcars$wt, mtcars$mpg)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>No conjunto <code>mtcars</code>, <code>wt</code> é o peso do automóvel (em milhares de libras) e <code>mpg</code> é o consumo (milhas por galão: quanto maior, mais econômico). Queremos medir a associação linear entre peso e consumo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-pearson" type="button">Copiar código</button></div><pre id="code-pearson"><code># Correlação de Pearson: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: mtcars.
 
-# Ajuste e resultados ----
-summary(mtcars[, c("wt", "mpg")])
-resultado &lt;- cor.test(mtcars$wt, mtcars$mpg, method = "pearson")
+# 1. Dados: peso (wt, em 1000 libras) e consumo (mpg) de 32 automóveis
+x &lt;- mtcars$wt
+y &lt;- mtcars$mpg
+n &lt;- length(x)
+
+# 2. Gráfico de dispersão (sempre antes do coeficiente)
+plot(x, y, pch = 19, xlab = "Peso (1000 lb)", ylab = "Consumo (mpg)")
+abline(lm(y ~ x), col = "red", lwd = 2)
+
+# 3. Correlação de Pearson, teste de hipóteses e intervalo de confiança de 95%
+resultado &lt;- cor.test(x, y, method = "pearson", conf.level = 0.95)
 print(resultado)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-abline(lm(mpg ~ wt, mtcars), col = "red", lwd = 2)
+# 4. Cálculo pela definição
+Sxy &lt;- sum((x - mean(x)) * (y - mean(y)))
+Sxx &lt;- sum((x - mean(x))^2); Syy &lt;- sum((y - mean(y))^2)
+r &lt;- Sxy / sqrt(Sxx * Syy)
+t &lt;- r * sqrt((n - 2) / (1 - r^2))
+c(r = r, t = t, r2 = r^2)
 
+# 5. Intervalo de confiança pela transformação z de Fisher
+z &lt;- atanh(r); ep &lt;- 1 / sqrt(n - 3)
+tanh(z + c(-1, 1) * qnorm(0.975) * ep)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# H1: associacao linear positiva
-print(cor.test(mtcars$wt, mtcars$mpg, alternative = "greater"))
-# H1: associacao linear negativa
-print(cor.test(mtcars$wt, mtcars$mpg, alternative = "less"))
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">Pearson correlation
-estimate = -0.867659, p-value = 1.294e-10</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Correlação de Pearson" class="result-figure" loading="lazy" src="../assets/resultados/pearson.png"/><p>A associação entre massa e autonomia é negativa (coeficiente = -0.868); o valor-p é 1.29e-10. A interpretação depende de o método investigar associação linear, monotônica ou concordância de postos.</p></div>
-<h3>Resultados e interpretação</h3>
-<p class="observed-result">
-<strong>
-        Resultado para estes dados:
-       </strong>
-       correlação de Pearson r ≈ −0,8677, com valor-p ≈ 1,29 × 10⁻¹⁰. A associação linear entre massa e autonomia é negativa e intensa. Isso não demonstra causalidade.
-      </p>
+# 6. Normalidade das duas variáveis (para o teste e o IC)
+shapiro.test(x)
+shapiro.test(y)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-pearson" type="button">Copiar código</button></div><pre id="code-py-pearson"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
 
+# Dados do conjunto mtcars: peso (wt, em 1000 libras) e consumo (mpg)
+wt  = np.array([2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19, 3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2, 1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14, 1.513, 3.17, 2.77, 3.57, 2.78])
+mpg = np.array([21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 19.7, 15, 21.4])
+n = len(wt)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="bartlett.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Bartlett
-    </a>
-<a href="spearman.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Correlação de Spearman
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 1. Gráfico de dispersão (sempre antes do coeficiente)
+plt.scatter(wt, mpg); b, a = np.polyfit(wt, mpg, 1)
+plt.plot(np.sort(wt), a + b * np.sort(wt), color="red")
+plt.xlabel("Peso (1000 lb)"); plt.ylabel("Consumo (mpg)"); plt.show()
+
+# 2. Correlação de Pearson e teste de hipóteses
+res = stats.pearsonr(wt, mpg)
+r = res.statistic
+t = r * np.sqrt((n - 2) / (1 - r**2))
+print(f"r = {r:.5f} | t = {t:.4f}, gl = {n - 2}, p-valor = {res.pvalue:.3e}")
+
+# 3. Intervalo de confiança de 95% (transformação z de Fisher)
+z = np.arctanh(r); ep = 1 / np.sqrt(n - 3); zc = stats.norm.ppf(0.975)
+ic = np.tanh([z - zc * ep, z + zc * ep])
+print(f"z de Fisher = {z:.4f} | erro-padrão = {ep:.4f} | IC 95% = [{ic[0]:.4f}; {ic[1]:.4f}]")
+print(f"r² = {r**2:.4f}")
+
+# 4. Cálculo pela definição
+sxy = np.sum((wt - wt.mean()) * (mpg - mpg.mean()))
+sxx = np.sum((wt - wt.mean())**2); syy = np.sum((mpg - mpg.mean())**2)
+print(f"Sxy = {sxy:.4f} | Sxx = {sxx:.4f} | Syy = {syy:.4f} | r = {sxy / np.sqrt(sxx * syy):.5f}")
+
+# 5. Normalidade das duas variáveis (para o teste e o IC)
+for nome, v in [("wt", wt), ("mpg", mpg)]:
+    W, pw = stats.shapiro(v)
+    print(f"Shapiro-Wilk ({nome}): W = {W:.4f}, p-valor = {pw:.4f}")
+
+# 6. Exemplo do texto (n = 5)
+x = np.array([1, 2, 3, 4, 5.]); y = np.array([2, 4, 5, 4, 5.])
+r5 = stats.pearsonr(x, y)
+print(f"\nn = 5: r = {r5.statistic:.4f}, t = {r5.statistic*np.sqrt(3/(1-r5.statistic**2)):.4f}, p-valor = {r5.pvalue:.4f}")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">r = -0.86766 | t = -9.5590, gl = 30, p-valor = 1.294e-10
+z de Fisher = -1.3235 | erro-padrão = 0.1857 | IC 95% = [-0.9338; -0.7441]
+r² = 0.7528
+Sxy = -158.6172 | Sxx = 29.6787 | Syy = 1126.0472 | r = -0.86766
+Shapiro-Wilk (wt): W = 0.9433, p-valor = 0.0927
+Shapiro-Wilk (mpg): W = 0.9476, p-valor = 0.1229
+
+n = 5: r = 0.7746, t = 2.1213, p-valor = 0.1240</pre></div><figure class="fig"><img src="../assets/resultados/pearson.png" alt="Dispersão de peso e consumo com reta e escores padronizados" loading="lazy"/><figcaption><strong>Peso e consumo de 32 automóveis.</strong> À esquerda, os pontos se distribuem em torno de uma reta decrescente. À direita, as duas variáveis padronizadas: quase todos os pontos estão nos quadrantes em que o produto dos escores z é negativo (peso acima da média com consumo abaixo, e vice-versa), o que explica o r fortemente negativo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resumo dos resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>r</td><td>−0,868</td><td>Associação linear negativa e forte.</td></tr><tr><td>t (30 g.l.)</td><td>−9,559</td><td>Valor-p = 1,3 × 10⁻¹⁰.</td></tr><tr><td>IC 95% para ρ</td><td>[−0,934; −0,744]</td><td>Mesmo o limite mais fraco indica associação forte.</td></tr><tr><td>r²</td><td>0,753</td><td>Cerca de 75% da variabilidade do consumo acompanha linearmente o peso.</td></tr><tr><td>Shapiro–Wilk (wt; mpg)</td><td>p = 0,093; p = 0,123</td><td>Sem evidência contra a normalidade das duas variáveis.</td></tr></tbody></table></div><p><strong>Leitura:</strong> carros mais pesados tendem a percorrer menos milhas por galão. A associação é forte e estimada com boa precisão. Observe no gráfico uma leve curvatura (os carros mais leves ficam acima da reta): vale comparar com a <a href="spearman.html">correlação de Spearman</a>. E lembre-se de que os dados são observacionais: carros pesados também têm motores maiores, de modo que o peso não é, necessariamente, a única causa do consumo.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Calcular r sem olhar o gráfico</td><td>Faça sempre o diagrama de dispersão (ANSCOMBE, 1973).</td></tr><tr><td>Interpretar correlação como causalidade</td><td>Considere variáveis de confusão e o delineamento do estudo.</td></tr><tr><td>Concluir “não há relação” porque r ≈ 0</td><td>Pode haver relação não linear.</td></tr><tr><td>Confundir significância com força</td><td>Reporte r e o IC, não apenas o valor-p.</td></tr><tr><td>Extrapolar para fora da faixa observada</td><td>A relação pode mudar fora dos valores estudados.</td></tr><tr><td>Restringir a amplitude de uma variável</td><td>Amostras com pouca variação em x reduzem r artificialmente.</td></tr><tr><td>Correlacionar médias de grupos e concluir sobre indivíduos</td><td>É a falácia ecológica: a correlação entre médias costuma ser maior.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="spearman.html">Spearman</a></td><td>Relação monotônica não linear, valores extremos ou dados ordinais.</td></tr><tr><td><a href="kendall.html">Tau de Kendall</a></td><td>Amostras pequenas e muitos empates; interpretação em termos de pares.</td></tr><tr><td><a href="pontobisserial.html">Ponto-bisserial</a></td><td>Uma das variáveis é binária.</td></tr><tr><td><a href="parcial.html">Correlação parcial</a></td><td>Deseja-se descontar o efeito de uma terceira variável.</td></tr><tr><td><a href="linear-simples.html">Regressão linear simples</a></td><td>Interessa prever y ou quantificar a variação de y por unidade de x.</td></tr><tr><td>IC por <em>bootstrap</em></td><td>Normalidade bivariada duvidosa.</td></tr></tbody></table></div><ol class="steps"><li>Faça o diagrama de dispersão.</li><li>Verifique linearidade e valores extremos.</li><li>Calcule r com o intervalo de confiança.</li><li>Interprete magnitude e precisão no contexto do problema.</li><li>Se a relação for monotônica mas não linear, use Spearman ou Kendall.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>PEARSON, Karl. Mathematical contributions to the theory of evolution. III. Regression, heredity, and panmixia. <em>Philosophical Transactions of the Royal Society of London. Series A</em>, v. 187, p. 253-318, 1896.</li><li>FISHER, Ronald A. Frequency distribution of the values of the correlation coefficient in samples from an indefinitely large population. <em>Biometrika</em>, v. 10, n. 4, p. 507-521, 1915.</li><li>ANSCOMBE, Francis J. Graphs in statistical analysis. <em>The American Statistician</em>, v. 27, n. 1, p. 17-21, 1973.</li><li>COHEN, Jacob. <em>Statistical power analysis for the behavioral sciences.</em> 2. ed. Hillsdale: Lawrence Erlbaum, 1988.</li><li>MORETTIN, Pedro Alberto; BUSSAB, Wilton de Oliveira. <em>Estatística básica.</em> 9. ed. São Paulo: Saraiva, 2017.</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Conjunto de dados <code>mtcars</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>cor</code> e <code>cor.test</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Duas variáveis quantitativas medidas nas mesmas unidades, relação linear e pares independentes; normalidade bivariada para o teste e o IC.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="mardia.html"><span>← ANTERIOR</span>Mardia (normalidade multivariada)</a><a href="spearman.html"><span>PRÓXIMO →</span>Correlação de Spearman</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,336 +4,165 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão logística binária: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão logística binária | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão logística binária: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão logística binária | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão logística binária
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão logística binária
-    </h1>
-<p class="detail-lead">
-     Estima a probabilidade de um evento com dois resultados possíveis, como falha ou funcionamento.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/logistica.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima a probabilidade de um evento com dois resultados possíveis, como falha ou funcionamento.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes (confira o delineamento amostral; se houver medidas repetidas, modele a dependência).</li><li>Relação aproximadamente linear entre cada preditor contínuo e o logito da probabilidade (examine splines ou gráficos de resíduos parciais).</li><li>Ausência de separação completa ou quase completa (verifique advertências de convergência e coeficientes excessivamente grandes).</li><li>Quantidade suficiente de eventos e não eventos (inspecione frequências por classe e a precisão dos intervalos de confiança).</li><li>Ausência de multicolinearidade excessiva (examine correlações e fatores de inflação da variância).</li><li>Calibração e capacidade discriminativa avaliadas em dados de validação (curvas de calibração e medidas de classificação).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\\ H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\log\frac{\pi(\mathbf x)}{1-\pi(\mathbf x)}=\beta_0+\mathbf x^\top\boldsymbol\beta,\qquad OR=e^{\beta_j}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(OR_j)\approx\exp\!\left[\widehat\beta_j\pm1{,}96\operatorname{EP}(\widehat\beta_j)\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\pi(\mathbf x)\)
-        </dt>
-<dd>
-         probabilidade de ocorrência da classe 1 para as covariáveis x
-        </dd>
-</div>
-<div>
-<dt>
-         \(\beta_0\)
-        </dt>
-<dd>
-         intercepto
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         coeficientes de regressão
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\operatorname{logit}(p)\)
-        </dt>
-<dd>
-         logaritmo da razão p/(1-p)
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) evidencia associação do preditor; \(\exp(\widehat\beta)\) é razão de chances, não razão de probabilidades. \(IC_{95\%}\) deve ser interpretado na escala OR.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em mtcars, am indica transmissão manual (1) ou automática (0); wt e hp são características explicativas.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Estimar a probabilidade de transmissão manual com base nas características do veículo.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-logistica" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-logistica"><code># Regressão logística binária ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão logística binária</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão logística binária</h1><p class="detail-lead">Modela a probabilidade de um evento com dois resultados possíveis em função de um ou mais preditores.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/logistica.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/logistica.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Falhou ou não falhou. Aprovado ou reprovado. Quando a resposta tem apenas dois resultados, o que interessa prever é uma <strong>probabilidade</strong>, e probabilidades vivem entre 0 e 1. Uma reta não respeita esses limites. A regressão logística resolve o problema modelando a probabilidade por uma curva em forma de S, e é um dos métodos mais usados em engenharia de confiabilidade, saúde e ciência de dados.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão logística" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modelo para a probabilidade</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">de um evento binário</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Escala</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">logit(p) = ln[p/(1−p)]</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">linear nos preditores</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Resposta binária</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Linearidade no logit</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Razão de chances (OR)</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Probabilidades previstas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">glm(y ~ x,</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">family = binomial)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Probit</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Multinomial / ordinal</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Firth, árvores</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão logística</text></svg><figcaption>Visão geral da regressão logística binária. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Um caso real</strong><p>Na véspera do lançamento do ônibus espacial Challenger, em janeiro de 1986, discutiu-se se o frio previsto (31 °F, cerca de −0,5 °C) comprometeria os anéis de vedação dos foguetes. A análise posterior dos 23 lançamentos anteriores (DALAL; FOWLKES; HOADLEY, 1989) tornou-se um exemplo clássico de regressão logística, e é o exemplo desta ficha.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\operatorname{logit}(p_i)=\ln\!\left(\frac{p_i}{1-p_i}\right)=\beta_0+\beta_1x_{i1}+\cdots+\beta_kx_{ik}\qquad\Longleftrightarrow\qquad p_i=\frac{1}{1+e^{-(\beta_0+\beta_1x_{i1}+\cdots+\beta_kx_{ik})}}\]</div><p>A resposta \(y_i\) vale 1 (evento) ou 0 (não evento), com \(p_i=P(y_i=1)\). O modelo é linear no <strong>logit</strong>, o logaritmo da chance (<em>odds</em>). Três escalas convivem na análise:</p><div class="table-wrap"><table class="method-table"><caption>Três escalas para a mesma informação</caption><thead><tr><th>Escala</th><th>Definição</th><th>Intervalo</th><th>Exemplo</th></tr></thead><tbody><tr><td>Probabilidade</td><td>p</td><td>0 a 1</td><td>0,80</td></tr><tr><td>Chance (odds)</td><td>p / (1 − p)</td><td>0 a +∞</td><td>4 (quatro para um)</td></tr><tr><td>Logit</td><td>ln[p / (1 − p)]</td><td>−∞ a +∞</td><td>1,386</td></tr></tbody></table></div><figure class="fig"><img src="../assets/resultados/logistica-didatica.png" alt="Reta versus curva logística, chance e logit" loading="lazy"/><figcaption><strong>Por que uma curva em S, e as escalas do modelo.</strong> À esquerda, a reta ajustada a uma resposta 0/1 prevê “probabilidades” abaixo de 0 e acima de 1; a curva logística fica sempre entre os limites. No centro, a relação entre probabilidade e chance. À direita, o logit, escala em que os preditores atuam linearmente. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta binária</td><td>Definição do modelo.</td><td><code>table(y)</code>: apenas dois valores.</td></tr><tr><td>Observações independentes</td><td>Dependência distorce erros-padrão.</td><td>Delineamento; para dados agrupados, use <a href="gee.html">GEE</a> ou modelos mistos.</td></tr><tr><td>Linearidade no logit para preditores quantitativos</td><td>O efeito de x é constante na escala logit.</td><td>Proporções observadas por faixas de x; termos quadráticos ou splines.</td></tr><tr><td>Ausência de separação perfeita</td><td>Se um preditor separa totalmente os grupos, as estimativas tendem ao infinito.</td><td>Avisos do R (<em>fitted probabilities numerically 0 or 1</em>) e erros-padrão enormes.</td></tr><tr><td>Ausência de multicolinearidade forte</td><td>Coeficientes instáveis.</td><td><code>car::vif()</code>.</td></tr><tr><td>Número suficiente de eventos</td><td>A precisão depende da categoria menos frequente.</td><td>Referência usual: ao menos 10 eventos por parâmetro (PEDUZZI et al., 1996).</td></tr></tbody></table></div><div class="callout try"><strong>O que não é exigido</strong><p>Não se supõe normalidade nem variância constante: a variância de uma resposta binária é \(p(1-p)\), definida pelo próprio modelo.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0\quad\text{(o preditor não altera a chance do evento)}\\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\ell(\boldsymbol\beta)=\sum_{i=1}^{n}\left[y_i\ln p_i+(1-y_i)\ln(1-p_i)\right],\qquad z=\frac{b_j}{EP(b_j)}\ \overset{\text{aprox.}}{\sim}\ \mathcal N(0,1)\ \ \text{(Wald)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[G=D_{nula}-D_{residual}=-2\left[\ell_{nulo}-\ell_{modelo}\right]\ \overset{\text{aprox.}}{\sim}\ \chi^2_{k},\qquad OR_j=e^{b_j},\qquad IC(OR_j)=e^{\,b_j\pm z_{1-\alpha/2}EP(b_j)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\ell(\boldsymbol\beta)\)</dt><dd>log-verossimilhança; os coeficientes são os valores que a maximizam (não há fórmula fechada: o cálculo é iterativo)</dd></div><div><dt>\(b_j,\ EP(b_j)\)</dt><dd>estimativa de máxima verossimilhança e seu erro-padrão</dd></div><div><dt>\(z\)</dt><dd>estatística de Wald</dd></div><div><dt>\(D\)</dt><dd>deviance: \(-2\ell\); mede o desajuste (quanto menor, melhor)</dd></div><div><dt>\(G\)</dt><dd>estatística da razão de verossimilhanças, com \(k\) graus de liberdade (número de preditores testados)</dd></div><div><dt>\(OR_j\)</dt><dd>razão de chances (<em>odds ratio</em>): fator que multiplica a chance quando \(x_j\) aumenta uma unidade</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha, \(b_0=15{,}043\) e \(b_1=-0{,}232\) (temperatura em °F).</p><div class="worked"><strong>Do coeficiente à probabilidade</strong><p>Para 70 °F: \(\operatorname{logit}=15{,}043-0{,}2322\times70=-1{,}211\).</p><p>Chance: \(e^{-1{,}211}=0{,}298\). Probabilidade: \(p=0{,}298/(1+0{,}298)=0{,}230\).</p><p>Razão de chances por grau: \(OR=e^{-0{,}2322}=0{,}793\): cada 1 °F a mais multiplica a chance de dano por 0,79 (redução de 21%).</p><p>Para 10 °F: \(e^{-2{,}322}=0{,}098\). No sentido inverso, 10 °F a <em>menos</em> multiplicam a chance por \(1/0{,}098\approx10\).</p><p>Teste de Wald: \(z=-0{,}2322/0{,}1082=-2{,}145\) ⇒ \(p=0{,}032\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>A razão de chances é constante ao longo de x; a variação na probabilidade, não: ela é maior perto de p = 0,5 e menor nos extremos.</li><li>\(OR=1\) indica ausência de efeito; \(OR&gt;1\), aumento da chance; \(OR&lt;1\), redução.</li><li>O teste da razão de verossimilhanças é mais confiável que o de Wald em amostras pequenas; quando discordam, prefira o primeiro.</li><li>O intervalo de confiança por verossimilhança perfilada (padrão do <code>confint()</code> no R) é preferível ao de Wald em amostras pequenas; os dois coincidem em amostras grandes.</li><li>A razão de chances não é razão de probabilidades (risco relativo); só se aproximam quando o evento é raro.</li><li>Medidas como o pseudo-R² de McFadden resumem o ganho de verossimilhança, mas não têm a interpretação de “variância explicada”.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura da saída</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente bⱼ</td><td>Variação no logit por unidade de xⱼ.</td><td>Pouco intuitivo; converta em razão de chances.</td></tr><tr><td>OR = exp(bⱼ)</td><td>Fator multiplicativo da chance.</td><td>Não é “vezes mais provável”.</td></tr><tr><td>IC da OR</td><td>Precisão do efeito.</td><td>Se contém 1, o efeito não é distinguível de zero.</td></tr><tr><td>Deviance residual × nula</td><td>Ganho de ajuste com os preditores.</td><td>Compare pelo teste G.</td></tr><tr><td>Probabilidades previstas</td><td>Tradução do modelo para a escala de interesse.</td><td>Fora da faixa dos dados, são extrapolações.</td></tr><tr><td>Matriz de confusão e AUC</td><td>Capacidade de discriminar eventos e não eventos.</td><td>Dependem do ponto de corte e, calculadas nos mesmos dados do ajuste, são otimistas.</td></tr></tbody></table></div><p>Reporte os coeficientes, as razões de chances com intervalos de confiança, o teste global, o número de eventos e algumas probabilidades previstas em valores relevantes dos preditores.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>glm()</code> com <code>family = binomial</code> ajusta o modelo; pertence ao pacote <code>stats</code>, já instalado com o R. A resposta deve estar codificada como 0/1 ou como fator com dois níveis (o segundo nível é tratado como evento). Para a curva ROC, o pacote <code>pROC</code> é o mais usado.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-logistica-min" type="button">Copiar código</button></div><pre id="code-logistica-min"><code>modelo &lt;- glm(y ~ x, data = dados, family = binomial)
+summary(modelo)
+exp(cbind(OR = coef(modelo), confint(modelo)))
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece o ajuste e a tabela de resultados prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Cada linha é um dos 23 lançamentos do ônibus espacial anteriores ao acidente da Challenger: a temperatura no momento do lançamento (°F) e a ocorrência de dano em pelo menos um anel de vedação (1 = sim, 0 = não). Queremos estimar como a probabilidade de dano varia com a temperatura.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-logistica" type="button">Copiar código</button></div><pre id="code-logistica"><code># Regressão logística binária: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R).
 
-# Ajuste e resultados ----
-ajuste &lt;- glm(am ~ wt + hp, data = mtcars, family = binomial())
-print(summary(ajuste))
-print(exp(cbind(Razao_de_chances = coef(ajuste), confint.default(ajuste))))
-prob &lt;- predict(ajuste, type = "response")
-print(table(real = mtcars$am, previsto = as.integer(prob &gt;= 0.5)))
+# 1. Dados: 23 lançamentos do ônibus espacial antes do acidente da Challenger (Dalal et al., 1989)
+dados &lt;- data.frame(
+  temp  = c(66, 70, 69, 68, 67, 72, 73, 70, 57, 63, 70, 78, 67, 53, 67, 75, 70, 81, 76, 79, 75, 76, 58),
+  falha = c( 0,  1,  0,  0,  0,  0,  0,  0,  1,  1,  1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  1,  0,  1))
+table(dados$falha)
+tapply(dados$temp, dados$falha, mean)
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, prob, pch = 19, col = ifelse(mtcars$am == 1, "#12372A", "#C68A3B"),
-     xlab = "Massa (mil libras)", ylab = "Probabilidade estimada de transmissão manual")
-abline(h = 0.5, lty = 2)
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">==============================================================================
-                 coef    std err          z      P&gt;|z|      [0.025      0.975]
-------------------------------------------------------------------------------
-Intercept     18.8663      7.444      2.535      0.011       4.277      33.455
-wt            -8.0835      3.069     -2.634      0.008     -14.098      -2.069
-hp             0.0363      0.018      2.044      0.041       0.001       0.071
-==============================================================================
+# 2. Ajuste do modelo logit(p) = b0 + b1 * temperatura
+modelo &lt;- glm(falha ~ temp, data = dados, family = binomial)
+summary(modelo)
 
-Razões de chances (OR = odds ratio):
-Intercept    1.561455e+08
-wt           3.085967e-04
-hp           1.036921e+00</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Regressão logística binária" class="result-figure" loading="lazy" src="../assets/resultados/logistica.png"/><p>A razão de chances (odds ratio, OR) é exp(β). Ela multiplica as chances do evento por unidade adicional do preditor, mantendo os demais constantes; não representa diretamente uma razão de probabilidades.</p></div>
-<h3>Resultados e interpretação</h3>
+# 3. Razão de chances (odds ratio) e intervalos de confiança de 95%
+exp(coef(modelo))
+exp(confint.default(modelo))     # IC de Wald
+exp(confint(modelo))             # IC por verossimilhança perfilada
 
+# 4. Teste da razão de verossimilhanças
+anova(modelo, test = "Chisq")
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="linear-multipla.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão linear múltipla
-    </a>
-<a href="multinomial.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão logística multinomial
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 5. Probabilidades estimadas
+novo &lt;- data.frame(temp = c(81, 70, 65, 53, 31))
+cbind(novo, prob = predict(modelo, novo, type = "response"))
+-coef(modelo)[1] / coef(modelo)[2]          # temperatura em que p = 0,5
+
+# 6. Classificação com ponto de corte 0,5
+prob &lt;- fitted(modelo)
+table(observado = dados$falha, previsto = as.numeric(prob &gt;= 0.5))
+
+# 7. Área sob a curva ROC (pacote pROC): install.packages("pROC")
+# pROC::auc(dados$falha, prob)
+
+# 8. Gráfico: dados e curva ajustada
+plot(falha ~ temp, data = dados, pch = 19, xlim = c(30, 85),
+     xlab = "Temperatura (°F)", ylab = "Probabilidade de dano")
+curve(predict(modelo, data.frame(temp = x), type = "response"), add = TRUE, col = "red", lwd = 2)
+abline(v = 31, lty = 2)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-logistica" type="button">Copiar código</button></div><pre id="code-py-logistica"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def logistica(X, y, nomes):
+    """Regressão logística por máxima verossimilhança (mínimos quadrados ponderados iterativos)."""
+    X = np.column_stack([np.ones(len(y)), X]); beta = np.zeros(X.shape[1])
+    for it in range(50):
+        p = 1 / (1 + np.exp(-X @ beta)); W = p * (1 - p)
+        passo = np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (y - p))
+        beta = beta + passo
+        if np.max(np.abs(passo)) &lt; 1e-10: break
+    p = 1 / (1 + np.exp(-X @ beta))
+    cov = np.linalg.inv(X.T @ (X * (p * (1 - p))[:, None])); ep = np.sqrt(np.diag(cov))
+    z = beta / ep; pv = 2 * stats.norm.sf(np.abs(z))
+    print(f"{'Termo':&lt;13}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;9}{'p-valor':&gt;10}")
+    for nm, b, e, zi, pi in zip(["(Intercepto)"] + nomes, beta, ep, z, pv):
+        print(f"{nm:&lt;13}{b:&gt;11.4f}{e:&gt;13.4f}{zi:&gt;9.3f}{pi:&gt;10.4f}")
+    logv = np.sum(y * np.log(p) + (1 - y) * np.log(1 - p))
+    return dict(X=X, beta=beta, ep=ep, cov=cov, p=p, logv=logv, iteracoes=it + 1)
+
+# 1. Dados: 23 lançamentos do ônibus espacial antes do acidente da Challenger (Dalal et al., 1989)
+temp = np.array([66, 70, 69, 68, 67, 72, 73, 70, 57, 63, 70, 78, 67, 53, 67, 75, 70, 81, 76, 79, 75, 76, 58.])   # temperatura (°F)
+falha = np.array([0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1.])                          # dano em anel de vedação
+n = len(falha)
+print(f"n = {n} | lançamentos com dano = {int(falha.sum())} | temperatura média: com dano = {temp[falha == 1].mean():.1f}, sem dano = {temp[falha == 0].mean():.1f}")
+
+# 2. Ajuste do modelo logit(p) = b0 + b1 * temperatura
+m = logistica(temp, falha, ["temperatura"])
+b0, b1 = m["beta"]
+print("Iterações até a convergência:", m["iteracoes"])
+
+# 3. Razão de chances (odds ratio) com IC de 95% de Wald
+zc = stats.norm.ppf(0.975)
+print(f"\nOR por 1 °F = {np.exp(b1):.4f}, IC 95% = [{np.exp(b1 - zc*m['ep'][1]):.4f}; {np.exp(b1 + zc*m['ep'][1]):.4f}]")
+print(f"OR por 10 °F = {np.exp(10 * b1):.4f}, IC 95% = [{np.exp(10*(b1 - zc*m['ep'][1])):.4f}; {np.exp(10*(b1 + zc*m['ep'][1])):.4f}]")
+
+# 4. Deviance, teste da razão de verossimilhanças, AIC e pseudo-R² de McFadden
+p_nulo = falha.mean(); logv0 = n * (p_nulo * np.log(p_nulo) + (1 - p_nulo) * np.log(1 - p_nulo))
+dev_nula, dev_res = -2 * logv0, -2 * m["logv"]
+G = dev_nula - dev_res
+print(f"\nDeviance nula = {dev_nula:.3f} ({n - 1} gl) | deviance residual = {dev_res:.3f} ({n - 2} gl) | AIC = {dev_res + 4:.3f}")
+print(f"Teste da razão de verossimilhanças: G = {G:.3f}, gl = 1, p-valor = {stats.chi2.sf(G, 1):.4f}")
+print(f"Pseudo-R² de McFadden = {1 - m['logv'] / logv0:.4f}")
+
+# 5. Probabilidades estimadas, com IC de 95% (calculado na escala logit)
+print("\nTemperatura  Probabilidade   IC 95%")
+for t0 in [81, 70, 65, 53, 31]:
+    x0 = np.array([1, t0]); eta = x0 @ m["beta"]; ep_eta = np.sqrt(x0 @ m["cov"] @ x0)
+    inv = lambda v: 1 / (1 + np.exp(-v))
+    print(f"{t0:&gt;8} °F {inv(eta):&gt;12.4f}   [{inv(eta - zc*ep_eta):.4f}; {inv(eta + zc*ep_eta):.4f}]")
+print(f"Temperatura em que a probabilidade é 50%: {-b0 / b1:.1f} °F")
+
+# 6. Classificação com ponto de corte 0,5 e área sob a curva ROC
+pred = (m["p"] &gt;= 0.5).astype(int)
+vp = int(np.sum((pred == 1) &amp; (falha == 1))); fn = int(np.sum((pred == 0) &amp; (falha == 1)))
+fp = int(np.sum((pred == 1) &amp; (falha == 0))); vn = int(np.sum((pred == 0) &amp; (falha == 0)))
+print(f"\nMatriz de confusão: VP = {vp}, FN = {fn}, FP = {fp}, VN = {vn}")
+print(f"Acurácia = {(vp + vn) / n:.3f} | sensibilidade = {vp / (vp + fn):.3f} | especificidade = {vn / (vn + fp):.3f}")
+U = stats.mannwhitneyu(m["p"][falha == 1], m["p"][falha == 0]).statistic
+print(f"AUC = {U / (falha.sum() * (n - falha.sum())):.4f}")
+
+# 7. Gráfico: dados e curva ajustada
+ts = np.linspace(30, 85, 200)
+plt.scatter(temp, falha); plt.plot(ts, 1 / (1 + np.exp(-(b0 + b1 * ts))), color="red")
+plt.xlabel("Temperatura (°F)"); plt.ylabel("Probabilidade de dano"); plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 23 | lançamentos com dano = 7 | temperatura média: com dano = 63.7, sem dano = 72.1
+Termo         Estimativa  Erro-padrão        z   p-valor
+(Intercepto)     15.0429       7.3786    2.039    0.0415
+temperatura      -0.2322       0.1082   -2.145    0.0320
+Iterações até a convergência: 7
+
+OR por 1 °F = 0.7928, IC 95% = [0.6413; 0.9802]
+OR por 10 °F = 0.0981, IC 95% = [0.0118; 0.8185]
+
+Deviance nula = 28.267 (22 gl) | deviance residual = 20.315 (21 gl) | AIC = 24.315
+Teste da razão de verossimilhanças: G = 7.952, gl = 1, p-valor = 0.0048
+Pseudo-R² de McFadden = 0.2813
+
+Temperatura  Probabilidade   IC 95%
+      81 °F       0.0227   [0.0012; 0.3112]
+      70 °F       0.2300   [0.0851; 0.4895]
+      65 °F       0.4881   [0.2136; 0.7700]
+      53 °F       0.9392   [0.3499; 0.9978]
+      31 °F       0.9996   [0.4816; 1.0000]
+Temperatura em que a probabilidade é 50%: 64.8 °F
+
+Matriz de confusão: VP = 4, FN = 3, FP = 0, VN = 16
+Acurácia = 0.870 | sensibilidade = 0.571 | especificidade = 1.000
+AUC = 0.7812</pre></div><figure class="fig"><img src="../assets/resultados/logistica.png" alt="Dados dos lançamentos, curva logística ajustada com IC e curva ROC" loading="lazy"/><figcaption><strong>Probabilidade de dano em função da temperatura.</strong> À esquerda, os lançamentos (em 1 os que tiveram dano), a curva ajustada e a faixa de confiança de 95%. A área sombreada à esquerda marca temperaturas nunca observadas: o lançamento mais frio foi a 53 °F, e o do acidente ocorreu a 31 °F. À direita, a curva ROC do modelo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resumo dos resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Lançamentos / com dano</td><td>23 / 7</td><td>Apenas 7 eventos: pouca informação.</td></tr><tr><td>Coeficiente da temperatura</td><td>−0,232 (EP 0,108)</td><td>Mais calor, menor chance de dano.</td></tr><tr><td>Teste de Wald</td><td>z = −2,145; p = 0,032</td><td></td></tr><tr><td>Teste da razão de verossimilhanças</td><td>G = 7,95; 1 g.l.; p = 0,0048</td><td>Evidência mais clara que a do Wald.</td></tr><tr><td>OR por 1 °F (IC 95% de Wald)</td><td>0,793 [0,641; 0,980]</td><td>Redução de 21% na chance a cada grau.</td></tr><tr><td>OR por 10 °F</td><td>0,098 [0,012; 0,819]</td><td>Dez graus a menos multiplicam a chance por cerca de 10.</td></tr><tr><td>Deviance nula → residual</td><td>28,27 → 20,32</td><td>AIC = 24,32; pseudo-R² de McFadden = 0,281.</td></tr><tr><td>Probabilidade a 81, 70, 65 e 53 °F</td><td>0,023; 0,230; 0,488; 0,939</td><td>Probabilidade de 50% em 64,8 °F.</td></tr><tr><td>Probabilidade a 31 °F</td><td>0,9996; IC [0,48; 1,00]</td><td>Extrapolação 22 °F abaixo do menor valor observado.</td></tr><tr><td>Classificação (corte 0,5)</td><td>Acurácia 0,870; sensibilidade 0,571; especificidade 1,000</td><td>4 dos 7 danos identificados; nenhum falso alarme.</td></tr><tr><td>AUC</td><td>0,781</td><td>Discriminação razoável.</td></tr></tbody></table></div><p><strong>Leitura:</strong> os dados indicam que o risco de dano nos anéis aumenta à medida que a temperatura cai, e o teste da razão de verossimilhanças dá suporte claro a essa relação. Para 31 °F, o modelo estima probabilidade próxima de 1, mas essa é uma extrapolação muito além dos dados, e o intervalo de confiança (de 0,48 a 1,00) mostra o tamanho da incerteza. A conclusão sustentável não é “a falha era certa”, e sim que os dados apontavam risco crescente com o frio e não ofereciam nenhuma evidência de segurança naquela temperatura. Duas ressalvas técnicas: com 7 eventos, a amostra está abaixo do recomendado, e as medidas de classificação foram calculadas nos mesmos dados do ajuste, de modo que são otimistas.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Ler a razão de chances como razão de probabilidades</td><td>OR = 2 significa chance dobrada, não probabilidade dobrada.</td></tr><tr><td>Usar regressão linear para resposta 0/1</td><td>Previsões fora de [0, 1] e variância não constante.</td></tr><tr><td>Ignorar a separação perfeita</td><td>Coeficientes e erros-padrão gigantes indicam o problema; use a correção de Firth (<code>logistf</code>).</td></tr><tr><td>Poucos eventos para muitos preditores</td><td>Estimativas instáveis e sobreajuste; reduza o modelo.</td></tr><tr><td>Avaliar a classificação nos dados de treino</td><td>Use <a href="holdout.html">separação treino–teste</a> ou <a href="kfold.html">validação cruzada</a>.</td></tr><tr><td>Adotar o corte 0,5 sem pensar nos custos</td><td>Escolha o ponto de corte conforme o custo de cada tipo de erro; veja <a href="classmetric.html">métricas de classificação</a>.</td></tr><tr><td>Extrapolar para fora da faixa dos preditores</td><td>Sinalize a extrapolação e a incerteza.</td></tr><tr><td>Dicotomizar uma resposta contínua para usar logística</td><td>Perde-se informação; modele a resposta original.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Regressão probit</td><td>Tradição da área ou modelo com variável latente normal; resultados muito semelhantes.</td></tr><tr><td><a href="multinomial.html">Logística multinomial</a></td><td>Resposta com três ou mais categorias sem ordem.</td></tr><tr><td><a href="ordinal.html">Logística ordinal</a></td><td>Resposta com categorias ordenadas.</td></tr><tr><td>Regressão logística de Firth</td><td>Separação perfeita ou eventos raros.</td></tr><tr><td><a href="poisson.html">Regressão de Poisson</a> com variância robusta</td><td>Interesse em razões de risco, e não em razões de chances.</td></tr><tr><td><a href="lda.html">Análise discriminante</a>, <a href="cart-class.html">árvores</a>, <a href="randomforest.html">random forests</a></td><td>Foco em classificação com relações complexas.</td></tr><tr><td><a href="gee.html">GEE</a> / modelos mistos</td><td>Observações agrupadas ou repetidas.</td></tr></tbody></table></div><ol class="steps"><li>Verifique a codificação da resposta e conte os eventos.</li><li>Explore a relação de cada preditor com a proporção de eventos.</li><li>Ajuste o modelo e examine avisos de convergência.</li><li>Interprete por razões de chances e por probabilidades previstas.</li><li>Avalie ajuste e capacidade de discriminação, de preferência em dados novos.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>DALAL, Siddhartha R.; FOWLKES, Edward B.; HOADLEY, Bruce. Risk analysis of the space shuttle: pre-Challenger prediction of failure. <em>Journal of the American Statistical Association</em>, v. 84, n. 408, p. 945-957, 1989. (Fonte dos dados do exemplo.)</li><li>COX, David R. The regression analysis of binary sequences. <em>Journal of the Royal Statistical Society: Series B</em>, v. 20, n. 2, p. 215-242, 1958.</li><li>HOSMER, David W.; LEMESHOW, Stanley; STURDIVANT, Rodney X. <em>Applied logistic regression.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>PEDUZZI, Peter et al. A simulation study of the number of events per variable in logistic regression analysis. <em>Journal of Clinical Epidemiology</em>, v. 49, n. 12, p. 1373-1379, 1996.</li><li>McFADDEN, Daniel. Conditional logit analysis of qualitative choice behavior. In: ZAREMBKA, Paul (ed.). <em>Frontiers in econometrics.</em> New York: Academic Press, 1974. p. 105-142.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>glm</code>, <code>confint</code> e <code>predict.glm</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta binária, observações independentes, linearidade no logit e número suficiente de eventos.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="linear-multipla.html"><span>← ANTERIOR</span>Regressão linear múltipla</a><a href="multinomial.html"><span>PRÓXIMO →</span>Regressão logística multinomial</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

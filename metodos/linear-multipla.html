@@ -4,330 +4,186 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão linear múltipla: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão linear múltipla | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão linear múltipla: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão linear múltipla | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão linear múltipla
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão linear múltipla
-    </h1>
-<p class="detail-lead">
-     Estima ou prevê uma medida considerando simultaneamente diversos fatores.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/linear-multipla.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima ou prevê uma medida considerando simultaneamente diversos fatores.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes (verifique o delineamento e eventual dependência temporal).</li><li>Especificação adequada da média condicional (resíduos × ajustados e gráficos parciais).</li><li>Variância residual aproximadamente constante (resíduos × ajustados).</li><li>Normalidade dos erros para a inferência t/F exata sob o modelo usual (gráfico Q–Q dos resíduos).</li><li>Ausência de multicolinearidade excessiva (correlações e fatores de inflação da variância).</li><li>Ausência de pontos excessivamente influentes (distâncias de Cook e alavancagem).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_1=\cdots=\beta_p=0\\ H_1&amp;:\ \exists\,j:\beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbf Y=\mathbf X\boldsymbol\beta+\boldsymbol\varepsilon,\qquad F=\frac{SQ_{\mathrm{reg}}/p}{SQ_{\mathrm{res}}/(n-p-1)}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\beta_j)=\widehat\beta_j\pm t_{0{,}975;n-p-1}\operatorname{EP}(\widehat\beta_j)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf Y\)
-        </dt>
-<dd>
-         vetor das respostas
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X\)
-        </dt>
-<dd>
-         matriz de delineamento, incluindo intercepto
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor dos coeficientes
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\varepsilon\)
-        </dt>
-<dd>
-         vetor dos erros
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         estatística global de comparação do modelo com o modelo contendo apenas intercepto
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Use F e p globais para existência de associação; \(IC_{95\%}\) e p para efeitos condicionais. \(R^2\) não implica validade preditiva externa.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne autonomia (mpg), massa (wt) e potência (hp) de 32 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Avaliar a associação entre autonomia e massa após controlar a potência, distinguindo efeitos condicionais de correlações isoladas.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-linear-multipla" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-linear-multipla"><code># Regressão linear múltipla ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão linear múltipla</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão linear múltipla</h1><p class="detail-lead">Descreve e prevê uma resposta quantitativa a partir de vários preditores, estimando o efeito de cada um com os demais mantidos fixos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/linear-multipla.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/linear-multipla.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quase nenhum fenômeno depende de uma única causa. O consumo de um carro depende do peso, da potência, da aerodinâmica. A regressão linear múltipla acrescenta vários preditores à mesma equação e permite responder a uma pergunta que a regressão simples não alcança: <strong>qual o efeito de um preditor quando os demais são mantidos fixos?</strong></p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão linear múltipla" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Resposta quantitativa</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">explicada por vários preditores</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Estimação</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Mínimos quadrados</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">b = (X′X)⁻¹X′y</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Os da regressão simples</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">+ sem multicolinearidade forte</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Efeito “mantidos os demais”</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">R² ajustado, testes t e F</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">lm(y ~ x1 + x2)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">car::vif()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Ridge / lasso</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">GLM</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos aditivos (GAM)</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão linear múltipla</text></svg><figcaption>Visão geral da regressão linear múltipla. Fonte: o autor.</figcaption></figure></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[y_i=\beta_0+\beta_1x_{i1}+\beta_2x_{i2}+\cdots+\beta_px_{ip}+\varepsilon_i,\qquad \varepsilon_i\sim\mathcal N(0,\sigma^2)\ \text{independentes}\]</div><p>Cada coeficiente \(\beta_j\) é a variação média de \(y\) quando \(x_j\) aumenta uma unidade <strong>e os outros preditores não mudam</strong>. É essa cláusula que distingue o modelo múltiplo de várias regressões simples: se os preditores são correlacionados entre si, o coeficiente de cada um muda quando os outros entram no modelo.</p><figure class="fig"><img src="../assets/resultados/linear-multipla-didatica.png" alt="Modelo simples com uma reta e modelo múltiplo com retas paralelas" loading="lazy"/><figcaption><strong>De uma reta a um conjunto de retas paralelas.</strong> À esquerda, consumo em função do peso: uma única reta. À direita, o modelo com peso e potência: para cada potência fixa há uma reta, todas com a mesma inclinação (−3,88). A distância vertical entre as retas é o efeito da potência. A inclinação do peso é menor que no modelo simples (−5,34), porque parte do que parecia efeito do peso era da potência. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Linearidade</td><td>A média de y é função linear dos preditores; caso contrário, as estimativas são enviesadas.</td><td>Resíduos × valores ajustados: os pontos devem ficar em torno de zero, sem curva.</td></tr><tr><td>Independência dos erros</td><td>Erros dependentes distorcem erros-padrão e valores-p.</td><td>Delineamento; em dados ordenados no tempo, gráfico dos resíduos na ordem de coleta e teste de Durbin–Watson (<code>lmtest::dwtest</code>).</td></tr><tr><td>Normalidade dos erros</td><td>Garante testes t e F e intervalos exatos em amostras pequenas.</td><td>Q–Q dos resíduos e <a href="sw.html">Shapiro–Wilk</a> aplicado aos resíduos.</td></tr><tr><td>Homocedasticidade (variância constante)</td><td>Variância desigual invalida os erros-padrão.</td><td>Resíduos × ajustados sem formato de funil; teste de Breusch–Pagan (<code>lmtest::bptest</code>).</td></tr><tr><td>Ausência de observações influentes</td><td>Poucos pontos podem determinar a reta.</td><td>Distância de Cook e alavancagem (<code>cooks.distance</code>, <code>hatvalues</code>).</td></tr><tr><td>Ausência de multicolinearidade forte</td><td>Preditores muito correlacionados inflacionam os erros-padrão e tornam os coeficientes instáveis.</td><td>Correlações entre preditores e fator de inflação da variância: <code>car::vif()</code>. Valores acima de 5 (ou 10) pedem atenção.</td></tr><tr><td>Mais observações que parâmetros</td><td>Com poucos dados por preditor, o modelo se ajusta ao ruído.</td><td>Como referência, pelo menos 10 a 15 observações por preditor.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><h3>Três perguntas, três testes</h3><div class="table-wrap"><table class="method-table"><caption>Testes usuais</caption><thead><tr><th>Pergunta</th><th>Hipótese nula</th><th>Estatística</th></tr></thead><tbody><tr><td>O modelo, como um todo, explica algo?</td><td>\(\beta_1=\cdots=\beta_p=0\)</td><td>\(F=\dfrac{SQ_{reg}/p}{SQ_{res}/(n-p-1)}\)</td></tr><tr><td>Este preditor contribui, dados os demais?</td><td>\(\beta_j=0\)</td><td>\(t=b_j/EP(b_j)\), com \(n-p-1\) g.l.</td></tr><tr><td>Um grupo de preditores melhora o modelo?</td><td>Coeficientes do grupo iguais a zero</td><td>F parcial: \(\dfrac{(SQ_{res}^{menor}-SQ_{res}^{maior})/q}{SQ_{res}^{maior}/(n-p-1)}\)</td></tr></tbody></table></div><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf b=(\mathbf X^{\top}\mathbf X)^{-1}\mathbf X^{\top}\mathbf y,\qquad s^2=\frac{SQ_{res}}{n-p-1},\qquad \widehat{\operatorname{Var}}(\mathbf b)=s^2(\mathbf X^{\top}\mathbf X)^{-1}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[R^2=1-\frac{SQ_{res}}{SQ_{total}},\qquad R^2_{aj}=1-(1-R^2)\frac{n-1}{n-p-1},\qquad VIF_j=\frac{1}{1-R_j^2}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mathbf y\)</dt><dd>vetor com as \(n\) respostas</dd></div><div><dt>\(\mathbf X\)</dt><dd>matriz \(n\times(p+1)\): uma coluna de 1 (intercepto) e uma coluna por preditor</dd></div><div><dt>\(\mathbf b\)</dt><dd>vetor de coeficientes estimados</dd></div><div><dt>\(p\)</dt><dd>número de preditores</dd></div><div><dt>\(s^2\)</dt><dd>variância residual estimada</dd></div><div><dt>\(EP(b_j)\)</dt><dd>raiz do j-ésimo elemento da diagonal de \(s^2(\mathbf X^{\top}\mathbf X)^{-1}\)</dd></div><div><dt>\(R^2_{aj}\)</dt><dd>R² ajustado: penaliza a inclusão de preditores</dd></div><div><dt>\(R_j^2\)</dt><dd>R² da regressão do preditor j sobre os demais preditores</dd></div><div><dt>\(q\)</dt><dd>número de coeficientes testados em conjunto no F parcial</dd></div></dl><h3>Exemplo numérico, passo a passo (n = 5, dois preditores)</h3><p>Dados: \(x_1=(1,2,3,4,5)\), \(x_2=(2,1,4,3,5)\) e \(y=(3,4,8,8,11)\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf X^{\top}\mathbf X=\begin{pmatrix}5&15&15\\15&55&53\\15&53&55\end{pmatrix},\qquad \mathbf X^{\top}\mathbf y=\begin{pmatrix}34\\122\\121\end{pmatrix},\qquad (\mathbf X^{\top}\mathbf X)^{-1}=\begin{pmatrix}1{,}200&-0{,}167&-0{,}167\\-0{,}167&0{,}278&-0{,}222\\-0{,}167&-0{,}222&0{,}278\end{pmatrix}\]</div><div class="worked"><strong>Cálculo</strong><p>\(b_0=1{,}2(34)-0{,}167(122)-0{,}167(121)=0{,}300\).</p><p>\(b_1=-0{,}167(34)+0{,}278(122)-0{,}222(121)=1{,}333\) e \(b_2=-0{,}167(34)-0{,}222(122)+0{,}278(121)=0{,}833\).</p><p>Equação: \(\hat y=0{,}30+1{,}333x_1+0{,}833x_2\). Valores ajustados: 3,30; 3,80; 7,63; 8,13; 11,13.</p><p>\(SQ_{res}=0{,}30\) ⇒ \(s^2=0{,}30/2=0{,}15\); \(EP(b_1)=\sqrt{0{,}15\times0{,}278}=0{,}204\) ⇒ \(t=1{,}333/0{,}204=6{,}53\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(R^2\) nunca diminui quando se acrescenta um preditor, mesmo irrelevante; por isso se usa o \(R^2\) ajustado para comparar modelos.</li><li>Com preditores não correlacionados entre si, os coeficientes do modelo múltiplo coincidem com os das regressões simples.</li><li>O teste t de \(\beta_j\) equivale ao F parcial para esse único preditor (\(F=t^2\)) e ao teste da <a href="parcial.html">correlação parcial</a>.</li><li>O F global pode ser significativo sem que nenhum t individual o seja: sintoma clássico de multicolinearidade.</li><li>Intervalos de confiança e de predição seguem a mesma lógica da regressão simples, com \(n-p-1\) graus de liberdade.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura da saída</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente bⱼ</td><td>Variação média de y por unidade de xⱼ, mantidos os demais preditores.</td><td>Não compare magnitudes de coeficientes em unidades diferentes.</td></tr><tr><td>Coeficiente padronizado</td><td>Efeito em desvios-padrão; permite comparar preditores.</td><td>Depende da variabilidade da amostra.</td></tr><tr><td>Valor-p de bⱼ</td><td>Contribuição de xⱼ além dos outros preditores.</td><td>Muda conforme o que mais está no modelo.</td></tr><tr><td>R² ajustado</td><td>Qualidade do ajuste, com penalidade por complexidade.</td><td>Não substitui a validação em dados novos.</td></tr><tr><td>F global</td><td>Se o conjunto de preditores explica algo.</td><td>Quase sempre significativo; pouco informativo sozinho.</td></tr><tr><td>VIF</td><td>Quanto a variância de bⱼ foi inflacionada pela correlação entre preditores.</td><td>VIF = 1: nenhuma inflação.</td></tr></tbody></table></div><p>Reporte a tabela de coeficientes com intervalos de confiança, R² ajustado, s, n, os VIF e o diagnóstico dos resíduos.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>lm()</code> aceita vários preditores separados por <code>+</code>. <code>anova(m1, m2)</code> compara modelos encaixados. O fator de inflação da variância vem de <code>vif()</code>, do pacote <code>car</code> (<code>install.packages("car")</code>). Preditores categóricos devem entrar como fator (<code>factor()</code>): o R cria as variáveis indicadoras automaticamente.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-linear-multipla-min" type="button">Copiar código</button></div><pre id="code-linear-multipla-min"><code>m2 &lt;- lm(mpg ~ wt + hp, data = mtcars)
+summary(m2)
+car::vif(m2)
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece o ajuste e a tabela de resultados prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Na regressão simples, o peso explicou 75% da variabilidade do consumo dos automóveis do <code>mtcars</code>, mas os resíduos mostraram uma leve curvatura. Acrescentamos agora a potência (<code>hp</code>) e perguntamos: ela melhora o modelo? E o que acontece com o efeito do peso?</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-linear-multipla" type="button">Copiar código</button></div><pre id="code-linear-multipla"><code># Regressão linear múltipla: exemplo completo ----
+# Pacotes: stats (já vem com o R) e car (para o VIF): install.packages("car")
+library(car)
 
-# Ajuste e resultados ----
-ajuste &lt;- lm(mpg ~ wt + hp, data = mtcars)
-print(summary(ajuste))
-print(confint(ajuste))
-par(mfrow = c(2, 2)); plot(ajuste); par(mfrow = c(1, 1))
-print(predict(ajuste, data.frame(wt = 3, hp = 120),
-              interval = "prediction"))
+# 1. Dados e dispersões entre as variáveis
+dados &lt;- mtcars[, c("mpg", "wt", "hp")]
+pairs(dados, pch = 19)
+cor(dados)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">==============================================================================
-                 coef    std err          t      P&gt;|t|      [0.025      0.975]
-------------------------------------------------------------------------------
-Intercept     37.2273      1.599     23.285      0.000      33.957      40.497
-wt            -3.8778      0.633     -6.129      0.000      -5.172      -2.584
-hp            -0.0318      0.009     -3.519      0.001      -0.050      -0.013
-==============================================================================
-R-squared = 0.8268; adjusted R-squared = 0.8148; residual standard error = 2.5934</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Regressão linear múltipla" class="result-figure" loading="lazy" src="../assets/resultados/linear-multipla.png"/><p>O modelo explica aproximadamente 82.7% da variabilidade observada de mpg (R² amostral). Os coeficientes devem ser interpretados condicionando às demais variáveis do modelo.</p></div>
-<h3>Resultados e interpretação</h3>
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="linear-simples.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão linear simples
-    </a>
-<a href="logistica.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão logística binária
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 2. Modelo simples (referência) e modelo múltiplo
+m1 &lt;- lm(mpg ~ wt, data = dados)
+m2 &lt;- lm(mpg ~ wt + hp, data = dados)
+summary(m2)
+confint(m2)
+
+# 3. Teste F parcial: acrescentar hp melhora o modelo?
+anova(m1, m2)
+
+# 4. Multicolinearidade: fator de inflação da variância
+vif(m2)
+
+# 5. Coeficientes padronizados
+coef(lm(scale(mpg) ~ scale(wt) + scale(hp), data = dados))
+
+# 6. Previsão: carro de 3000 libras e 150 hp
+novo &lt;- data.frame(wt = 3, hp = 150)
+predict(m2, novo, interval = "confidence")
+predict(m2, novo, interval = "prediction")
+
+# 7. Diagnóstico dos resíduos
+shapiro.test(residuals(m2))
+head(sort(cooks.distance(m2), decreasing = TRUE), 3)
+par(mfrow = c(2, 2)); plot(m2); par(mfrow = c(1, 1))
+
+# 8. Teste de Breusch-Pagan (pacote lmtest): install.packages("lmtest")
+# lmtest::bptest(m2)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-linear-multipla" type="button">Copiar código</button></div><pre id="code-py-linear-multipla"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def mqo(X, y, nomes):
+    """Mínimos quadrados ordinários: X sem a coluna de 1 (o intercepto é acrescentado aqui)."""
+    X = np.column_stack([np.ones(len(y)), X]); n, p = X.shape
+    XtX_inv = np.linalg.inv(X.T @ X)
+    beta = XtX_inv @ X.T @ y
+    ajustado = X @ beta; res = y - ajustado
+    sqe = res @ res; sqt = np.sum((y - y.mean())**2)
+    s2 = sqe / (n - p); ep = np.sqrt(s2 * np.diag(XtX_inv))
+    t = beta / ep; pv = 2 * stats.t.sf(np.abs(t), n - p); tc = stats.t.ppf(0.975, n - p)
+    print(f"{'Termo':&lt;12}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'t':&gt;9}{'p-valor':&gt;11}{'IC 95%':&gt;22}")
+    for nm, b, e, ti, pi in zip(["(Intercepto)"] + nomes, beta, ep, t, pv):
+        print(f"{nm:&lt;12}{b:&gt;11.4f}{e:&gt;13.4f}{ti:&gt;9.3f}{pi:&gt;11.2e}   [{b - tc*e:&gt;8.4f}; {b + tc*e:&gt;8.4f}]")
+    r2 = 1 - sqe / sqt; r2a = 1 - (1 - r2) * (n - 1) / (n - p)
+    F = ((sqt - sqe) / (p - 1)) / s2
+    print(f"Erro-padrão residual = {np.sqrt(s2):.4f} com {n - p} gl | R² = {r2:.4f} | R² ajustado = {r2a:.4f}")
+    print(f"F({p - 1}, {n - p}) = {F:.2f}, p-valor = {stats.f.sf(F, p - 1, n - p):.2e}")
+    return dict(X=X, beta=beta, ep=ep, res=res, ajustado=ajustado, s2=s2, XtX_inv=XtX_inv, sqe=sqe, sqt=sqt, r2=r2, n=n, p=p)
+
+# Dados do conjunto mtcars: consumo (mpg), peso (wt) e potência (hp)
+mpg = np.array([21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 19.7, 15, 21.4])
+wt  = np.array([2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19, 3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2, 1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14, 1.513, 3.17, 2.77, 3.57, 2.78])
+hp  = np.array([110, 110, 93, 110, 175, 105, 245, 62, 95, 123, 123, 180, 180, 180, 205, 215, 230, 66, 52, 65, 97, 150, 150, 245, 175, 66, 91, 113, 264, 175, 335, 109])
+n = len(mpg)
+
+# 1. Modelo simples (referência) e modelo múltiplo
+print("Modelo 1: mpg ~ wt")
+m1 = mqo(wt, mpg, ["wt"])
+print("\nModelo 2: mpg ~ wt + hp")
+m = mqo(np.column_stack([wt, hp]), mpg, ["wt", "hp"])
+
+# 2. Teste F parcial: acrescentar hp melhora o modelo?
+F = (m1["sqe"] - m["sqe"]) / 1 / m["s2"]
+print(f"\nF parcial = {F:.3f} (1 e {n - 3} gl), p-valor = {stats.f.sf(F, 1, n - 3):.5f}")
+
+# 3. Multicolinearidade: correlação entre preditores e VIF
+r12 = stats.pearsonr(wt, hp).statistic
+print(f"r(wt, hp) = {r12:.4f} | VIF = 1 / (1 - r²) = {1 / (1 - r12**2):.4f}")
+
+# 4. Coeficientes padronizados (em desvios-padrão)
+beta_pad = m["beta"][1:] * np.array([wt.std(ddof=1), hp.std(ddof=1)]) / mpg.std(ddof=1)
+print(f"Coeficientes padronizados: wt = {beta_pad[0]:.4f} | hp = {beta_pad[1]:.4f}")
+
+# 5. Previsão: carro de 3000 libras e 150 hp
+x0 = np.array([1, 3.0, 150.0]); y0 = x0 @ m["beta"]; tc = stats.t.ppf(0.975, n - 3)
+v = x0 @ m["XtX_inv"] @ x0
+print(f"\nPrevisão (wt = 3, hp = 150): {y0:.3f} mpg")
+print(f"IC 95% para a média:           [{y0 - tc*np.sqrt(m['s2']*v):.3f}; {y0 + tc*np.sqrt(m['s2']*v):.3f}]")
+print(f"Intervalo de predição de 95%:  [{y0 - tc*np.sqrt(m['s2']*(1+v)):.3f}; {y0 + tc*np.sqrt(m['s2']*(1+v)):.3f}]")
+
+# Diagnóstico dos resíduos ----
+h = np.sum((m["X"] @ m["XtX_inv"]) * m["X"], axis=1)                 # alavancagem (leverage)
+r_pad = m["res"] / np.sqrt(m["s2"] * (1 - h))                        # resíduos padronizados
+cook = r_pad**2 * h / ((1 - h) * m["p"])                             # distância de Cook
+W, pw = stats.shapiro(m["res"])
+print(f"\nShapiro-Wilk dos resíduos: W = {W:.4f}, p-valor = {pw:.4f}")
+aux = np.linalg.lstsq(m["X"], m["res"]**2, rcond=None)[0]             # Breusch-Pagan (versão de Koenker)
+e2 = m["res"]**2; r2_aux = 1 - np.sum((e2 - m["X"] @ aux)**2) / np.sum((e2 - e2.mean())**2)
+bp = m["n"] * r2_aux
+print(f"Breusch-Pagan: BP = {bp:.4f}, gl = {m['p'] - 1}, p-valor = {stats.chi2.sf(bp, m['p'] - 1):.4f}")
+maiores = np.argsort(-cook)[:3]
+print("Maiores distâncias de Cook (observação: valor):", ", ".join(f"{i + 1}: {cook[i]:.3f}" for i in maiores))
+print("Maiores resíduos padronizados (observação: valor):", ", ".join(f"{i + 1}: {r_pad[i]:.2f}" for i in np.argsort(-np.abs(r_pad))[:3]))
+
+# 6. Exemplo do texto (n = 5, dois preditores)
+print("\nExemplo com n = 5:")
+X5 = np.array([[1, 2], [2, 1], [3, 4], [4, 3], [5, 5.]]); y5 = np.array([3, 4, 8, 8, 11.])
+m5 = mqo(X5, y5, ["x1", "x2"])
+
+# 7. Gráficos: observado versus ajustado e resíduos
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+ax[0].scatter(m["ajustado"], mpg); ax[0].plot([10, 32], [10, 32], color="red")
+ax[0].set_xlabel("Consumo ajustado (mpg)"); ax[0].set_ylabel("Consumo observado (mpg)")
+ax[1].scatter(m["ajustado"], m["res"]); ax[1].axhline(0, color="red")
+ax[1].set_xlabel("Valores ajustados"); ax[1].set_ylabel("Resíduos")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Modelo 1: mpg ~ wt
+Termo        Estimativa  Erro-padrão        t    p-valor                IC 95%
+(Intercepto)    37.2851       1.8776   19.858   8.24e-19   [ 33.4505;  41.1198]
+wt              -5.3445       0.5591   -9.559   1.29e-10   [ -6.4863;  -4.2026]
+Erro-padrão residual = 3.0459 com 30 gl | R² = 0.7528 | R² ajustado = 0.7446
+F(1, 30) = 91.38, p-valor = 1.29e-10
+
+Modelo 2: mpg ~ wt + hp
+Termo        Estimativa  Erro-padrão        t    p-valor                IC 95%
+(Intercepto)    37.2273       1.5988   23.285   2.57e-20   [ 33.9574;  40.4972]
+wt              -3.8778       0.6327   -6.129   1.12e-06   [ -5.1719;  -2.5837]
+hp              -0.0318       0.0090   -3.519   1.45e-03   [ -0.0502;  -0.0133]
+Erro-padrão residual = 2.5934 com 29 gl | R² = 0.8268 | R² ajustado = 0.8148
+F(2, 29) = 69.21, p-valor = 9.11e-12
+
+F parcial = 12.381 (1 e 29 gl), p-valor = 0.00145
+r(wt, hp) = 0.6587 | VIF = 1 / (1 - r²) = 1.7666
+Coeficientes padronizados: wt = -0.6296 | hp = -0.3615
+
+Previsão (wt = 3, hp = 150): 20.828 mpg
+IC 95% para a média:           [19.836; 21.820]
+Intervalo de predição de 95%:  [15.432; 26.224]
+
+Shapiro-Wilk dos resíduos: W = 0.9279, p-valor = 0.0343
+Breusch-Pagan: BP = 0.8807, gl = 2, p-valor = 0.6438
+Maiores distâncias de Cook (observação: valor): 17: 0.424, 31: 0.272, 20: 0.208
+Maiores resíduos padronizados (observação: valor): 20: 2.38, 17: 2.35, 18: 2.33
+
+Exemplo com n = 5:
+Termo        Estimativa  Erro-padrão        t    p-valor                IC 95%
+(Intercepto)     0.3000       0.4243    0.707   5.53e-01   [ -1.5255;   2.1255]
+x1               1.3333       0.2041    6.532   2.26e-02   [  0.4551;   2.2116]
+x2               0.8333       0.2041    4.082   5.51e-02   [ -0.0449;   1.7116]
+Erro-padrão residual = 0.3873 com 2 gl | R² = 0.9930 | R² ajustado = 0.9860
+F(2, 2) = 141.67, p-valor = 7.01e-03</pre></div><figure class="fig"><img src="../assets/resultados/linear-multipla.png" alt="Observado versus ajustado e coeficientes padronizados com IC" loading="lazy"/><figcaption><strong>Qualidade do ajuste e peso relativo dos preditores.</strong> À esquerda, os pontos ficam próximos da diagonal, com afastamento nos consumos mais altos. À direita, os coeficientes padronizados: os dois intervalos estão inteiramente abaixo de zero, e o efeito do peso é o maior. <span class="source-line">Fonte: o autor.</span></figcaption></figure><figure class="fig"><img src="../assets/resultados/linear-multipla-diag.png" alt="Resíduos versus ajustados, Q-Q e distância de Cook do modelo múltiplo" loading="lazy"/><figcaption><strong>Diagnóstico do modelo com dois preditores.</strong> A curvatura nos resíduos continua visível, e três pontos permanecem acima da reta no Q–Q. A distância de Cook destaca o Chrysler Imperial, o Maserati Bora (o mais potente da amostra) e o Toyota Corolla. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Comparação dos modelos</caption><thead><tr><th>Elemento</th><th>mpg ~ wt</th><th>mpg ~ wt + hp</th></tr></thead><tbody><tr><td>Coeficiente de wt (IC 95%)</td><td>−5,344 [−6,486; −4,203]</td><td>−3,878 [−5,172; −2,584]</td></tr><tr><td>Coeficiente de hp (IC 95%)</td><td>—</td><td>−0,0318 [−0,0502; −0,0133]</td></tr><tr><td>R² / R² ajustado</td><td>0,753 / 0,745</td><td>0,827 / 0,815</td></tr><tr><td>Erro-padrão residual</td><td>3,046</td><td>2,593</td></tr><tr><td>F global</td><td>91,38 (1; 30)</td><td>69,21 (2; 29)</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Outros resultados do modelo múltiplo</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>F parcial para hp</td><td>12,38; p = 0,0015</td><td>A potência melhora o modelo. Note que 12,38 = (−3,519)².</td></tr><tr><td>r(wt, hp) e VIF</td><td>0,659 e 1,77</td><td>Multicolinearidade moderada, sem gravidade.</td></tr><tr><td>Coeficientes padronizados</td><td>wt: −0,630; hp: −0,361</td><td>O peso tem o maior efeito relativo.</td></tr><tr><td>Previsão (wt = 3; hp = 150)</td><td>20,83 mpg</td><td>IC da média: [19,84; 21,82]; predição: [15,43; 26,22].</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,928; p = 0,034</td><td>Evidência de afastamento da normalidade.</td></tr><tr><td>Breusch–Pagan</td><td>BP = 0,881; p = 0,644</td><td>Sem evidência de variância desigual.</td></tr></tbody></table></div><p><strong>Leitura:</strong> mantida a potência, cada 1000 libras a mais reduzem o consumo previsto em 3,9 mpg (eram 5,3 no modelo simples: parte do efeito atribuído ao peso era da potência). Mantido o peso, cada 100 hp a mais reduzem 3,2 mpg. O modelo melhorou, mas o diagnóstico não está limpo: os resíduos se afastam da normalidade (p = 0,034) e a curvatura persiste, com Toyota Corolla, Fiat 128 e Chrysler Imperial bem acima do previsto. É um sinal de que a relação não é puramente aditiva e linear; os próximos passos naturais seriam testar a interação entre peso e potência ou modelar o logaritmo do consumo.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Esquecer o “mantidos os demais constantes”</td><td>Cada coeficiente é condicional aos outros preditores do modelo.</td></tr><tr><td>Comparar coeficientes em unidades diferentes</td><td>Use coeficientes padronizados ou efeitos para variações relevantes.</td></tr><tr><td>Incluir preditores quase redundantes</td><td>Verifique o VIF; combine ou elimine variáveis.</td></tr><tr><td>Selecionar preditores só pelo valor-p</td><td>Combine teoria, validação e critérios como AIC; veja <a href="stepwise.html">seleção stepwise</a>.</td></tr><tr><td>Avaliar pelo R² e ignorar os resíduos</td><td>O diagnóstico é parte da análise.</td></tr><tr><td>Usar preditores demais para o tamanho da amostra</td><td>Risco de sobreajuste; considere <a href="ridge.html">ridge</a> ou <a href="lasso.html">lasso</a>.</td></tr><tr><td>Tratar variável categórica como número</td><td>Declare como fator.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Termos de interação ou polinomiais</td><td>O efeito de um preditor depende de outro, ou a relação é curva.</td></tr><tr><td><a href="ridge.html">Ridge</a> / <a href="lasso.html">lasso</a></td><td>Muitos preditores, multicolinearidade ou foco em previsão.</td></tr><tr><td><a href="glm.html">Modelos lineares generalizados</a></td><td>Resposta binária, de contagem ou assimétrica.</td></tr><tr><td><a href="gam.html">Modelos aditivos generalizados</a></td><td>Efeitos não lineares suaves.</td></tr><tr><td><a href="wls.html">Mínimos quadrados ponderados</a></td><td>Variância não constante.</td></tr><tr><td><a href="quantilica.html">Regressão quantílica</a></td><td>Valores extremos ou interesse em quantis.</td></tr><tr><td>Modelos mistos / <a href="gee.html">GEE</a></td><td>Observações agrupadas ou medidas repetidas.</td></tr></tbody></table></div><ol class="steps"><li>Defina os preditores com base no problema, não só nos dados.</li><li>Examine dispersões e correlações entre as variáveis.</li><li>Ajuste o modelo e verifique os VIF.</li><li>Faça o diagnóstico dos resíduos.</li><li>Compare modelos encaixados pelo F parcial e pelo R² ajustado.</li><li>Valide o modelo em dados novos quando o objetivo for prever.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>MONTGOMERY, Douglas C.; PECK, Elizabeth A.; VINING, G. Geoffrey. <em>Introduction to linear regression analysis.</em> 6. ed. Hoboken: Wiley, 2021.</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: SAGE, 2019. (Pacote <code>car</code>: <a href="https://CRAN.R-project.org/package=car" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=car</a>.)</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>COHEN, Jacob; COHEN, Patricia; WEST, Stephen G.; AIKEN, Leona S. <em>Applied multiple regression/correlation analysis for the behavioral sciences.</em> 3. ed. Mahwah: Lawrence Erlbaum, 2003.</li><li>HARRELL, Frank E. <em>Regression modeling strategies: with applications to linear models, logistic and ordinal regression, and survival analysis.</em> 2. ed. Cham: Springer, 2015.</li><li>BREUSCH, Trevor S.; PAGAN, Adrian R. A simple test for heteroscedasticity and random coefficient variation. <em>Econometrica</em>, v. 47, n. 5, p. 1287-1294, 1979.</li><li>KOENKER, Roger. A note on studentizing a test for heteroscedasticity. <em>Journal of Econometrics</em>, v. 17, n. 1, p. 107-112, 1981.</li><li>COOK, R. Dennis. Detection of influential observation in linear regression. <em>Technometrics</em>, v. 19, n. 1, p. 15-18, 1977.</li><li>ZEILEIS, Achim; HOTHORN, Torsten. Diagnostic checking in regression relationships. <em>R News</em>, v. 2, n. 3, p. 7-10, 2002. (Pacote <code>lmtest</code>.)</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Conjunto de dados <code>mtcars</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>lm</code>, <code>anova</code> e <code>predict.lm</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta quantitativa, relações lineares, erros independentes, homocedásticos e aproximadamente normais, sem multicolinearidade forte.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>stats</code> e <code>car</code> (<code>vif</code>); opcionalmente <code>lmtest</code>.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="linear-simples.html"><span>← ANTERIOR</span>Regressão linear simples</a><a href="logistica.html"><span>PRÓXIMO →</span>Regressão logística binária</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

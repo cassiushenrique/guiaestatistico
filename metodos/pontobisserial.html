@@ -4,319 +4,130 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Correlação ponto-bisserial: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Correlação ponto-bisserial | Estatística e Ciência de Dados
-  </title>
+<meta content="Correlação ponto-bisserial: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Correlação ponto-bisserial | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Correlação ponto-bisserial
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 02 · ASSOCIAÇÃO
-    </span>
-<h1>
-     Correlação ponto-bisserial
-    </h1>
-<p class="detail-lead">
-     Investiga a associação entre uma característica binária e uma medida quantitativa.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/pontobisserial.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Investiga a associação entre uma característica binária e uma medida quantitativa.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Pares independentes.</li><li>Binarização substantivamente válida.</li><li>Para inferência paramétrica, cuidados com normalidade condicional e igualdade de variâncias.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \rho_{pb}=0\\ H_1&amp;:\ \rho_{pb}\neq 0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[r_{pb}=\frac{\bar y_1-\bar y_0}{s_Y}\sqrt{\frac{n_0n_1}{n(n-1)}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(r_{pb}\)
-        </dt>
-<dd>
-         correlação ponto-bisserial
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar y_1,\bar y_0\)
-        </dt>
-<dd>
-         médias da resposta quantitativa nos grupos binários 1 e 0
-        </dd>
-</div>
-<div>
-<dt>
-         \(s_Y\)
-        </dt>
-<dd>
-         desvio-padrão amostral da resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_1,n_0\)
-        </dt>
-<dd>
-         tamanhos dos grupos
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         tamanho amostral total
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere diferença relacionada ao atributo binário; informe o sinal e a codificação.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em mtcars, am identifica o tipo de transmissão (0: automática; 1: manual) e mpg mede a autonomia.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Investigar a associação entre uma característica binária do veículo e uma resposta quantitativa.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-pontobisserial" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-pontobisserial"><code># Correlação ponto-bisserial ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Correlação ponto-bisserial</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ASSOCIAÇÃO</span><h1>Correlação ponto-bisserial</h1><p class="detail-lead">Mede a associação entre uma variável binária e uma variável quantitativa; equivale a comparar as médias de dois grupos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/pontobisserial.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/pontobisserial.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o coeficiente</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>E quando uma das variáveis tem apenas duas categorias, como aprovado ou reprovado, peça com defeito ou sem defeito, câmbio manual ou automático? Basta codificar as categorias como 0 e 1 e calcular a correlação de Pearson. O resultado recebe um nome próprio, <strong>correlação ponto-bisserial</strong>, e tem uma leitura simples: mede o quanto as médias dos dois grupos se afastam, em relação à variabilidade total.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Ponto-bisserial" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pearson entre uma binária</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">e uma quantitativa</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Coeficiente</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Diferença de médias</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">padronizada</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Binária genuína</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade em cada grupo</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Variâncias semelhantes</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Sinal depende de quem é 1</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Equivale ao teste t</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">cor.test(grupo, y)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Bisserial</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Teste t de Welch</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Mann–Whitney</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Ponto-bisserial</text></svg><figcaption>Visão geral da correlação ponto-bisserial. Fonte: o autor.</figcaption></figure></section><section class="detail-panel" id="oque"><h2>O que é o coeficiente</h2><p>A correlação ponto-bisserial (\(r_{pb}\)) é o coeficiente de Pearson calculado entre uma variável dicotômica, codificada como 0 e 1, e uma variável quantitativa. Como só existem dois valores no eixo horizontal, a “reta” liga as médias dos dois grupos: quanto mais distantes as médias, em relação à dispersão dos dados, maior o coeficiente.</p><figure class="fig"><img src="../assets/resultados/pontobisserial-didatica.png" alt="Três cenários de separação entre médias de dois grupos" loading="lazy"/><figcaption><strong>Do afastamento das médias ao coeficiente.</strong> Nos três painéis, a dispersão dentro dos grupos é a mesma; só a distância entre as médias muda. Quanto mais afastadas, mais inclinada a reta que as liga e maior o coeficiente. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>Ponto-bisserial ou bisserial?</strong><p>Use a <strong>ponto-bisserial</strong> quando a dicotomia é genuína (dois tipos de câmbio, duas máquinas). Use a <strong>bisserial</strong> quando a variável binária resulta do corte de uma variável contínua e normal (por exemplo, aprovado ou reprovado a partir de uma nota).</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Uma variável dicotômica genuína e uma quantitativa</td><td>Definição do coeficiente.</td><td>Tipo das variáveis.</td></tr><tr><td>Observações independentes</td><td>Condição do teste.</td><td>Delineamento (para dados pareados, use o <a href="tpareado.html">teste t pareado</a>).</td></tr><tr><td>Normalidade da variável quantitativa em cada grupo</td><td>Validade do teste t em amostras pequenas.</td><td>Q–Q e <a href="sw.html">Shapiro–Wilk</a> por grupo.</td></tr><tr><td>Variâncias semelhantes nos dois grupos</td><td>O teste equivale ao t de Student, que supõe variâncias iguais.</td><td><a href="levene.html">Levene–Brown–Forsythe</a> e razão entre os desvios-padrão.</td></tr><tr><td>Grupos não muito desbalanceados</td><td>O valor máximo de r_pb diminui quando um grupo é muito menor.</td><td><code>table(grupo)</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \rho_{pb}=0\quad\Longleftrightarrow\quad\mu_1=\mu_0\\ H_1&:\ \rho_{pb}\neq0\quad\Longleftrightarrow\quad\mu_1\neq\mu_0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[r_{pb}=\frac{\bar y_1-\bar y_0}{s_n}\sqrt{\frac{n_1\,n_0}{n^2}},\qquad s_n=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\bar y)^2},\qquad t=r_{pb}\sqrt{\frac{n-2}{1-r_{pb}^2}}\sim t_{n-2}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(r_{pb}\)</dt><dd>coeficiente de correlação ponto-bisserial</dd></div><div><dt>\(\bar y_1,\ \bar y_0\)</dt><dd>médias da variável quantitativa nos grupos codificados como 1 e 0</dd></div><div><dt>\(n_1,\ n_0\)</dt><dd>tamanhos dos dois grupos; \(n=n_1+n_0\)</dd></div><div><dt>\(s_n\)</dt><dd>desvio-padrão de todos os valores de y, com divisor \(n\)</dd></div><div><dt>\(\mu_1,\ \mu_0\)</dt><dd>médias populacionais dos dois grupos</dd></div><div><dt>\(t\)</dt><dd>estatística de teste, idêntica à do teste t de Student para duas amostras independentes com variâncias iguais</dd></div></dl><h3>Exemplo numérico, passo a passo (n = 6)</h3><p>Grupo 0: 2, 4, 6. Grupo 1: 5, 7, 9.</p><div class="worked"><strong>Cálculo</strong><p>Médias: \(\bar y_0=4\), \(\bar y_1=7\) e média geral \(\bar y=5{,}5\).</p><p>Soma de quadrados total: \(12{,}25+2{,}25+0{,}25+0{,}25+2{,}25+12{,}25=29{,}5\) ⇒ \(s_n=\sqrt{29{,}5/6}=2{,}217\).</p><p>\(r_{pb}=\dfrac{7-4}{2{,}217}\sqrt{\dfrac{3\times3}{36}}=1{,}353\times0{,}5=0{,}677\).</p><p>\(t=0{,}677\sqrt{4/(1-0{,}458)}=1{,}837\), com 4 g.l. ⇒ \(p=0{,}140\).</p></div><h3>Propriedades, valor-p e intervalo de confiança</h3><ul class="checklist"><li>\(-1\leq r_{pb}\leq1\). O sinal depende apenas de qual categoria recebe o código 1: positivo quando esse grupo tem a maior média.</li><li>O valor-p é idêntico ao do teste t de Student para duas amostras independentes.</li><li>\(r_{pb}^2\) é a proporção da variabilidade de y associada à diferença entre os grupos (igual ao eta-quadrado da ANOVA com dois grupos).</li><li>Relação com o d de Cohen, para grupos de mesmo tamanho: \(r_{pb}=d/\sqrt{d^2+4}\).</li><li>Com grupos desbalanceados, o valor máximo alcançável fica abaixo de 1, o que dificulta comparar coeficientes entre estudos.</li><li>O intervalo de confiança pode ser obtido pela transformação z de Fisher, como no Pearson.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Resultado</th><th>Leitura</th></tr></thead><tbody><tr><td>r_pb positivo</td><td>O grupo codificado como 1 tem média maior.</td></tr><tr><td>r_pb negativo</td><td>O grupo codificado como 0 tem média maior.</td></tr><tr><td>|r_pb| grande</td><td>Médias bem separadas em relação à dispersão total.</td></tr><tr><td>p &lt; 0,05</td><td>Evidência de diferença entre as médias dos grupos.</td></tr><tr><td>r_pb²</td><td>Fração da variabilidade associada ao grupo.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Referência usual para a magnitude (em valor absoluto)</caption><thead><tr><th>Valor</th><th>Descrição convencional</th><th>Observação</th></tr></thead><tbody><tr><td>0,10</td><td>Associação pequena</td><td>Pode ser relevante em fenômenos com muitas causas.</td></tr><tr><td>0,30</td><td>Associação moderada</td><td></td></tr><tr><td>0,50 ou mais</td><td>Associação grande</td><td>Em calibração de instrumentos, exige-se muito mais (acima de 0,99).</td></tr></tbody></table></div><p>Esses pontos de referência (COHEN, 1988) são convenções das ciências do comportamento. A interpretação depende sempre da área e do objetivo.</p><p>Informe sempre como a variável binária foi codificada e reporte, junto com o coeficiente, as médias e os desvios-padrão de cada grupo.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não é preciso função especial: <code>cor.test()</code>, do pacote <code>stats</code> (já instalado com o R), calcula a correlação ponto-bisserial quando uma das variáveis está codificada como 0 e 1. Se a variável for um fator, converta antes, por exemplo com <code>as.numeric(fator) - 1</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-pontobisserial-min" type="button">Copiar código</button></div><pre id="code-pontobisserial-min"><code>cor.test(mtcars$am, mtcars$mpg)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>No conjunto <code>mtcars</code>, <code>am</code> indica o tipo de câmbio (0 = automático, 1 = manual) e <code>mpg</code> é o consumo em milhas por galão. Queremos medir a associação entre o tipo de câmbio e o consumo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-pontobisserial" type="button">Copiar código</button></div><pre id="code-pontobisserial"><code># Correlação ponto-bisserial: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: mtcars.
 
-# Ajuste e resultados ----
-x &lt;- mtcars$am
-x_labels &lt;- c("Automática", "Manual")
-print(setNames(tapply(mtcars$mpg, x, mean), x_labels))
-print(cor.test(x, mtcars$mpg, method = "pearson"))
+# 1. Dados: câmbio (am: 0 = automático, 1 = manual) e consumo (mpg)
+grupo &lt;- mtcars$am
+y &lt;- mtcars$mpg
+n &lt;- length(y)
 
-# Visualização e diagnóstico ----
-boxplot(mpg ~ factor(am), mtcars, names = c("Automática", "Manual"), ylab = "Autonomia (mpg)")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Descritivas por grupo
+aggregate(y ~ grupo, FUN = function(v) c(n = length(v), media = mean(v), dp = sd(v)))
 
+# 3. Gráfico
+boxplot(y ~ grupo, names = c("Automático (0)", "Manual (1)"),
+        col = "gray85", xlab = "", ylab = "Consumo (mpg)")
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kendall.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Correlação tau de Kendall
-    </a>
-<a href="linear-simples.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão linear simples
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Correlação ponto-bisserial: é o Pearson com a variável binária codificada em 0/1
+resultado &lt;- cor.test(grupo, y)
+print(resultado)
+
+# 5. Cálculo pela fórmula
+m1 &lt;- mean(y[grupo == 1]); m0 &lt;- mean(y[grupo == 0])
+n1 &lt;- sum(grupo == 1);     n0 &lt;- sum(grupo == 0)
+s_n &lt;- sqrt(mean((y - mean(y))^2))            # desvio-padrão com divisor n
+(m1 - m0) / s_n * sqrt(n1 * n0 / n^2)
+
+# 6. Equivalência com o teste t de Student (variâncias iguais)
+t.test(y ~ grupo, var.equal = TRUE)
+
+# 7. Pressupostos: normalidade em cada grupo e teste t de Welch
+tapply(y, grupo, function(v) shapiro.test(v)$p.value)
+t.test(y ~ grupo)                             # Welch (variâncias desiguais)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-pontobisserial" type="button">Copiar código</button></div><pre id="code-py-pontobisserial"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Dados do conjunto mtcars: câmbio (am: 0 = automático, 1 = manual) e consumo (mpg)
+am  = np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1])
+mpg = np.array([21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 19.7, 15, 21.4])
+n = len(mpg)
+
+# 1. Descritivas por grupo
+g0, g1 = mpg[am == 0], mpg[am == 1]
+print(f"Automático (0): n = {len(g0)}, média = {g0.mean():.4f}, DP = {g0.std(ddof=1):.4f}")
+print(f"Manual (1):     n = {len(g1)}, média = {g1.mean():.4f}, DP = {g1.std(ddof=1):.4f}")
+
+# 2. Correlação ponto-bisserial
+res = stats.pointbiserialr(am, mpg)
+r = res.statistic
+t = r * np.sqrt((n - 2) / (1 - r**2))
+print(f"\nr_pb = {r:.5f} | t = {t:.4f}, gl = {n - 2}, p-valor = {res.pvalue:.6f}")
+
+# 3. Cálculo pela fórmula
+s_n = mpg.std(ddof=0)                                   # desvio-padrão com divisor n
+r_formula = (g1.mean() - g0.mean()) / s_n * np.sqrt(len(g1) * len(g0) / n**2)
+print(f"Fórmula: ({g1.mean():.4f} - {g0.mean():.4f}) / {s_n:.4f} x raiz({len(g1)} x {len(g0)} / {n}²) = {r_formula:.5f}")
+
+# 4. Equivalências: Pearson com variável 0/1 e teste t de Student (variâncias iguais)
+print(f"Pearson(am, mpg) = {stats.pearsonr(am, mpg).statistic:.5f}")
+tt = stats.ttest_ind(g1, g0, equal_var=True)
+print(f"Teste t de Student: t = {tt.statistic:.4f}, p-valor = {tt.pvalue:.6f}")
+tw = stats.ttest_ind(g1, g0, equal_var=False)
+print(f"Teste t de Welch:   t = {tw.statistic:.4f}, p-valor = {tw.pvalue:.6f}")
+
+# 5. Intervalo de confiança de 95% (z de Fisher) e r²
+z = np.arctanh(r); ep = 1 / np.sqrt(n - 3); zc = stats.norm.ppf(0.975)
+ic = np.tanh([z - zc * ep, z + zc * ep])
+print(f"IC 95% = [{ic[0]:.4f}; {ic[1]:.4f}] | r² = {r**2:.4f}")
+
+# 6. Pressupostos: normalidade em cada grupo e igualdade de variâncias
+for nome, g in [("automático", g0), ("manual", g1)]:
+    W, pw = stats.shapiro(g)
+    print(f"Shapiro-Wilk ({nome}): W = {W:.4f}, p-valor = {pw:.4f}")
+lv = stats.levene(g0, g1, center="median")
+print(f"Brown-Forsythe: W = {lv.statistic:.4f}, p-valor = {lv.pvalue:.4f}")
+
+# 7. Exemplo do texto (n = 6)
+x = np.array([0, 0, 0, 1, 1, 1]); y = np.array([2, 4, 6, 5, 7, 9.])
+r6 = stats.pointbiserialr(x, y)
+print(f"\nn = 6: r_pb = {r6.statistic:.4f}, p-valor = {r6.pvalue:.4f}")
+
+# 8. Gráfico
+plt.boxplot([g0, g1]); plt.xticks([1, 2], ["Automático (0)", "Manual (1)"]); plt.ylabel("Consumo (mpg)"); plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Automático (0): n = 19, média = 17.1474, DP = 3.8340
+Manual (1):     n = 13, média = 24.3923, DP = 6.1665
+
+r_pb = 0.59983 | t = 4.1061, gl = 30, p-valor = 0.000285
+Fórmula: (24.3923 - 17.1474) / 5.9320 x raiz(13 x 19 / 32²) = 0.59983
+Pearson(am, mpg) = 0.59983
+Teste t de Student: t = 4.1061, p-valor = 0.000285
+Teste t de Welch:   t = 3.7671, p-valor = 0.001374
+IC 95% = [0.3176; 0.7845] | r² = 0.3598
+Shapiro-Wilk (automático): W = 0.9768, p-valor = 0.8987
+Shapiro-Wilk (manual): W = 0.9458, p-valor = 0.5363
+Brown-Forsythe: W = 4.1876, p-valor = 0.0496
+
+n = 6: r_pb = 0.6765, p-valor = 0.1401</pre></div><figure class="fig"><img src="../assets/resultados/pontobisserial.png" alt="Consumo por tipo de câmbio e reta ligando as médias" loading="lazy"/><figcaption><strong>Consumo por tipo de câmbio.</strong> À esquerda, os boxplots: os carros de câmbio manual percorrem mais milhas por galão e variam mais. À direita, a mesma informação vista como correlação: a reta liga as médias dos grupos, 17,15 e 24,39. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resumo dos resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Automático (0)</td><td>n = 19; média 17,15; DP 3,83</td><td></td></tr><tr><td>Manual (1)</td><td>n = 13; média 24,39; DP 6,17</td><td>Média maior e dispersão maior.</td></tr><tr><td>r_pb</td><td>0,600</td><td>Associação positiva: o grupo codificado como 1 tem média maior.</td></tr><tr><td>t (30 g.l.)</td><td>4,106</td><td>Valor-p = 0,000285; igual ao do teste t de Student.</td></tr><tr><td>IC 95%</td><td>[0,318; 0,784]</td><td>Intervalo amplo: n pequeno.</td></tr><tr><td>r_pb²</td><td>0,360</td><td>36% da variabilidade do consumo está associada ao tipo de câmbio.</td></tr><tr><td>Shapiro–Wilk por grupo</td><td>p = 0,899 e p = 0,536</td><td>Sem evidência contra a normalidade.</td></tr><tr><td>Brown–Forsythe</td><td>W = 4,19; p = 0,0496</td><td>Variâncias no limite da rejeição.</td></tr><tr><td>Teste t de Welch</td><td>t = 3,767; p = 0,0014</td><td>Mesma conclusão sem supor variâncias iguais.</td></tr></tbody></table></div><p><strong>Leitura:</strong> há associação entre o tipo de câmbio e o consumo: os carros de câmbio manual desta amostra percorrem, em média, 7,2 milhas por galão a mais. Como as variâncias dos grupos são diferentes (desvios-padrão de 3,83 e 6,17), o teste t de Welch é a referência mais segura para o valor-p; a conclusão se mantém. Atenção ao contexto: nesta amostra, os carros manuais são também mais leves, de modo que a diferença não pode ser atribuída apenas ao câmbio.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Esquecer de informar a codificação</td><td>O sinal só tem sentido sabendo qual grupo é 1.</td></tr><tr><td>Usar com variável dicotomizada artificialmente</td><td>Prefira a correlação bisserial ou, melhor, não dicotomize.</td></tr><tr><td>Tratar como análise diferente do teste t</td><td>São o mesmo teste; a correlação acrescenta uma medida de magnitude.</td></tr><tr><td>Ignorar variâncias desiguais</td><td>Confira com o teste t de Welch.</td></tr><tr><td>Comparar coeficientes entre amostras com proporções diferentes nos grupos</td><td>O valor máximo depende do balanceamento; reporte também o d de Cohen.</td></tr><tr><td>Aplicar a dados pareados</td><td>Use métodos para amostras dependentes.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Correlação bisserial</td><td>A variável binária é o corte de uma contínua normal.</td></tr><tr><td><a href="t2.html">Teste t de Student</a> / <a href="twelch.html">Welch</a></td><td>Interesse na diferença de médias e em seu intervalo de confiança.</td></tr><tr><td><a href="mann-whitney.html">Mann–Whitney</a> com correlação bisserial por postos</td><td>Variável quantitativa assimétrica ou ordinal.</td></tr><tr><td><a href="logistica.html">Regressão logística</a></td><td>A variável binária é a resposta a ser explicada.</td></tr><tr><td>d de Cohen</td><td>Medida de magnitude menos dependente do balanceamento.</td></tr></tbody></table></div><ol class="steps"><li>Defina e registre a codificação 0/1.</li><li>Faça boxplots por grupo.</li><li>Verifique normalidade e variâncias.</li><li>Calcule r_pb com o intervalo de confiança e reporte as médias dos grupos.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>TATE, Robert F. Correlation between a discrete and a continuous variable. Point-biserial correlation. <em>The Annals of Mathematical Statistics</em>, v. 25, n. 3, p. 603-607, 1954.</li><li>LEV, Joseph. The point biserial coefficient of correlation. <em>The Annals of Mathematical Statistics</em>, v. 20, n. 1, p. 125-126, 1949.</li><li>COHEN, Jacob. <em>Statistical power analysis for the behavioral sciences.</em> 2. ed. Hillsdale: Lawrence Erlbaum, 1988.</li><li>MORETTIN, Pedro Alberto; BUSSAB, Wilton de Oliveira. <em>Estatística básica.</em> 9. ed. São Paulo: Saraiva, 2017.</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Conjunto de dados <code>mtcars</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>cor.test</code> e <code>t.test</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Uma variável dicotômica genuína e uma quantitativa, observações independentes, normalidade em cada grupo e variâncias semelhantes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kendall.html"><span>← ANTERIOR</span>Correlação tau de Kendall</a><a href="tetracorica.html"><span>PRÓXIMO →</span>Correlação tetracórica</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>
