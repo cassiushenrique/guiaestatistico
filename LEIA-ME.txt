@@ -1,0 +1,21 @@
+Estatística e Ciência de Dados — guia prático.
+
+COMO PUBLICAR
+Envie esta pasta para um repositório do GitHub e ative o GitHub Pages (Settings > Pages > Deploy from a branch > main / root). Abra index.html para navegar.
+
+STATUS DA REESCRITA (por lotes)
+Lote 1 (concluído): glossario.html + fichas de Diagnósticos reescritas: sw, ks, ad, levene, bartlett.
+Lotes seguintes (pendentes): demais fichas, na ordem do catálogo (mauchly, boxm, mardia, correlações, regressões, ...).
+As fichas ainda não reescritas mantêm o conteúdo anterior (com seções numeradas) e já exibem o link do Glossário no menu.
+
+ESTRUTURA DAS FICHAS REESCRITAS
+- Seções sem numeração; mapa mental; fórmulas com explicação de cada símbolo e exemplo numérico passo a passo.
+- Código em R para copiar (scripts/<ficha>.R), sem saída impressa na página.
+- Em seguida, a mesma análise em Python (scripts/<ficha>.py) com os resultados da execução desse código.
+- Links de download do R e do RStudio e link do Google Colab (https://colab.research.google.com/) para executar o Python sem instalar nada.
+- Figuras elaboradas pelo autor em assets/resultados/; referências ao final de cada ficha.
+
+OBSERVAÇÕES
+- Os resultados exibidos nas fichas vêm da execução dos scripts .py (numpy, scipy, matplotlib).
+- gerar-saidas-R.R é opcional: se executado no RStudio, roda scripts/*.R e insere a saída do R logo abaixo do bloco de código R do exemplo.
+- Pacotes R usados no Lote 1: stats (base), nortest, car.
