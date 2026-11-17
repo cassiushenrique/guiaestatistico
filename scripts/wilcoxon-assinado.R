@@ -1,20 +1,42 @@
-# Wilcoxon signed-rank (pareado) ----
+# Wilcoxon de postos sinalizados (pareado): exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: sleep.
 
-# Ajuste e resultados ----
-d <- subset(CO2, conc %in% c(95, 175))
-w <- reshape(d[, c("Plant", "conc", "uptake")],
-             idvar = "Plant", timevar = "conc", direction = "wide")
-print(wilcox.test(w$uptake.175, w$uptake.95,
-                  paired = TRUE, exact = FALSE,
-                  conf.int = TRUE))
+# 1. Dados: horas extras de sono de 10 pacientes com dois medicamentos
+#    Fonte original: Cushny e Peebles (1905); usados por Student (1908).
+medicamento1 <- sleep$extra[sleep$group == 1]
+medicamento2 <- sleep$extra[sleep$group == 2]
+d <- medicamento2 - medicamento1
+data.frame(paciente = 1:10, medicamento1, medicamento2, diferenca = d)
+c(media = mean(d), mediana = median(d), dp = sd(d))
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
+# 2. Por que não usar o teste t pareado aqui
+shapiro.test(d)
+qqnorm(d, pch = 19); qqline(d, col = "red", lwd = 2)
 
+# 3. Construção dos postos (zeros são descartados; os postos vêm de |d|)
+nz <- d[d != 0]
+data.frame(diferenca = nz, absoluto = abs(nz), posto = rank(abs(nz)), sinal = sign(nz))
+c(W_positivo = sum(rank(abs(nz))[nz > 0]), W_negativo = sum(rank(abs(nz))[nz < 0]))
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# Ordem das diferenças: absorção a 175 menos absorção a 95
-# H1: diferenca de localização positiva
-print(wilcox.test(w$uptake.175, w$uptake.95, paired = TRUE, exact = FALSE, alternative = "greater"))
-# H1: diferenca de localização negativa
-print(wilcox.test(w$uptake.175, w$uptake.95, paired = TRUE, exact = FALSE, alternative = "less"))
+# 4. Teste
+wilcox.test(d, mu = 0)                       # ou wilcox.test(medicamento2, medicamento1, paired = TRUE)
+
+# 5. Com estimativa de Hodges-Lehmann e intervalo de confiança
+wilcox.test(d, mu = 0, conf.int = TRUE)
+
+# 6. Valor-p exato: só vale sem empates e sem zeros
+wilcox.test(d, mu = 0, exact = TRUE)         # aqui o R avisa e usa a aproximação
+# Para comparar, o valor exato com 9 diferenças, todas positivas:
+2 / 2^9
+
+# 7. Comparação com o teste t pareado e o teste do sinal
+t.test(d, mu = 0)
+binom.test(sum(d > 0), sum(d != 0))
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+matplot(rbind(medicamento1, medicamento2), type = "b", pch = 19, lty = 1, col = "gray50",
+        xaxt = "n", xlab = "", ylab = "Horas extras de sono")
+axis(1, at = 1:2, labels = c("medicamento 1", "medicamento 2"))
+hist(d, col = "gray85", xlab = "Diferença (h)", main = ""); abline(v = 0, col = "red", lwd = 2)
+par(mfrow = c(1, 1))

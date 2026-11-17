@@ -1,25 +1,40 @@
-# Teste t pareado ----
+# Teste t pareado: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: sleep.
 
-# Ajuste e resultados ----
-d <- subset(CO2, conc %in% c(95, 175))
-wide <- reshape(d[, c("Plant", "conc", "uptake")], idvar = "Plant",
-                timevar = "conc", direction = "wide")
-resultado <- t.test(wide$uptake.175, wide$uptake.95,
-                    paired = TRUE, conf.level = 0.95)
-print(resultado)
-qqnorm(wide$uptake.175 - wide$uptake.95); qqline(wide$uptake.175 - wide$uptake.95)
+# 1. Dados: horas extras de sono de 10 pacientes com dois medicamentos
+#    Fonte original: Cushny e Peebles (1905); usados por Student (1908).
+medicamento1 <- sleep$extra[sleep$group == 1]
+medicamento2 <- sleep$extra[sleep$group == 2]
+d <- medicamento2 - medicamento1
+data.frame(paciente = 1:10, medicamento1, medicamento2, diferenca = d)
+c(media_das_diferencas = mean(d), dp_das_diferencas = sd(d))
 
-# Visualização e diagnóstico ----
-dif <- wide$uptake.175 - wide$uptake.95
-plot(wide$uptake.95, wide$uptake.175, pch = 19, xlab = "Absorção a 95", ylab = "Absorção a 175", main = "Medidas pareadas")
-abline(0, 1, col = "red", lwd = 2, lty = 2)
-qqnorm(dif, main = "Normalidade das diferenças")
-qqline(dif, col = "red", lwd = 2)
+# 2. Diagnóstico gráfico: perfis individuais e distribuição das diferenças
+par(mfrow = c(1, 2))
+matplot(rbind(medicamento1, medicamento2), type = "b", pch = 19, lty = 1, col = "gray50",
+        xaxt = "n", xlab = "", ylab = "Horas extras de sono")
+axis(1, at = 1:2, labels = c("medicamento 1", "medicamento 2"))
+lines(c(mean(medicamento1), mean(medicamento2)), col = "red", lwd = 3, type = "b", pch = 19)
+hist(d, col = "gray85", xlab = "Diferença (h)", main = ""); abline(v = 0, col = "red", lwd = 2)
+par(mfrow = c(1, 1))
 
+# 3. Pressuposto: normalidade das DIFERENÇAS (não das medidas originais)
+shapiro.test(d)
+qqnorm(d, pch = 19); qqline(d, col = "red", lwd = 2)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# Ordem da diferença: absorção a 175 menos absorção a 95
-# H1: diferenca media > 0
-print(t.test(wide$uptake.175, wide$uptake.95, paired = TRUE, alternative = "greater"))
-# H1: diferenca media < 0
-print(t.test(wide$uptake.175, wide$uptake.95, paired = TRUE, alternative = "less"))
+# 4. Teste t pareado
+t.test(medicamento2, medicamento1, paired = TRUE)
+
+# 5. É exatamente um teste t de uma amostra sobre as diferenças
+t.test(d, mu = 0)
+
+# 6. O que se perderia ignorando o pareamento
+t.test(medicamento2, medicamento1, var.equal = TRUE)
+cor(medicamento1, medicamento2)        # é esta correlação que o pareamento aproveita
+
+# 7. Tamanho do efeito
+mean(d) / sd(d)
+
+# 8. Alternativas não paramétricas
+wilcox.test(d, mu = 0)
+binom.test(sum(d > 0), sum(d != 0))    # teste do sinal
