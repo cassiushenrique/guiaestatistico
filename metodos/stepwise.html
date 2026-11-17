@@ -4,305 +4,737 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Seleção stepwise por AIC: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Seleção stepwise por AIC | Estatística e Ciência de Dados
-  </title>
+<meta content="Seleção stepwise por AIC: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Seleção stepwise por AIC | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Seleção stepwise por AIC
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 14 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Seleção stepwise por AIC
-    </h1>
-<p class="detail-lead">
-     Seleciona variáveis explicativas por inclusões e exclusões sucessivas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/stepwise.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Seleciona variáveis explicativas por inclusões e exclusões sucessivas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Modelo candidato e procedimento definidos.</li><li>Risco de instabilidade, multicolinearidade e viés de seleção.</li><li>Avaliar erro em teste independente.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{AIC}=-2\ell(\widehat{\boldsymbol\beta})+2k\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\lambda\)
-        </dt>
-<dd>
-         parâmetro de penalização, quando existente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor de coeficientes do modelo
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X\)
-        </dt>
-<dd>
-         matriz dos preditores
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Não interpretar “significância a 5%” do modelo stepwise como confirmação automática.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Selecionar atributos de automóveis para explicar mpg (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-stepwise" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-stepwise"><code># Seleção stepwise por AIC ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Seleção stepwise por AIC</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REGULARIZAÇÃO E SELEÇÃO</span><h1>Seleção stepwise por AIC</h1><p class="detail-lead">Acrescenta ou remove uma variável por vez até que nenhum movimento melhore o critério — e os números desta ficha mostram por que o método é tão criticado.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/stepwise.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/stepwise.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a seleção stepwise</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A seleção stepwise acrescenta ou remove uma variável por vez, sempre a que mais melhora o critério, até que nenhum movimento melhore. É de longe o método de seleção mais usado — e o mais criticado. Esta ficha apresenta o procedimento com cuidado e, em seguida, mostra numericamente por que a crítica é justificada.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Seleção stepwise" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Três direções</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">para frente, para trás</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">nos dois sentidos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O critério</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">AIC, BIC, ou</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">valores-p</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A vantagem</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">p(p+1)/2 modelos</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">em vez de 2^p</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema 1</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Os valores-p do</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">modelo final são inválidos</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema 2</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">A escolha é muito</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">instável</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema 3</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Com p perto de n,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">produz ajuste do nada</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Seleção stepwise</text></svg><figcaption>Visão geral da seleção stepwise. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O resultado central desta ficha, antecipado</strong><p>Com \(y\) <strong>permutado</strong> — nenhuma das doze candidatas guardando relação alguma com a resposta — a seleção para frente por AIC devolve em média 1,37 variáveis, e em <strong>44,8%</strong> das 2.000 permutações ao menos uma delas tem \(p&lt;0{,}05\). Com \(n=50\) e 45 candidatas sem efeito, o \(R^2\) médio do modelo selecionado é <strong>0,6836</strong>. Nenhum desses números vem dos dados: vêm da busca.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a seleção stepwise</h2><p>São três procedimentos distintos. A <strong>seleção para frente</strong> começa no modelo nulo e acrescenta, a cada passo, a variável que mais reduz o critério. A <strong>eliminação para trás</strong> começa no modelo completo e remove, a cada passo, a variável cuja saída mais reduz o critério. A versão <strong>nos dois sentidos</strong> considera, em cada passo, tanto acrescentar como remover. Todas param quando nenhum movimento melhora o critério.</p><figure class="fig"><img src="../assets/resultados/stepwise-didatica.png" alt="Os caminhos das três direções, a inflação dos valores-p e o desastre com p próximo de n" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, os passos das direções para frente e para trás nestes dados: elas escolhem representantes <em>opostos</em> do grupo textural — a primeira pega a areia, a segunda pega argila e silte — e nenhuma recupera o modelo verdadeiro inteiro. No centro, a comparação entre a taxa de falsos positivos que deveria ocorrer e a que de fato ocorre, com \(y\) permutado. À direita, a distribuição do \(R^2\) do modelo selecionado com \(n=50\), 45 candidatas e nenhum efeito real. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O custo computacional, que é a única vantagem clara</caption><thead><tr><th>p</th><th>Exaustiva: 2^p</th><th>Para frente: p(p+1)/2</th><th>Razão</th></tr></thead><tbody><tr><td>12</td><td>4 096</td><td>78</td><td>52</td></tr><tr><td>20</td><td>1 048 576</td><td>210</td><td>5 × 10³</td></tr><tr><td>30</td><td>1,07 × 10⁹</td><td>465</td><td>2,3 × 10⁶</td></tr><tr><td>50</td><td>1,13 × 10¹⁵</td><td>1 275</td><td>8,8 × 10¹¹</td></tr><tr><td>100</td><td>1,27 × 10³⁰</td><td>5 050</td><td>2,5 × 10²⁶</td></tr></tbody></table></div><p>Nestes dados, com \(p=12\), a seleção para frente examinou no máximo 78 modelos contra 4.096 da <a href="subset.html">busca exaustiva</a> — e chegou ao <em>mesmo</em> subconjunto que a exaustiva encontra no tamanho 5. Isso é tranquilizador quanto ao algoritmo, e não quanto ao método: o problema do stepwise não é ser uma busca aproximada, é ser uma busca.</p></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Os do modelo linear</td><td>A seleção não dispensa nenhum.</td><td>Resíduos do modelo escolhido.</td></tr><tr><td><strong>n muito maior que p</strong></td><td>É o pressuposto mais violado na prática.</td><td>n/p ≥ 10, e de preferência mais.</td></tr><tr><td><strong>Não se reportam valores-p do modelo final</strong></td><td>Eles não têm a interpretação usual.</td><td>Veja a simulação desta ficha.</td></tr><tr><td>Hierarquia respeitada</td><td>Quadráticos e interações exigem os principais.</td><td>Use <code>scope</code> com <code>lower</code> adequado.</td></tr><tr><td>Mesmo conjunto de observações em todos os passos</td><td>Dados faltantes mudam n entre modelos.</td><td>Remova NA ANTES de começar.</td></tr><tr><td><strong>Erro estimado por VC aninhada</strong></td><td>Avaliar onde se escolheu é otimista.</td><td>Refaça a seleção em cada dobra.</td></tr><tr><td>Critério declarado antes</td><td>AIC, BIC e p dão respostas diferentes.</td><td>Escolha e registre antes de rodar.</td></tr><tr><td>Colinearidade reconhecida</td><td>Determina qual representante é escolhido.</td><td>VIF antes de começar.</td></tr><tr><td>Objetivo é PREDIÇÃO, não identificação</td><td>O método não identifica mecanismos.</td><td>Se o objetivo é explicar, não use seleção automática.</td></tr></tbody></table></div><div class="callout warn"><strong>Dados faltantes: uma armadilha silenciosa</strong><p>Se uma candidata tem valores faltantes, o <code>lm</code> remove por padrão as linhas incompletas — de modo que modelos com e sem essa candidata são ajustados a <em>conjuntos diferentes</em>, e os AIC não são comparáveis. O <code>step</code> não avisa. A solução é remover as linhas incompletas (ou imputar) <em>antes</em> de iniciar a seleção, com <code>na.omit</code> aplicado ao conjunto completo de candidatas.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>A cada passo, com o modelo atual \(S\) e \(d=|S|+1\) parâmetros:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{AIC}(S)=n\ln\!\left(\frac{\text{SQR}(S)}{n}\right)+2d,\]\[\text{BIC}(S)=n\ln\!\left(\frac{\text{SQR}(S)}{n}\right)+d\ln n\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[S_{\text{novo}}=\arg\min_{S^{\prime}\in\mathcal{V}(S)}\text{AIC}(S^{\prime}),\]\[\text{pare se }\text{AIC}(S_{\text{novo}})\ge\text{AIC}(S)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mathcal{V}(S)\)</dt><dd>a vizinhança de \(S\): acrescentar uma, remover uma, ou ambos</dd></div><div><dt>\(\text{SQR}(S)\)</dt><dd>soma de quadrados dos resíduos do modelo \(S\)</dd></div><div><dt>\(d\)</dt><dd>número de parâmetros do modelo</dd></div><div><dt>\(n\)</dt><dd>número de observações (90)</dd></div></dl><p>O <code>step</code> do R usa uma constante aditiva diferente — \(\text{AIC}=n\ln(\text{SQR}/n)+2d+n+n\ln(2\pi)\) — de modo que os valores impressos diferem dos calculados aqui por uma constante; as <em>diferenças</em>, que é o que decide, são idênticas.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Seleção PARA FRENTE, passo a passo</caption><thead><tr><th>Passo</th><th>Movimento</th><th>AIC antes</th><th>AIC depois</th><th>Ganho</th></tr></thead><tbody><tr><td>1</td><td>+ M.O.</td><td>13,90</td><td>−30,67</td><td>44,57</td></tr><tr><td>2</td><td>+ V%</td><td>−30,67</td><td>−68,86</td><td>38,19</td></tr><tr><td>3</td><td>+ Areia</td><td>−68,86</td><td>−80,44</td><td>11,58</td></tr><tr><td>4</td><td>+ P (resina)</td><td>−80,44</td><td>−85,25</td><td>4,81</td></tr><tr><td>5</td><td>+ K</td><td>−85,25</td><td>−87,77</td><td>2,52</td></tr><tr><td>6</td><td>(nenhum movimento melhora)</td><td>−87,77</td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Eliminação PARA TRÁS, passo a passo</caption><thead><tr><th>Passo</th><th>Movimento</th><th>AIC antes</th><th>AIC depois</th><th>Ganho</th></tr></thead><tbody><tr><td>1</td><td>− Mg</td><td>−77,13</td><td>−79,13</td><td>2,00</td></tr><tr><td>2</td><td>− Al</td><td>−79,13</td><td>−81,12</td><td>1,99</td></tr><tr><td>3</td><td>− pH</td><td>−81,12</td><td>−83,10</td><td>1,98</td></tr><tr><td>4</td><td>− CTC</td><td>−83,10</td><td>−84,97</td><td>1,87</td></tr><tr><td>5</td><td>− Areia</td><td>−84,97</td><td>−86,24</td><td>1,27</td></tr><tr><td>6</td><td>− Ca</td><td>−86,24</td><td>−86,87</td><td>0,63</td></tr><tr><td>7</td><td>(nenhum movimento melhora)</td><td>−86,87</td><td>—</td><td>—</td></tr></tbody></table></div><div class="worked"><strong>As três direções discordam, e discordam de forma instrutiva</strong><div class="table-wrap"><table class="method-table"><caption>O que cada direção escolhe</caption><thead><tr><th>Direção</th><th>Vars.</th><th>Variáveis</th><th>R²</th><th>AIC</th></tr></thead><tbody><tr><td>Para frente</td><td>5</td><td>M.O., P, K, V%, <strong>Areia</strong></td><td>0,7108</td><td><strong>−87,77</strong></td></tr><tr><td>Para trás</td><td>6</td><td>M.O., P, K, Ca, V%, <strong>Argila, Silte</strong></td><td>0,7144</td><td>−86,87</td></tr><tr><td>Nos dois sentidos</td><td>6</td><td>idêntico ao de trás</td><td>0,7144</td><td>−86,87</td></tr><tr><td><em>Modelo verdadeiro</em></td><td>4</td><td>M.O., P, V%, <strong>Argila</strong></td><td>0,6801</td><td>—</td></tr></tbody></table></div><p>As direções para frente e para trás diferem em três variáveis: argila, silte e areia — exatamente o grupo colinear. A para frente, partindo do nulo, encontra primeiro a areia e nunca precisa das outras duas; a para trás, partindo do completo, remove a areia e fica com argila e silte, que juntas carregam a mesma informação com sinal oposto.</p><p>Com o BIC a discordância persiste e muda de forma: as três direções escolhem cinco variáveis, mas a para frente fica com a areia e as outras duas com argila e silte.</p><p>Nenhuma das direções recupera o modelo verdadeiro. Todas incluem o potássio, que não está nele, e nenhuma delas é "a certa" — porque a pergunta "argila ou areia?" não tem resposta nestes dados.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Examina no máximo \(p(p+1)/2\) modelos na versão para frente, contra \(2^{p}\) da exaustiva.</li><li>Não há garantia de encontrar o melhor subconjunto de nenhum tamanho.</li><li>As três direções podem discordar, e discordam quando há colinearidade.</li><li>O AIC penaliza pouco e tende a selecionar modelos grandes demais.</li><li>A distribuição amostral do modelo escolhido não é a de um modelo fixo: os valores-p são inválidos.</li><li>Os coeficientes do modelo escolhido são enviesados para longe de zero.</li><li>A escolha é instável sob reamostragem, mesmo com sinal forte.</li><li>Com \(p\) próximo de \(n\), produz \(R^{2}\) alto a partir de dados sem sinal.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Tabela de passos do <code>step</code></td><td>A sequência de movimentos e o AIC.</td><td>Diferenças pequenas de AIC: a escolha é arbitrária.</td></tr><tr><td><code>formula(m)</code></td><td>O modelo escolhido.</td><td>Uma entre várias quase equivalentes.</td></tr><tr><td><code>summary(m)</code> — estimativas</td><td>Coeficientes do modelo escolhido.</td><td>Enviesados para longe de zero.</td></tr><tr><td><code>summary(m)</code> — <strong>valores-p</strong></td><td><strong>Nada de interpretável</strong>.</td><td>Não reporte.</td></tr><tr><td><code>summary(m)</code> — R²</td><td>Ajuste do modelo escolhido.</td><td>Inflado pela busca.</td></tr><tr><td><code>add1</code> / <code>drop1</code></td><td>O ganho de cada movimento possível.</td><td>Útil para ver quão empatadas estão as opções.</td></tr><tr><td>Erro validado com seleção aninhada</td><td>A estimativa honesta.</td><td>Sempre bem acima da resubstituição.</td></tr><tr><td>Frequência de seleção por bootstrap</td><td>A estabilidade de cada variável.</td><td>É isso que se deve reportar.</td></tr></tbody></table></div><h3>O que fazer com o modelo selecionado</h3><p>Se o objetivo é <strong>predizer</strong>, o modelo selecionado é utilizável, desde que o erro seja estimado por <a href="kfold.html">validação cruzada</a> com a seleção refeita dentro de cada dobra. Se o objetivo é <strong>identificar quais variáveis importam</strong>, o modelo selecionado não responde à pergunta: ele responde "qual subconjunto se ajustou melhor a esta amostra", que é diferente. Nesse caso, o que se reporta é a frequência de seleção por bootstrap, e a conclusão honesta é frequentemente "estas duas são consistentes, as demais não se distinguem".</p><div class="callout warn"><strong>Por que os valores-p falham</strong><p>Um valor-p de 0,03 significa: "se esta variável não tivesse efeito, uma estatística tão extrema ocorreria em 3% das amostras". O cálculo supõe que a variável foi escolhida para o modelo <em>antes</em> de ver os dados. No stepwise, ela entrou <em>porque</em> a estatística dela era extrema — a condição do teste foi usada como critério de entrada. Reportar o \(p\) depois disso é circular, e a simulação quantifica o quanto: o que deveria ocorrer em 5% das vezes ocorre em 44,8%.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Tudo o que é necessário está no R base. <code>step(modelo, scope, direction, trace)</code> aceita <code>direction</code> igual a <code>"forward"</code>, <code>"backward"</code> ou <code>"both"</code>; para a direção para frente é obrigatório dar o <code>scope</code> com <code>upper</code>, caso contrário não há de onde acrescentar. O argumento <code>k</code> troca a penalidade: <code>k = 2</code> é o AIC (padrão) e <code>k = log(n)</code> é o BIC. <code>MASS::stepAIC</code> é equivalente e aceita mais classes de modelo. Para ver o que o algoritmo considera em um passo isolado, <code>add1</code> e <code>drop1</code> imprimem o ganho de cada movimento possível — é a melhor forma de perceber quão empatadas estão as opções. Antes de tudo, remova as linhas com dados faltantes.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-stepwise-min" type="button">Copiar código</button></div><pre id="code-stepwise-min"><code>completo &lt;- lm(y ~ ., data = solo); nulo &lt;- lm(y ~ 1, data = solo)
+frente &lt;- step(nulo, scope = list(lower = nulo, upper = completo),
+               direction = "forward")
+tras   &lt;- step(completo, direction = "backward")
+formula(frente); formula(tras)   # NÃO coincidem
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 90 amostras de solo de uma área experimental, com a produtividade da cultura (t/ha) e <strong>doze</strong> variáveis candidatas de análise de rotina — pH, matéria orgânica, fósforo resina, potássio, cálcio, magnésio, alumínio, CTC, saturação por bases (V%), argila, silte e areia. O processo gerador é conhecido e usa <strong>apenas quatro</strong> delas: matéria orgânica, fósforo, V% e argila, com erro de desvio-padrão 0,60 t/ha. A colinearidade é deliberada e realista: argila, silte e areia somam aproximadamente 100% por construção física, e cálcio, magnésio e potássio estão ligados à CTC e ao V%. Saber qual é o modelo verdadeiro permite verificar se cada método o encontra — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as seis fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-stepwise" type="button">Copiar código</button></div><pre id="code-stepwise"><code># Seleção stepwise por AIC: exemplo completo ----
+# Pacotes: nenhum (step e add1/drop1 são do R base); MASS::stepAIC é equivalente
+# Dados fictícios: 90 amostras de solo, 12 candidatas.
+# O arquivo solo.csv acompanha o site, na pasta scripts/.
+solo &lt;- read.csv("solo.csv")
+str(solo)          # y (t/ha) e as 12 candidatas
+dim(solo)
+# O modelo VERDADEIRO (conhecido por construção) usa só quatro:
+#   y = 4,00 + 0,80*mo + 0,0250*pres + 0,0300*v + 0,0200*argila + erro
+cand &lt;- c("ph","mo","pres","k","ca","mg","al","ctc","v","argila","silte","areia")
+verdadeiras &lt;- c("mo","pres","v","argila")
 
-# Ajuste e resultados ----
-modelo_completo &lt;- lm(mpg ~ wt + hp + disp + qsec + drat,
-                      data = mtcars)
-selecionado &lt;- step(modelo_completo, direction = "both", trace = 0)
-print(formula(selecionado))
-print(AIC(modelo_completo, selecionado))
+# A colinearidade, que é o problema central do grupo
+library(car)
+vif(lm(y ~ ., data = solo))
+round(cor(solo[, cand]), 2)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. As três direções
+completo &lt;- lm(y ~ ., data = solo)
+nulo     &lt;- lm(y ~ 1, data = solo)
+
+frente &lt;- step(nulo, scope = list(lower = nulo, upper = completo),
+               direction = "forward", trace = 1)
+tras   &lt;- step(completo, direction = "backward", trace = 1)
+ambos  &lt;- step(completo, scope = list(lower = nulo, upper = completo),
+               direction = "both", trace = 1)
+
+formula(frente); formula(tras); formula(ambos)
+# As três NÃO coincidem: a para frente pega a AREIA, a para trás pega
+# ARGILA e SILTE. São representantes opostos do mesmo grupo colinear.
+
+# Com o BIC, que penaliza mais (k = log(n) em vez de 2):
+step(nulo, scope = list(lower = nulo, upper = completo),
+     direction = "forward", k = log(nrow(solo)))
+
+# ---- 2. O que o step examina em cada passo
+add1(nulo, scope = completo)        # o ganho de AIC de cada candidata
+drop1(completo)                     # a perda de AIC ao remover cada uma
+
+# ---- 3. OS VALORES-p DO MODELO SELECIONADO NÃO SÃO VALORES-p
+summary(frente)
+# Todos "significativos". Mas esses p supõem que o modelo foi fixado ANTES
+# de ver os dados, e ele foi escolhido OLHANDO os dados.
+
+# A demonstração: y PERMUTADO, sem nenhuma relação com X
+set.seed(13)
+sim &lt;- t(replicate(2000, {
+  solo2 &lt;- solo; solo2$y &lt;- sample(solo$y)
+  n0 &lt;- lm(y ~ 1, data = solo2); nc &lt;- lm(y ~ ., data = solo2)
+  m  &lt;- step(n0, scope = list(lower = n0, upper = nc),
+             direction = "forward", trace = 0)
+  k  &lt;- length(coef(m)) - 1
+  pm &lt;- if (k == 0) 1 else min(summary(m)$coef[-1, 4])
+  c(k = k, p = pm, r2 = summary(m)$r.squared) }))
+mean(sim[, "k"])                      # variáveis selecionadas, em média
+mean(sim[, "p"] &lt; 0.05)               # deveria ser ~0,05
+mean(sim[, "p"] &lt; 0.01)               # deveria ser ~0,01
+mean(sim[, "r2"])                     # R² médio em dados SEM SINAL
+
+# ---- 4. INSTABILIDADE
+set.seed(17)
+cont &lt;- numeric(12); names(cont) &lt;- cand; tam &lt;- numeric(1000)
+for (b in 1:1000) {
+  i &lt;- sample(nrow(solo), replace = TRUE); sb &lt;- solo[i, ]
+  n0 &lt;- lm(y ~ 1, data = sb); nc &lt;- lm(y ~ ., data = sb)
+  m  &lt;- step(n0, scope = list(lower = n0, upper = nc),
+             direction = "forward", trace = 0)
+  vs &lt;- setdiff(names(coef(m)), "(Intercept)")
+  cont[vs] &lt;- cont[vs] + 1; tam[b] &lt;- length(vs)
+}
+sort(round(100*cont/1000, 1), decreasing = TRUE)
+mean(tam); range(tam)
+
+# ---- 5. O ERRO DE PREDIÇÃO: a seleção tem de entrar na validação
+set.seed(3)
+k &lt;- 10; d &lt;- sample(rep(1:k, length.out = nrow(solo)))
+er_an &lt;- er_fix &lt;- numeric(nrow(solo))
+fixo &lt;- setdiff(names(coef(frente)), "(Intercept)")
+for (j in 1:k) {
+  tr &lt;- solo[d != j, ]; te &lt;- solo[d == j, ]
+  n0 &lt;- lm(y ~ 1, data = tr); nc &lt;- lm(y ~ ., data = tr)
+  m  &lt;- step(n0, scope = list(lower = n0, upper = nc),
+             direction = "forward", trace = 0)
+  er_an[d == j]  &lt;- te$y - predict(m, newdata = te)
+  er_fix[d == j] &lt;- te$y - predict(lm(reformulate(fixo, "y"), data = tr), newdata = te)
+}
+mean(er_fix^2)     # OTIMISTA
+mean(er_an^2)      # honesto
+
+# ---- 6. O REGIME EM QUE FRACASSA POR COMPLETO: p próximo de n
+set.seed(23)
+res &lt;- t(replicate(200, {
+  Z &lt;- as.data.frame(matrix(rnorm(50*45), 50, 45))
+  Z$y &lt;- rnorm(50)
+  n0 &lt;- lm(y ~ 1, data = Z); nc &lt;- lm(y ~ ., data = Z)
+  m  &lt;- step(n0, scope = list(lower = n0, upper = nc),
+             direction = "forward", trace = 0)
+  c(k = length(coef(m)) - 1, r2 = summary(m)$r.squared) }))
+colMeans(res); max(res[, "r2"])
+# NENHUMA das 45 candidatas tem relação com y.
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-stepwise" type="button">Copiar código</button></div><pre id="code-py-stepwise"><code>import numpy as np, itertools, sys
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab14)
+# ------------------------------------------------------------------
+import numpy as np, itertools
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 90 amostras de solo (arquivo solo.csv, pasta scripts/ do site)
+solo = le_csv('solo.csv')
+NOMES=['ph', 'mo', 'pres', 'k', 'ca', 'mg', 'al', 'ctc', 'v', 'argila', 'silte', 'areia']
+ROT={'ph':'pH','mo':'M.O.','pres':'P (resina)','k':'K','ca':'Ca','mg':'Mg','al':'Al','ctc':'CTC','v':'V%','argila':'Argila','silte':'Silte','areia':'Areia'}
+X=solo[NOMES].to_numpy(float); Y=solo['y'].to_numpy(float)
+VERD={"mo":0.80,"pres":0.0250,"v":0.0300,"argila":0.0200}
+N,P=X.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+def pad(A, mu=None, sd=None):
+    """Padroniza colunas (média 0, desvio 1, com n-1)."""
+    if mu is None: mu = A.mean(0)
+    if sd is None: sd = A.std(0, ddof=1)
+    sd = np.where(sd &lt; 1e-12, 1.0, sd)
+    return (A - mu)/sd, mu, sd
+
+def ols(A, y):
+    Ad = np.column_stack([np.ones(len(A)), A])
+    return np.linalg.lstsq(Ad, y, rcond=None)[0]
+
+def prev(A, b):
+    return b[0] + A @ b[1:]
+
+def sqr(obs, p_): return float(np.sum((obs - p_)**2))
+def eqm(obs, p_): return float(np.mean((obs - p_)**2))
+
+def ridge(A, y, lam):
+    """Ridge em A JÁ padronizado; não penaliza o intercepto."""
+    n_, p_ = A.shape
+    G = A.T @ A + lam*n_*np.eye(p_)
+    b = np.linalg.solve(G, A.T @ (y - y.mean()))
+    return np.concatenate([[y.mean()], b])
+
+def lasso(A, y, lam, it=20000, tol=1e-11):
+    """Descida por coordenadas em A JÁ padronizado (Friedman et al., 2010)."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean()
+    nrm = (A**2).sum(0)/n_
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = A[:, j] @ (r + A[:, j]*bj)/n_
+            nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+            if nb != bj:
+                r = r - A[:, j]*(nb - bj); b[j] = nb
+                mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return np.concatenate([[y.mean()], b])
+
+def pcr(A, y, m):
+    """Regressão nos m primeiros componentes principais de A padronizado."""
+    u, s, vt = np.linalg.svd(A, full_matrices=False)
+    T = (u*s)[:, :m]
+    g = np.linalg.lstsq(T, y - y.mean(), rcond=None)[0]
+    b = vt[:m].T @ g
+    return np.concatenate([[y.mean()], b])
+
+def pls(A, y, m):
+    """NIPALS para uma resposta; devolve coeficientes na escala de A."""
+    Xr = A.copy(); yr = y - y.mean()
+    W = np.zeros((A.shape[1], m)); Pm = np.zeros((A.shape[1], m)); q = np.zeros(m)
+    for a in range(m):
+        w = Xr.T @ yr; w = w/np.linalg.norm(w)
+        t = Xr @ w; tt = t @ t
+        pj = Xr.T @ t/tt; qa = (yr @ t)/tt
+        Xr = Xr - np.outer(t, pj); yr = yr - qa*t
+        W[:, a] = w; Pm[:, a] = pj; q[a] = qa
+    Rm = W @ np.linalg.inv(Pm.T @ W)
+    b = Rm @ q
+    return np.concatenate([[y.mean()], b])
+
+def dobras(n_, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n_/k)))[:n_]
+    rg.shuffle(d); return d
+
+def cv(ajusta, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada; TODA a padronização dentro do laço."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 1000*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            b = ajusta(Ap, y[tr])
+            e[te] = y[te] - prev((A[te] - mu)/sd, b)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0
+
+def crit(A, y, cols, s2):
+    """Cp de Mallows, AIC e BIC de um submodelo."""
+    Ad = np.column_stack([np.ones(len(A))] + [A[:, j] for j in cols])
+    b = np.linalg.lstsq(Ad, y, rcond=None)[0]
+    sq = sqr(y, Ad @ b); n_, d = len(y), len(cols) + 1
+    return dict(sqr=sq, p=d, r2=1 - sq/np.sum((y - y.mean())**2),
+                r2a=1 - (sq/(n_ - d))/(np.sum((y - y.mean())**2)/(n_ - 1)),
+                cp=sq/s2 - n_ + 2*d,
+                aic=n_*np.log(sq/n_) + 2*d, bic=n_*np.log(sq/n_) + np.log(n_)*d)
+
+def vif(A):
+    Ap, _, _ = pad(A); out = []
+    for j in range(A.shape[1]):
+        o = [i for i in range(A.shape[1]) if i != j]
+        b = ols(Ap[:, o], Ap[:, j]); r = Ap[:, j] - prev(Ap[:, o], b)
+        out.append(1/(1 - (1 - r @ r/np.sum((Ap[:, j] - Ap[:, j].mean())**2))))
+    return np.array(out)
+
+def c(v, d=4):
+    return ('%.*f' % (d, v)).replace('.', ',')
+
+def lasso_path(A, y, lams, it=5000, tol=1e-10):
+    """Caminho do lasso com partida quente (como o glmnet). lams DECRESCENTE."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def enet_path(A, y, lams, al, it=5000, tol=1e-10):
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(nrm[j] + lam*(1 - al))
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def cv_path(ajusta_path, A, y, lams, k=10, seed=0, reps=1):
+    """EQM por VC para TODA a grade de lambda de uma vez, com partida quente."""
+    acc = np.zeros((reps, len(lams)))
+    for rp in range(reps):
+        d = dobras(len(y), k, seed + 1000*rp); E = np.zeros((len(lams), len(y)))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            bs = ajusta_path(Ap, y[tr], lams)
+            Ate = (A[te] - mu)/sd
+            for i, b in enumerate(bs): E[i, te] = y[te] - prev(Ate, b)
+        acc[rp] = (E**2).mean(1)
+    return acc.mean(0), acc.std(0, ddof=1) if reps &gt; 1 else np.zeros(len(lams))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="subset.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Seleção exaustiva de subconjuntos
-    </a>
-<a href="ridge.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão ridge
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def _cd_gram(G, Ay, lam, al, b, dg, it=10000, tol=1e-11):
+    """Descida por coordenadas usando a matriz de Gram: só escalares no laço."""
+    p_ = len(b)
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return b
+
+def enet_path_g(A, y, lams, al=1.0):
+    """Caminho da rede elástica (al=1 é o lasso) com Gram e partida quente."""
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_gram(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_g(A, y, lams): return enet_path_g(A, y, lams, 1.0)
+
+
+def _cd_ativo(G, Ay, lam, al, b, dg, it=200, tol=1e-11):
+    """Descida por coordenadas com CONJUNTO ATIVO (estratégia do glmnet):
+    varre tudo, depois itera só nos coeficientes não nulos."""
+    p_ = len(b)
+    for _ in range(it):
+        # varredura completa
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        ativo = np.flatnonzero(b)
+        if len(ativo) == 0 or mx &lt; tol: break
+        Ga = G[np.ix_(ativo, ativo)]; Aya = Ay[ativo]; dga = dg[ativo]
+        ba = b[ativo].copy()
+        for _ in range(2000):
+            mxa = 0.0
+            for i in range(len(ativo)):
+                bi = ba[i]
+                rho = Aya[i] - (Ga[i] @ ba - dga[i]*bi)
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dga[i] + lam*(1 - al))
+                if nb != bi:
+                    ba[i] = nb; mxa = max(mxa, abs(nb - bi))
+            if mxa &lt; tol: break
+        b[ativo] = ba
+        if mx &lt; tol: break
+    return b
+
+def enet_path_a(A, y, lams, al=1.0):
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_ativo(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_a(A, y, lams): return enet_path_a(A, y, lams, 1.0)
+# ------------------------------------------------------------------ fim do bloco comum
+from scipy import stats
+
+Xp,mu,sd=pad(X); SQT=float(np.sum((Y-Y.mean())**2))
+
+def ajuste(A,y,cols):
+    Ad=np.column_stack([np.ones(len(y))]+[A[:,j] for j in cols])
+    b=np.linalg.lstsq(Ad,y,rcond=None)[0]; sq=sqr(y,Ad@b)
+    return b,sq,Ad
+def aic(sq,n_,d): return n_*np.log(sq/n_)+2*d
+def bic_(sq,n_,d): return n_*np.log(sq/n_)+np.log(n_)*d
+
+def passo(A,y,modo,crit_=aic,verb=False,p_ent=0.05,p_sai=0.10,por_p=False):
+    n_=len(y); pp=A.shape[1]
+    cur=[] if modo=='frente' else list(range(pp))
+    hist=[]
+    while True:
+        b,sq,_=ajuste(A,y,cur); cc=crit_(sq,n_,len(cur)+1)
+        cands=[]
+        if modo in ('frente','ambos'):
+            for j in range(pp):
+                if j in cur: continue
+                b2,sq2,_=ajuste(A,y,cur+[j])
+                cands.append(('+',j,crit_(sq2,n_,len(cur)+2),sq2))
+        if modo in ('tras','ambos'):
+            for j in cur:
+                o=[k for k in cur if k!=j]
+                b2,sq2,_=ajuste(A,y,o)
+                cands.append(('-',j,crit_(sq2,n_,len(o)+1),sq2))
+        if not cands: break
+        cands.sort(key=lambda t:t[2])
+        op,j,novo,_=cands[0]
+        if novo&gt;=cc-1e-10: break
+        cur=cur+[j] if op=='+' else [k for k in cur if k!=j]
+        hist.append((op,j,cc,novo))
+        if verb: print('   %s%-10s AIC %8s -&gt; %8s'%(op,ROT[NOMES[j]],c(cc,2),c(novo,2)))
+    return sorted(cur),hist
+
+print('Os mesmos 90 perfis de solo e as mesmas 12 candidatas da ficha subset.')
+print('O modelo VERDADEIRO usa quatro: M.O., P (resina), V% e Argila.')
+print('A busca exaustiva (4.096 modelos) achou, no tamanho 4: M.O., P (resina),')
+print('V% e AREIA — e a areia é quase o complemento da argila.')
+print()
+print('='*70)
+print('AS TRÊS DIREÇÕES, por AIC')
+res={}
+for modo,rot in [('frente','PARA FRENTE (forward)'),('tras','PARA TRÁS (backward)'),('ambos','NOS DOIS SENTIDOS (both)')]:
+    print('\n'+rot)
+    cur,hist=passo(Xp,Y,modo,verb=True)
+    res[modo]=cur
+    b,sq,_=ajuste(Xp,Y,cur)
+    print('   SELECIONADO (%d vars): %s'%(len(cur),', '.join(ROT[NOMES[j]] for j in cur)))
+    print('   R² = %s | AIC = %s | EQM resub = %s'%(c(1-sq/SQT),c(aic(sq,N,len(cur)+1),2),c(sq/N)))
+print()
+print('Coincidem?','SIM' if res['frente']==res['tras']==res['ambos'] else 'NÃO')
+for a,b_ in [('frente','tras'),('frente','ambos'),('tras','ambos')]:
+    d=set(res[a])^set(res[b_])
+    print('  %-7s x %-7s: %s'%(a,b_,'idênticos' if not d else 'diferem em '+', '.join(ROT[NOMES[j]] for j in sorted(d))))
+print()
+print('Com BIC, que penaliza mais:')
+for modo in ['frente','tras','ambos']:
+    cur,_=passo(Xp,Y,modo,crit_=bic_)
+    print('  %-7s (%d vars): %s'%(modo,len(cur),', '.join(ROT[NOMES[j]] for j in cur)))
+
+print('\n'+'='*70)
+print('STEPWISE contra BUSCA EXAUSTIVA: quantos modelos cada um examina?')
+print()
+print('   p   exaustiva   para frente (p(p+1)/2)   razão')
+for p_ in [12,20,30,50,100]:
+    print('%4d   %9s   %20d   %s'%(p_,'2^%d'%p_,p_*(p_+1)//2,'%.3g'%(2**p_/(p_*(p_+1)/2))))
+print()
+cur,_=passo(Xp,Y,'frente')
+print('Com p = 12, a exaustiva examina 4.096 modelos e a seleção para frente')
+print('examina no máximo 78. E chegou ao mesmo lugar? ',end='')
+# melhor de mesmo tamanho pela exaustiva
+tam=len(cur); bb=None
+for cols in itertools.combinations(range(P),tam):
+    _,sq,_=ajuste(Xp,Y,list(cols))
+    if bb is None or sq&lt;bb[0]: bb=(sq,cols)
+print('o melhor subconjunto de tamanho %d é'%tam)
+print('   %s'%', '.join(ROT[NOMES[j]] for j in bb[1]))
+print('   e o da seleção para frente é')
+print('   %s'%', '.join(ROT[NOMES[j]] for j in cur))
+print('   iguais?',sorted(bb[1])==cur)
+
+print('\n'+'='*70)
+print('OS VALORES-p APÓS A SELEÇÃO NÃO SÃO VÁLIDOS')
+print()
+b,sq,Ad=ajuste(Xp,Y,cur)
+s2=sq/(N-len(cur)-1); C=np.linalg.inv(Ad.T@Ad)*s2
+ep=np.sqrt(np.diag(C)); t=b/ep
+pv=2*(1-stats.t.cdf(np.abs(t),N-len(cur)-1))
+print('A saída que o R imprime para o modelo selecionado:')
+print('%-12s %10s %10s %9s %12s'%('termo','estimativa','erro-padrão','t','p (NOMINAL)'))
+print('%-12s %10s %10s %9s %12s'%('(intercepto)',c(b[0]),c(ep[0]),c(t[0],2),'%.2e'%pv[0]))
+for i,j in enumerate(cur):
+    print('%-12s %10s %10s %9s %12s'%(ROT[NOMES[j]],c(b[i+1]),c(ep[i+1]),c(t[i+1],2),'%.2e'%pv[i+1]))
+print()
+print('Todos "altamente significativos". Mas esses p supõem que o modelo foi')
+print('escolhido ANTES de ver os dados, e ele não foi.')
+print()
+print('A DEMONSTRAÇÃO: y PERMUTADO, sem nenhuma relação com X, 2.000 vezes.')
+print('Em cada permutação, roda-se a seleção para frente e registra-se o menor')
+print('valor-p do modelo selecionado.')
+rg=np.random.default_rng(13)
+menor=[];nsel=[];qsig=0;r2s=[]
+for r in range(2000):
+    yp=rg.permutation(Y)
+    cu,_=passo(Xp,yp,'frente')
+    nsel.append(len(cu))
+    if not cu: menor.append(1.0); r2s.append(0.0); continue
+    b2,sq2,Ad2=ajuste(Xp,yp,cu)
+    s22=sq2/(N-len(cu)-1); ep2=np.sqrt(np.diag(np.linalg.inv(Ad2.T@Ad2)*s22))
+    t2=b2[1:]/ep2[1:]
+    pv2=2*(1-stats.t.cdf(np.abs(t2),N-len(cu)-1))
+    menor.append(pv2.min()); r2s.append(1-sq2/np.sum((yp-yp.mean())**2))
+    if pv2.min()&lt;0.05: qsig+=1
+menor=np.array(menor); nsel=np.array(nsel); r2s=np.array(r2s)
+print()
+print('  variáveis selecionadas (média)                 %s'%c(nsel.mean(),3))
+print('  permutações em que selecionou &gt;= 1 variável     %.1f%%'%(100*np.mean(nsel&gt;0)))
+print('  permutações com algum p &lt; 0,05                  %.1f%%  &lt;- deveria ser ~5%%'%(100*qsig/2000))
+print('  permutações com algum p &lt; 0,01                  %.1f%%  &lt;- deveria ser ~1%%'%(100*np.mean(menor&lt;0.01)))
+print('  permutações com algum p &lt; 0,001                 %.1f%%  &lt;- deveria ser ~0,1%%'%(100*np.mean(menor&lt;0.001)))
+print('  R² médio do modelo selecionado                  %s'%c(r2s.mean()))
+print('  R² máximo observado                             %s'%c(r2s.max()))
+print()
+print('Em dados sem NENHUM sinal, a seleção para frente por AIC devolve em média')
+print('%s variáveis, e em %.1f%% das vezes ao menos uma delas tem p &lt; 0,05.'%(c(nsel.mean(),2),100*qsig/2000))
+
+print('\n'+'='*70)
+print('INSTABILIDADE: 1.000 reamostras bootstrap, seleção refeita em cada uma')
+rg=np.random.default_rng(17)
+cont=np.zeros(P); tam=[]; mesmo=0; cur0=set(cur)
+for r in range(1000):
+    i=rg.integers(0,N,N); Xb,_,_=pad(X[i])
+    cu,_=passo(Xb,Y[i],'frente')
+    for j in cu: cont[j]+=1
+    tam.append(len(cu))
+    if set(cu)==cur0: mesmo+=1
+tam=np.array(tam)
+print()
+print('variável        frequência de seleção   no verdadeiro?   no selecionado?')
+for j in np.argsort(-cont):
+    print('%-10s                %6.1f%%   %-14s   %s'%(ROT[NOMES[j]],100*cont[j]/1000,
+          'SIM' if NOMES[j] in VERD else '-','SIM' if j in cur0 else '-'))
+print()
+print('tamanho do modelo selecionado: média %s, de %d a %d'%(c(tam.mean(),2),tam.min(),tam.max()))
+print('o conjunto exato da amostra original foi reencontrado em %.1f%% das reamostras'%(100*mesmo/1000))
+
+print('\n'+'='*70)
+print('O ERRO DE PREDIÇÃO, honestamente estimado')
+d=dobras(N,10,3); er=np.empty(N); escolhas=[]
+for j in range(10):
+    tr,te=d!=j,d==j
+    Ap,m_,s_=pad(X[tr]); ytr=Y[tr]
+    cu,_=passo(Ap,ytr,'frente')
+    b2,_,_=ajuste(Ap,ytr,cu)
+    Xte=(X[te]-m_)/s_
+    er[te]=Y[te]-(b2[0]+Xte[:,cu]@b2[1:])
+    escolhas.append(cu)
+_,sqf,_=ajuste(Xp,Y,cur)
+print()
+print('EQM de resubstituição do modelo selecionado          = %s'%c(sqf/N))
+dd=dobras(N,10,3); efx=np.empty(N)
+for j in range(10):
+    tr,te=dd!=j,dd==j
+    Ap,m_,s_=pad(X[tr]); b2,_,_=ajuste(Ap,Y[tr],cur)
+    Xte=(X[te]-m_)/s_; efx[te]=Y[te]-(b2[0]+Xte[:,cur]@b2[1:])
+print('EQM validado, modelo FIXO (selecionado na amostra)   = %s  &lt;- OTIMISTA'%c(eqm(np.zeros(N),efx)))
+print('EQM validado, seleção REFEITA em cada dobra          = %s'%c(eqm(np.zeros(N),er)))
+print('EQM validado do modelo VERDADEIRO                    = %s'%c(cv(ols,X[:,[NOMES.index(k) for k in VERD]],Y,10,3)[0]))
+print('EQM validado do modelo COMPLETO                      = %s'%c(cv(ols,X,Y,10,3)[0]))
+print()
+print('Os modelos escolhidos nas 10 dobras:')
+for j,cu in enumerate(escolhas):
+    print('  dobra %2d (%d vars): %s'%(j+1,len(cu),', '.join(ROT[NOMES[k]] for k in cu)))
+tod=set().union(*[set(c_) for c_ in escolhas]); com=set(escolhas[0]).intersection(*[set(c_) for c_ in escolhas])
+print()
+print('variáveis que apareceram em ALGUMA dobra: %d de 12'%len(tod))
+print('variáveis que apareceram em TODAS as dobras: %s'%', '.join(ROT[NOMES[j]] for j in sorted(com)))
+
+print('\n'+'='*70)
+print('O REGIME EM QUE O STEPWISE FRACASSA POR COMPLETO: p próximo de n')
+print('Simulação: n = 50, p = 45 candidatas, NENHUMA com efeito real.')
+rg=np.random.default_rng(23)
+r2=[];ns=[]
+for r in range(200):
+    Z=rg.normal(0,1,(50,45)); yz=rg.normal(0,1,50)
+    Zp,_,_=pad(Z)
+    cu,_=passo(Zp,yz,'frente')
+    if cu:
+        _,sq2,_=ajuste(Zp,yz,cu); r2.append(1-sq2/np.sum((yz-yz.mean())**2))
+    else: r2.append(0.0)
+    ns.append(len(cu))
+print()
+print('  variáveis selecionadas: média %s, máximo %d'%(c(np.mean(ns),2),max(ns)))
+print('  R² médio do modelo selecionado: %s'%c(np.mean(r2)))
+print('  R² máximo: %s'%c(max(r2)))
+print('  proporção com R² &gt; 0,50: %.1f%%'%(100*np.mean(np.array(r2)&gt;0.5)))
+print()
+print('Nenhuma das 45 candidatas tem relação com y, e ainda assim o R² médio do')
+print('modelo selecionado é %s. É a busca, e não os dados, que produz o ajuste.'%c(np.mean(r2)))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Os mesmos 90 perfis de solo e as mesmas 12 candidatas da ficha subset.
+O modelo VERDADEIRO usa quatro: M.O., P (resina), V% e Argila.
+A busca exaustiva (4.096 modelos) achou, no tamanho 4: M.O., P (resina),
+V% e AREIA — e a areia é quase o complemento da argila.
+
+======================================================================
+AS TRÊS DIREÇÕES, por AIC
+
+PARA FRENTE (forward)
+   +M.O.       AIC    13,90 -&gt;   -30,67
+   +V%         AIC   -30,67 -&gt;   -68,86
+   +Areia      AIC   -68,86 -&gt;   -80,44
+   +P (resina) AIC   -80,44 -&gt;   -85,25
+   +K          AIC   -85,25 -&gt;   -87,77
+   SELECIONADO (5 vars): M.O., P (resina), K, V%, Areia
+   R² = 0,7108 | AIC = -87,77 | EQM resub = 0,3300
+
+PARA TRÁS (backward)
+   -Mg         AIC   -77,13 -&gt;   -79,13
+   -Al         AIC   -79,13 -&gt;   -81,12
+   -pH         AIC   -81,12 -&gt;   -83,10
+   -CTC        AIC   -83,10 -&gt;   -84,97
+   -Areia      AIC   -84,97 -&gt;   -86,24
+   -Ca         AIC   -86,24 -&gt;   -86,87
+   SELECIONADO (6 vars): M.O., P (resina), K, V%, Argila, Silte
+   R² = 0,7144 | AIC = -86,87 | EQM resub = 0,3260
+
+NOS DOIS SENTIDOS (both)
+   -Mg         AIC   -77,13 -&gt;   -79,13
+   -Al         AIC   -79,13 -&gt;   -81,12
+   -pH         AIC   -81,12 -&gt;   -83,10
+   -CTC        AIC   -83,10 -&gt;   -84,97
+   -Areia      AIC   -84,97 -&gt;   -86,24
+   -Ca         AIC   -86,24 -&gt;   -86,87
+   SELECIONADO (6 vars): M.O., P (resina), K, V%, Argila, Silte
+   R² = 0,7144 | AIC = -86,87 | EQM resub = 0,3260
+
+Coincidem? NÃO
+  frente  x tras   : diferem em Argila, Silte, Areia
+  frente  x ambos  : diferem em Argila, Silte, Areia
+  tras    x ambos  : idênticos
+
+Com BIC, que penaliza mais:
+  frente  (5 vars): M.O., P (resina), K, V%, Areia
+  tras    (5 vars): M.O., P (resina), V%, Argila, Silte
+  ambos   (5 vars): M.O., P (resina), V%, Argila, Silte
+
+======================================================================
+STEPWISE contra BUSCA EXAUSTIVA: quantos modelos cada um examina?
+
+   p   exaustiva   para frente (p(p+1)/2)   razão
+  12        2^12                     78   52.5
+  20        2^20                    210   4.99e+03
+  30        2^30                    465   2.31e+06
+  50        2^50                   1275   8.83e+11
+ 100       2^100                   5050   2.51e+26
+
+Com p = 12, a exaustiva examina 4.096 modelos e a seleção para frente
+examina no máximo 78. E chegou ao mesmo lugar? o melhor subconjunto de tamanho 5 é
+   M.O., P (resina), K, V%, Areia
+   e o da seleção para frente é
+   M.O., P (resina), K, V%, Areia
+   iguais? True
+
+======================================================================
+OS VALORES-p APÓS A SELEÇÃO NÃO SÃO VÁLIDOS
+
+A saída que o R imprime para o modelo selecionado:
+termo        estimativa erro-padrão         t  p (NOMINAL)
+(intercepto)     9,0579     0,0627    144,51     0.00e+00
+M.O.             0,8695     0,0761     11,42     0.00e+00
+P (resina)       0,1579     0,0652      2,42     1.75e-02
+K               -0,2769     0,1330     -2,08     4.04e-02
+V%               0,7600     0,1340      5,67     1.97e-07
+Areia           -0,2936     0,0714     -4,11     9.10e-05
+
+Todos "altamente significativos". Mas esses p supõem que o modelo foi
+escolhido ANTES de ver os dados, e ele não foi.
+
+A DEMONSTRAÇÃO: y PERMUTADO, sem nenhuma relação com X, 2.000 vezes.
+Em cada permutação, roda-se a seleção para frente e registra-se o menor
+valor-p do modelo selecionado.
+
+  variáveis selecionadas (média)                 1,367
+  permutações em que selecionou &gt;= 1 variável     73.7%
+  permutações com algum p &lt; 0,05                  44.8%  &lt;- deveria ser ~5%
+  permutações com algum p &lt; 0,01                  16.6%  &lt;- deveria ser ~1%
+  permutações com algum p &lt; 0,001                 3.4%  &lt;- deveria ser ~0,1%
+  R² médio do modelo selecionado                  0,0557
+  R² máximo observado                             0,3188
+
+Em dados sem NENHUM sinal, a seleção para frente por AIC devolve em média
+1,37 variáveis, e em 44.8% das vezes ao menos uma delas tem p &lt; 0,05.
+
+======================================================================
+INSTABILIDADE: 1.000 reamostras bootstrap, seleção refeita em cada uma
+
+variável        frequência de seleção   no verdadeiro?   no selecionado?
+M.O.                       100.0%   SIM              SIM
+V%                          98.3%   SIM              SIM
+P (resina)                  88.0%   SIM              SIM
+Areia                       82.9%   -                SIM
+K                           43.1%   -                SIM
+Ca                          37.1%   -                -
+CTC                         24.8%   -                -
+Argila                      23.4%   SIM              -
+Mg                          22.5%   -                -
+Silte                       17.0%   -                -
+pH                          16.5%   -                -
+Al                          14.7%   -                -
+
+tamanho do modelo selecionado: média 5,68, de 2 a 10
+o conjunto exato da amostra original foi reencontrado em 11.5% das reamostras
+
+======================================================================
+O ERRO DE PREDIÇÃO, honestamente estimado
+
+EQM de resubstituição do modelo selecionado          = 0,3300
+EQM validado, modelo FIXO (selecionado na amostra)   = 0,3915  &lt;- OTIMISTA
+EQM validado, seleção REFEITA em cada dobra          = 0,4315
+EQM validado do modelo VERDADEIRO                    = 0,4234
+EQM validado do modelo COMPLETO                      = 0,4584
+
+Os modelos escolhidos nas 10 dobras:
+  dobra  1 (5 vars): M.O., P (resina), K, V%, Areia
+  dobra  2 (5 vars): M.O., P (resina), CTC, V%, Areia
+  dobra  3 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  4 (6 vars): M.O., P (resina), K, Ca, V%, Areia
+  dobra  5 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  6 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  7 (5 vars): M.O., P (resina), K, V%, Areia
+  dobra  8 (5 vars): M.O., P (resina), K, V%, Areia
+  dobra  9 (5 vars): M.O., P (resina), K, V%, Areia
+  dobra 10 (6 vars): M.O., P (resina), K, Mg, V%, Areia
+
+variáveis que apareceram em ALGUMA dobra: 8 de 12
+variáveis que apareceram em TODAS as dobras: M.O., P (resina), V%, Areia
+
+======================================================================
+O REGIME EM QUE O STEPWISE FRACASSA POR COMPLETO: p próximo de n
+Simulação: n = 50, p = 45 candidatas, NENHUMA com efeito real.
+
+  variáveis selecionadas: média 17,23, máximo 45
+  R² médio do modelo selecionado: 0,6836
+  R² máximo: 0,9948
+  proporção com R² &gt; 0,50: 83.5%
+
+Nenhuma das 45 candidatas tem relação com y, e ainda assim o R² médio do
+modelo selecionado é 0,6836. É a busca, e não os dados, que produz o ajuste.</pre></div><figure class="fig"><img src="../assets/resultados/stepwise.png" alt="A frequência de seleção, a instabilidade do tamanho e os três degraus do otimismo" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a frequência com que cada variável é selecionada em 400 reamostras bootstrap: a argila, que está no modelo verdadeiro, é escolhida menos vezes que a areia e o cálcio, que não estão. No centro, a distribuição do número de variáveis selecionadas, que vai de 2 a 10 com média 5,68 contra as 4 verdadeiras. À direita, as cinco estimativas de erro. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Com y PERMUTADO: a inflação dos valores-p, 2.000 permutações</caption><thead><tr><th>Quantidade</th><th>Observado</th><th>Esperado</th></tr></thead><tbody><tr><td>Variáveis selecionadas (média)</td><td>1,367</td><td>—</td></tr><tr><td>Permutações com ao menos 1 variável selecionada</td><td>73,7%</td><td>—</td></tr><tr><td><strong>Permutações com algum p &lt; 0,05</strong></td><td><strong>44,8%</strong></td><td>~5%</td></tr><tr><td>Permutações com algum p &lt; 0,01</td><td>16,6%</td><td>~1%</td></tr><tr><td>Permutações com algum p &lt; 0,001</td><td>3,4%</td><td>~0,1%</td></tr><tr><td>R² médio do modelo selecionado</td><td>0,0557</td><td>0</td></tr><tr><td>R² máximo observado</td><td>0,3188</td><td>0</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Instabilidade: 1.000 reamostras bootstrap</caption><thead><tr><th>Variável</th><th>Frequência de seleção</th><th>No verdadeiro?</th><th>No selecionado?</th></tr></thead><tbody><tr><td>M.O.</td><td>100,0%</td><td>SIM</td><td>SIM</td></tr><tr><td>V%</td><td>98,3%</td><td>SIM</td><td>SIM</td></tr><tr><td>P (resina)</td><td>88,0%</td><td>SIM</td><td>SIM</td></tr><tr><td><strong>Areia</strong></td><td><strong>82,9%</strong></td><td><strong>não</strong></td><td>SIM</td></tr><tr><td>K</td><td>43,1%</td><td>não</td><td>SIM</td></tr><tr><td>Ca</td><td>37,1%</td><td>não</td><td>não</td></tr><tr><td>CTC</td><td>24,8%</td><td>não</td><td>não</td></tr><tr><td><strong>Argila</strong></td><td><strong>23,4%</strong></td><td><strong>SIM</strong></td><td><strong>não</strong></td></tr><tr><td>Mg</td><td>22,5%</td><td>não</td><td>não</td></tr><tr><td>Silte</td><td>17,0%</td><td>não</td><td>não</td></tr><tr><td>pH</td><td>16,5%</td><td>não</td><td>não</td></tr><tr><td>Al</td><td>14,7%</td><td>não</td><td>não</td></tr></tbody></table></div><p>Tamanho do modelo selecionado: média 5,68, variando de 2 a 10. O conjunto exato escolhido na amostra original foi reencontrado em apenas <strong>11,5%</strong> das reamostras.</p><div class="table-wrap"><table class="method-table"><caption>O erro de predição, honestamente estimado</caption><thead><tr><th>Estimativa</th><th>EQM</th></tr></thead><tbody><tr><td>Resubstituição do modelo selecionado</td><td>0,3300</td></tr><tr><td>Validada, modelo FIXO (selecionado na amostra inteira)</td><td>0,3915</td></tr><tr><td><strong>Validada, seleção REFEITA em cada dobra</strong></td><td><strong>0,4315</strong></td></tr><tr><td>Validada, modelo VERDADEIRO</td><td>0,4234</td></tr><tr><td>Validada, modelo COMPLETO</td><td>0,4584</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os modelos escolhidos nas dez dobras</caption><thead><tr><th>Dobra</th><th>Vars.</th><th>Variáveis</th></tr></thead><tbody><tr><td>1</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr><tr><td>2</td><td>5</td><td>M.O., P, CTC, V%, Areia</td></tr><tr><td>3</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>4</td><td>6</td><td>M.O., P, K, Ca, V%, Areia</td></tr><tr><td>5</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>6</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>7</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr><tr><td>8</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr><tr><td>9</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr><tr><td>10</td><td>6</td><td>M.O., P, K, Mg, V%, Areia</td></tr></tbody></table></div><p>Oito das doze candidatas aparecem em alguma dobra; quatro aparecem em todas: M.O., P, V% e areia.</p><div class="table-wrap"><table class="method-table"><caption>Com n = 50 e 45 candidatas SEM NENHUM EFEITO (200 simulações)</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>Variáveis selecionadas (média)</td><td>17,23</td></tr><tr><td>Variáveis selecionadas (máximo)</td><td>45 — todas</td></tr><tr><td><strong>R² médio do modelo selecionado</strong></td><td><strong>0,6836</strong></td></tr><tr><td>R² máximo</td><td>0,9948</td></tr><tr><td>Simulações com R² &gt; 0,50</td><td>83,5%</td></tr><tr><td><em>R² verdadeiro</em></td><td><em>0</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela da permutação é o resultado mais importante da ficha, e merece ser lida devagar. O procedimento é inatacável: permutar \(y\) destrói qualquer relação com \(X\) sem alterar nem a distribuição de \(y\) nem a estrutura de correlação entre as candidatas. Depois disso, <em>por construção</em>, nenhuma variável tem efeito. A seleção para frente por AIC ainda assim seleciona ao menos uma variável em 73,7% das permutações, e em 44,8% delas alguma variável selecionada tem \(p&lt;0{,}05\). Um procedimento que deveria produzir falsos positivos em 5% das vezes os produz em quase metade.</p><p>A razão é direta: a variável só entra se a estatística \(t\) dela for grande; depois de entrar, calcula-se o \(p\) a partir dessa mesma estatística grande. O teste está sendo aplicado à variável que foi escolhida <em>por ter</em> a estatística extrema. Não é um defeito da fórmula do \(p\) — é um uso dela fora das condições em que vale.</p><p><strong>Sobre a instabilidade:</strong> a comparação entre argila e areia resume o problema. A argila está no processo gerador e é selecionada em 23,4% das reamostras; a areia não está e é selecionada em 82,9%. Se o leitor recebesse apenas o modelo final, concluiria que a textura importa via areia — conclusão agronômica errada, obtida de dados em que a resposta correta é conhecida. Vale notar também que o tamanho escolhido varia de 2 a 10, com média 5,68 contra as 4 verdadeiras: o AIC é conhecido por selecionar modelos grandes demais, e aqui isso se confirma.</p><p><strong>Sobre o otimismo:</strong> os três degraus são 0,3300, 0,3915 e 0,4315. O salto de 0,3300 para 0,3915 é o otimismo de <em>ajuste</em>, que a validação cruzada comum já corrige. O salto de 0,3915 para 0,4315 é o otimismo de <em>seleção</em>, que só a validação aninhada corrige, e vale 10% do erro. Reportar o número do meio é o erro mais comum na prática, porque parece ser validação cruzada — e é, mas de um modelo que viu os dados de teste.</p><p><strong>Sobre o regime p ≈ n:</strong> a última tabela é o caso extremo e também o mais frequente em áreas como genômica, sensoriamento e análise de texto, em que as candidatas são muitas. Com 45 candidatas, 50 observações e nenhum efeito real, o modelo selecionado tem \(R^2\) médio de 0,6836, chega a 0,9948, e em 83,5% das simulações passa de 0,50. Um pesquisador que rodasse esse procedimento uma vez e reportasse \(R^2=0{,}68\) com dezessete variáveis "significativas" estaria descrevendo ruído com grande confiança. Nessa situação o stepwise não é inferior ao <a href="lasso.html">lasso</a> ou ao <a href="ridge.html">ridge</a>: é inutilizável.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td><strong>Reportar os valores-p do modelo selecionado</strong></td><td>Não os reporte; use frequências de bootstrap.</td></tr><tr><td>Interpretar o modelo escolhido como o conjunto de causas</td><td>Ele é um entre muitos quase equivalentes.</td></tr><tr><td>Avaliar o erro no conjunto em que se selecionou</td><td>Refaça a seleção dentro de cada dobra.</td></tr><tr><td>Usar com p próximo de n</td><td>Prefira <a href="lasso.html">lasso</a> ou <a href="ridge.html">ridge</a>.</td></tr><tr><td>Rodar só uma direção e não comparar</td><td>Rode as três; a discordância é informação.</td></tr><tr><td>Começar sem tratar dados faltantes</td><td>AIC de modelos com n diferente não é comparável.</td></tr><tr><td>Selecionar interações sem os efeitos principais</td><td>Use <code>scope</code> com <code>lower</code> adequado.</td></tr><tr><td>Concluir ausência de efeito pela não seleção</td><td>A variável pode ter sido substituída por colinear.</td></tr><tr><td>Usar valores-p como critério de entrada e saída</td><td>Prefira AIC ou BIC; e veja as ressalvas acima.</td></tr><tr><td>Reportar o R² do modelo selecionado sem ressalva</td><td>Ele é inflado pela busca.</td></tr><tr><td>Apresentar a sequência de passos como narrativa causal</td><td>É uma ordem de ajuste, não de importância.</td></tr><tr><td>Usar stepwise para inferência confirmatória</td><td>Para isso, o modelo tem de ser especificado antes.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="subset.html">Seleção exaustiva</a></td><td>Quando p ≤ 30: mesma crítica, mas sem busca aproximada.</td></tr><tr><td><a href="lasso.html">Lasso</a></td><td>Seleção com encolhimento; funciona com p > n; mais estável.</td></tr><tr><td>Rede elástica</td><td>Candidatas colineares em grupos, como aqui.</td></tr><tr><td><a href="ridge.html">Ridge</a></td><td>Quando não é preciso selecionar e o alvo é predição.</td></tr><tr><td><a href="pcr.html">PCR</a> e <a href="pls.html">PLS</a></td><td>Redução de dimensão sem descarte de variáveis.</td></tr><tr><td>Médias de modelos com pesos de AIC</td><td>Quando os modelos estão empatados: combine.</td></tr><tr><td>Seleção por conhecimento da área</td><td>A melhor seleção é a que não usa os dados.</td></tr><tr><td>Manter o modelo completo</td><td>Com p pequeno e alvo preditivo, é defensável.</td></tr><tr><td>Bootstrap da seleção</td><td>Para reportar estabilidade em vez de uma escolha.</td></tr><tr><td>Inferência pós-seleção</td><td>Quando se precisa de p válidos depois de selecionar.</td></tr><tr><td>Pré-registro do modelo</td><td>Para inferência confirmatória: a única solução real.</td></tr></tbody></table></div><ol class="steps"><li>Pergunte-se primeiro se a seleção é necessária: com p pequeno, pode não ser.</li><li>Remova linhas incompletas antes de começar.</li><li>Examine VIF e correlações para saber quais escolhas serão arbitrárias.</li><li>Declare o critério (AIC ou BIC) antes de rodar.</li><li>Rode as três direções e compare: a discordância mede a arbitrariedade.</li><li>Estime o erro por validação cruzada com a seleção REFEITA em cada dobra.</li><li>Rode bootstrap da seleção e reporte as frequências de inclusão.</li><li>Não reporte os valores-p do modelo final.</li><li>Compare o erro validado com o do lasso e com o do modelo completo.</li><li>Ao escrever, descreva o modelo como "um conjunto compatível com os dados", não como "as variáveis que importam".</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>EFROYMSON, M. A. Multiple regression analysis. In: RALSTON, A.; WILF, H. S. (ed.). <em>Mathematical methods for digital computers.</em> New York: Wiley, 1960. p. 191-203.</li><li>MILLER, Alan J. <em>Subset selection in regression.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2002.</li><li>FREEDMAN, David A. A note on screening regression equations. <em>The American Statistician</em>, v. 37, n. 2, p. 152-155, 1983.</li><li>HURVICH, Clifford M.; TSAI, Chih-Ling. The impact of model selection on inference in linear regression. <em>The American Statistician</em>, v. 44, n. 3, p. 214-217, 1990.</li><li>DERKSEN, Shelley; KESELMAN, H. J. Backward, forward and stepwise automated subset selection algorithms: frequency of obtaining authentic and noise variables. <em>British Journal of Mathematical and Statistical Psychology</em>, v. 45, n. 2, p. 265-282, 1992.</li><li>WHITTINGHAM, Mark J. et al. Why do we still use stepwise modelling in ecology and behaviour? <em>Journal of Animal Ecology</em>, v. 75, n. 5, p. 1182-1189, 2006.</li><li>MUNDRY, Roger; NUNN, Charles L. Stepwise model fitting and statistical inference: turning noise into signal pollution. <em>The American Naturalist</em>, v. 173, n. 1, p. 119-123, 2009.</li><li>SMITH, Gary. Step away from stepwise. <em>Journal of Big Data</em>, v. 5, art. 32, 2018.</li><li>BERK, Richard; BROWN, Lawrence; BUJA, Andreas; ZHANG, Kai; ZHAO, Linda. Valid post-selection inference. <em>The Annals of Statistics</em>, v. 41, n. 2, p. 802-837, 2013.</li><li>BURNHAM, Kenneth P.; ANDERSON, David R. <em>Model selection and multimodel inference.</em> 2. ed. New York: Springer, 2002.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>VARMA, Sudhir; SIMON, Richard. Bias in error estimation when using cross-validation for model selection. <em>BMC Bioinformatics</em>, v. 7, art. 91, 2006.</li><li>VENABLES, W. N.; RIPLEY, B. D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacote <code>MASS</code>, função <code>stepAIC</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>step</code>, <code>add1</code> e <code>drop1</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os do modelo linear, n muito maior que p, dados faltantes tratados antes, critério declarado previamente, erro estimado por validação aninhada e, sobretudo, valores-p do modelo final não reportados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>MASS (stepAIC); step é do R base</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="subset.html"><span>← ANTERIOR</span>Seleção exaustiva de subconjuntos</a><a href="ridge.html"><span>PRÓXIMO →</span>Regressão ridge</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

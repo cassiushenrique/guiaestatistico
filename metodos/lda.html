@@ -4,307 +4,439 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Análise discriminante linear (LDA): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Análise discriminante linear (LDA) | Estatística e Ciência de Dados
-  </title>
+<meta content="Análise discriminante linear (LDA): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Análise discriminante linear (LDA) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Análise discriminante linear (LDA)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 09 · CLASSIFICAÇÃO
-    </span>
-<h1>
-     Análise discriminante linear (LDA)
-    </h1>
-<p class="detail-lead">
-     Classifica observações em grupos conhecidos usando suas características mensuráveis.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/lda.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Classifica observações em grupos conhecidos usando suas características mensuráveis.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes, covariáveis quantitativas, normalidade condicional aproximada e matriz de covariância comum não singular.</li><li>Avaliar outliers e desempenho em teste.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\delta_k(\mathbf x)=\mathbf x^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_k-\frac12\boldsymbol\mu_k^\top\boldsymbol\Sigma^{-1}\boldsymbol\mu_k+\ln\pi_k\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\mu_k\)
-        </dt>
-<dd>
-         vetor médio da classe k
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\Sigma\)
-        </dt>
-<dd>
-         matriz de covariâncias especificada pelo classificador
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       A classificação depende da maior função discriminante/posterior; \(p&lt;0{,}05\) não é critério intrínseco de qualidade preditiva.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar veículos por quantidade de cilindros usando potência e massa em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-lda" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-lda"><code># Análise discriminante linear (LDA) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Análise discriminante linear (LDA)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ANÁLISE DISCRIMINANTE</span><h1>Análise discriminante linear (LDA)</h1><p class="detail-lead">Encontra as combinações lineares das variáveis que melhor separam grupos conhecidos e as usa para classificar observações novas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/lda.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/lda.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a análise discriminante</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A análise discriminante linear tem dois usos que convém separar desde o início. Como <em>descrição</em>, ela encontra as combinações lineares das variáveis que melhor separam grupos conhecidos — é a prima da <a href="manova.html">MANOVA</a>, e usa exatamente as mesmas matrizes. Como <em>classificação</em>, ela constrói uma regra para atribuir uma observação nova a um dos grupos.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Análise discriminante linear" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Dois usos</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Descrever a separação</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">Classificar observações novas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que supõe</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade multivariada</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">MESMA covariância nos grupos</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que produz</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Eixos canônicos</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Regra de classificação</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Probabilidades a posteriori</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A fronteira</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Hiperplanos: linear</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">MASS::lda()</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">predict()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Avaliação</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Validação cruzada</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">nunca a reclassificação</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Análise discriminante linear</text></svg><figcaption>Visão geral da análise discriminante linear. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O grupo é conhecido: isto não é agrupamento</strong><p>Em <a href="kmeans.html">k-médias</a> e <a href="hcluster.html">agrupamento hierárquico</a> os grupos são o que se procura. Aqui eles são dados, e o que se procura é a regra que os separa. Em <code>iris</code>, a espécie entra na análise como resposta — ao contrário daquelas duas fichas, em que ela foi deliberadamente escondida do algoritmo e revelada só no fim.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a análise discriminante</h2><p>Supondo que cada grupo \(i\) seja uma normal multivariada com média \(\mu_i\) e a <strong>mesma</strong> matriz de covariância \(\Sigma\), a regra que minimiza o erro esperado atribui \(x\) ao grupo de maior probabilidade a posteriori. Aplicando a regra de Bayes e tomando logaritmos, os termos quadráticos em \(x\) são idênticos nos \(k\) grupos e se cancelam quando se comparam dois deles. Resta uma função <em>linear</em>, e é daí que vem o nome.</p><figure class="fig"><img src="../assets/resultados/lda-didatica.png" alt="Uma variável isolada, o primeiro discriminante e as fronteiras lineares no plano canônico" loading="lazy"/><figcaption><strong>Da variável isolada ao discriminante.</strong> À esquerda, a largura da sépala sozinha: as três espécies se sobrepõem quase por completo, e o mesmo vale para qualquer uma das quatro medidas tomada isoladamente. No centro, o primeiro discriminante — uma combinação linear das quatro — separa a setosa por completo e deixa apenas uma faixa estreita de sobreposição entre versicolor e virginica. À direita, o plano formado pelos dois discriminantes, com as regiões de classificação: as fronteiras são retas, porque os termos quadráticos se cancelaram. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>As duas faces da mesma conta</strong><p>Os eixos canônicos são os autovetores de \(W^{-1}B\), com \(W\) a matriz de dispersão dentro dos grupos e \(B\) a de entre grupos — exatamente as matrizes \(E\) e \(H\) da <a href="manova.html">MANOVA</a>. Em <code>iris</code>, a soma dos dois autovalores, 32,4773, é o traço de Hotelling–Lawley daquela ficha, e o primeiro autovetor é o LD1 que <code>MASS::lda()</code> devolve. A MANOVA pergunta se os grupos diferem; a análise discriminante pergunta <em>em que direção</em>.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Normalidade multivariada em cada grupo</td><td>A regra de Bayes foi derivada dela.</td><td><code>MVN::mvn()</code> e <a href="mardia.html">teste de Mardia</a>; a regra é razoavelmente robusta a desvios moderados.</td></tr><tr><td><strong>Mesma matriz de covariância</strong></td><td>É o que torna a fronteira linear.</td><td><a href="boxm.html">M de Box</a>; se rejeitar, considere a <a href="qda.html">QDA</a>.</td></tr><tr><td>Observações independentes</td><td>Erros-padrão e validação pressupõem isso.</td><td>Delineamento.</td></tr><tr><td>n suficiente em relação a p</td><td>Com p próximo de n, o classificador decora os dados.</td><td>Regra prática: ao menos 5 a 10 observações por variável em cada grupo.</td></tr><tr><td>Ausência de multicolinearidade severa</td><td>W precisa ser invertível.</td><td>Determinante e número de condição de W.</td></tr><tr><td>Variáveis em escalas tratáveis</td><td>A LDA é invariante a mudanças lineares de escala.</td><td>Não é preciso padronizar: a inversa de W já faz esse papel.</td></tr><tr><td>Grupos definidos sem erro</td><td>Rótulos errados contaminam a estimativa.</td><td>Procedência dos rótulos.</td></tr></tbody></table></div><div class="callout try"><strong>Rejeitar o M de Box não condena a LDA</strong><p>Em <code>iris</code>, o M de Box devolve \(\chi^2=140{,}94\) com \(p=3{,}4\times10^{-20}\): as covariâncias são claramente diferentes, e a maior determinante é 62,8 vezes a menor. Mesmo assim a LDA erra apenas 3 flores em 150, e a <a href="qda.html">QDA</a> erra 4. Quando as médias estão bem separadas, a violação do pressuposto custa pouco; o que decide não é o teste, mas a comparação por validação cruzada.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Não há hipótese nula a testar — para isso existe a <a href="manova.html">MANOVA</a>. A formulação é de estimação e decisão.</p><h3>A regra de classificação</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\delta_i(x) &= x^{\top}S_p^{-1}\bar x_i-\tfrac{1}{2}\,\bar x_i^{\top}S_p^{-1}\bar x_i \\ &\quad +\ln\pi_i,\end{aligned}\]\[\begin{aligned}&\text{classifica-se }x \\ &\quad \text{ no grupo de maior }\delta_i(x).\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}S_p &= \frac{1}{n-k}\sum_{i=1}^{k}\sum_{j\in G_i}(x_j-\bar x_i)(x_j \\ &\quad -\bar x_i)^{\top},\end{aligned}\]\[P(G_i\mid x)=\frac{e^{\delta_i(x)}}{\sum_{\ell}e^{\delta_\ell(x)}}\]</div><h3>Os eixos canônicos</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[W=\sum_{i}\sum_{j\in G_i}(x_j-\bar x_i)(x_j-\bar x_i)^{\top},\]\[B=\sum_{i}n_i(\bar x_i-\bar x)(\bar x_i-\bar x)^{\top}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\text{os eixos são os autovetores }a_m \\ &\quad \text{ de }W^{-1}B,\end{aligned}\]\[\text{com }\lambda_1\geq\lambda_2\geq\dots\geq\lambda_{\min(k-1,\,p)}.\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(x\)</dt><dd>vetor de medidas de uma observação</dd></div><div><dt>\(\bar x_i\)</dt><dd>vetor de médias do grupo \(i\)</dd></div><div><dt>\(S_p\)</dt><dd>matriz de covariância agrupada</dd></div><div><dt>\(\pi_i\)</dt><dd>probabilidade a priori do grupo \(i\)</dd></div><div><dt>\(W,\ B\)</dt><dd>dispersão dentro e entre grupos</dd></div><div><dt>\(\lambda_m\)</dt><dd>autovalor do \(m\)-ésimo eixo: o poder discriminante dele</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>iris: médias por grupo, em centímetros</caption><thead><tr><th>Espécie</th><th>Compr. sépala</th><th>Larg. sépala</th><th>Compr. pétala</th><th>Larg. pétala</th></tr></thead><tbody><tr><td>setosa</td><td>5,006</td><td>3,428</td><td>1,462</td><td>0,246</td></tr><tr><td>versicolor</td><td>5,936</td><td>2,770</td><td>4,260</td><td>1,326</td></tr><tr><td>virginica</td><td>6,588</td><td>2,974</td><td>5,552</td><td>2,026</td></tr></tbody></table></div><div class="worked"><strong>Classificar a flor 71, que mede (5,9; 3,2; 4,8; 1,8)</strong><p>A função discriminante de cada grupo tem três parcelas: um termo linear em \(x\), um termo que só depende da média do grupo, e o logaritmo da probabilidade a priori — aqui 1/3 para cada espécie.</p><div class="table-wrap"><table class="method-table"><caption>As três funções discriminantes avaliadas nessa flor</caption><thead><tr><th>Grupo</th><th>Termo linear</th><th>Termo da média</th><th>ln πᵢ</th><th>δᵢ(x)</th></tr></thead><tbody><tr><td>setosa</td><td>104,2076</td><td>−85,2099</td><td>−1,0986</td><td>17,8991</td></tr><tr><td>versicolor</td><td>151,8480</td><td>−71,7540</td><td>−1,0986</td><td>78,9954</td></tr><tr><td><strong>virginica</strong></td><td>184,4452</td><td>−103,2697</td><td>−1,0986</td><td><strong>80,0769</strong></td></tr></tbody></table></div><p>O maior é o da virginica, e é essa a predição. Convertendo em probabilidades a posteriori pela exponencial normalizada:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&P(\text{virginica}\mid x) \\ &= \frac{e^{80{,}0769}}{e^{17{,}8991}+e^{78{,}9954}+e^{80{,}0769}} \\ &= 0{,}7468,\end{aligned}\]</div><p>contra 0,2532 para versicolor e praticamente zero para setosa. A flor 71 é, de fato, uma versicolor: é um dos três erros do classificador, e a probabilidade a posteriori de 0,75 avisa que o caso é duvidoso.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Os eixos canônicos são os mesmos autovetores de \(W^{-1}B\) que aparecem na <a href="manova.html">MANOVA</a>; o número deles é \(\min(k-1,\,p)\), ou seja, 2 em iris.</li><li>O método é invariante a transformações lineares não singulares das variáveis: padronizar não muda nada.</li><li>Com \(k=2\), a direção discriminante é proporcional a \(S_p^{-1}(\bar x_1-\bar x_2)\) e o método coincide com a função discriminante de Fisher, obtida sem supor normalidade.</li><li>Com \(k=2\) e covariâncias iguais, a LDA e a <a href="logistica.html">regressão logística</a> estimam a mesma fronteira por critérios diferentes: a LDA por verossimilhança conjunta, a logística por verossimilhança condicional.</li><li>As probabilidades a priori deslocam a fronteira sem mudar a sua direção: elas entram apenas pelo termo aditivo \(\ln\pi_i\).</li><li>O número de parâmetros de covariância é \(p(p+1)/2\), contra \(k\,p(p+1)/2\) da <a href="qda.html">QDA</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Proportion of trace</td><td>Poder discriminante de cada eixo.</td><td>Em iris, LD1 concentra 99,12%.</td></tr><tr><td>Coefficients of linear discriminants</td><td>O peso de cada variável em cada eixo.</td><td>A escala depende da normalização; compare entre variáveis, não entre ajustes.</td></tr><tr><td>Group means</td><td>Os centroides.</td><td>É o que a regra compara.</td></tr><tr><td>posterior</td><td>Probabilidade de cada grupo.</td><td>Valores próximos de 0,5 marcam os casos duvidosos.</td></tr><tr><td>Matriz de confusão</td><td>Onde o classificador erra.</td><td>Só vale a da validação cruzada.</td></tr><tr><td>Prior probabilities</td><td>As priores usadas.</td><td>O padrão do R são as proporções da amostra.</td></tr></tbody></table></div><div class="callout warn"><strong>Reclassificação não é desempenho</strong><p>Em <code>iris</code>, reclassificação e validação cruzada dão o mesmo 98%, e isso cria uma falsa sensação de segurança. A simulação desta ficha mostra o que acontece em dados <em>sem nenhum sinal</em>, gerados da mesma distribuição nos dois grupos: com n = 40 e p = 18, a reclassificação acerta <strong>81%</strong> e a validação cruzada acerta 48% — o valor correto, já que nenhum classificador pode superar 50% ali. A reclassificação usa cada observação para estimar o classificador que depois a julga.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>MASS::lda()</code>, que aceita fórmula e devolve priores, médias por grupo, coeficientes dos discriminantes e a proporção do traço. O argumento <code>CV = TRUE</code> faz a validação cruzada deixa-um-de-fora em uma única chamada, e é assim que se obtém a taxa de acerto a reportar. <code>predict()</code> devolve a classe, os escores canônicos e as probabilidades a posteriori. Para o pressuposto de covariâncias iguais, <code>biotools::boxM()</code>; para as fronteiras aos pares, <code>klaR::partimat()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-lda-min" type="button">Copiar código</button></div><pre id="code-lda-min"><code>library(MASS)
+m   &lt;- lda(Species ~ ., data = iris)
+mcv &lt;- lda(Species ~ ., data = iris, CV = TRUE)   # validação cruzada
+table(Real = iris$Species, Predita = mcv$class)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A aplicação usa <code>iris</code>, as 150 flores de Anderson analisadas por Fisher no artigo que introduziu o método — é o conjunto original da análise discriminante. Ele também aparece nas fichas de <a href="manova.html">MANOVA</a>, <a href="hcluster.html">agrupamento hierárquico</a>, <a href="kmeans.html">k-médias</a> e <a href="qda.html">QDA</a>, o que permite comparar as cinco abordagens sobre os mesmos dados.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-lda" type="button">Copiar código</button></div><pre id="code-lda"><code># Análise discriminante linear: exemplo completo ----
+# Pacotes: MASS (lda), klaR (fronteiras), caret (validação), ggplot2
+# install.packages(c("MASS", "klaR", "caret"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("MASS", quietly = TRUE)) install.packages("MASS")
+data(iris)
+str(iris)
+table(iris$Species)
+
+# Médias por grupo e covariância agrupada
+aggregate(. ~ Species, data = iris, FUN = mean)
+by(iris[, 1:4], iris$Species, function(x) round(cov(x), 4))
+
+# O ajuste
 library(MASS)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(cyl))
-i &lt;- sample(seq_len(nrow(d)), 22)
-ajuste &lt;- lda(classe ~ wt + hp, data = d[i, ])
-prev &lt;- predict(ajuste, newdata = d[-i, ])
-print(table(real = d$classe[-i], previsto = prev$class))
+m &lt;- lda(Species ~ ., data = iris)
+m                      # priores, médias por grupo e coeficientes LD1 e LD2
+m$svd^2 / sum(m$svd^2) # proporção do poder discriminante de cada eixo
+m$svd^2 / (nrow(iris) - nlevels(iris$Species))   # os autovalores de W^-1 B
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# Escores e classificação
+pr &lt;- predict(m)
+head(pr$x)             # escores nos eixos canônicos
+head(round(pr$posterior, 4))   # probabilidades a posteriori
+table(Real = iris$Species, Predita = pr$class)          # RECLASSIFICAÇÃO
+mean(pr$class == iris$Species)
 
+# Validação cruzada deixa-um-de-fora: é esta a taxa a reportar
+mcv &lt;- lda(Species ~ ., data = iris, CV = TRUE)
+table(Real = iris$Species, Predita = mcv$class)
+mean(mcv$class == iris$Species)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kmeans.html">
-<span>
-      ← ANTERIOR
-     </span>
-     K-means
-    </a>
-<a href="qda.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Análise discriminante quadrática (QDA)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# As flores mal classificadas
+erradas &lt;- which(mcv$class != iris$Species)
+cbind(iris[erradas, ], predita = mcv$class[erradas],
+      round(mcv$posterior[erradas, ], 4))
+
+# Probabilidades a priori: o padrão são as proporções da amostra
+lda(Species ~ ., data = iris, prior = c(0.10, 0.10, 0.80))
+pr2 &lt;- predict(lda(Species ~ ., data = iris, prior = c(0.10, 0.10, 0.80)))
+table(Real = iris$Species, Predita = pr2$class)
+
+# Pressupostos
+library(biotools)
+boxM(iris[, 1:4], iris$Species)      # igualdade das covariâncias
+library(MVN)
+# mvn(iris[iris$Species == "setosa", 1:4])   # normalidade multivariada por grupo
+# Relação com a MANOVA: o mesmo W^-1 B
+summary(manova(cbind(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+               ~ Species, data = iris), test = "Hotelling-Lawley")
+
+# Validação mais honesta ainda: separar treino e teste
+library(caret)
+set.seed(1)
+idx &lt;- createDataPartition(iris$Species, p = 0.7, list = FALSE)
+mt  &lt;- lda(Species ~ ., data = iris[idx, ])
+confusionMatrix(predict(mt, iris[-idx, ])$class, iris[-idx, ]$Species)
+
+# Gráficos
+plot(m, col = as.integer(iris$Species))
+library(klaR)
+partimat(Species ~ ., data = iris, method = "lda")   # fronteiras aos pares
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-lda" type="button">Copiar código</button></div><pre id="code-py-lda"><code># Bibliotecas: numpy, scipy, matplotlib e scikit-learn (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+from sklearn.datasets import load_iris
+
+np.set_printoptions(suppress=True)
+
+# ===================================================================
+# A análise discriminante linear, implementada do zero
+# ===================================================================
+def lda_ajusta(X, g):
+    """Devolve médias por grupo, covariância agrupada, priores e autovetores."""
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    medias = np.array([X[g == i].mean(axis=0) for i in niveis])
+    prior  = np.array([np.mean(g == i) for i in niveis])
+    S = np.zeros((p, p))
+    for j, i in enumerate(niveis):
+        Xi = X[g == i]
+        S += (Xi - medias[j]).T @ (Xi - medias[j])
+    S /= (n - k)                                  # covariância AGRUPADA
+    return niveis, medias, S, prior
+
+def lda_escores(X, medias, S, prior):
+    """Função discriminante linear de cada grupo, avaliada em cada observação."""
+    Si = np.linalg.inv(S)
+    # d_i(x) = x' S^-1 m_i - 0,5 m_i' S^-1 m_i + ln(pi_i)
+    return (np.asarray(X, float) @ Si @ medias.T
+            - 0.5 * np.sum((medias @ Si) * medias, axis=1) + np.log(prior))
+
+def lda_eixos(X, g):
+    """Eixos canônicos: autovetores de W^-1 B, normalizados em W."""
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    gm = X.mean(axis=0); W = np.zeros((p, p)); B = np.zeros((p, p))
+    for i in niveis:
+        Xi = X[g == i]; mi = Xi.mean(axis=0)
+        W += (Xi - mi).T @ (Xi - mi)
+        B += len(Xi) * np.outer(mi - gm, mi - gm)
+    val, vec = np.linalg.eig(np.linalg.inv(W) @ B)
+    ordem = np.argsort(val.real)[::-1]
+    val = val.real[ordem]; vec = vec.real[:, ordem]
+    # normalização da MASS::lda(): variância agrupada unitária nos escores
+    for j in range(vec.shape[1]):
+        esc = (X - gm) @ vec[:, j]
+        sw = np.sqrt(sum(np.var(esc[g == i], ddof=1) * (np.sum(g == i) - 1)
+                         for i in niveis) / (n - k))
+        vec[:, j] = vec[:, j] / sw
+        if vec[0, j] &lt; 0: vec[:, j] = -vec[:, j]   # o sinal é arbitrário
+    return val[:min(k - 1, p)], vec[:, :min(k - 1, p)], gm
+
+# ===================================================================
+# PARTE 1 - iris: 150 flores, quatro medidas, três espécies
+# ===================================================================
+d = load_iris(); X = d.data; g = d.target
+nomes = ["setosa", "versicolor", "virginica"]
+vars_ = ["compr. sépala", "larg. sépala", "compr. pétala", "larg. pétala"]
+niveis, medias, S, prior = lda_ajusta(X, g)
+n, p = X.shape; k = len(niveis)
+
+print("iris: 150 flores, 4 medidas, 3 espécies (50 de cada)")
+print("\nMédias por grupo (cm)")
+print(f"{'espécie':&lt;12}" + "".join(f"{v:&gt;16}" for v in vars_))
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;12}" + "".join(f"{m:&gt;16.3f}" for m in medias[j]))
+
+print("\nMatriz de covariância AGRUPADA (gl = 150 - 3 = 147)")
+print(np.round(S, 4))
+
+# --- os eixos canônicos
+val, vec, gm = lda_eixos(X, g)
+prop = val / val.sum()
+print(f"\nAutovalores de W^-1 B: {np.round(val, 4)}")
+print(f"Proporção do poder discriminante: {np.round(100*prop, 2)} %")
+print("\nCoeficientes dos discriminantes lineares (escala de MASS::lda)")
+print(f"{'variável':&lt;16}{'LD1':&gt;10}{'LD2':&gt;10}")
+for j, v in enumerate(vars_):
+    print(f"{v:&lt;16}{vec[j,0]:&gt;10.4f}{vec[j,1]:&gt;10.4f}")
+print("O sinal de cada coluna é arbitrário; aqui foi fixado para que o primeiro")
+print("coeficiente seja positivo, o que reproduz a saída de MASS::lda() em iris.")
+print("A soma dos dois autovalores reproduz o traço de Hotelling-Lawley da")
+print(f"ficha da MANOVA: {val.sum():.4f}")
+
+# --- classificação por reclassificação (otimista)
+esc = lda_escores(X, medias, S, prior)
+pred = esc.argmax(axis=1)
+conf = np.zeros((k, k), int)
+for i in range(n): conf[g[i], pred[i]] += 1
+print("\nMatriz de confusão por RECLASSIFICAÇÃO (otimista)")
+print(f"{'real \\ predito':&lt;16}" + "".join(f"{nm:&gt;12}" for nm in nomes))
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;16}" + "".join(f"{c:&gt;12d}" for c in conf[j]))
+acerto = np.trace(conf) / n
+print(f"Acerto aparente = {np.trace(conf)}/{n} = {100*acerto:.2f}%  "
+      f"(erro {100*(1-acerto):.2f}%)")
+
+# --- validação cruzada deixa-um-de-fora
+pred_vc = np.empty(n, int)
+for i in range(n):
+    m = np.ones(n, bool); m[i] = False
+    nv, me, Sv, pr = lda_ajusta(X[m], g[m])
+    pred_vc[i] = lda_escores(X[i:i+1], me, Sv, pr).argmax()
+conf_vc = np.zeros((k, k), int)
+for i in range(n): conf_vc[g[i], pred_vc[i]] += 1
+print("\nMatriz de confusão por VALIDAÇÃO CRUZADA deixa-um-de-fora")
+print(f"{'real \\ predito':&lt;16}" + "".join(f"{nm:&gt;12}" for nm in nomes))
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;16}" + "".join(f"{c:&gt;12d}" for c in conf_vc[j]))
+ac_vc = np.trace(conf_vc) / n
+print(f"Acerto por validação cruzada = {np.trace(conf_vc)}/{n} = {100*ac_vc:.2f}%  "
+      f"(erro {100*(1-ac_vc):.2f}%)")
+print(f"A diferença entre os dois é de {100*(acerto-ac_vc):.2f} ponto percentual.")
+print("Aqui os dois coincidem, mas isso não é a regra: a reclassificação usa cada")
+print("flor para estimar o classificador que depois a julga, e por isso é otimista.")
+print("Com n = 150 e p = 4, e grupos tão separados, o viés é desprezível. A")
+print("simulação do fim desta ficha mostra o que acontece quando não é.")
+
+# --- as flores mal classificadas
+erradas = np.where(pred_vc != g)[0]
+print(f"\nAs {len(erradas)} flores mal classificadas (validação cruzada)")
+print(f"{'obs.':&gt;5}{'real':&gt;12}{'predita':&gt;12}" + "".join(f"{v:&gt;15}" for v in vars_))
+for i in erradas:
+    print(f"{i+1:&gt;5}{nomes[g[i]]:&gt;12}{nomes[pred_vc[i]]:&gt;12}"
+          + "".join(f"{x:&gt;15.1f}" for x in X[i]))
+
+# --- um caso resolvido à mão
+i0 = int(erradas[0])
+print(f"\nO cálculo para a flor {i0+1}, passo a passo")
+print(f"  medidas: {X[i0]}")
+Si = np.linalg.inv(S)
+for j, nm in enumerate(nomes):
+    lin = X[i0] @ Si @ medias[j]
+    quad = -0.5 * medias[j] @ Si @ medias[j]
+    print(f"  d({nm:&lt;10}) = {lin:9.4f} {quad:9.4f} + ln({prior[j]:.4f}) "
+          f"= {lin+quad+np.log(prior[j]):9.4f}")
+print(f"  O maior é o do grupo '{nomes[esc[i0].argmax()]}', e é essa a predição.")
+pos = np.exp(esc[i0] - esc[i0].max()); pos = pos / pos.sum()
+print(f"  Probabilidades a posteriori: "
+      + "  ".join(f"{nm} {100*q:.2f}%" for nm, q in zip(nomes, pos)))
+
+# --- o que as probabilidades a posteriori mostram
+POS = np.exp(esc - esc.max(axis=1, keepdims=True))
+POS = POS / POS.sum(axis=1, keepdims=True)
+maxpos = POS.max(axis=1)
+print(f"\nProbabilidade a posteriori do grupo escolhido")
+print(f"  mediana = {np.median(maxpos):.4f} | flores com p &lt; 0,90: "
+      f"{int(np.sum(maxpos &lt; 0.90))} de {n}")
+print("  São as flores da fronteira entre versicolor e virginica.")
+
+# ===================================================================
+# PARTE 2 - a suposição de covariâncias iguais, e quando ela falha
+# ===================================================================
+print("\n" + "=" * 70)
+print("A LDA supõe a MESMA matriz de covariância em todos os grupos.")
+print("Covariâncias por grupo em iris (variâncias na diagonal)")
+for j, nm in enumerate(nomes):
+    Xi = X[g == j]; Sj = np.cov(Xi, rowvar=False)
+    print(f"  {nm:&lt;12} determinante = {np.linalg.det(Sj):.3e}  "
+          f"traço = {np.trace(Sj):.4f}")
+print(f"  {'agrupada':&lt;12} determinante = {np.linalg.det(S):.3e}  "
+      f"traço = {np.trace(S):.4f}")
+print("A ficha do M de Box mostra que essa igualdade é REJEITADA em iris")
+print("(qui² = 140,943). Ainda assim a LDA vai bem aqui, porque as médias")
+print("estão muito separadas; a ficha da QDA mostra o caso em que não vai.")
+
+# --- a fronteira é linear: demonstração
+print("\nPor que a fronteira é um hiperplano")
+dif = medias[1] - medias[2]
+w = Si @ dif
+c = 0.5 * (medias[1] + medias[2]) @ w + np.log(prior[2]/prior[1])
+print("  d_versicolor(x) - d_virginica(x) = w'x - c, com")
+print(f"  w = {np.round(w, 4)}")
+print(f"  c = {c:.4f}")
+print("  Como w não depende de x, a fronteira {x: w'x = c} é um hiperplano.")
+print("  É a subtração dos termos quadráticos, iguais nos dois grupos, que o")
+print("  torna linear; na QDA eles não se cancelam.")
+
+# ===================================================================
+# PARTE 3 - o efeito das probabilidades a priori
+# ===================================================================
+print("\n" + "=" * 70)
+print("As probabilidades a priori deslocam a fronteira.")
+print("Suponha que, na população de interesse, 80% sejam virginica e as")
+print("outras duas espécies tenham 10% cada.")
+pr2 = np.array([0.10, 0.10, 0.80])
+esc2 = lda_escores(X, medias, S, pr2)
+pred2 = esc2.argmax(axis=1)
+conf2 = np.zeros((k, k), int)
+for i in range(n): conf2[g[i], pred2[i]] += 1
+print(f"{'real \\ predito':&lt;16}" + "".join(f"{nm:&gt;12}" for nm in nomes))
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;16}" + "".join(f"{c:&gt;12d}" for c in conf2[j]))
+print(f"Acerto aparente = {100*np.trace(conf2)/n:.2f}%  "
+      f"(era {100*acerto:.2f}% com priores iguais)")
+mud = int(np.sum(pred2 != pred))
+print(f"{mud} flores mudaram de classificação, todas de versicolor para virginica.")
+print("O acerto global CAI porque a amostra tem 1/3 de cada espécie, e não a")
+print("composição suposta. Em uma população realmente 80% virginica, a regra")
+print("com priores corretos é a que minimiza o erro esperado.")
+
+# ===================================================================
+# PARTE 4 - por que a reclassificação é otimista
+# ===================================================================
+print("\n" + "=" * 70)
+print("O viés da reclassificação, medido em dados SEM nenhum sinal.")
+print("Dois grupos de n/2 observações cada, com p variáveis geradas da MESMA")
+print("distribuição normal padrão: por construção, nenhum classificador pode")
+print("acertar mais que 50% em dados novos.")
+rng = np.random.default_rng(11)
+print(f"\n{'n':&gt;6}{'p':&gt;6}{'acerto aparente':&gt;20}{'acerto val. cruzada':&gt;22}")
+for nn, pp in [(40, 2), (40, 10), (40, 18), (100, 10), (400, 10)]:
+    ap = []; vc = []
+    for _ in range(200):
+        Z = rng.standard_normal((nn, pp)); gz = np.r_[np.zeros(nn//2), np.ones(nn//2)].astype(int)
+        nv, me, Sz, pr = lda_ajusta(Z, gz)
+        ap.append(np.mean(lda_escores(Z, me, Sz, pr).argmax(axis=1) == gz))
+        pv = np.empty(nn, int)
+        for i in range(nn):
+            m = np.ones(nn, bool); m[i] = False
+            _, me2, S2, pr2_ = lda_ajusta(Z[m], gz[m])
+            pv[i] = lda_escores(Z[i:i+1], me2, S2, pr2_).argmax()
+        vc.append(np.mean(pv == gz))
+    print(f"{nn:&gt;6}{pp:&gt;6}{100*np.mean(ap):&gt;19.2f}%{100*np.mean(vc):&gt;21.2f}%")
+print("\nCom p grande em relação a n, a reclassificação chega a 81% de acerto em")
+print("dados que são puro ruído, enquanto a validação cruzada fica em torno de")
+print("50%, que é a verdade. Reportar o acerto aparente como desempenho do")
+print("classificador é o erro mais comum nesta análise.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">iris: 150 flores, 4 medidas, 3 espécies (50 de cada)
+
+Médias por grupo (cm)
+espécie        compr. sépala    larg. sépala   compr. pétala    larg. pétala
+setosa                 5.006           3.428           1.462           0.246
+versicolor             5.936           2.770           4.260           1.326
+virginica              6.588           2.974           5.552           2.026
+
+Matriz de covariância AGRUPADA (gl = 150 - 3 = 147)
+[[0.265  0.0927 0.1675 0.0384]
+ [0.0927 0.1154 0.0552 0.0327]
+ [0.1675 0.0552 0.1852 0.0427]
+ [0.0384 0.0327 0.0427 0.0419]]
+
+Autovalores de W^-1 B: [32.1919  0.2854]
+Proporção do poder discriminante: [99.12  0.88] %
+
+Coeficientes dos discriminantes lineares (escala de MASS::lda)
+variável               LD1       LD2
+compr. sépala       0.8294    0.0241
+larg. sépala        1.5345    2.1645
+compr. pétala      -2.2012   -0.9319
+larg. pétala       -2.8105    2.8392
+O sinal de cada coluna é arbitrário; aqui foi fixado para que o primeiro
+coeficiente seja positivo, o que reproduz a saída de MASS::lda() em iris.
+A soma dos dois autovalores reproduz o traço de Hotelling-Lawley da
+ficha da MANOVA: 32.4773
+
+Matriz de confusão por RECLASSIFICAÇÃO (otimista)
+real \ predito        setosa  versicolor   virginica
+setosa                    50           0           0
+versicolor                 0          48           2
+virginica                  0           1          49
+Acerto aparente = 147/150 = 98.00%  (erro 2.00%)
+
+Matriz de confusão por VALIDAÇÃO CRUZADA deixa-um-de-fora
+real \ predito        setosa  versicolor   virginica
+setosa                    50           0           0
+versicolor                 0          48           2
+virginica                  0           1          49
+Acerto por validação cruzada = 147/150 = 98.00%  (erro 2.00%)
+A diferença entre os dois é de 0.00 ponto percentual.
+Aqui os dois coincidem, mas isso não é a regra: a reclassificação usa cada
+flor para estimar o classificador que depois a julga, e por isso é otimista.
+Com n = 150 e p = 4, e grupos tão separados, o viés é desprezível. A
+simulação do fim desta ficha mostra o que acontece quando não é.
+
+As 3 flores mal classificadas (validação cruzada)
+ obs.        real     predita  compr. sépala   larg. sépala  compr. pétala   larg. pétala
+   71  versicolor   virginica            5.9            3.2            4.8            1.8
+   84  versicolor   virginica            6.0            2.7            5.1            1.6
+  134   virginica  versicolor            6.3            2.8            5.1            1.5
+
+O cálculo para a flor 71, passo a passo
+  medidas: [5.9 3.2 4.8 1.8]
+  d(setosa    ) =  104.2076  -85.2099 + ln(0.3333) =   17.8991
+  d(versicolor) =  151.8480  -71.7540 + ln(0.3333) =   78.9954
+  d(virginica ) =  184.4452 -103.2697 + ln(0.3333) =   80.0769
+  O maior é o do grupo 'virginica', e é essa a predição.
+  Probabilidades a posteriori: setosa 0.00%  versicolor 25.32%  virginica 74.68%
+
+Probabilidade a posteriori do grupo escolhido
+  mediana = 1.0000 | flores com p &lt; 0,90: 10 de 150
+  São as flores da fronteira entre versicolor e virginica.
+
+======================================================================
+A LDA supõe a MESMA matriz de covariância em todos os grupos.
+Covariâncias por grupo em iris (variâncias na diagonal)
+  setosa       determinante = 2.113e-06  traço = 0.3092
+  versicolor   determinante = 1.894e-05  traço = 0.6248
+  virginica    determinante = 1.327e-04  traço = 0.8884
+  agrupada     determinante = 4.732e-05  traço = 0.6075
+A ficha do M de Box mostra que essa igualdade é REJEITADA em iris
+(qui² = 140,943). Ainda assim a LDA vai bem aqui, porque as médias
+estão muito separadas; a ficha da QDA mostra o caso em que não vai.
+
+Por que a fronteira é um hiperplano
+  d_versicolor(x) - d_virginica(x) = w'x - c, com
+  w = [  3.2524   3.3872  -7.5551 -14.6449]
+  c = -31.5157
+  Como w não depende de x, a fronteira {x: w'x = c} é um hiperplano.
+  É a subtração dos termos quadráticos, iguais nos dois grupos, que o
+  torna linear; na QDA eles não se cancelam.
+
+======================================================================
+As probabilidades a priori deslocam a fronteira.
+Suponha que, na população de interesse, 80% sejam virginica e as
+outras duas espécies tenham 10% cada.
+real \ predito        setosa  versicolor   virginica
+setosa                    50           0           0
+versicolor                 0          46           4
+virginica                  0           0          50
+Acerto aparente = 97.33%  (era 98.00% com priores iguais)
+3 flores mudaram de classificação, todas de versicolor para virginica.
+O acerto global CAI porque a amostra tem 1/3 de cada espécie, e não a
+composição suposta. Em uma população realmente 80% virginica, a regra
+com priores corretos é a que minimiza o erro esperado.
+
+======================================================================
+O viés da reclassificação, medido em dados SEM nenhum sinal.
+Dois grupos de n/2 observações cada, com p variáveis geradas da MESMA
+distribuição normal padrão: por construção, nenhum classificador pode
+acertar mais que 50% em dados novos.
+
+     n     p     acerto aparente   acerto val. cruzada
+    40     2              58.11%                42.32%
+    40    10              72.12%                48.19%
+    40    18              81.03%                47.73%
+   100    10              62.28%                48.35%
+   400    10              56.33%                49.68%
+
+Com p grande em relação a n, a reclassificação chega a 81% de acerto em
+dados que são puro ruído, enquanto a validação cruzada fica em torno de
+50%, que é a verdade. Reportar o acerto aparente como desempenho do
+classificador é o erro mais comum nesta análise.</pre></div><figure class="fig"><img src="../assets/resultados/lda.png" alt="Coeficientes dos discriminantes, matriz de confusão e o viés da reclassificação" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, os coeficientes das quatro medidas nos dois discriminantes: as da pétala dominam LD1 e as da sépala dominam LD2, que responde por menos de 1% do poder discriminante. No centro, a matriz de confusão da validação cruzada, com 147 acertos em 150 e os três erros concentrados na fronteira entre versicolor e virginica. À direita, a simulação em dados sem nenhum sinal: as barras vermelhas são o acerto aparente e as verdes o acerto por validação cruzada, com a linha de 50% marcando o acaso. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os eixos canônicos</caption><thead><tr><th>Eixo</th><th>Autovalor</th><th>Proporção do poder discriminante</th></tr></thead><tbody><tr><td>LD1</td><td>32,1919</td><td>99,12%</td></tr><tr><td>LD2</td><td>0,2854</td><td>0,88%</td></tr><tr><td><strong>Soma</strong></td><td><strong>32,4773</strong></td><td>= traço de Hotelling–Lawley da ficha da MANOVA</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Coeficientes dos discriminantes (escala de MASS::lda)</caption><thead><tr><th>Variável</th><th>LD1</th><th>LD2</th></tr></thead><tbody><tr><td>Comprimento da sépala</td><td>0,8294</td><td>0,0241</td></tr><tr><td>Largura da sépala</td><td>1,5345</td><td>2,1645</td></tr><tr><td>Comprimento da pétala</td><td>−2,2012</td><td>−0,9319</td></tr><tr><td>Largura da pétala</td><td>−2,8105</td><td>2,8392</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Validação cruzada deixa-um-de-fora</caption><thead><tr><th>Espécie real</th><th>setosa</th><th>versicolor</th><th>virginica</th></tr></thead><tbody><tr><td>setosa</td><td><strong>50</strong></td><td>0</td><td>0</td></tr><tr><td>versicolor</td><td>0</td><td><strong>48</strong></td><td>2</td></tr><tr><td>virginica</td><td>0</td><td>1</td><td><strong>49</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As três flores mal classificadas</caption><thead><tr><th>Obs.</th><th>Real</th><th>Predita</th><th>Medidas (cm)</th></tr></thead><tbody><tr><td>71</td><td>versicolor</td><td>virginica</td><td>5,9 · 3,2 · 4,8 · 1,8</td></tr><tr><td>84</td><td>versicolor</td><td>virginica</td><td>6,0 · 2,7 · 5,1 · 1,6</td></tr><tr><td>134</td><td>virginica</td><td>versicolor</td><td>6,3 · 2,8 · 5,1 · 1,5</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O viés da reclassificação, em dados gerados sem nenhum sinal</caption><thead><tr><th>n</th><th>p</th><th>Acerto aparente</th><th>Acerto por validação cruzada</th></tr></thead><tbody><tr><td>40</td><td>2</td><td>58,11%</td><td>42,32%</td></tr><tr><td>40</td><td>10</td><td>72,12%</td><td>48,19%</td></tr><tr><td>40</td><td>18</td><td><strong>81,03%</strong></td><td><strong>47,73%</strong></td></tr><tr><td>100</td><td>10</td><td>62,28%</td><td>48,35%</td></tr><tr><td>400</td><td>10</td><td>56,33%</td><td>49,68%</td></tr></tbody></table></div><p><strong>Leitura:</strong> o primeiro discriminante concentra 99,12% do poder de separação, de modo que, para efeitos práticos, a estrutura das três espécies é unidimensional. Os coeficientes dizem qual: a largura e o comprimento da pétala, com pesos −2,81 e −2,20, dominam LD1. O segundo eixo, que contrasta sépalas com pétalas, é quase irrelevante.</p><p>A classificação acerta 147 das 150 flores, tanto por reclassificação quanto por validação cruzada. A setosa se separa perfeitamente — é possível distingui-la das outras duas com uma única linha reta. Os três erros estão todos na fronteira entre versicolor e virginica, e as suas medidas, na tabela acima, mostram por quê: são flores intermediárias, com pétalas de 4,8 a 5,1 cm, exatamente onde as duas espécies se encontram. Das 150 flores, apenas 10 têm probabilidade a posteriori abaixo de 0,90 para o grupo escolhido, e são todas dessa região.</p><p>A coincidência entre reclassificação e validação cruzada é confortável, mas não é a regra, e seria perigoso aprender dela a lição errada. A simulação da última tabela foi construída de modo que <em>nenhum</em> classificador possa superar 50% de acerto: as duas amostras vêm da mesma distribuição normal padrão, e não há sinal algum a aprender. Com n = 40 e p = 18, a reclassificação devolve 81,03% — um resultado que, reportado sem qualificação, pareceria excelente. A validação cruzada devolve 47,73%, que é a verdade. O viés diminui à medida que n cresce em relação a p: com n = 400 e p = 10, a reclassificação ainda infla o acerto em seis pontos percentuais.</p><p>A lição prática é simples. O número a reportar é sempre o da validação cruzada ou o de um conjunto de teste separado, e a distância entre ele e o acerto aparente é, em si, um diagnóstico: quando os dois diferem muito, o classificador está decorando os dados.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Reportar o acerto da reclassificação</td><td>Use validação cruzada ou um conjunto de teste.</td></tr><tr><td>Usar com p próximo ou maior que n</td><td>Reduza a dimensão ou use <a href="ridge.html">regularização</a>.</td></tr><tr><td>Confundir com <a href="kmeans.html">agrupamento</a></td><td>Aqui os grupos são conhecidos.</td></tr><tr><td>Abandonar a LDA só porque o <a href="boxm.html">M de Box</a> rejeita</td><td>Compare LDA e <a href="qda.html">QDA</a> por validação cruzada.</td></tr><tr><td>Padronizar as variáveis esperando mudança</td><td>O método é invariante a escala.</td></tr><tr><td>Interpretar coeficientes como efeitos causais</td><td>São pesos de uma projeção, não coeficientes estruturais.</td></tr><tr><td>Ignorar as probabilidades a priori</td><td>Com grupos de prevalência muito diferente, elas mudam a fronteira.</td></tr><tr><td>Reportar só a taxa global de acerto</td><td>Com grupos desbalanceados ela engana: mostre a matriz de confusão.</td></tr><tr><td>Esquecer que os rótulos entram na análise</td><td>Em iris, a espécie é a resposta, não uma variável a descobrir.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="qda.html">Análise discriminante quadrática</a></td><td>Covariâncias claramente diferentes e n grande o bastante.</td></tr><tr><td>Análise discriminante regularizada</td><td>Quando p é grande: encolhe cada covariância em direção à agrupada.</td></tr><tr><td><a href="logistica.html">Regressão logística</a></td><td>Dois grupos; não exige normalidade e lida melhor com preditores categóricos.</td></tr><tr><td><a href="multinomial.html">Regressão logística multinomial</a></td><td>Mais de dois grupos, sem supor normalidade.</td></tr><tr><td><a href="knn.html">k vizinhos mais próximos</a></td><td>Fronteiras muito irregulares e n grande.</td></tr><tr><td><a href="randomforest.html">Florestas aleatórias</a></td><td>Interações complexas; não exige pressupostos distribucionais.</td></tr><tr><td><a href="pcr.html">Componentes principais</a> antes da LDA</td><td>Muitas variáveis correlacionadas; cuidado para não descartar a direção discriminante.</td></tr><tr><td><a href="manova.html">MANOVA</a></td><td>Quando a pergunta é se os grupos diferem, e não como classificá-los.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que os grupos são conhecidos e corretamente rotulados.</li><li>Verifique normalidade por grupo e a igualdade das covariâncias.</li><li>Ajuste a LDA e examine os autovalores e os coeficientes.</li><li>Avalie por validação cruzada, nunca por reclassificação.</li><li>Compare com a <a href="qda.html">QDA</a> e com uma alternativa sem pressupostos distribucionais.</li><li>Examine a matriz de confusão por grupo, não só a taxa global.</li><li>Identifique as observações com probabilidade a posteriori baixa.</li><li>Declare as probabilidades a priori usadas e justifique-as.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FISHER, Ronald A. The use of multiple measurements in taxonomic problems. <em>Annals of Eugenics</em>, v. 7, n. 2, p. 179-188, 1936.</li><li>RAO, C. Radhakrishna. The utilization of multiple measurements in problems of biological classification. <em>Journal of the Royal Statistical Society: Series B</em>, v. 10, n. 2, p. 159-203, 1948.</li><li>WELCH, B. L. Note on discriminant functions. <em>Biometrika</em>, v. 31, n. 1-2, p. 218-220, 1939.</li><li>LACHENBRUCH, Peter A.; MICKEY, M. Ray. Estimation of error rates in discriminant analysis. <em>Technometrics</em>, v. 10, n. 1, p. 1-11, 1968.</li><li>EFRON, Bradley. The efficiency of logistic regression compared to normal discriminant analysis. <em>Journal of the American Statistical Association</em>, v. 70, n. 352, p. 892-898, 1975.</li><li>FRIEDMAN, Jerome H. Regularized discriminant analysis. <em>Journal of the American Statistical Association</em>, v. 84, n. 405, p. 165-175, 1989.</li><li>JOHNSON, Richard A.; WICHERN, Dean W. <em>Applied multivariate statistical analysis.</em> 6. ed. Upper Saddle River: Pearson, 2007.</li><li>MARDIA, Kanti V.; KENT, John T.; BIBBY, John M. <em>Multivariate analysis.</em> London: Academic Press, 1979.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>ANDERSON, Edgar. The species problem in Iris. <em>Annals of the Missouri Botanical Garden</em>, v. 23, n. 3, p. 457-509, 1936. (Conjunto de dados <code>iris</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>predict</code>, pacote <code>stats</code>.)</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacote <code>MASS</code>, funções <code>lda</code> e <code>qda</code>.)</li><li>WEIHS, Claus; LIGGES, Uwe; LUEBKE, Karsten; RAABE, Nils. klaR: analyzing German business cycles. In: <em>Data analysis and decision support.</em> Berlin: Springer, 2005. p. 335-343.</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Normalidade multivariada em cada grupo, mesma matriz de covariância nos grupos, observações independentes e n suficiente em relação ao número de variáveis.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>MASS, klaR, caret, biotools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kmeans.html"><span>← ANTERIOR</span>K-means</a><a href="qda.html"><span>PRÓXIMO →</span>Análise discriminante quadrática (QDA)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

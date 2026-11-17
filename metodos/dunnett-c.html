@@ -4,332 +4,281 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Dunnett C: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Dunnett C | Estatística e Ciência de Dados
-  </title>
+<meta content="Dunnett C: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Dunnett C | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Dunnett C
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Dunnett C
-    </h1>
-<p class="detail-lead">
-     Compara médias de vários grupos quando suas variâncias são diferentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/dunnett-c.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara médias de vários grupos quando suas variâncias são diferentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Grupos independentes.</li><li>Distribuição aproximadamente normal.</li><li>Variâncias distintas e estimativas suficientes.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_i=\mu_j\\ H_1&amp;:\ \mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[T_{ij}=\frac{\bar Y_i-\bar Y_j}{\sqrt{S_i^2/n_i+S_j^2/n_j}}\quad\text{(crítico de Dunnett C)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Contrastes de Welch com distribuição crítica do módulo máximo studentizado (procedimento C de Dunnett).
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Rejeição a 5% depende da calibração de Dunnett C; não a substitua por Dunnett clássico sem aviso.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Quebras de fios por tensão (warpbreaks); o código utiliza Games–Howell como alternativa heterocedástica identificada.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-dunnett-c" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-dunnett-c"><code># Dunnett C ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Dunnett C</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Dunnett C</h1><p class="detail-lead">Compara todas as médias duas a duas com variâncias desiguais, combinando os valores críticos dos dois grupos de cada par.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/dunnett-c.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/dunnett-c.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o procedimento</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando as variâncias dos grupos diferem, o procedimento de <a href="tukey.html">Tukey</a> deixa de valer e é preciso escolher entre as alternativas. O <a href="games-howell.html">Games–Howell</a> estima graus de liberdade para cada par e mantém a taxa de erro bem perto do nominal. O Dunnett C faz uma escolha diferente: em vez de estimar graus de liberdade, ele combina os valores críticos dos dois grupos envolvidos, de uma forma que garante o controle da taxa de erro sem depender de aproximação.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Dunnett C" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Comparações pareadas com</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">variâncias desiguais</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Valor crítico = média</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">ponderada de dois q</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Diferença</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Não estima graus de</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">liberdade; combina críticos</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Resultado</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Conservador: fica</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">abaixo de 5%</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Sem função pronta;</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">a conta é curta</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Games–Howell</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Dunnett T3</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Tamhane T2</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Dunnett C</text></svg><figcaption>Visão geral do procedimento Dunnett C. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A diferença em uma frase</strong><p>Games–Howell pergunta "quantos graus de liberdade esta combinação de variâncias vale?" e usa a resposta. Dunnett C pergunta "qual seria o valor crítico se eu usasse só o grupo i? e só o grupo j?" e toma a média dos dois, ponderada pela contribuição de cada um ao erro-padrão.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o procedimento</h2><p>Para cada par, o erro-padrão é o mesmo do <a href="games-howell.html">Games–Howell</a>: construído com as variâncias dos dois grupos envolvidos. O que muda é o valor crítico. Em vez de calcular graus de liberdade por Welch–Satterthwaite, o Dunnett C toma o quantil da amplitude estudentizada com \(n_i-1\) graus de liberdade e o quantil com \(n_j-1\), e faz a média ponderada pelos pesos \(s_i^2/n_i\) e \(s_j^2/n_j\).</p><figure class="fig"><img src="../assets/resultados/dunnett-c-didatica.png" alt="Valores críticos por grupo e taxas de erro simuladas" loading="lazy"/><figcaption><strong>A mecânica e o desempenho.</strong> À esquerda, o quantil da amplitude estudentizada que cada central traz consigo, calculado com os seus próprios graus de liberdade: de 3,977 para a central A, que tem 20 corpos de prova, a 4,415 para B e D, que têm 10. O valor crítico de um par é a média ponderada de dois desses valores. À direita, 10.000 experimentos com quatro médias iguais: o Dunnett C fica entre 3,06% e 3,66% nos três cenários, enquanto o Games–Howell fica entre 4,62% e 5,18% e o <a href="tukey.html">Tukey–Kramer</a> chega a 28,11% quando a maior variância cai no menor grupo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Conservador por construção</strong><p>O Dunnett C controla a taxa de erro em todos os cenários, mas com folga: ele gasta cerca de 3,5% dos 5% disponíveis. Essa folga é o preço de não depender de uma aproximação. Quando o objetivo é uma garantia de controle, e não um nível exato, a troca é defensável; quando o objetivo é detectar diferenças reais, o Games–Howell é mais sensível.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Indispensável.</td><td>Delineamento.</td></tr><tr><td>Normalidade <strong>dentro de cada grupo</strong></td><td>Sustenta a amplitude estudentizada de cada grupo.</td><td><code>by(y, g, shapiro.test)</code>; não use os resíduos agrupados.</td></tr><tr><td>Variâncias homogêneas</td><td><strong>Não é exigida</strong>: é o que se dispensa.</td><td>Verifique mesmo assim, para justificar a escolha.</td></tr><tr><td>Pelo menos cerca de 6 observações por grupo</td><td>Cada grupo precisa de graus de liberdade próprios.</td><td>Conte as observações.</td></tr><tr><td>Ausência de valores extremos dominantes</td><td>As variâncias amostrais ficam instáveis.</td><td>Boxplots por grupo.</td></tr></tbody></table></div><div class="callout "><strong>O teste global compatível</strong><p>Como no <a href="games-howell.html">Games–Howell</a>, o teste global que acompanha o Dunnett C é a <a href="aovwelch.html">ANOVA de Welch</a>, não a clássica. No exemplo desta ficha a ANOVA clássica nem rejeita (p = 0,123), enquanto a de Welch rejeita com folga (p = 2,9 × 10⁻⁵).</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{(ij)}&:\ \mu_i=\mu_j \\ &\quad \text{para cada par }(i,j) \\ H_1^{(ij)}&:\ \mu_i\neq\mu_j\end{aligned}\right.\]\[\text{com }\text{FWER}\leq\alpha\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}q_{ij} &= \frac{\left|\bar{y}_i-\bar{y}_j\right|}{\sqrt{\dfrac{1}{2}\left(\dfrac{s_i^{2}}{n_i}+\dfrac{s_j^{2}}{n_j}\right)}}\ &gt; \ c_{ij} \\ &= \frac{q_{\alpha;\,k,\,n_i-1}\,\dfrac{s_i^{2}}{n_i}+q_{\alpha;\,k,\,n_j-1}\,\dfrac{s_j^{2}}{n_j}}{\dfrac{s_i^{2}}{n_i}+\dfrac{s_j^{2}}{n_j}}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{IC}:\quad \bar{y}_i-\bar{y}_j\ \pm\ c_{ij}\sqrt{\frac{1}{2}\left(\frac{s_i^{2}}{n_i}+\frac{s_j^{2}}{n_j}\right)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de grupos, que entra no quantil de cada parcela</dd></div><div><dt>\(s_i^2,\ n_i\)</dt><dd>variância e tamanho do grupo i</dd></div><div><dt>\(q_{\alpha;k,n_i-1}\)</dt><dd>quantil da amplitude estudentizada com os graus de liberdade do grupo i</dd></div><div><dt>\(c_{ij}\)</dt><dd>valor crítico do par, média ponderada dos dois quantis</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>As quatro centrais</caption><thead><tr><th>Central</th><th>n</th><th>Média (MPa)</th><th>Variância</th><th>s²/n</th><th>q(5%; 4; n−1)</th></tr></thead><tbody><tr><td>A</td><td>20</td><td>51,435</td><td>72,644</td><td>3,632</td><td>3,9766</td></tr><tr><td>B</td><td>10</td><td>49,170</td><td>5,525</td><td>0,552</td><td>4,4149</td></tr><tr><td>C</td><td>12</td><td>52,525</td><td>10,604</td><td>0,884</td><td>4,2561</td></tr><tr><td>D</td><td>10</td><td>55,320</td><td>4,106</td><td>0,411</td><td>4,4149</td></tr></tbody></table></div><div class="worked"><strong>Comparação B − D</strong><p>Os pesos são \(s_B^2/n_B=0{,}552\) e \(s_D^2/n_D=0{,}411\). Como as duas centrais têm \(n=10\), os dois quantis coincidem em 4,4149, e a média ponderada devolve o mesmo valor:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[c_{BD}=\frac{\begin{gathered}4{,}4149\times0{,}552\\+\,4{,}4149\times0{,}411\end{gathered}}{0{,}552+0{,}411}=4{,}4149.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\text{EP} &= \sqrt{\tfrac{1}{2}(0{,}552+0{,}411)} \\ &= 0{,}694,\end{aligned}\]\[q=\frac{6{,}150}{0{,}694}=8{,}863&gt;4{,}415.\]</div><p>O intervalo é \[\begin{aligned}&6{,}150\pm4{,}4149\times0{,}694 \\ &= [+3{,}086;\ +9{,}214]\end{aligned}\] MPa: a diferença é declarada significativa.</p></div><div class="worked"><strong>Comparação A − D, em que os pesos diferem</strong><p>Agora \(s_A^2/n_A=3{,}632\) e \(s_D^2/n_D=0{,}411\): a central A, muito mais dispersa, domina o erro-padrão e puxa o valor crítico para o seu próprio quantil.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[c_{AD}=\frac{\begin{gathered}3{,}9766\times3{,}632\\+\,4{,}4149\times0{,}411\end{gathered}}{3{,}632+0{,}411}=4{,}021,\]</div><p>mais próximo de 3,977 (o de A) do que de 4,415 (o de D). O \(q\) observado é 2,733, abaixo do crítico, e o par não é declarado diferente.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Controla a taxa de erro do conjunto de forma conservadora, sem depender de aproximação para os graus de liberdade.</li><li>Com variâncias iguais e grupos balanceados, reduz-se ao <a href="tukey.html">Tukey</a>.</li><li>O valor crítico de um par fica sempre entre \(q_{\alpha;k,n_i-1}\) e \(q_{\alpha;k,n_j-1}\).</li><li>É mais conservador que o <a href="games-howell.html">Games–Howell</a> em todos os cenários simulados nesta ficha.</li><li>Fornece intervalos de confiança, não apenas decisões.</li><li>O procedimento Dunnett T3, do mesmo autor, usa o módulo máximo estudentizado com graus de liberdade de Welch e é indicado para grupos pequenos.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>q observado</td><td>Diferença dividida pelo erro-padrão do par.</td><td>Mesma escala do Tukey.</td></tr><tr><td>Valor crítico do par</td><td>Média ponderada dos dois quantis.</td><td>Varia de par para par.</td></tr><tr><td>Decisão</td><td>Comparação direta entre os dois.</td><td>Não há valor-p fechado simples.</td></tr><tr><td>IC</td><td>Intervalo de 95% para o par.</td><td>Largura varia conforme as variâncias.</td></tr><tr><td>Comparação com Games–Howell</td><td>Revela o custo do conservadorismo.</td><td>Vale apresentar os dois.</td></tr></tbody></table></div><div class="callout "><strong>Sobre o valor-p</strong><p>O Dunnett C é formulado como uma regra de decisão com valor crítico, e não como um valor-p. Pode-se obter um valor-p aproximado invertendo a regra — procurando o \(\alpha\) que torna \(c_{ij}\) igual ao \(q\) observado —, mas isso exige resolver numericamente e não é o uso padrão. Reporte a decisão e o intervalo de confiança.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não há função no R base nem nos pacotes de comparações múltiplas mais usados. A implementação é curta: <code>qtukey()</code>, do pacote <code>stats</code>, fornece os quantis com os graus de liberdade de cada grupo, e a média ponderada é uma linha de código, como no bloco acima. No SPSS o procedimento aparece na lista de post hoc para variâncias desiguais, ao lado de Tamhane T2, Dunnett T3 e Games–Howell. Para o teste global, <code>oneway.test()</code> com <code>var.equal = FALSE</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-dunnett-c-min" type="button">Copiar código</button></div><pre id="code-dunnett-c-min"><code>q_ind &lt;- sapply(n, function(ni) qtukey(1 - 0.05, k, ni - 1))
+qc &lt;- (q_ind[i] * si + q_ind[j] * sj) / (si + sj)     # si = s2[i]/n[i]
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. São os corpos de prova de concreto de quatro centrais dosadoras, o mesmo conjunto das fichas da <a href="aovwelch.html">ANOVA de Welch</a> e do <a href="games-howell.html">Games–Howell</a>. A central A tem variância 17,7 vezes maior que a da D, o que torna o Tukey inadequado e põe os três procedimentos para variâncias desiguais em concorrência direta.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-dunnett-c" type="button">Copiar código</button></div><pre id="code-dunnett-c"><code># Dunnett C: exemplo completo ----
+# Pacotes: stats (base). O SPSS traz o Dunnett C pronto; no R, a conta é curta.
+# Para comparar: rstatix (Games-Howell), PMCMRplus, car
+# install.packages(c("rstatix", "car"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("rstatix", quietly = TRUE)) install.packages("rstatix")
+# 1. Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+#    de quatro centrais dosadoras. É o conjunto das fichas da ANOVA de Welch e de
+#    Games-Howell.
+resistencia &lt;- c(57.0,54.0,51.5,31.1,55.9,32.9,60.2,57.5,59.5,59.4,
+                 54.7,47.2,49.2,65.6,46.8,49.9,45.5,47.3,49.2,54.3,
+                 48.4,48.3,47.8,49.2,46.3,49.1,51.6,47.5,48.9,54.6,
+                 50.5,48.9,51.9,57.5,58.1,50.0,54.4,53.0,51.5,48.1,55.6,50.8,
+                 55.6,55.2,58.7,57.4,52.7,54.5,57.1,52.3,54.2,55.5)
+central &lt;- factor(rep(c("A", "B", "C", "D"), times = c(20, 10, 12, 10)))
+dados &lt;- data.frame(central, resistencia)
+aggregate(resistencia ~ central, data = dados,
+          FUN = function(x) c(n = length(x), media = mean(x), var = var(x)))
+
+# 2. O pressuposto que justifica o procedimento
+library(car)
+leveneTest(resistencia ~ central, data = dados, center = median)
+v &lt;- tapply(dados$resistencia, dados$central, var); max(v) / min(v)
+
+# 3. O teste global compatível: ANOVA de Welch
+oneway.test(resistencia ~ central, data = dados, var.equal = FALSE)
+
+# 4. Dunnett C, implementado diretamente
+alfa &lt;- 0.05
+m  &lt;- tapply(dados$resistencia, dados$central, mean)
+s2 &lt;- tapply(dados$resistencia, dados$central, var)
+n  &lt;- table(dados$central)
+k  &lt;- nlevels(dados$central)
+q_ind &lt;- sapply(n, function(ni) qtukey(1 - alfa, k, ni - 1))   # q(k, n_i - 1)
+q_ind
+
+pares &lt;- combn(levels(dados$central), 2)
+resultado &lt;- t(apply(pares, 2, function(p_) {
+  i &lt;- p_[1]; j &lt;- p_[2]
+  si &lt;- s2[i]/n[i]; sj &lt;- s2[j]/n[j]
+  dif &lt;- m[j] - m[i]
+  ep  &lt;- sqrt((si + sj) / 2)                       # erro-padrão na escala de q
+  qc  &lt;- (q_ind[i] * si + q_ind[j] * sj) / (si + sj)   # valor crítico PONDERADO
+  c(diferenca = dif, ep = ep, q_obs = abs(dif)/ep, q_critico = qc,
+    inferior = dif - qc * ep, superior = dif + qc * ep,
+    difere = as.numeric(abs(dif)/ep &gt; qc))
+}))
+rownames(resultado) &lt;- apply(pares, 2, paste, collapse = " - ")
+round(resultado, 4)
+
+# 5. Para comparar: Games-Howell e Tukey-Kramer
 library(rstatix)
-# Alternativa heterocedástica, NÃO é Dunnett C.
-print(games_howell_test(warpbreaks, breaks ~ tension,
-                        conf.level = 0.95))
+games_howell_test(dados, resistencia ~ central)
+TukeyHSD(aov(resistencia ~ central, data = dados))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 6. Por que o valor crítico é uma média ponderada
+#    Quando as duas variâncias são iguais, qc é a média simples de q(k, n_i-1) e
+#    q(k, n_j-1). Quando uma delas domina, qc tende ao q daquele grupo:
+si &lt;- s2["A"]/n["A"]; sj &lt;- s2["D"]/n["D"]
+c(peso_A = si/(si+sj), peso_D = sj/(si+sj),
+  q_A = q_ind["A"], q_D = q_ind["D"],
+  q_ponderado = (q_ind["A"]*si + q_ind["D"]*sj)/(si+sj))
 
+# 7. Gráfico: as médias com o intervalo de cada grupo
+eps &lt;- sqrt(s2 / n)
+plot(1:k, m, ylim = c(44, 60), pch = 18, cex = 2, xaxt = "n",
+     xlab = "Central dosadora", ylab = "Resistência (MPa)")
+axis(1, at = 1:k, labels = levels(dados$central))
+arrows(1:k, m - 1.96*eps, 1:k, m + 1.96*eps, angle = 90, code = 3, length = 0.08)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-dunnett-c" type="button">Copiar código</button></div><pre id="code-py-dunnett-c"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       O procedimento exato Dunnett C não foi apresentado sem uma implementação reproduzível validada; a alternativa é declarada explicitamente.
-      </p>
-</aside>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       O exemplo utiliza aproximação computacional explicitada no script; não a interprete como implementação exata de Dunnett C.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="hochberg-gt2.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Hochberg GT2
-    </a>
-<a href="qui-aderencia.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Qui-quadrado de aderência
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+alfa = 0.05
+
+# Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+# de quatro centrais dosadoras. É o conjunto das fichas da ANOVA de Welch e de
+# Games-Howell, usado aqui para comparar os dois procedimentos diretamente.
+A = np.array([57.0,54.0,51.5,31.1,55.9,32.9,60.2,57.5,59.5,59.4,54.7,47.2,49.2,65.6,46.8,49.9,45.5,47.3,49.2,54.3])
+B = np.array([48.4,48.3,47.8,49.2,46.3,49.1,51.6,47.5,48.9,54.6])
+C = np.array([50.5,48.9,51.9,57.5,58.1,50.0,54.4,53.0,51.5,48.1,55.6,50.8])
+D = np.array([55.6,55.2,58.7,57.4,52.7,54.5,57.1,52.3,54.2,55.5])
+gs = [A, B, C, D]; nomes = ["A", "B", "C", "D"]
+k = len(gs); ns = np.array([len(g) for g in gs], float); N = int(ns.sum())
+medias = np.array([g.mean() for g in gs]); vars_ = np.array([g.var(ddof=1) for g in gs])
+QM = np.sum((ns - 1) * vars_) / (N - k); gl = N - k
+
+print("central   n    média     DP   variância   s²/n")
+for i in range(k):
+    print(f"   {nomes[i]}     {int(ns[i]):2d}   {medias[i]:6.3f}  {np.sqrt(vars_[i]):5.3f}   "
+          f"{vars_[i]:8.3f}  {vars_[i]/ns[i]:6.3f}")
+print(f"Razão entre a maior e a menor variância = {vars_.max()/vars_.min():.2f}")
+print(f"Brown-Forsythe: W = {stats.levene(*gs, center='median')[0]:.4f}, "
+      f"p = {stats.levene(*gs, center='median')[1]:.5f}")
+print(f"QM do resíduo agrupado = {QM:.3f} (DP = {np.sqrt(QM):.3f} MPa) | gl = {gl}")
+
+# 1. O teste global compatível
+w = ns / vars_; mu_w = np.sum(w*medias)/np.sum(w)
+lam = np.sum((1 - w/w.sum())**2/(ns-1))
+Fw = (np.sum(w*(medias-mu_w)**2)/(k-1)) / (1 + 2*(k-2)/(k**2-1)*lam)
+glw = (k**2-1)/(3*lam)
+print(f"\nANOVA de Welch: F({k-1}; {glw:.3f}) = {Fw:.4f}, p = {stats.f.sf(Fw, k-1, glw):.3e}")
+print(f"ANOVA clássica: F({k-1}; {gl}) = {stats.f_oneway(*gs)[0]:.4f}, "
+      f"p = {stats.f_oneway(*gs)[1]:.5f}")
+
+# 2. O valor crítico de Dunnett C: média ponderada de dois valores de q
+print("\nDunnett C: o valor crítico de cada par é uma média ponderada")
+print("de q(k, n_i - 1) e q(k, n_j - 1), com pesos s_i²/n_i e s_j²/n_j.")
+print(f"\nq(5%, k = {k}, gl) para cada central, com gl = n - 1:")
+for i in range(k):
+    print(f"  central {nomes[i]} (gl = {int(ns[i]-1)}): q = "
+          f"{stats.studentized_range.ppf(1-alfa, k, ns[i]-1):.4f}")
+
+def dunnett_c(i, j):
+    si, sj = vars_[i]/ns[i], vars_[j]/ns[j]
+    qi = stats.studentized_range.ppf(1-alfa, k, ns[i]-1)
+    qj = stats.studentized_range.ppf(1-alfa, k, ns[j]-1)
+    qc = (qi*si + qj*sj) / (si + sj)              # valor crítico ponderado
+    ep = np.sqrt((si + sj)/2)                     # erro-padrão na escala de q
+    return medias[j]-medias[i], ep, qc, abs(medias[j]-medias[i])/ep
+
+def games_howell(i, j):
+    si, sj = vars_[i]/ns[i], vars_[j]/ns[j]
+    glw_ = (si+sj)**2 / (si**2/(ns[i]-1) + sj**2/(ns[j]-1))
+    ep = np.sqrt((si+sj)/2)
+    q = abs(medias[j]-medias[i])/ep
+    return medias[j]-medias[i], ep, glw_, q, stats.studentized_range.sf(q, k, glw_)
+
+print(f"\nDunnett C ({k*(k-1)//2} comparações)")
+print(f"{'par':&lt;8}{'diferença':&gt;11}{'EP':&gt;8}{'q obs.':&gt;9}{'q crítico':&gt;11}{'decisão':&gt;12}{'IC 95%':&gt;22}")
+res_dc = []
+for i, j in itertools.combinations(range(k), 2):
+    dif, ep, qc, q = dunnett_c(i, j)
+    marg = qc*ep
+    sig = q &gt; qc
+    res_dc.append((f"{nomes[j]} - {nomes[i]}", dif, ep, q, qc, sig, dif-marg, dif+marg))
+    print(f"{nomes[j]+' - '+nomes[i]:&lt;8}{dif:11.3f}{ep:8.3f}{q:9.3f}{qc:11.3f}"
+          f"{('  difere *' if sig else '  não difere'):&gt;12}  [{dif-marg:7.3f}; {dif+marg:7.3f}]")
+
+print(f"\nGames-Howell, para comparação")
+print(f"{'par':&lt;8}{'diferença':&gt;11}{'EP':&gt;8}{'gl':&gt;9}{'q obs.':&gt;9}{'p ajust.':&gt;11}")
+for i, j in itertools.combinations(range(k), 2):
+    dif, ep, glw_, q, p = games_howell(i, j)
+    print(f"{nomes[j]+' - '+nomes[i]:&lt;8}{dif:11.3f}{ep:8.3f}{glw_:9.2f}{q:9.3f}{p:11.5f}"
+          f"{'*' if p&lt;alfa else ' '}")
+
+print("\nTukey-Kramer, que supõe variâncias iguais")
+q_t = stats.studentized_range.ppf(1-alfa, k, gl)
+for i, j in itertools.combinations(range(k), 2):
+    dif = medias[j]-medias[i]; ep = np.sqrt(QM/2*(1/ns[i]+1/ns[j]))
+    p = stats.studentized_range.sf(abs(dif)/ep, k, gl)
+    print(f"{nomes[j]+' - '+nomes[i]:&lt;8}{dif:11.3f}{ep:8.3f}{gl:9d}{abs(dif)/ep:9.3f}{p:11.5f}"
+          f"{'*' if p&lt;alfa else ' '}")
+
+# 3. Simulação
+print("\nSimulação: taxa de erro do conjunto com 4 grupos de médias IGUAIS")
+print("(10.000 experimentos em cada cenário)")
+rng = np.random.default_rng(777)
+M = 10000
+cenarios = [("variâncias iguais (n = 10, 12, 10, 12; DP = 3)", [10,12,10,12], [3.,3.,3.,3.]),
+            ("maior variância no maior grupo (n = 20, 10, 12, 10)", [20,10,12,10], [9.,2.,2.5,2.]),
+            ("maior variância no menor grupo (n = 20, 12, 10, 6)", [20,12,10,6], [2.,2.5,2.,9.])]
+# valores críticos de q por gl inteiro, tabelados uma vez (ptukey é lento)
+gl_tab = np.unique(np.round(np.geomspace(3, 400, 90), 3))
+q_tab = np.array([stats.studentized_range.ppf(1-alfa, 4, g_) for g_ in gl_tab])
+qi = lambda g_: np.interp(np.clip(g_, gl_tab[0], gl_tab[-1]), gl_tab, q_tab)
+print(f"(valores críticos interpolados; erro máximo = "
+      f"{max(abs(qi(g_)-stats.studentized_range.ppf(1-alfa,4,g_)) for g_ in (4.7,9.3,17.6,33.1,88.4)):.6f})")
+for titulo, ns_, sd_ in cenarios:
+    nn = np.array(ns_, float); Nt = int(nn.sum()); glr = Nt - 4
+    q_tk = stats.studentized_range.ppf(1-alfa, 4, glr)
+    q_ind = np.array([qi(x-1) for x in nn])        # q(k, n_i - 1), fixo no cenário
+    G = [rng.normal(50, s, (M, int(n_))) for n_, s in zip(ns_, sd_)]
+    mu = np.column_stack([g.mean(axis=1) for g in G])
+    vv = np.column_stack([g.var(axis=1, ddof=1) for g in G])
+    qmr = (vv*(nn-1)).sum(axis=1)/glr
+    a_tk = np.zeros(M, bool); a_gh = np.zeros(M, bool); a_dc = np.zeros(M, bool)
+    for i, j in itertools.combinations(range(4), 2):
+        d = np.abs(mu[:, j]-mu[:, i])
+        a_tk |= d/np.sqrt(qmr/2*(1/nn[i]+1/nn[j])) &gt; q_tk
+        si, sj = vv[:, i]/nn[i], vv[:, j]/nn[j]
+        ep = np.sqrt((si+sj)/2)
+        glw_ = (si+sj)**2/(si**2/(nn[i]-1) + sj**2/(nn[j]-1))
+        a_gh |= d/ep &gt; qi(glw_)
+        a_dc |= d/ep &gt; (q_ind[i]*si + q_ind[j]*sj)/(si+sj)
+    print(f"\n  {titulo}")
+    print(f"    Tukey-Kramer {100*a_tk.mean():5.2f}%   Games-Howell {100*a_gh.mean():5.2f}%   "
+          f"Dunnett C {100*a_dc.mean():5.2f}%   (alvo: 5%)")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">central   n    média     DP   variância   s²/n
+   A     20   51.435  8.523     72.644   3.632
+   B     10   49.170  2.350      5.525   0.552
+   C     12   52.525  3.256     10.604   0.884
+   D     10   55.320  2.026      4.106   0.411
+Razão entre a maior e a menor variância = 17.69
+Brown-Forsythe: W = 5.8593, p = 0.00171
+QM do resíduo agrupado = 32.991 (DP = 5.744 MPa) | gl = 48
+
+ANOVA de Welch: F(3; 25.891) = 12.5831, p = 2.893e-05
+ANOVA clássica: F(3; 48) = 2.0208, p = 0.12349
+
+Dunnett C: o valor crítico de cada par é uma média ponderada
+de q(k, n_i - 1) e q(k, n_j - 1), com pesos s_i²/n_i e s_j²/n_j.
+
+q(5%, k = 4, gl) para cada central, com gl = n - 1:
+  central A (gl = 19): q = 3.9766
+  central B (gl = 9): q = 4.4149
+  central C (gl = 11): q = 4.2561
+  central D (gl = 9): q = 4.4149
+
+Dunnett C (6 comparações)
+par       diferença      EP   q obs.  q crítico     decisão                IC 95%
+B - A        -2.265   1.446    1.566      4.034  não difere  [ -8.101;   3.571]
+C - A         1.090   1.503    0.725      4.031  não difere  [ -4.968;   7.148]
+D - A         3.885   1.422    2.733      4.021  não difere  [ -1.832;   9.602]
+C - B         3.355   0.847    3.959      4.317  não difere  [ -0.303;   7.013]
+D - B         6.150   0.694    8.863      4.415    difere *  [  3.086;   9.214]
+D - C         2.795   0.804    3.474      4.307  não difere  [ -0.669;   6.259]
+
+Games-Howell, para comparação
+par       diferença      EP       gl   q obs.   p ajust.
+B - A        -2.265   1.446    24.04    1.566    0.68864 
+C - A         1.090   1.503    26.65    0.725    0.95528 
+D - A         3.885   1.422    22.92    2.733    0.24285 
+C - B         3.355   0.847    19.66    3.959    0.05036 
+D - B         6.150   0.694    17.62    8.863    0.00004*
+D - C         2.795   0.804    18.67    3.474    0.10048 
+
+Tukey-Kramer, que supõe variâncias iguais
+B - A        -2.265   1.573       48    1.440    0.73966 
+C - A         1.090   1.483       48    0.735    0.95395 
+D - A         3.885   1.573       48    2.470    0.31161 
+C - B         3.355   1.739       48    1.929    0.52756 
+D - B         6.150   1.816       48    3.386    0.09185 
+D - C         2.795   1.739       48    1.607    0.66905 
+
+Simulação: taxa de erro do conjunto com 4 grupos de médias IGUAIS
+(10.000 experimentos em cada cenário)
+(valores críticos interpolados; erro máximo = 0.001156)
+
+  variâncias iguais (n = 10, 12, 10, 12; DP = 3)
+    Tukey-Kramer  4.84%   Games-Howell  5.18%   Dunnett C  3.06%   (alvo: 5%)
+
+  maior variância no maior grupo (n = 20, 10, 12, 10)
+    Tukey-Kramer  1.57%   Games-Howell  4.62%   Dunnett C  3.21%   (alvo: 5%)
+
+  maior variância no menor grupo (n = 20, 12, 10, 6)
+    Tukey-Kramer 28.11%   Games-Howell  5.03%   Dunnett C  3.66%   (alvo: 5%)</pre></div><figure class="fig"><img src="../assets/resultados/dunnett-c.png" alt="As seis comparações nos três procedimentos e a diferença detectada" loading="lazy"/><figcaption><strong>O resultado.</strong> À esquerda, os valores-p ajustados de Tukey–Kramer e Games–Howell para os seis pares, com a decisão do Dunnett C marcada por uma estrela quando há diferença. À direita, as quatro centrais com os intervalos construídos a partir da variância de cada uma; a única diferença que o Dunnett C detecta é entre B e D, de 6,15 MPa. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As seis comparações</caption><thead><tr><th>Par</th><th>Diferença (MPa)</th><th>EP</th><th>q obs.</th><th>q crítico</th><th>Decisão</th><th>IC 95%</th></tr></thead><tbody><tr><td>B − A</td><td>−2,265</td><td>1,446</td><td>1,566</td><td>4,034</td><td>não difere</td><td>[−8,10; +3,57]</td></tr><tr><td>C − A</td><td>+1,090</td><td>1,503</td><td>0,725</td><td>4,031</td><td>não difere</td><td>[−4,97; +7,15]</td></tr><tr><td>D − A</td><td>+3,885</td><td>1,422</td><td>2,733</td><td>4,021</td><td>não difere</td><td>[−1,83; +9,60]</td></tr><tr><td>C − B</td><td>+3,355</td><td>0,847</td><td>3,959</td><td>4,317</td><td>não difere</td><td>[−0,30; +7,01]</td></tr><tr><td><strong>D − B</strong></td><td><strong>+6,150</strong></td><td><strong>0,694</strong></td><td><strong>8,863</strong></td><td><strong>4,415</strong></td><td><strong>difere</strong></td><td><strong>[+3,09; +9,21]</strong></td></tr><tr><td>D − C</td><td>+2,795</td><td>0,804</td><td>3,474</td><td>4,307</td><td>não difere</td><td>[−0,67; +6,26]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação entre os três procedimentos</caption><thead><tr><th>Par</th><th>Tukey–Kramer (p)</th><th>Games–Howell (p)</th><th>Dunnett C</th></tr></thead><tbody><tr><td>B − A</td><td>0,7397</td><td>0,6886</td><td>não difere</td></tr><tr><td>C − A</td><td>0,9540</td><td>0,9553</td><td>não difere</td></tr><tr><td>D − A</td><td>0,3116</td><td>0,2429</td><td>não difere</td></tr><tr><td>C − B</td><td>0,5276</td><td>0,0504</td><td>não difere</td></tr><tr><td>D − B</td><td>0,0918</td><td>0,00004 *</td><td><strong>difere</strong></td></tr><tr><td>D − C</td><td>0,6690</td><td>0,1005</td><td>não difere</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Taxas de erro do conjunto simuladas</caption><thead><tr><th>Cenário</th><th>Tukey–Kramer</th><th>Games–Howell</th><th>Dunnett C</th></tr></thead><tbody><tr><td>Variâncias iguais (n = 10, 12, 10, 12)</td><td>4,84%</td><td>5,18%</td><td>3,06%</td></tr><tr><td>Maior variância no maior grupo (n = 20, 10, 12, 10)</td><td>1,57%</td><td>4,62%</td><td>3,21%</td></tr><tr><td>Maior variância no menor grupo (n = 20, 12, 10, 6)</td><td>28,11%</td><td>5,03%</td><td>3,66%</td></tr></tbody></table></div><p><strong>Leitura:</strong> o Dunnett C detecta a diferença entre as centrais B e D — 6,15 MPa, com intervalo de 3,09 a 9,21 MPa —, que o Tukey–Kramer não detecta. Até aí ele coincide com o Games–Howell. A diferença entre os dois aparece no par C–B, que o Games–Howell deixa exatamente na fronteira (p = 0,0504) e que o Dunnett C, mais conservador, não separa.</p><p>A simulação mostra o que cada procedimento entrega. O Tukey–Kramer é o mais instável: 1,57% num cenário, 28,11% em outro. O Games–Howell mantém a taxa perto de 5% nos três. O Dunnett C fica consistentemente entre 3% e 3,7% — sempre abaixo do alvo, nunca acima. Para quem precisa de uma garantia de que a taxa de erro não será excedida, essa consistência é exatamente a propriedade desejada; para quem precisa de poder, é folga desperdiçada.</p><h3>Como escolher entre os procedimentos para variâncias desiguais</h3><div class="table-wrap"><table class="method-table"><caption>Os quatro candidatos</caption><thead><tr><th>Procedimento</th><th>Valor crítico</th><th>Perfil</th></tr></thead><tbody><tr><td>Games–Howell</td><td>Amplitude estudentizada com gl de Welch–Satterthwaite</td><td>Taxa próxima do nominal; a escolha usual com n ≥ 10 por grupo.</td></tr><tr><td><strong>Dunnett C</strong></td><td>Média ponderada de amplitudes estudentizadas</td><td>Conservador e sem aproximação; bom quando a garantia importa mais que o poder.</td></tr><tr><td>Dunnett T3</td><td>Módulo máximo estudentizado com gl de Welch</td><td>Indicado para grupos pequenos (n &lt; 50); conservador.</td></tr><tr><td>Tamhane T2</td><td>t com ajuste de Šidák e gl de Welch</td><td>O mais conservador dos quatro.</td></tr></tbody></table></div><p>A literatura converge para uma recomendação simples: com grupos razoavelmente grandes, Games–Howell; com grupos pequenos, Dunnett T3 ou Dunnett C. Em todos os casos, o teste global compatível é a <a href="aovwelch.html">ANOVA de Welch</a>, e o relatório deve dizer qual procedimento foi usado — eles não são intercambiáveis.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Confundir com o teste de Dunnett de 1955</td><td>Aquele compara tratamentos com um <em>controle</em>; este compara todos os pares.</td></tr><tr><td>Usar depois de uma ANOVA clássica</td><td>O teste global compatível é a <a href="aovwelch.html">ANOVA de Welch</a>.</td></tr><tr><td>Usar os graus de liberdade do resíduo agrupado</td><td>Cada grupo entra com os seus próprios, n − 1.</td></tr><tr><td>Esquecer que k entra no quantil</td><td>Mesmo comparando dois grupos, o quantil é o de k médias.</td></tr><tr><td>Procurar um valor-p na saída</td><td>O procedimento é formulado como regra de decisão.</td></tr><tr><td>Aplicar com grupos muito pequenos</td><td>Com n &lt; 6, os quantis individuais ficam muito instáveis.</td></tr><tr><td>Testar normalidade nos resíduos agrupados</td><td>Com variâncias desiguais eles formam uma mistura.</td></tr><tr><td>Trocar de procedimento depois de ver o resultado</td><td>A escolha vem do diagnóstico de homogeneidade.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="games-howell.html">Games–Howell</a></td><td>Primeira escolha com variâncias desiguais e n ≥ 10 por grupo.</td></tr><tr><td>Dunnett T3</td><td>Grupos pequenos; conservador.</td></tr><tr><td>Tamhane T2</td><td>Quando se quer o controle mais rigoroso possível.</td></tr><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Variâncias homogêneas.</td></tr><tr><td><code>pairwise.t.test</code> com <code>pool.sd = FALSE</code> e Holm</td><td>Rota simples, sem pacotes extras.</td></tr><tr><td>Médias aparadas (<code>WRS2::lincon</code>)</td><td>Caudas pesadas além de variâncias desiguais (ver <a href="yuen.html">Yuen</a>).</td></tr><tr><td>Dunn (postos)</td><td>Depois de um <a href="kruskal.html">Kruskal–Wallis</a>.</td></tr><tr><td><a href="bootstrap.html">Bootstrap</a> com ajuste</td><td>Amostras pequenas e distribuições irregulares.</td></tr></tbody></table></div><ol class="steps"><li>Descreva cada grupo: n, média, variância e s²/n.</li><li>Aplique Brown–Forsythe e calcule a razão entre variâncias.</li><li>Verifique a normalidade dentro de cada grupo.</li><li>Use a ANOVA de Welch como teste global.</li><li>Escolha o procedimento pelo tamanho dos grupos, antes de ver os resultados.</li><li>Reporte diferenças, valores críticos de cada par e intervalos.</li><li>Quando houver divergência entre procedimentos, apresente os dois.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>DUNNETT, Charles W. Pairwise multiple comparisons in the unequal variance case. <em>Journal of the American Statistical Association</em>, v. 75, n. 372, p. 796-800, 1980.</li><li>DUNNETT, Charles W. Pairwise multiple comparisons in the homogeneous variance, unequal sample size case. <em>Journal of the American Statistical Association</em>, v. 75, n. 372, p. 789-795, 1980.</li><li>GAMES, Paul A.; HOWELL, John F. Pairwise multiple comparison procedures with unequal n’s and/or variances: a Monte Carlo study. <em>Journal of Educational Statistics</em>, v. 1, n. 2, p. 113-125, 1976.</li><li>TAMHANE, Ajit C. A comparison of procedures for multiple comparisons of means with unequal variances. <em>Journal of the American Statistical Association</em>, v. 74, n. 366, p. 471-480, 1979.</li><li>KESELMAN, H. J.; ROGAN, Joanne C. A comparison of the modified-Tukey and Scheffé methods of multiple comparisons for pairwise contrasts. <em>Journal of the American Statistical Association</em>, v. 73, n. 361, p. 47-52, 1978.</li><li>WELCH, B. L. On the comparison of several mean values: an alternative approach. <em>Biometrika</em>, v. 38, n. 3-4, p. 330-336, 1951.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>qtukey</code> e <code>oneway.test</code>, pacote <code>stats</code>.)</li><li>KASSAMBARA, Alboukadel. <em>rstatix: pipe-friendly framework for basic statistical tests.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rstatix" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rstatix</a>.</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes e normalidade dentro de cada grupo; não exige variâncias homogêneas. Recomenda-se pelo menos cerca de 6 observações por grupo.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, rstatix, car</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="hochberg-gt2.html"><span>← ANTERIOR</span>Hochberg GT2</a><a href="qui-aderencia.html"><span>PRÓXIMO →</span>Qui-quadrado de aderência</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

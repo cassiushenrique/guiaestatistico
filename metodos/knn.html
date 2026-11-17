@@ -4,324 +4,340 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="K-nearest neighbors (KNN): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   K-nearest neighbors (KNN) | Estatística e Ciência de Dados
-  </title>
+<meta content="K-nearest neighbors (KNN): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>K-nearest neighbors (KNN) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     K-nearest neighbors (KNN)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 17 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     K-nearest neighbors (KNN)
-    </h1>
-<p class="detail-lead">
-     Classifica uma observação a partir das classes de seus vizinhos mais semelhantes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/knn.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Classifica uma observação a partir das classes de seus vizinhos mais semelhantes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Escala comparável de preditores, distância pertinente, escolha de k por CV e separação treino/teste.</li><li>Sensível a dimensão e desbalanceamento.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat{\Pr}(Y=k\mid\mathbf x)=\frac1K\sum_{i\in N_K(\mathbf x)}\mathbf1(y_i=k)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da nova unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(Y\)
-        </dt>
-<dd>
-         classe de resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(K\)
-        </dt>
-<dd>
-         número de vizinhos ou classes, conforme a definição do método
-        </dd>
-</div>
-</dl>
-<p>
-       Distância euclidiana d(x, \(x_{i}\) ), voto por k vizinhos; sensibilidade/acurácia fora da amostra.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Escolha k pelo erro validado; \(p&lt;0{,}05\) não representa qualidade de classificação.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar cilindros de veículos a partir de massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-knn" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-knn"><code># K-nearest neighbors (KNN) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>K-nearest neighbors (KNN)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · CLASSIFICADORES</span><h1>K-nearest neighbors (KNN)</h1><p class="detail-lead">Classifica pelo voto dos k casos mais parecidos — sem modelo, sem parâmetros, e com toda a dificuldade na distância e na escolha de k.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/knn.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/knn.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o kNN</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O classificador mais simples que existe: para classificar um lote novo, procuram-se os \(k\) lotes do treino mais <strong>parecidos</strong> com ele e adota-se a classe da maioria. Não há modelo a ajustar, não há parâmetros a estimar — o "modelo" são os próprios dados. Toda a dificuldade está em duas escolhas: o que significa "parecido" (a distância e a escala das variáveis) e quantos vizinhos ouvir (\(k\)).</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: kNN" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A regra</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Voto dos k</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">mais próximos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A distância</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Euclidiana, em</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">variáveis padronizadas</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O parâmetro</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">k: viés</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">contra variância</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A probabilidade</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Proporção</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">de votos</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O limite</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Maldição da</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">dimensionalidade</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O custo</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Nenhum no treino,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">todo na predição</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">kNN</text></svg><figcaption>Visão geral do kNN. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Um resultado clássico</strong><p>Cover e Hart (1967) mostraram que, com \(n\to\infty\), o erro do vizinho mais próximo (\(k=1\)) é no máximo o dobro do erro de Bayes. E, com \(k\to\infty\) e \(k/n\to 0\), o kNN atinge o próprio erro de Bayes. É um método que, em princípio, aprende qualquer fronteira; o problema é que "em princípio" exige muitos dados — e cada vez mais à medida que o número de variáveis cresce.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o kNN</h2><p>Dado \(x_0\), calcula-se a distância dele a cada observação de treino, separam-se as \(k\) mais próximas, \(\mathcal N_k(x_0)\), e estima-se a probabilidade de cada classe pela proporção entre elas. Na regressão, a predição é a média das respostas dos vizinhos.</p><figure class="fig"><img src="../assets/resultados/knn-didatica.png" alt="Regiões de decisão do kNN com k igual a 1 e a 61 no plano altitude por temperatura" loading="lazy"/><figcaption><strong>O efeito de k, em duas variáveis.</strong> Com k = 1 (esquerda), a fronteira contorna cada lote: há ilhas de "fino" dentro da região de "não fino" e vice-versa, e o erro de treino é zero. Com k = 61 (direita), a fronteira é suave e segue a tendência geral; o erro de treino sobe para 0,213, mas o modelo generaliza muito melhor. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>k controla o compromisso entre viés e variância</caption><thead><tr><th>k</th><th>Fronteira</th><th>Viés</th><th>Variância</th><th>Erro de treino</th></tr></thead><tbody><tr><td>1</td><td>Irregular, contorna cada ponto</td><td>Baixo</td><td>Alta</td><td>Zero</td></tr><tr><td>Intermediário</td><td>Suave</td><td>Moderado</td><td>Moderada</td><td>Moderado</td></tr><tr><td>n</td><td>Constante: a classe majoritária</td><td>Máximo</td><td>Nula</td><td>A prevalência da minoria</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>A distância soma diferenças em unidades diferentes.</td><td><code>scale()</code> antes de tudo.</td></tr><tr><td>Variáveis relevantes</td><td>Variáveis de ruído entram na distância com o mesmo peso.</td><td>Seleção prévia; comparação com e sem cada uma.</td></tr><tr><td>Poucas dimensões</td><td>Em dimensão alta, todos ficam longe de todos.</td><td>Razão distância ao vizinho / distância média.</td></tr><tr><td>k escolhido por validação</td><td>k = 1 decora o treino.</td><td><code>knn.cv</code> ou validação cruzada.</td></tr><tr><td>Classes com tamanhos razoáveis</td><td>O voto favorece a classe mais frequente.</td><td>Probabilidades e limiar; ponderação.</td></tr><tr><td>n suficiente</td><td>O kNN aprende localmente.</td><td>Curva de aprendizado.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\hat P\left(Y=c\mid x_0\right) \\ &= \frac{1}{k}\sum_{i\in\mathcal{N}_k(x_0)}\mathbb{1}\left(y_i=c\right),\end{aligned}\]\[d\left(x_0,x_i\right)=\sqrt{\sum_{j=1}^{p}\left(z_{0j}-z_{ij}\right)^2}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mathcal N_k(x_0)\)</dt><dd>os \(k\) pontos do treino mais próximos de \(x_0\)</dd></div><div><dt>\(z_{ij}=(x_{ij}-\bar x_j)/s_j\)</dt><dd>a variável \(j\) padronizada</dd></div><div><dt>\(d\)</dt><dd>distância euclidiana</dd></div></dl><h3>Exemplo numérico: um lote novo e seus vizinhos</h3><p>O lote novo tem altitude 1.080 m, 20,0 °C, 1.500 mm, 30% de sombra, N 2,9 e pH 5,4; sua probabilidade verdadeira de ser fino é 0,6221.</p><div class="table-wrap"><table class="method-table"><caption>Os 7 vizinhos mais próximos, com as variáveis padronizadas</caption><thead><tr><th>Lote</th><th>Altitude</th><th>Temp.</th><th>Chuva</th><th>Sombra</th><th>N</th><th>pH</th><th>Distância</th><th>Fino</th></tr></thead><tbody><tr><td>506</td><td>1.158</td><td>20,0</td><td>1.406</td><td>39</td><td>2,88</td><td>5,59</td><td>0,775</td><td>1</td></tr><tr><td>593</td><td>1.111</td><td>20,8</td><td>1.402</td><td>20</td><td>2,87</td><td>5,48</td><td>0,793</td><td>1</td></tr><tr><td>422</td><td>1.230</td><td>18,8</td><td>1.553</td><td>33</td><td>2,99</td><td>5,47</td><td>0,919</td><td>1</td></tr><tr><td>570</td><td>898</td><td>20,4</td><td>1.634</td><td>34</td><td>2,85</td><td>5,55</td><td>0,977</td><td>0</td></tr><tr><td>503</td><td>937</td><td>20,3</td><td>1.571</td><td>29</td><td>3,22</td><td>5,37</td><td>1,015</td><td>0</td></tr><tr><td>264</td><td>890</td><td>19,5</td><td>1.416</td><td>29</td><td>2,71</td><td>5,23</td><td>1,021</td><td>0</td></tr><tr><td>457</td><td>981</td><td>19,5</td><td>1.433</td><td>36</td><td>2,93</td><td>5,77</td><td>1,024</td><td>0</td></tr></tbody></table></div><div class="worked"><strong>Três de sete</strong><p>Três dos sete vizinhos são finos: \(\hat P=3/7=0{,}4286\), contra 0,6221 verdadeiro — a regra classificaria o lote como não fino. Observe por quê: quatro dos vizinhos estão <em>abaixo</em> do degrau de 1.050 m (898 a 981 m), porque nas outras cinco variáveis são muito parecidos com o lote novo. O kNN não sabe que a altitude é a variável que importa; pesa todas igualmente. É a mesma limitação que faz o erro crescer quando se acrescentam variáveis irrelevantes.</p><p>Sem padronizar, o resultado é outro conjunto de vizinhos: a altitude e a chuva, com desvios-padrão de 263,61 m e 261,37 mm, dominam a distância, e o pH (desvio 0,46) é praticamente ignorado — entre os sete "vizinhos" brutos, o pH vai de 4,87 a 6,13.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Não paramétrico e local: aprende qualquer fronteira com n suficiente.</li><li>Assintoticamente, o erro com k = 1 é no máximo o dobro do erro de Bayes.</li><li>Sensível à escala e à presença de variáveis irrelevantes.</li><li>Sofre a maldição da dimensionalidade.</li><li>Custo zero no treino; na predição, distância a todos os pontos (ou árvores kd).</li><li>As probabilidades são múltiplos de 1/k.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Classe prevista</td><td>O voto da maioria.</td><td>Empates: <code>knn</code> desempata ao acaso.</td></tr><tr><td><code>attr(, "prob")</code></td><td>Proporção de votos da classe VENCEDORA.</td><td>Converta para P(fino).</td></tr><tr><td>Curva erro × k</td><td>Onde está o compromisso.</td><td>Use LOOCV ou validação cruzada.</td></tr><tr><td>Os vizinhos</td><td>Casos parecidos: explicação por exemplos.</td><td>Parecidos segundo a métrica escolhida.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função <code>knn()</code> do pacote <code>class</code> (que vem com o R) classifica um conjunto de teste a partir do treino: <code>knn(train, test, cl, k)</code>. A <code>knn.cv()</code> faz a validação deixando um de fora, que no kNN é exata e barata. O argumento <code>prob = TRUE</code> devolve a proporção de votos da classe vencedora. <strong>Padronize as variáveis com <code>scale()</code></strong>, aplicando ao teste a média e o desvio do treino. Para regressão, <code>FNN::knn.reg()</code>. Em Python, <code>sklearn.neighbors.KNeighborsClassifier</code> e <code>KNeighborsRegressor</code>, dentro de um <code>Pipeline</code> com <code>StandardScaler</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-knn-min" type="button">Copiar código</button></div><pre id="code-knn-min"><code>library(class)
+X &lt;- scale(cafe[, c("alt","temp","chuva","somb","nfol","ph")])
+erro &lt;- sapply(c(1, 5, 15, 61), function(k)
+  mean(knn.cv(X, cafe$fino_f, k = k) != cafe$fino_f))
+erro
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-knn" type="button">Copiar código</button></div><pre id="code-knn"><code># k vizinhos mais próximos (kNN): exemplo completo ----
+# Pacotes: class (incluído no R) e FNN (opcional, para regressão)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("class", quietly = TRUE)) install.packages("class")
 library(class)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(cyl))
-i &lt;- unlist(lapply(split(seq_len(nrow(d)), d$classe),
-                  function(z) sample(z, max(3, length(z) - 2))))
-X &lt;- d[, c("wt", "hp")]
-centro &lt;- colMeans(X[i, , drop = FALSE])
-escala &lt;- apply(X[i, , drop = FALSE], 2, sd)
-treino &lt;- scale(X[i, , drop = FALSE], center = centro, scale = escala)
-teste &lt;- scale(X[-i, , drop = FALSE], center = centro, scale = escala)
-pred &lt;- knn(train = treino, test = teste,
-            cl = d$classe[i], k = 3)
-print(table(real = d$classe[-i], previsto = pred))
+vars &lt;- c("alt", "temp", "chuva", "somb", "nfol", "ph")
+X &lt;- scale(cafe[, vars])            # PADRONIZAR: média 0 e desvio 1 em cada variável
+y &lt;- cafe$fino_f
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. Um lote novo e seus vizinhos
+x0 &lt;- c(alt = 1080, temp = 20.0, chuva = 1500, somb = 30, nfol = 2.9, ph = 5.4)
+z0 &lt;- (x0 - attr(X, "scaled:center")) / attr(X, "scaled:scale")
+d &lt;- sqrt(colSums((t(X) - z0)^2))
+viz &lt;- order(d)[1:7]
+cbind(cafe[viz, vars], dist = round(d[viz], 3), fino = cafe$fino[viz])
+mean(cafe$fino[viz])                 # P(fino) estimada com k = 7
 
+# ---- 2. Escolher k por validação cruzada
+# knn.cv() faz a validação deixando um de fora (LOOCV), de graça
+ks &lt;- c(1, 3, 5, 9, 15, 25, 41, 61, 101, 201)
+erro &lt;- sapply(ks, function(k) { set.seed(1); mean(knn.cv(X, y, k = k) != y) })
+plot(ks, erro, log = "x", type = "b", xlab = "k", ylab = "erro (LOOCV)")
+k_best &lt;- ks[which.min(erro)]
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Os parâmetros de padronização são estimados apenas no treino e aplicados ao teste, evitando vazamento de informação.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="bart.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Bayesian additive regression trees (BART)
-    </a>
-<a href="naive-bayes.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Naive Bayes
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Sem padronizar: a distância é dominada pelas variáveis de maior escala
+erro_bruto &lt;- sapply(ks, function(k) { set.seed(1); mean(knn.cv(as.matrix(cafe[, vars]), y, k = k) != y) })
+cbind(k = ks, padronizado = erro, bruto = erro_bruto)
+
+# ---- 4. Probabilidades: proporção de votos
+set.seed(1)
+pr &lt;- knn.cv(X, y, k = k_best, prob = TRUE)
+p_venc &lt;- attr(pr, "prob")           # proporção da classe VENCEDORA
+p_fino &lt;- ifelse(pr == "fino", p_venc, 1 - p_venc)
+
+# ---- 5. A maldição da dimensionalidade: colunas de ruído
+set.seed(4)
+for (q in c(0, 6, 24, 48)) {
+  Xq &lt;- if (q &gt; 0) cbind(X, matrix(rnorm(nrow(X) * q), ncol = q)) else X
+  cat(q, "colunas de ruído: erro", mean(knn.cv(Xq, y, k = k_best) != y), "\n")
+}
+
+# ---- 6. Regressão (pacote FNN)
+# install.packages("FNN")
+library(FNN)
+r &lt;- knn.reg(train = X, y = cafe$nota, k = 15)   # sem 'test': LOOCV
+mean((cafe$nota - r$pred)^2)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-knn" type="button">Copiar código</button></div><pre id="code-py-knn"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+y=FINO
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (1) ou não (0). Erro de Bayes = %s.'%c(ERRO_BAYES))
+
+print('\n'+'='*70)
+print('UM LOTE NOVO E SEUS VIZINHOS')
+x0=np.array([1080.,20.0,1500.,30.,2.9,5.4])
+print('Lote novo: altitude 1080 m, 20,0 C, 1500 mm, 30% de sombra, N 2,9, pH 5,4')
+print('P(fino) VERDADEIRA para esse lote = %s'%c(float(1-norm.cdf((80-verdade(x0[None,:])[0])/SIGN))))
+Z,mu,sd=padroniza(X); z0=(x0-mu)/sd
+dz=np.sqrt(((Z-z0)**2).sum(1)); dr=np.sqrt(((X-x0)**2).sum(1))
+print()
+print('Os 7 vizinhos mais próximos, nas variáveis PADRONIZADAS:')
+print('%6s %9s %7s %8s %7s %6s %6s %10s %6s'%('lote','altitude','temp','chuva','sombra','N','pH','distância','fino'))
+for i in np.argsort(dz)[:7]:
+    a=X[i]; print('%6d %9s %7s %8s %7s %6s %6s %10s %6d'%(i+1,c(a[0],0),c(a[1],1),c(a[2],0),c(a[3],0),c(a[4],2),c(a[5],2),c(dz[i],3),y[i]))
+v7=np.argsort(dz)[:7]
+print('  -&gt; %d de 7 são finos: P(fino) estimada = %s'%(y[v7].sum(),c(y[v7].mean())))
+print()
+print('Os 7 vizinhos mais próximos SEM padronizar (distância em unidades brutas):')
+for i in np.argsort(dr)[:7]:
+    a=X[i]; print('%6d %9s %7s %8s %7s %6s %6s %10s %6d'%(i+1,c(a[0],0),c(a[1],1),c(a[2],0),c(a[3],0),c(a[4],2),c(a[5],2),c(dr[i],1),y[i]))
+v7r=np.argsort(dr)[:7]
+print('  -&gt; %d de 7 são finos: P(fino) estimada = %s'%(y[v7r].sum(),c(y[v7r].mean())))
+print('Sem padronizar, só a altitude e a chuva (desvios-padrão de ~260) pesam na')
+print('distância; temperatura, N e pH (desvios abaixo de 2) são quase ignorados:')
+print('veja o pH dos "vizinhos" indo de 4,87 a 6,13.')
+print('  desvios-padrão: '+', '.join('%s %s'%(ROT[k],c(s_,2)) for k,s_ in zip(NOMES,sd)))
+
+print('\n'+'='*70)
+print('A ESCOLHA DE k: viés contra variância')
+print()
+print('%5s %14s %16s %16s'%('k','erro treino','erro 10-fold','erro (sem padr.)'))
+res=[]
+for k in [1,3,5,9,15,25,41,61,101,201]:
+    f=lambda k=k: make_pipeline(StandardScaler(),KNeighborsClassifier(k))
+    tr=1-acur(y,f().fit(X,y).predict(X))
+    er,sdv=cv_clf(f,X,y,10,0,5)
+    ebr,_=cv_clf(lambda k=k: KNeighborsClassifier(k),X,y,10,0,5)
+    res.append((k,er)); print('%5d %14s %16s %16s'%(k,c(tr),c(er),c(ebr)))
+kb=min(res,key=lambda t:t[1])[0]
+print()
+print('  melhor k = %d. Com k = 1 o erro de treino é zero: cada lote é o seu'%kb)
+print('  próprio vizinho. Com k = 201, a vizinhança é um terço dos dados.')
+
+print('\n'+'='*70)
+print('PONDERAR PELA DISTÂNCIA, e as probabilidades')
+print()
+print('%-34s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for nm,f in [('k = %d, votos iguais'%kb,lambda: make_pipeline(StandardScaler(),KNeighborsClassifier(kb))),
+             ('k = %d, peso 1/distância'%kb,lambda: make_pipeline(StandardScaler(),KNeighborsClassifier(kb,weights='distance'))),
+             ('k = 1',lambda: make_pipeline(StandardScaler(),KNeighborsClassifier(1)))]:
+    er,ll,br=cv_clf(f,X,y,10,0,5,prob=True)
+    print('%-34s %10s %10s %10s'%(nm,c(er),c(ll),c(br)))
+print('Com k = 1 a probabilidade estimada é 0 ou 1: o log-loss explode.')
+
+print('\n'+'='*70)
+print('A MALDIÇÃO DA DIMENSIONALIDADE: acrescentando colunas de puro ruído')
+rg=np.random.default_rng(4)
+print()
+print('%18s %14s %22s'%('colunas de ruído','erro 10-fold','dist. ao vizinho/média'))
+for q in [0,2,6,12,24,48]:
+    A=np.column_stack([X,rg.normal(size=(NC,q))]) if q else X
+    er,_=cv_clf(lambda: make_pipeline(StandardScaler(),KNeighborsClassifier(kb)),A,y,10,0,3)
+    Za=padroniza(A)[0]; D=np.sqrt(((Za[:,None,:]-Za[None,:,:])**2).sum(2)); np.fill_diagonal(D,np.inf)
+    rel=float(np.mean(D.min(1))/np.mean(D[np.isfinite(D)]))
+    print('%18d %14s %22s'%(q,c(er),c(rel,3)))
+print()
+print('Em dimensão alta, o vizinho mais próximo fica quase tão longe quanto um')
+print('lote qualquer: a ideia de "vizinhança" deixa de existir.')
+
+print('\n'+'='*70)
+print('kNN PARA REGRESSÃO (a nota), comparado com o piso')
+print()
+for k in [1,5,15,25,50]:
+    v,_=cv_reg(lambda k=k: make_pipeline(StandardScaler(),KNeighborsRegressor(k)),X,NOTA,10,0,3)
+    print('  k = %3d   EQM 10-fold = %s'%(k,c(v)))
+print('  piso (sigma²) = %s'%c(EQM_PISO))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (1) ou não (0). Erro de Bayes = 0,1596.
+
+======================================================================
+UM LOTE NOVO E SEUS VIZINHOS
+Lote novo: altitude 1080 m, 20,0 C, 1500 mm, 30% de sombra, N 2,9, pH 5,4
+P(fino) VERDADEIRA para esse lote = 0,6221
+
+Os 7 vizinhos mais próximos, nas variáveis PADRONIZADAS:
+  lote  altitude    temp    chuva  sombra      N     pH  distância   fino
+   506      1158    20,0     1406      39   2,88   5,59      0,775      1
+   593      1111    20,8     1402      20   2,87   5,48      0,793      1
+   422      1230    18,8     1553      33   2,99   5,47      0,919      1
+   570       898    20,4     1634      34   2,85   5,55      0,977      0
+   503       937    20,3     1571      29   3,22   5,37      1,015      0
+   264       890    19,5     1416      29   2,71   5,23      1,021      0
+   457       981    19,5     1433      36   2,93   5,77      1,024      0
+  -&gt; 3 de 7 são finos: P(fino) estimada = 0,4286
+
+Os 7 vizinhos mais próximos SEM padronizar (distância em unidades brutas):
+   597      1071    19,5     1517      29   2,30   4,87       19,4      0
+   142      1076    20,2     1519      28   3,23   5,77       19,4      0
+   407      1100    20,9     1513      22   2,14   5,76       25,1      1
+   577      1105    18,3     1475      11   3,05   5,64       40,5      0
+   107      1061    21,1     1534      57   2,83   5,47       47,4      1
+   284      1112    19,8     1536      36   2,78   6,13       49,1      0
+   561      1064    19,0     1548      31   3,22   5,17       51,1      1
+  -&gt; 3 de 7 são finos: P(fino) estimada = 0,4286
+Sem padronizar, só a altitude e a chuva (desvios-padrão de ~260) pesam na
+distância; temperatura, N e pH (desvios abaixo de 2) são quase ignorados:
+veja o pH dos "vizinhos" indo de 4,87 a 6,13.
+  desvios-padrão: Altitude 263,61, Temperatura 1,98, Chuva 261,37, Sombreamento 19,51, N foliar 0,40, pH 0,46
+
+======================================================================
+A ESCOLHA DE k: viés contra variância
+
+    k    erro treino     erro 10-fold erro (sem padr.)
+    1         0,0000           0,2707           0,2607
+    3         0,1233           0,2413           0,2387
+    5         0,1633           0,2280           0,2447
+    9         0,1817           0,2217           0,2217
+   15         0,1883           0,2103           0,2170
+   25         0,1900           0,2083           0,2250
+   41         0,2083           0,2090           0,2213
+   61         0,1933           0,2023           0,2153
+  101         0,2000           0,2023           0,2213
+  201         0,2050           0,2123           0,2247
+
+  melhor k = 61. Com k = 1 o erro de treino é zero: cada lote é o seu
+  próprio vizinho. Com k = 201, a vizinhança é um terço dos dados.
+
+======================================================================
+PONDERAR PELA DISTÂNCIA, e as probabilidades
+
+modelo                                   erro   log-loss      Brier
+k = 61, votos iguais                   0,2023     0,4377     0,1418
+k = 61, peso 1/distância               0,2037     0,4350     0,1411
+k = 1                                  0,2707     3,7394     0,2707
+Com k = 1 a probabilidade estimada é 0 ou 1: o log-loss explode.
+
+======================================================================
+A MALDIÇÃO DA DIMENSIONALIDADE: acrescentando colunas de puro ruído
+
+  colunas de ruído   erro 10-fold dist. ao vizinho/média
+                 0         0,2022                  0,276
+                 2         0,2039                  0,355
+                 6         0,2167                  0,468
+                12         0,2367                  0,563
+                24         0,2661                  0,662
+                48         0,3100                  0,746
+
+Em dimensão alta, o vizinho mais próximo fica quase tão longe quanto um
+lote qualquer: a ideia de "vizinhança" deixa de existir.
+
+======================================================================
+kNN PARA REGRESSÃO (a nota), comparado com o piso
+
+  k =   1   EQM 10-fold = 8,7694
+  k =   5   EQM 10-fold = 4,8888
+  k =  15   EQM 10-fold = 4,9212
+  k =  25   EQM 10-fold = 5,0148
+  k =  50   EQM 10-fold = 5,1698
+  piso (sigma²) = 2,4025</pre></div><figure class="fig"><img src="../assets/resultados/knn.png" alt="Erro em função de k, com e sem padronização, e o efeito de colunas de ruído" loading="lazy"/><figcaption><strong>A aplicação em duas vistas.</strong> À esquerda, o erro de treino (zero em k = 1) e o erro validado, com e sem padronização: a curva em U invertida do compromisso entre viés e variância. À direita, o erro validado e a razão entre a distância ao vizinho mais próximo e a distância média, à medida que colunas de puro ruído são acrescentadas. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A escolha de k (10 dobras × 5)</caption><thead><tr><th>k</th><th>Erro de treino</th><th>Erro 10-fold (padronizado)</th><th>Erro 10-fold (sem padronizar)</th></tr></thead><tbody><tr><td>1</td><td>0,0000</td><td>0,2707</td><td>0,2607</td></tr><tr><td>5</td><td>0,1633</td><td>0,2280</td><td>0,2447</td></tr><tr><td>15</td><td>0,1883</td><td>0,2103</td><td>0,2170</td></tr><tr><td>25</td><td>0,1900</td><td>0,2083</td><td>0,2250</td></tr><tr><td><strong>61</strong></td><td><strong>0,1933</strong></td><td><strong>0,2023</strong></td><td><strong>0,2153</strong></td></tr><tr><td>101</td><td>0,2000</td><td>0,2023</td><td>0,2213</td></tr><tr><td>201</td><td>0,2050</td><td>0,2123</td><td>0,2247</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Probabilidades</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>k = 61, votos iguais</td><td>0,2023</td><td>0,4377</td><td>0,1418</td></tr><tr><td>k = 61, peso 1/distância</td><td>0,2037</td><td>0,4350</td><td>0,1411</td></tr><tr><td>k = 1</td><td>0,2707</td><td>3,7394</td><td>0,2707</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A maldição da dimensionalidade</caption><thead><tr><th>Colunas de ruído</th><th>Erro 10-fold</th><th>Distância ao vizinho / distância média</th></tr></thead><tbody><tr><td>0</td><td>0,2022</td><td>0,276</td></tr><tr><td>2</td><td>0,2039</td><td>0,355</td></tr><tr><td>6</td><td>0,2167</td><td>0,468</td></tr><tr><td>12</td><td>0,2367</td><td>0,563</td></tr><tr><td>24</td><td>0,2661</td><td>0,662</td></tr><tr><td>48</td><td>0,3100</td><td>0,746</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>kNN para a nota (regressão)</caption><thead><tr><th>k</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>1</td><td>8,7694</td></tr><tr><td>5</td><td>4,8888</td></tr><tr><td>15</td><td>4,9212</td></tr><tr><td>50</td><td>5,1698</td></tr><tr><td><em>Piso σ²</em></td><td><em>2,4025</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> o melhor kNN erra 20,23% — melhor que a regressão logística (23,07%), pior que a árvore de três folhas (19,20%) e longe do erro de Bayes (15,96%). O ótimo em k = 61 é largo: de 15 a 101, o erro fica entre 0,2023 e 0,2103. Com k = 1, erro de treino zero e erro validado de 27,07%: o retrato do sobreajuste.</p><p><strong>A padronização ajudou pouco aqui</strong> (0,2023 contra 0,2153), e por acaso: as duas variáveis de maior escala, altitude e chuva, têm desvios quase iguais (263,61 e 261,37), e a altitude é justamente a mais importante. Com outra combinação de unidades — a altitude em quilômetros, por exemplo — o kNN sem padronização ignoraria a variável principal. Padronizar não é opcional; nestes dados apenas não fez muita diferença.</p><p><strong>A maldição da dimensionalidade tem dois números.</strong> Com 48 colunas de ruído, o erro sobe de 0,2022 para 0,3100 — próximo dos 0,34 de quem chuta sempre "não fino". E a razão entre a distância ao vizinho mais próximo e a distância média sobe de 0,276 para 0,746: em 54 dimensões, o vizinho mais próximo está a três quartos da distância de um lote qualquer. A ideia de vizinhança se dissolve.</p><p><strong>Na regressão</strong>, o melhor kNN (EQM 4,8888 com k = 5) é pior que o modelo aditivo com splines (4,0420) e muito pior que os comitês de árvores (cerca de 3,0). O kNN não sabe que a nota depende sobretudo da altitude; tira a média de vizinhos parecidos em todas as seis variáveis.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Não padronizar</td><td>Use <code>scale()</code>; aplique ao teste a média e o desvio do treino.</td></tr><tr><td>Usar k = 1</td><td>Escolha k por validação.</td></tr><tr><td>Incluir variáveis irrelevantes</td><td>Entram na distância com peso igual.</td></tr><tr><td>Usar em dimensão alta</td><td>Reduza a dimensão ou use outro método.</td></tr><tr><td>Ler <code>attr(, "prob")</code> como P(classe 1)</td><td>É a proporção da classe vencedora.</td></tr><tr><td>Variáveis categóricas na distância euclidiana</td><td>Use distância de Gower ou codificação adequada.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="svm-rbf.html">SVM com núcleo radial</a></td><td>Fronteiras curvas com menos sensibilidade ao ruído.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>Muitas variáveis, algumas irrelevantes.</td></tr><tr><td><a href="naive-bayes.html">Naive Bayes</a></td><td>Muitas variáveis, poucos dados.</td></tr><tr><td><a href="lda.html">LDA</a> / <a href="qda.html">QDA</a></td><td>Classes aproximadamente normais.</td></tr><tr><td>kNN com métrica aprendida</td><td>Quando a escala certa das variáveis é desconhecida.</td></tr><tr><td>Regressão local (LOESS)</td><td>Versão suave do kNN para regressão.</td></tr></tbody></table></div><ol class="steps"><li>Padronize as variáveis.</li><li>Escolha k por LOOCV.</li><li>Examine os vizinhos de alguns casos.</li><li>Teste a retirada de variáveis.</li><li>Compare com um classificador paramétrico e com uma floresta.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FIX, Evelyn; HODGES, Joseph L. <em>Discriminatory analysis: nonparametric discrimination, consistency properties.</em> Randolph Field: USAF School of Aviation Medicine, 1951. (Report n. 4, Project 21-49-004.)</li><li>COVER, Thomas M.; HART, Peter E. Nearest neighbor pattern classification. <em>IEEE Transactions on Information Theory</em>, v. 13, n. 1, p. 21-27, 1967.</li><li>SILVERMAN, Bernard W.; JONES, M. C. E. Fix and J. L. Hodges (1951): an important contribution to nonparametric discriminant analysis and density estimation. <em>International Statistical Review</em>, v. 57, n. 3, p. 233-238, 1989.</li><li>BEYER, Kevin; GOLDSTEIN, Jonathan; RAMAKRISHNAN, Raghu; SHAFT, Uri. When is "nearest neighbor" meaningful? In: INTERNATIONAL CONFERENCE ON DATABASE THEORY, 7., 1999, Jerusalem. <em>Proceedings</em> [...]. Berlin: Springer, 1999. p. 217-235.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacotes <code>MASS</code>, <code>nnet</code> e <code>class</code>.)</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, poucas dimensões, ausência de variáveis irrelevantes e k escolhido por validação.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>class (incluído no R); FNN (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="bart.html"><span>← ANTERIOR</span>Bayesian additive regression trees (BART)</a><a href="naive-bayes.html"><span>PRÓXIMO →</span>Naive Bayes</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,306 +4,280 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste de McNemar: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste de McNemar | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste de McNemar: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste de McNemar | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste de McNemar
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 07 · DADOS CATEGÓRICOS
-    </span>
-<h1>
-     Teste de McNemar
-    </h1>
-<p class="detail-lead">
-     Verifica se a proporção de uma resposta binária mudou nas mesmas unidades.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/mcnemar.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se a proporção de uma resposta binária mudou nas mesmas unidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Dados pareados binários, pares independentes entre si.</li><li>Categorias consistentes.</li><li>Para poucos discordantes, prefira versão exata.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ p_{01}=p_{10}\\ H_1&amp;:\ p_{01}\neq p_{10}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[X^2=\frac{(b-c)^2}{b+c}\quad\text{(sem correção)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(b\)
-        </dt>
-<dd>
-         número de unidades que mudam de 0 para 1
-        </dd>
-</div>
-<div>
-<dt>
-         \(c\)
-        </dt>
-<dd>
-         número de unidades que mudam de 1 para 0
-        </dd>
-</div>
-<div>
-<dt>
-         \(X^2\)
-        </dt>
-<dd>
-         estatística assintótica sem correção de continuidade, aplicável quando há pares discordantes suficientes
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de mudança na proporção marginal, não de diferença de médias contínuas.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        No conjunto CO2, a absorção é medida repetidamente nas mesmas plantas, em diferentes concentrações de dióxido de carbono.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar cada planta como absorção acima de 15 unidades em duas concentrações de \(CO_{2}\) .
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-mcnemar" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-mcnemar"><code># Teste de McNemar ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste de McNemar</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · DADOS CATEGÓRICOS</span><h1>Teste de McNemar</h1><p class="detail-lead">Compara duas proporções medidas nas mesmas unidades, usando apenas os pares que mudaram de resposta.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/mcnemar.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/mcnemar.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando as mesmas pessoas são medidas duas vezes, ou quando dois métodos são aplicados à mesma amostra, a tabela resultante não pode ser analisada pelo <a href="qui-independencia.html">qui-quadrado de independência</a>. A razão é simples: aquele teste pergunta se as duas medidas são independentes, e a resposta é obviamente não — são da mesma unidade. A pergunta certa é outra: <em>a proporção mudou?</em></p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste de McNemar" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara duas proporções</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">medidas nas mesmas unidades</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Só as células discordantes</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">carregam informação</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A conta</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">(b − c)² / (b + c)</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">ou binomial com p = 0,5</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Pares independentes</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">entre si</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">mcnemar.test(tabela)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Extensões</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Cochran Q (k medidas)</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">Stuart–Maxwell (k × k)</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste de McNemar</text></svg><figcaption>Visão geral do teste de McNemar. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A intuição em uma frase</strong><p>Das 1.600 pessoas do exemplo desta ficha, 1.364 deram a mesma resposta nas duas pesquisas. Elas nada dizem sobre <em>mudança</em>. A informação está nas 236 que mudaram: 150 passaram de aprovar para desaprovar e 86 fizeram o caminho inverso. A pergunta vira "150 e 86 são compatíveis com uma divisão meio a meio?".</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Numa tabela \(2\times2\) de medidas pareadas, as células da diagonal contêm as unidades que não mudaram, e as de fora da diagonal, \(b\) e \(c\), as que mudaram em cada direção. Sob a hipótese de que a proporção não mudou, cada unidade discordante tem a mesma chance de ter mudado numa direção ou na outra. A hipótese vira, portanto, uma binomial com \(p=0{,}5\) e \(b+c\) ensaios.</p><figure class="fig"><img src="../assets/resultados/mcnemar-didatica.png" alt="A tabela destacando as células discordantes e a binomial resultante" loading="lazy"/><figcaption><strong>Como a pergunta se reduz a um lançamento de moeda.</strong> À esquerda, a tabela completa: as duas células concordantes, com 794 e 570 pessoas, não entram na conta. À direita, a distribuição do número de mudanças de aprovar para desaprovar sob a hipótese nula: 236 discordâncias, cada uma com probabilidade 0,5, dão uma binomial centrada em 118. O valor observado, 150, está muito à direita, e o valor-p exato é 3,7 × 10⁻⁵. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que o qui-quadrado de independência não serve</strong><p>Aplicado à mesma tabela, ele devolve \(\chi^2=788{,}3\) com \(p&lt;10^{-170}\) — e responde a "a opinião na segunda pesquisa depende da opinião na primeira?". A resposta é sim, trivialmente: pessoas tendem a manter opinião. Esse teste não diz nada sobre a questão de interesse, que é se o nível de aprovação mudou.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Pares definidos pelo delineamento</td><td>O pareamento vem do estudo, não dos dados.</td><td>Protocolo.</td></tr><tr><td>Pares independentes entre si</td><td>A dependência permitida é só dentro do par.</td><td>Delineamento.</td></tr><tr><td>Resposta binária nas duas medidas</td><td>O teste é para tabelas 2 × 2 pareadas.</td><td>Natureza da variável; para mais categorias, Stuart–Maxwell.</td></tr><tr><td>b + c suficientemente grande para a aproximação</td><td>A qui-quadrado é assintótica.</td><td>Regra prática: b + c ≥ 25; abaixo disso, use a versão exata.</td></tr><tr><td>Independência entre as medidas</td><td><strong>Não é exigida</strong>: elas são justamente dependentes.</td><td>—</td></tr></tbody></table></div><div class="callout "><strong>Correção de continuidade ou versão exata?</strong><p>A simulação desta ficha mostra que a versão <strong>sem</strong> correção é a que fica mais perto de 5% em todos os cenários testados, e que a corrigida e a exata são conservadoras — com b + c perto de 400 elas ainda gastam menos de 4,5%. A recomendação prática: com b + c pequeno, use a exata, que garante que a taxa nunca ultrapasse o nominal; com b + c grande, a sem correção é a mais fiel ao nível declarado. Note que o R aplica a correção por padrão.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \pi_{1\cdot}=\pi_{\cdot1} \\ &\quad \text{(homogeneidade marginal: a } \\ &\quad \text{proporção não mudou)} \\ H_1&:\ \pi_{1\cdot}\neq\pi_{\cdot1}\end{aligned}\right.\]\[\Longleftrightarrow\]\[H_0:\ \pi_b=\pi_c\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\chi^{2}=\frac{\left(|b-c|-1\right)^{2}}{b+c}\ \dot\sim\ \chi^{2}_{1}\]\[\text{(com correção de continuidade)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\chi^{2}=\frac{(b-c)^{2}}{b+c}\ \dot\sim\ \chi^{2}_{1},\]\[\begin{aligned}p_{\text{exato}} &= 2\,P\!\left(X\leq\min(b,c)\right),\ X \\ &\sim \text{Bin}(b+c,\ 0{,}5)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(b\)</dt><dd>unidades que mudaram de 1 para 2</dd></div><div><dt>\(c\)</dt><dd>unidades que mudaram de 2 para 1</dd></div><div><dt>\(\pi_{1\cdot},\ \pi_{\cdot1}\)</dt><dd>proporções marginais da primeira e da segunda medida</dd></div><div><dt>\(b+c\)</dt><dd>número de pares discordantes: o tamanho efetivo da amostra</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Duas pesquisas sucessivas com 1.600 entrevistados</caption><thead><tr><th></th><th>2ª: aprova</th><th>2ª: desaprova</th><th>Total</th></tr></thead><tbody><tr><td>1ª: aprova</td><td>794</td><td><strong>150 = b</strong></td><td>944</td></tr><tr><td>1ª: desaprova</td><td><strong>86 = c</strong></td><td>570</td><td>656</td></tr><tr><td><strong>Total</strong></td><td><strong>880</strong></td><td><strong>720</strong></td><td><strong>1 600</strong></td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>A aprovação caiu de 944/1600 = 59,00% para 880/1600 = 55,00%: quatro pontos percentuais.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\chi^{2}_{\text{corrigido}} &= \frac{(|150-86|-1)^{2}}{150+86} \\ &= \frac{63^{2}}{236} = \frac{3\,969}{236} \\ &= 16{,}818,\end{aligned}\]\[p=4{,}11\times10^{-5}.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\chi^{2}_{\text{sem correção}}=\frac{64^{2}}{236}=17{,}356,\]\[p=3{,}10\times10^{-5}.\]</div><p>A versão exata calcula \(2\,P(X\leq86)\) com \(X\sim\text{Bin}(236;\,0{,}5)\), o que dá \(3{,}72\times10^{-5}\).</p><p>Repare que os 1.364 concordantes não aparecem em nenhuma das contas. O tamanho efetivo da amostra é 236, não 1.600.</p></div><h3>Medidas de efeito</h3><div class="table-wrap"><table class="method-table"><caption>O que reportar além do valor-p</caption><thead><tr><th>Medida</th><th>Fórmula</th><th>No exemplo</th></tr></thead><tbody><tr><td>Razão de chances de mudança</td><td>b / c</td><td>1,744; IC 95% [1,338; 2,274]</td></tr><tr><td>Diferença de proporções</td><td>(b − c)/n</td><td>+4,00 pontos; IC 95% [+2,13; +5,87]</td></tr><tr><td>Proporção de mudanças</td><td>(b + c)/n</td><td>14,75% dos entrevistados</td></tr><tr><td>Concordância bruta</td><td>(a + d)/n</td><td>85,25%</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>É o caso \(k=2\) do <a href="cochran-q.html">teste Q de Cochran</a>.</li><li>Equivale ao teste do sinal aplicado às mudanças, e à <a href="logistica.html">regressão logística condicional</a> com um par por estrato.</li><li>Testa homogeneidade marginal, não concordância: duas medidas podem ter marginais idênticas e concordar pouco.</li><li>O tamanho efetivo da amostra é \(b+c\), e não \(n\): o poder depende de quantas unidades mudaram.</li><li>Para tabelas \(k\times k\) pareadas, a extensão é o teste de Stuart–Maxwell.</li><li>A versão exata é conservadora; a versão sem correção é a mais fiel ao nível nominal.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>McNemar chi-squared</td><td>A estatística, com 1 grau de liberdade.</td><td>O R aplica a correção por padrão.</td></tr><tr><td>p-value</td><td>Evidência de mudança na proporção.</td><td>Não mede concordância.</td></tr><tr><td>b e c</td><td>As discordâncias em cada direção.</td><td>Reporte-as sempre.</td></tr><tr><td>b + c</td><td>Tamanho efetivo da amostra.</td><td>É ele que determina o poder.</td></tr><tr><td>Razão b/c</td><td>Magnitude da assimetria.</td><td>Com intervalo de confiança.</td></tr><tr><td>Kappa de Cohen</td><td>Concordância além do acaso.</td><td>Pergunta diferente da do teste.</td></tr></tbody></table></div><div class="callout "><strong>Mudança e concordância são coisas diferentes</strong><p>No segundo exemplo desta ficha, os dois métodos de detecção têm kappa de 0,524 — concordância moderada — e McNemar significativo (p = 0,008). As duas informações se complementam: os métodos concordam razoavelmente, <em>e</em> o método A detecta sistematicamente mais que o B. Uma tabela pode ter marginais iguais (McNemar não significativo) e concordância péssima, se as discordâncias se equilibrarem nas duas direções.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>mcnemar.test()</code> está no pacote <code>stats</code>, já instalado com o R, e aplica a correção de continuidade por padrão (<code>correct = FALSE</code> a desliga). A versão exata se obtém com <code>binom.test(b, b + c, p = 0.5)</code> ou com <code>exact2x2::mcnemar.exact()</code>. Para a concordância, <code>DescTools::CohenKappa()</code>; para tabelas \(k\times k\) pareadas, <code>DescTools::StuartMaxwellTest()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-mcnemar-min" type="button">Copiar código</button></div><pre id="code-mcnemar-min"><code>mcnemar.test(Desempenho)                  # com correção (padrão)
+mcnemar.test(Desempenho, correct = FALSE)
+binom.test(b, b + c, p = 0.5)              # exato
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>O primeiro exemplo usa os dados de Agresti (1990) sobre o desempenho presidencial avaliado por 1.600 entrevistados em duas pesquisas sucessivas — é o conjunto que acompanha a documentação de <code>mcnemar.test()</code> no R. O segundo é fictício: 120 amostras de solo analisadas por dois métodos de detecção de um patógeno, cada amostra pelos dois. A ficha termina com uma simulação sobre qual versão do teste usar.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-mcnemar" type="button">Copiar código</button></div><pre id="code-mcnemar"><code># Teste de McNemar: exemplo completo ----
+# Pacotes: stats (base), exact2x2 (versão exata), DescTools (kappa, IC)
+# install.packages(c("exact2x2", "DescTools"))
 
-# Ajuste e resultados ----
-d &lt;- subset(CO2, conc %in% c(95, 175))
-w &lt;- reshape(d[, c("Plant", "conc", "uptake")], idvar = "Plant",
-             timevar = "conc", direction = "wide")
-tab &lt;- table(baixo = w$uptake.95 &gt; 15,
-             alto = w$uptake.175 &gt; 15)
-print(tab)
-print(mcnemar.test(tab))
+# PARTE 1 - o exemplo padrão: duas pesquisas com as MESMAS pessoas
+# Fonte: Agresti (1990), p. 350; é o exemplo da documentação de mcnemar.test()
+Desempenho &lt;- matrix(c(794, 86, 150, 570), nrow = 2,
+  dimnames = list("1ª pesquisa" = c("aprova", "desaprova"),
+                  "2ª pesquisa" = c("aprova", "desaprova")))
+Desempenho
+addmargins(Desempenho)
+prop.table(margin.table(Desempenho, 1))      # aprovação na 1ª
+prop.table(margin.table(Desempenho, 2))      # aprovação na 2ª
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O teste
+mcnemar.test(Desempenho)                     # com correção de continuidade (padrão)
+mcnemar.test(Desempenho, correct = FALSE)
+b &lt;- Desempenho[1, 2]; c_ &lt;- Desempenho[2, 1]
+binom.test(b, b + c_, p = 0.5)               # versão exata
 
+# A conta, à mão
+(abs(b - c_) - 1)^2 / (b + c_)               # com correção
+(b - c_)^2 / (b + c_)                        # sem correção
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="fisher.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste exato de Fisher
-    </a>
-<a href="cochran-q.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste Q de Cochran
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Medidas de efeito
+b / c_                                        # razão de chances de mudança
+exp(log(b/c_) + c(-1, 1) * 1.96 * sqrt(1/b + 1/c_))
+n &lt;- sum(Desempenho)
+(b - c_) / n                                  # diferença de proporções
+# IC da diferença (método de Wald para dados pareados):
+dif &lt;- (b - c_)/n
+ep  &lt;- sqrt(b + c_ - (b - c_)^2/n) / n
+dif + c(-1, 1) * 1.96 * ep
+
+# Por que o qui-quadrado de independência seria a pergunta errada
+chisq.test(Desempenho, correct = FALSE)      # responde a outra coisa
+
+# PARTE 2 - concordância entre dois métodos (dados fictícios)
+metodos &lt;- matrix(c(46, 7, 22, 45), nrow = 2,
+  dimnames = list("método A" = c("detecta", "não detecta"),
+                  "método B" = c("detecta", "não detecta")))
+metodos
+mcnemar.test(metodos)
+mcnemar.test(metodos, correct = FALSE)
+binom.test(metodos[1,2], metodos[1,2] + metodos[2,1], p = 0.5)   # exato
+library(exact2x2)
+mcnemar.exact(metodos)
+
+# Concordância, que é outra pergunta
+library(DescTools)
+CohenKappa(metodos, conf.level = 0.95)
+sum(diag(metodos)) / sum(metodos)            # concordância bruta
+
+# PARTE 3 - extensões
+# Tabelas k x k pareadas: teste de homogeneidade marginal de Stuart-Maxwell
+# DescTools::StuartMaxwellTest(tabela)
+# Três ou mais medidas binárias: teste Q de Cochran (ver a ficha correspondente)
+
+# Gráficos
+par(mfrow = c(1, 2))
+barplot(c(Desempenho[1,2], Desempenho[2,1]), names.arg = c("aprova -&gt; desaprova", "desaprova -&gt; aprova"),
+        col = c("firebrick", "darkorange"), ylab = "Entrevistados", main = "Só as discordâncias")
+mosaicplot(Desempenho, color = TRUE, main = "Tabela completa")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-mcnemar" type="button">Copiar código</button></div><pre id="code-py-mcnemar"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# PARTE 1 - o exemplo padrão: duas avaliações das MESMAS pessoas
+# 1.600 entrevistados opinaram sobre o desempenho de um presidente em duas
+# pesquisas sucessivas. Fonte: Agresti (1990), p. 350; é o exemplo de
+# mcnemar.test() na documentação do R.
+tab = np.array([[794, 150], [86, 570]], dtype=float)
+rot_l = ["1ª pesquisa: aprova", "1ª pesquisa: desaprova"]
+rot_c = ["2ª: aprova", "2ª: desaprova"]
+print("Desempenho presidencial em duas pesquisas sucessivas (Agresti, 1990)")
+print(f"{'':&lt;24}{rot_c[0]:&gt;14}{rot_c[1]:&gt;15}{'total':&gt;9}")
+for i in range(2):
+    print(f"{rot_l[i]:&lt;24}{int(tab[i,0]):14d}{int(tab[i,1]):15d}{int(tab[i].sum()):9d}")
+print(f"{'total':&lt;24}{int(tab[:,0].sum()):14d}{int(tab[:,1].sum()):15d}{int(tab.sum()):9d}")
+n = tab.sum()
+p1 = tab[0].sum()/n; p2 = tab[:,0].sum()/n
+print(f"\nAprovação na 1ª pesquisa: {100*p1:.2f}%   na 2ª: {100*p2:.2f}%   "
+      f"diferença: {100*(p1-p2):+.2f} pontos")
+
+# 1. Só as células DISCORDANTES carregam informação
+b, c = tab[0,1], tab[1,0]
+print(f"\nAs duas células concordantes (794 e 570) somam {int(tab[0,0]+tab[1,1])} pessoas")
+print("que não mudaram de opinião: elas nada dizem sobre a MUDANÇA.")
+print(f"As discordantes: b = {int(b)} mudaram de aprovar para desaprovar,")
+print(f"                 c = {int(c)} mudaram de desaprovar para aprovar.")
+print(f"A pergunta é se {int(b)} e {int(c)} são compatíveis com uma divisão meio a meio.")
+
+# 2. As três formas do teste
+chi_c = (abs(b - c) - 1)**2 / (b + c)
+chi_s = (b - c)**2 / (b + c)
+print(f"\nMcNemar com correção de continuidade: qui² = {chi_c:.4f}, gl = 1, "
+      f"p = {stats.chi2.sf(chi_c,1):.4e}")
+print(f"McNemar sem correção:                 qui² = {chi_s:.4f}, gl = 1, "
+      f"p = {stats.chi2.sf(chi_s,1):.4e}")
+p_exato = min(1.0, 2*stats.binom.cdf(min(b,c), b+c, 0.5))
+print(f"Versão exata (binomial com p = 0,5): p = {p_exato:.4e}")
+print(f"scipy: {stats.chi2_contingency(np.array([[b,0],[0,c]]))[0]:.4f} não é o caminho;")
+print("       use statsmodels.stats.contingency_tables.mcnemar ou a conta acima.")
+
+# 3. Medidas de efeito
+print(f"\nRazão de chances de mudança (b/c) = {b/c:.4f}")
+se_lor = np.sqrt(1/b + 1/c)
+print(f"IC 95% = [{np.exp(np.log(b/c)-1.96*se_lor):.4f}; {np.exp(np.log(b/c)+1.96*se_lor):.4f}]")
+dif = (b - c)/n
+se_dif = np.sqrt((b + c - (b-c)**2/n))/n
+print(f"Diferença de proporções = {dif:+.6f} ({100*dif:+.3f} pontos percentuais)")
+print(f"IC 95% = [{100*(dif-1.96*se_dif):+.3f}; {100*(dif+1.96*se_dif):+.3f}] pontos")
+print(f"Proporção de mudanças = {100*(b+c)/n:.2f}% dos entrevistados")
+
+# 4. Por que o teste de independência seria a pergunta errada
+qui_ind, p_ind, gl_ind, esp_ind = stats.chi2_contingency(tab, correction=False)
+print(f"\nSe aplicássemos o qui-quadrado de independência a esta tabela:")
+print(f"  qui² = {qui_ind:.2f}, p = {p_ind:.3e}")
+print("Esse teste responde a 'a opinião na 2ª pesquisa depende da opinião na 1ª?'")
+print("— pergunta trivial, cuja resposta é obviamente sim. O interesse está em saber")
+print("se a PROPORÇÃO de aprovação mudou, e é a isso que McNemar responde.")
+
+# ===================================================================
+# PARTE 2 - a mesma conta em um delineamento pareado de diagnóstico
+# Dados fictícios: 120 amostras de solo analisadas por dois métodos,
+# cada amostra pelos dois. Resultado: detecta ou não detecta o patógeno.
+print("\n" + "=" * 70)
+print("Dados fictícios: 120 amostras de solo, dois métodos de detecção")
+tab2 = np.array([[46, 22], [7, 45]], dtype=float)
+print(f"{'':&lt;22}{'B detecta':&gt;12}{'B não detecta':&gt;15}{'total':&gt;8}")
+for i, r in enumerate(["A detecta", "A não detecta"]):
+    print(f"{r:&lt;22}{int(tab2[i,0]):12d}{int(tab2[i,1]):15d}{int(tab2[i].sum()):8d}")
+b2, c2 = tab2[0,1], tab2[1,0]; n2 = tab2.sum()
+print(f"\nTaxa de detecção: método A = {100*tab2[0].sum()/n2:.2f}%, "
+      f"método B = {100*tab2[:,0].sum()/n2:.2f}%")
+print(f"Discordâncias: b = {int(b2)} (só A detecta), c = {int(c2)} (só B detecta)")
+chi2c = (abs(b2-c2)-1)**2/(b2+c2)
+print(f"McNemar com correção: qui² = {chi2c:.4f}, p = {stats.chi2.sf(chi2c,1):.5f}")
+print(f"McNemar sem correção: qui² = {(b2-c2)**2/(b2+c2):.4f}, "
+      f"p = {stats.chi2.sf((b2-c2)**2/(b2+c2),1):.5f}")
+pe2 = min(1.0, 2*stats.binom.cdf(min(b2,c2), b2+c2, 0.5))
+print(f"Versão exata: p = {pe2:.6f}   &lt;- com b + c = {int(b2+c2)}, é a versão a usar")
+print(f"Razão de chances de discordância = {b2/c2:.4f}")
+print(f"Concordância observada = {100*(tab2[0,0]+tab2[1,1])/n2:.2f}%")
+pe_ = ((tab2[0].sum()*tab2[:,0].sum() + tab2[1].sum()*tab2[:,1].sum())/n2**2)
+kappa = ((tab2[0,0]+tab2[1,1])/n2 - pe_)/(1 - pe_)
+print(f"Kappa de Cohen = {kappa:.4f}  (concordância além do acaso)")
+
+# ===================================================================
+# PARTE 3 - quando usar a versão exata: simulação
+print("\n" + "=" * 70)
+print("Correção de continuidade ou versão exata? Simulação com proporções IGUAIS.")
+print("(20.000 experimentos; n = 100 pares; probabilidade de discordância variável)")
+rng = np.random.default_rng(99)
+M = 20000
+print(" P(discordar)   b+c médio   sem correção   com correção   exato")
+for npares, pd in ((100, 0.05), (100, 0.10), (100, 0.20), (100, 0.40), (400, 0.40), (1000, 0.40)):
+    r_s = r_c = r_e = 0; soma_bc = 0
+    for _ in range(M):
+        d = rng.binomial(npares, pd)           # pares discordantes
+        bb = rng.binomial(d, 0.5) if d &gt; 0 else 0
+        cc = d - bb; soma_bc += d
+        if d == 0: continue
+        if (bb-cc)**2/d &gt; stats.chi2.ppf(0.95,1): r_s += 1
+        if (abs(bb-cc)-1)**2/d &gt; stats.chi2.ppf(0.95,1): r_c += 1
+        if min(1.0, 2*stats.binom.cdf(min(bb,cc), d, 0.5)) &lt; 0.05: r_e += 1
+    print(f"   {pd:.2f}        {soma_bc/M:7.2f}      {100*r_s/M:7.2f}%      "
+          f"{100*r_c/M:7.2f}%   {100*r_e/M:6.2f}%   (n = {npares})")
+print("\nA versão SEM correção fica perto de 5% em todos os cenários. A corrigida e a")
+print("exata ficam sistematicamente abaixo, e a convergência é lenta: mesmo com")
+print("b + c perto de 400 elas ainda gastam menos de 4,5% dos 5% disponíveis.")
+print("A razão é a discretude: b + c é fixo e b só assume valores inteiros, de modo")
+print("que poucos valores-p são possíveis e raramente algum cai exatamente em 0,05.")
+print("\nNa prática: com b + c pequeno (menos de 25), use a versão exata, que garante")
+print("que a taxa nunca EXCEDE o nominal. Com b + c grande, a versão sem correção é")
+print("a mais fiel ao nível declarado.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Desempenho presidencial em duas pesquisas sucessivas (Agresti, 1990)
+                            2ª: aprova  2ª: desaprova    total
+1ª pesquisa: aprova                794            150      944
+1ª pesquisa: desaprova              86            570      656
+total                              880            720     1600
+
+Aprovação na 1ª pesquisa: 59.00%   na 2ª: 55.00%   diferença: +4.00 pontos
+
+As duas células concordantes (794 e 570) somam 1364 pessoas
+que não mudaram de opinião: elas nada dizem sobre a MUDANÇA.
+As discordantes: b = 150 mudaram de aprovar para desaprovar,
+                 c = 86 mudaram de desaprovar para aprovar.
+A pergunta é se 150 e 86 são compatíveis com uma divisão meio a meio.
+
+McNemar com correção de continuidade: qui² = 16.8178, gl = 1, p = 4.1146e-05
+McNemar sem correção:                 qui² = 17.3559, gl = 1, p = 3.0993e-05
+Versão exata (binomial com p = 0,5): p = 3.7159e-05
+scipy: 231.7022 não é o caminho;
+       use statsmodels.stats.contingency_tables.mcnemar ou a conta acima.
+
+Razão de chances de mudança (b/c) = 1.7442
+IC 95% = [1.3380; 2.2737]
+Diferença de proporções = +0.040000 (+4.000 pontos percentuais)
+IC 95% = [+2.128; +5.872] pontos
+Proporção de mudanças = 14.75% dos entrevistados
+
+Se aplicássemos o qui-quadrado de independência a esta tabela:
+  qui² = 788.32, p = 1.869e-173
+Esse teste responde a 'a opinião na 2ª pesquisa depende da opinião na 1ª?'
+— pergunta trivial, cuja resposta é obviamente sim. O interesse está em saber
+se a PROPORÇÃO de aprovação mudou, e é a isso que McNemar responde.
+
+======================================================================
+Dados fictícios: 120 amostras de solo, dois métodos de detecção
+                         B detecta  B não detecta   total
+A detecta                       46             22      68
+A não detecta                    7             45      52
+
+Taxa de detecção: método A = 56.67%, método B = 44.17%
+Discordâncias: b = 22 (só A detecta), c = 7 (só B detecta)
+McNemar com correção: qui² = 6.7586, p = 0.00933
+McNemar sem correção: qui² = 7.7586, p = 0.00535
+Versão exata: p = 0.008130   &lt;- com b + c = 29, é a versão a usar
+Razão de chances de discordância = 3.1429
+Concordância observada = 75.83%
+Kappa de Cohen = 0.5241  (concordância além do acaso)
+
+======================================================================
+Correção de continuidade ou versão exata? Simulação com proporções IGUAIS.
+(20.000 experimentos; n = 100 pares; probabilidade de discordância variável)
+ P(discordar)   b+c médio   sem correção   com correção   exato
+   0.05           5.00         4.63%         0.94%     0.94%   (n = 100)
+   0.10          10.04         4.39%         2.27%     2.31%   (n = 100)
+   0.20          20.07         5.29%         2.60%     2.91%   (n = 100)
+   0.40          39.99         5.07%         3.33%     3.48%   (n = 100)
+   0.40         159.94         5.36%         4.45%     4.45%   (n = 400)
+   0.40         399.98         4.71%         4.01%     4.04%   (n = 1000)
+
+A versão SEM correção fica perto de 5% em todos os cenários. A corrigida e a
+exata ficam sistematicamente abaixo, e a convergência é lenta: mesmo com
+b + c perto de 400 elas ainda gastam menos de 4,5% dos 5% disponíveis.
+A razão é a discretude: b + c é fixo e b só assume valores inteiros, de modo
+que poucos valores-p são possíveis e raramente algum cai exatamente em 0,05.
+
+Na prática: com b + c pequeno (menos de 25), use a versão exata, que garante
+que a taxa nunca EXCEDE o nominal. Com b + c grande, a versão sem correção é
+a mais fiel ao nível declarado.</pre></div><figure class="fig"><img src="../assets/resultados/mcnemar.png" alt="Os quatro tipos de resultado no exemplo dos métodos e a simulação das três versões" loading="lazy"/><figcaption><strong>O segundo exemplo e a escolha da versão.</strong> À esquerda, as 120 amostras de solo repartidas nos quatro resultados possíveis: as duas barras coloridas são as discordâncias, 22 contra 7. À direita, a taxa de rejeição das três versões do teste quando a hipótese nula é verdadeira, para valores crescentes de b + c: a versão sem correção fica perto de 5%, enquanto a corrigida e a exata ficam sistematicamente abaixo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Primeiro exemplo: duas pesquisas</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Aprovação na 1ª / na 2ª</td><td>59,00% / 55,00%</td><td>Queda de 4,00 pontos.</td></tr><tr><td>b (aprova → desaprova)</td><td>150</td><td>—</td></tr><tr><td>c (desaprova → aprova)</td><td>86</td><td>—</td></tr><tr><td>b + c</td><td>236 de 1 600</td><td>O tamanho efetivo da amostra.</td></tr><tr><td>McNemar com correção</td><td>χ² = 16,818; p = 4,11 × 10⁻⁵</td><td>O que o R devolve por padrão.</td></tr><tr><td>McNemar sem correção</td><td>χ² = 17,356; p = 3,10 × 10⁻⁵</td><td>—</td></tr><tr><td>Versão exata</td><td>p = 3,72 × 10⁻⁵</td><td>—</td></tr><tr><td>Razão de chances de mudança</td><td>1,744; IC [1,338; 2,274]</td><td>—</td></tr><tr><td>Diferença de proporções</td><td>+4,00 pontos; IC [+2,13; +5,87]</td><td>—</td></tr><tr><td>Qui-quadrado de independência</td><td>χ² = 788,3; p &lt; 10⁻¹⁷⁰</td><td>Responde a outra pergunta.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Segundo exemplo: dois métodos de detecção</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Taxa de detecção A / B</td><td>56,67% / 44,17%</td><td>—</td></tr><tr><td>b (só A detecta) / c (só B detecta)</td><td>22 / 7</td><td>b + c = 29.</td></tr><tr><td>McNemar com correção</td><td>χ² = 6,759; p = 0,00933</td><td>—</td></tr><tr><td>McNemar sem correção</td><td>χ² = 7,759; p = 0,00535</td><td>—</td></tr><tr><td><strong>Versão exata</strong></td><td><strong>p = 0,008130</strong></td><td>Com b + c = 29, é a versão a usar.</td></tr><tr><td>Razão de discordância</td><td>3,143</td><td>—</td></tr><tr><td>Concordância bruta</td><td>75,83%</td><td>—</td></tr><tr><td>Kappa de Cohen</td><td>0,524</td><td>Concordância moderada.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Simulação: taxa de rejeição sob H₀ (20.000 experimentos)</caption><thead><tr><th>b + c médio</th><th>Sem correção</th><th>Com correção</th><th>Exato</th></tr></thead><tbody><tr><td>≈ 5</td><td>4,63%</td><td>0,94%</td><td>0,94%</td></tr><tr><td>≈ 10</td><td>4,39%</td><td>2,27%</td><td>2,31%</td></tr><tr><td>≈ 20</td><td>5,29%</td><td>2,60%</td><td>2,91%</td></tr><tr><td>≈ 40</td><td>5,07%</td><td>3,33%</td><td>3,48%</td></tr><tr><td>≈ 160</td><td>5,36%</td><td>4,45%</td><td>4,45%</td></tr><tr><td>≈ 400</td><td>4,71%</td><td>4,01%</td><td>4,04%</td></tr></tbody></table></div><p><strong>Leitura do primeiro exemplo:</strong> a aprovação caiu quatro pontos percentuais entre as duas pesquisas, e a queda é altamente significativa. O resultado vem inteiramente das 236 pessoas que mudaram de opinião: 150 para pior e 86 para melhor. As 1.364 que não mudaram não participam da conta, e é por isso que o tamanho efetivo da amostra é 236.</p><p><strong>Leitura do segundo:</strong> o método A detecta o patógeno com mais frequência que o B — 56,7% contra 44,2% —, e a diferença é significativa. Com apenas 29 discordâncias, a versão exata é a indicada, e ela devolve p = 0,0081. O kappa de 0,524 informa outra coisa: os dois métodos concordam moderadamente. Em um estudo de validação, as duas informações entram no relatório.</p><p>A simulação resolve a dúvida prática sobre qual versão usar. A convergência das versões conservadoras é lenta: mesmo com b + c perto de 400, a corrigida e a exata ainda gastam cerca de 4% dos 5% disponíveis. A razão é a discretude — b só assume valores inteiros, de modo que poucos valores-p são possíveis. O R aplica a correção por padrão, o que é uma escolha defensável mas não neutra: ela torna o teste mais conservador.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar o <a href="qui-independencia.html">qui-quadrado de independência</a></td><td>Ele responde a outra pergunta.</td></tr><tr><td>Reportar n em vez de b + c como tamanho da amostra</td><td>O poder depende das discordâncias.</td></tr><tr><td>Confundir homogeneidade marginal com concordância</td><td>Use o kappa para concordância.</td></tr><tr><td>Usar a aproximação com b + c pequeno</td><td>Com menos de 25 discordâncias, prefira a exata.</td></tr><tr><td>Esquecer que o R corrige por padrão</td><td>Informe qual versão foi usada.</td></tr><tr><td>Aplicar a dados não pareados</td><td>Para grupos independentes, qui-quadrado ou <a href="fisher.html">Fisher</a>.</td></tr><tr><td>Usar com mais de duas categorias</td><td>Para tabelas k × k pareadas, Stuart–Maxwell.</td></tr><tr><td>Usar com três ou mais medidas</td><td>Para k medidas binárias, <a href="cochran-q.html">Q de Cochran</a>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Versão exata (binomial)</td><td>b + c pequeno; garante que a taxa não excede o nominal.</td></tr><tr><td>Versão sem correção</td><td>b + c grande; a mais fiel ao nível declarado.</td></tr><tr><td><a href="cochran-q.html">Teste Q de Cochran</a></td><td>Três ou mais medidas binárias nas mesmas unidades.</td></tr><tr><td>Stuart–Maxwell</td><td>Tabelas k × k pareadas, com mais de duas categorias.</td></tr><tr><td>Kappa de Cohen</td><td>Quando a pergunta é sobre concordância, não sobre mudança.</td></tr><tr><td><a href="logistica.html">Regressão logística condicional</a></td><td>Dados pareados com covariáveis.</td></tr><tr><td><a href="gee.html">GEE</a> ou modelo misto</td><td>Mais de duas medidas, com covariáveis.</td></tr><tr><td><a href="wilcoxon-assinado.html">Wilcoxon de postos sinalizados</a></td><td>Resposta pareada ordinal ou contínua.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que os dados são pareados e que a resposta é binária.</li><li>Monte a tabela 2 × 2 com as quatro contagens.</li><li>Identifique b e c e conte b + c.</li><li>Escolha a versão pelo valor de b + c.</li><li>Reporte b, c, b + c, a estatística, o valor-p e a versão usada.</li><li>Acrescente a razão de chances de mudança ou a diferença de proporções, com intervalo.</li><li>Se a concordância também interessar, calcule o kappa.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>McNEMAR, Quinn. Note on the sampling error of the difference between correlated proportions or percentages. <em>Psychometrika</em>, v. 12, n. 2, p. 153-157, 1947.</li><li>EDWARDS, A. L. Note on the "correction for continuity" in testing the significance of the difference between correlated proportions. <em>Psychometrika</em>, v. 13, n. 3, p. 185-187, 1948.</li><li>STUART, Alan. A test for homogeneity of the marginal distributions in a two-way classification. <em>Biometrika</em>, v. 42, n. 3-4, p. 412-416, 1955.</li><li>MAXWELL, A. E. Comparing the classification of subjects by two independent judges. <em>British Journal of Psychiatry</em>, v. 116, n. 535, p. 651-655, 1970.</li><li>COHEN, Jacob. A coefficient of agreement for nominal scales. <em>Educational and Psychological Measurement</em>, v. 20, n. 1, p. 37-46, 1960.</li><li>FAGERLAND, Morten W.; LYDERSEN, Stian; LAAKE, Petter. The McNemar test for binary matched-pairs data: mid-p and asymptotic are better than exact conditional. <em>BMC Medical Research Methodology</em>, v. 13, art. 91, 2013.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>AGRESTI, Alan. <em>An introduction to categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2019.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>mcnemar.test</code> e <code>binom.test</code>, pacote <code>stats</code>.)</li><li>FAY, Michael P. Confidence intervals that match Fisher’s exact or Blaker’s exact tests. <em>Biostatistics</em>, v. 11, n. 2, p. 373-374, 2010. (Pacote <code>exact2x2</code>.)</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Pares definidos pelo delineamento, pares independentes entre si e resposta binária nas duas medidas; não exige independência entre as duas medidas.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, exact2x2, DescTools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="fisher.html"><span>← ANTERIOR</span>Teste exato de Fisher</a><a href="cochran-q.html"><span>PRÓXIMO →</span>Teste Q de Cochran</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

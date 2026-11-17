@@ -4,309 +4,409 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Bayesian additive regression trees (BART): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Bayesian additive regression trees (BART) | Estatística e Ciência de Dados
-  </title>
+<meta content="Bayesian additive regression trees (BART): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Bayesian additive regression trees (BART) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Bayesian additive regression trees (BART)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Bayesian additive regression trees (BART)
-    </h1>
-<p class="detail-lead">
-     Produz previsões e medidas de incerteza combinando árvores em um modelo bayesiano.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/bart.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Produz previsões e medidas de incerteza combinando árvores em um modelo bayesiano.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Prioris de árvores e ruído adequadas.</li><li>MCMC com convergência examinada.</li><li>validação externa e desenho amostral apropriado.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[f(\mathbf x)=\sum_{t=1}^{T}g(\mathbf x;\mathcal T_t,\mathcal M_t)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Um intervalo de credibilidade 95% expressa incerteza posterior sob o modelo/priori; não é IC frequentista nem teste de 5% por padrão.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição da autonomia por massa e potência de automóveis (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-bart" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-bart"><code># Bayesian additive regression trees (BART) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Bayesian additive regression trees (BART)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Bayesian additive regression trees (BART)</h1><p class="detail-lead">Soma de muitas árvores pequenas, regularizadas por priors e ajustadas por MCMC — predições com intervalos de credibilidade.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/bart.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/bart.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o BART</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="boosting.html">boosting</a> soma muitas árvores pequenas, e controla o sobreajuste com o encolhimento e o número de passos. O BART (Chipman, George e McCulloch, 2010) também soma muitas árvores pequenas, mas troca esses controles por uma <strong>prior</strong>: uma distribuição que torna improváveis as árvores grandes e as folhas com valores grandes. O ajuste é feito por MCMC, e o resultado não é uma predição, mas uma <strong>distribuição a posteriori</strong> de predições — da qual saem intervalos de credibilidade para cada lote.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: BART" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O modelo</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Soma de m árvores</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">+ erro normal</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A prior das árvores</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">Rasas: 0,95(1+d)⁻²</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A prior das folhas</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Valores pequenos:</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">cada árvore contribui pouco</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ajuste</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">MCMC: crescer, podar,</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">sortear folhas e σ</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que entrega</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Predição com</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">intervalos</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Convergência</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">e custo</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">BART</text></svg><figcaption>Visão geral do BART. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que nenhum dos outros comitês dá</strong><p>Bagging, random forest e boosting dão uma predição. O BART dá uma predição e a incerteza sobre ela. Nos dados, os intervalos de 90% para a nota esperada de cada lote contiveram o valor verdadeiro em exatamente 90,0% dos lotes de teste — e foram mais largos onde a incerteza é de fato maior, perto do degrau de 1.050 m.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o BART</h2><p>O modelo é \(y=\sum_{j=1}^{m}g(x;T_j,M_j)+\varepsilon\), com \(\varepsilon\sim N(0,\sigma^2)\): cada \(g(x;T_j,M_j)\) é uma árvore \(T_j\) com valores de folha \(M_j\). Três priors regularizam: a árvore tende a ser rasa; os valores de folha são pequenos, de modo que nenhuma árvore domina; e \(\sigma\) fica numa faixa plausível. O algoritmo de ajuste é um retroajuste bayesiano: cada árvore é atualizada condicionalmente ao resíduo das outras.</p><figure class="fig"><img src="../assets/resultados/bart-didatica.png" alt="A prior de profundidade e a cadeia de sigma" loading="lazy"/><figcaption><strong>As duas peças que se veem.</strong> À esquerda, a probabilidade de um nó de profundidade d ser dividido: 0,95 na raiz, 0,24 no primeiro nível, 0,11 no segundo. À direita, a cadeia de σ: parte de 2,1 (o valor do modelo linear) e em poucas dezenas de iterações se estabiliza em torno de 1,5, perto do σ verdadeiro, 1,55. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>BART frente aos outros comitês de árvores</caption><thead><tr><th>Aspecto</th><th>Random forest</th><th>Boosting</th><th>BART</th></tr></thead><tbody><tr><td>Combinação</td><td>Média de árvores independentes</td><td>Soma em sequência</td><td>Soma, ajustada conjuntamente</td></tr><tr><td>Regularização</td><td>Média e sorteio de variáveis</td><td>Encolhimento e M</td><td>Priors</td></tr><tr><td>Incerteza</td><td>Não (sem extensões)</td><td>Não</td><td><strong>Sim: a posteriori</strong></td></tr><tr><td>Ajuste</td><td>Rápido</td><td>Rápido</td><td>MCMC: mais lento</td></tr><tr><td>Hiperparâmetros</td><td>mtry</td><td>M, ν, profundidade</td><td>m, priors (padrões funcionam bem)</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Erro normal com variância constante</td><td>O modelo de verossimilhança é esse.</td><td>Resíduos; há versões heterocedásticas.</td></tr><tr><td>Observações independentes</td><td>Verossimilhança fatorada.</td><td>Desenho do estudo.</td></tr><tr><td><strong>Convergência do MCMC</strong></td><td>Sorteios antes da convergência viciam tudo.</td><td>Traço de σ; várias cadeias.</td></tr><tr><td>Aquecimento suficiente</td><td>O começo da cadeia depende do ponto inicial.</td><td>Descarte as primeiras iterações.</td></tr><tr><td>Intervalos para f, não para y</td><td>O intervalo de credibilidade de f(x) não inclui o erro.</td><td>Para nova observação, some σ.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[y_i=\sum_{j=1}^{m}g\left(x_i;T_j,M_j\right)+\varepsilon_i,\]\[\varepsilon_i\sim N\left(0,\sigma^2\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(m\)</dt><dd>número de árvores (padrão 200; aqui 50)</dd></div><div><dt>\(T_j\)</dt><dd>estrutura da \(j\)-ésima árvore: cortes e folhas</dd></div><div><dt>\(M_j\)</dt><dd>valores \(\mu\) das folhas da árvore \(j\)</dd></div><div><dt>\(g(x;T_j,M_j)\)</dt><dd>o valor da folha em que \(x\) cai na árvore \(j\)</dd></div></dl><h3>As três priors</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&P(\text{dividir nó de profundidade } d) \\ &= \alpha\,(1+d)^{-\beta},\end{aligned}\]\[\mu\sim N\!\left(0,\sigma_\mu^2\right),\ \ \sigma_\mu=\frac{0{,}5}{k\sqrt m},\]\[\sigma^2\sim\frac{\nu\lambda}{\chi^2_\nu}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\alpha=0{,}95,\ \beta=2\)</dt><dd>padrões de Chipman et al.: árvores rasas</dd></div><div><dt>\(k=2\)</dt><dd>com a resposta reescalada para \([-0{,}5;\,0{,}5]\), a soma das \(m\) folhas fica nesse intervalo com probabilidade de cerca de 95%</dd></div><div><dt>\(\nu=3\)</dt><dd>graus de liberdade da prior de \(\sigma^2\)</dd></div><div><dt>\(\lambda\)</dt><dd>escolhido para que \(P(\sigma&lt;\hat\sigma_{\text{linear}})=0{,}90\)</dd></div></dl><h3>O retroajuste bayesiano</h3><p>A cada iteração, para cada árvore \(j\): calcula-se o resíduo parcial \(R_j=y-\sum_{k\ne j}g(x;T_k,M_k)\); propõe-se uma mudança na estrutura (<em>crescer</em> uma folha ou <em>podar</em> um par de folhas), aceita ou rejeitada por Metropolis-Hastings com os \(\mu\) integrados; sorteiam-se os \(\mu\) das folhas da normal a posteriori; por fim, sorteia-se \(\sigma^2\) da qui-quadrado inversa.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\mu_\ell\mid\cdots\sim N\!\biggl(&\frac{S_\ell/\sigma^2}{n_\ell/\sigma^2+1/\sigma_\mu^2},\\ &\frac{1}{n_\ell/\sigma^2+1/\sigma_\mu^2}\biggr)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n_\ell\)</dt><dd>número de observações na folha \(\ell\)</dd></div><div><dt>\(S_\ell\)</dt><dd>soma dos resíduos parciais na folha</dd></div></dl><h3>Exemplo numérico: as priors nestes dados</h3><p>Com \(m=50\), \(\sigma_\mu=0{,}5/(2\sqrt{50})=0{,}0354\) na escala reescalada: cada árvore contribui com valores de folha da ordem de 3,5% da amplitude da nota. A prior de profundidade dá 0,9500 na raiz, 0,2375 no primeiro nível, 0,1056 no segundo e 0,0594 no terceiro; a posteriori, as árvores tiveram em média 2,45 folhas. O modelo é, de fato, uma soma de 50 árvores minúsculas.</p><div class="table-wrap"><table class="method-table"><caption>A cadeia de σ</caption><thead><tr><th>Iterações</th><th>σ médio</th></tr></thead><tbody><tr><td>1-10</td><td>2,105</td></tr><tr><td>11-50</td><td>1,590</td></tr><tr><td>51-200</td><td>1,526</td></tr><tr><td>201-500</td><td>1,506</td></tr><tr><td>501-1.000</td><td>1,511</td></tr><tr><td>1.001-1.500</td><td>1,487</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>Fornece a distribuição a posteriori de f(x) e de σ.</li><li>Os padrões das priors funcionam bem em uma grande variedade de problemas.</li><li>m grande com prior forte nas folhas: cada árvore é um "aprendiz fraco", como no boosting.</li><li>A proporção de uso das variáveis serve à seleção de variáveis, sobretudo com m pequeno (Bleich et al., 2014).</li><li>O MCMC é mais lento que os métodos de comitê clássicos.</li><li>Extensões: probit (classificação), sobrevivência, efeitos causais heterogêneos (BCF).</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Média a posteriori de f(x)</td><td>A predição pontual.</td><td>Comparável às dos outros comitês.</td></tr><tr><td>Intervalo de credibilidade de f(x)</td><td>Incerteza sobre a média de y em x.</td><td>Não inclui o erro de uma observação.</td></tr><tr><td>Intervalo preditivo</td><td>Onde deve cair uma nova y.</td><td>Some σ a cada sorteio.</td></tr><tr><td>σ a posteriori</td><td>Desvio-padrão do erro.</td><td>Compare com o de outros modelos.</td></tr><tr><td>Proporção de uso das variáveis</td><td>Quais variáveis as árvores usam.</td><td>Pouco informativa com m grande.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O pacote <code>BART</code> (Sparapani, Spanbauer e McCulloch, 2021) traz <code>wbart()</code> para resposta contínua, <code>pbart()</code> e <code>lbart()</code> para binária, <code>surv.bart()</code> para sobrevivência, e aceita matrizes de preditoras. Os argumentos <code>ntree</code>, <code>base</code>, <code>power</code>, <code>k</code>, <code>sigdf</code> e <code>sigquant</code> são as priors; <code>nskip</code> e <code>ndpost</code>, o aquecimento e os sorteios guardados. O <code>dbarts</code> (função <code>bart()</code>) é outra implementação, com interface de fórmula. Em Python não há implementação na biblioteca padrão de aprendizado; o script desta ficha implementa o algoritmo em <code>numpy</code> para que cada passo fique visível (o pacote <code>pymc-bart</code> é uma opção pronta).</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-bart-min" type="button">Copiar código</button></div><pre id="code-bart-min"><code>library(BART)
+X &lt;- as.matrix(cafe[, c("alt","temp","chuva","somb","nfol","ph")])
+set.seed(1)
+fit &lt;- wbart(x.train = X, y.train = cafe$nota, ntree = 50,
+             nskip = 1000, ndpost = 1000)
+plot(fit$sigma, type = "l")       # convergência
+fit$yhat.train.mean               # predições
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><p>Nesta ficha, 400 lotes são usados para o ajuste e 200 ficam como teste.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-bart" type="button">Copiar código</button></div><pre id="code-bart"><code># BART (Bayesian additive regression trees): exemplo completo ----
+# Pacotes: BART (Sparapani, Spanbauer e McCulloch) ou dbarts
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("BART", quietly = TRUE)) install.packages("BART")
+# install.packages("BART")
 library(BART)
-set.seed(2026)
-X &lt;- as.matrix(mtcars[, c("wt", "hp")]); y &lt;- mtcars$mpg
-ajuste &lt;- wbart(x.train = X, y.train = y, x.test = X[1:5, ],
-                ntree = 30, nskip = 100, ndpost = 300,
-                printevery = 1000)
-print(ajuste$yhat.test.mean)
-print(apply(ajuste$yhat.test, 2, quantile, c(0.025, 0.975)))
+X &lt;- as.matrix(cafe[, c("alt","temp","chuva","somb","nfol","ph")])
+set.seed(5)
+i_te &lt;- sample(nrow(cafe), 200)
+Xtr &lt;- X[-i_te, ]; ytr &lt;- cafe$nota[-i_te]; Xte &lt;- X[i_te, ]; yte &lt;- cafe$nota[i_te]
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. O ajuste: 50 árvores (o padrão do pacote é 200), 1.000 aquecimento, 1.000 sorteios
+set.seed(1)
+fit &lt;- wbart(x.train = Xtr, y.train = ytr, x.test = Xte,
+             ntree = 50, nskip = 1000, ndpost = 1000,
+             base = 0.95, power = 2, k = 2,            # priors de Chipman et al. (2010)
+             sigdf = 3, sigquant = 0.90)
 
+# ---- 2. Convergência: a cadeia de sigma
+plot(fit$sigma, type = "l", xlab = "iteração", ylab = "sigma")
+abline(v = 1000, lty = 2)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="boosting.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Gradient boosting de árvores
-    </a>
-<a href="knn.html">
-<span>
-      PRÓXIMO →
-     </span>
-     K-nearest neighbors (KNN)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Predição e incerteza no teste
+pred &lt;- fit$yhat.test.mean
+mean((yte - pred)^2)                                    # EQM no teste
+li &lt;- apply(fit$yhat.test, 2, quantile, 0.05)            # intervalo de 90% para f(x)
+ls &lt;- apply(fit$yhat.test, 2, quantile, 0.95)
+mean(ls - li)                                           # largura média
+summary(fit$sigma[-(1:1000)])                           # sigma a posteriori
+
+# Intervalo PREDITIVO para uma nova nota: soma o erro sigma a cada sorteio
+s &lt;- fit$sigma[-(1:1000)]
+ynovo &lt;- fit$yhat.test + matrix(rnorm(length(fit$yhat.test)), nrow(fit$yhat.test)) * s
+pli &lt;- apply(ynovo, 2, quantile, 0.05); pls &lt;- apply(ynovo, 2, quantile, 0.95)
+mean(yte &gt;= pli &amp; yte &lt;= pls)                           # cobertura no teste
+
+# ---- 4. Uso das variáveis (mais informativo com poucas árvores, ex.: ntree = 10)
+colMeans(fit$varprob)
+
+# ---- 5. Classificação: probit BART
+set.seed(1)
+fitc &lt;- pbart(x.train = Xtr, y.train = cafe$fino[-i_te], x.test = Xte, ntree = 50)
+p &lt;- fitc$prob.test.mean
+mean((p &gt;= 0.5) != cafe$fino[i_te])
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-bart" type="button">Copiar código</button></div><pre id="code-py-bart"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from scipy.stats import chi2
+from sklearn.linear_model import LinearRegression
+
+# ------------------------------------------------------------------
+# BART (Chipman, George e McCulloch, 2010), implementado em numpy para
+# que cada passo fique visível. No R, use o pacote BART ou dbarts.
+# ------------------------------------------------------------------
+class Arvore:
+    """Uma árvore: nós internos (var, corte, esq, dir) e folhas (mu).
+    Guarda, para cada folha, os índices dos lotes de treino e de teste."""
+    def __init__(s, ntr, nte):
+        s.no = {0: dict(prof=0, folha=True, mu=0.0, itr=np.arange(ntr), ite=np.arange(nte), pai=None)}
+        s.prox = 1
+    def folhas(s): return [k for k, v in s.no.items() if v['folha']]
+    def nogs(s):   # nós internos cujos dois filhos são folhas
+        return [k for k, v in s.no.items() if not v['folha'] and s.no[v['e']]['folha'] and s.no[v['d']]['folha']]
+
+def logml(soma, n, s2, s2mu):
+    """Log-verossimilhança marginal de uma folha, com mu integrado (a menos de constantes)."""
+    return -0.5*np.log(1 + n*s2mu/s2) + s2mu*soma**2/(2*s2*(s2 + n*s2mu))
+
+def bart(Xtr, ytr, Xte, m=50, iters=1500, queima=500, alfa=0.95, beta=2.0, k=2.0, nu=3, q=0.90,
+         semente=0, ncortes=100, minfolha=3):
+    rg = np.random.default_rng(semente)
+    lo, hi = ytr.min(), ytr.max(); ys = (ytr - lo)/(hi - lo) - 0.5          # resposta em [-0,5; 0,5]
+    n, p = Xtr.shape; nte = len(Xte)
+    s2mu = (0.5/(k*np.sqrt(m)))**2                                            # prior das folhas
+    sig_ols = np.std(ys - LinearRegression().fit(Xtr, ys).predict(Xtr), ddof=p+1)
+    lam = sig_ols**2*chi2.ppf(1 - q, nu)/nu                                   # prior de sigma²
+    grade = [np.unique(np.quantile(Xtr[:, j], np.linspace(0, 1, ncortes + 2)[1:-1])) for j in range(p)]
+    psplit = lambda d: alfa*(1 + d)**(-beta)
+    arv = [Arvore(n, nte) for _ in range(m)]
+    ajtr = np.zeros((m, n)); ajte = np.zeros((m, nte)); tot = ajtr.sum(0)
+    s2 = sig_ols**2
+    sig_cad = []; pred = []; folhas = []; usos = np.zeros(p); aceite = [0, 0, 0, 0]
+    for it in range(iters):
+        for t in range(m):
+            T = arv[t]; R = ys - (tot - ajtr[t])                               # resíduo parcial
+            fl = T.folhas(); ng = T.nogs()
+            cresce = (len(fl) == 1) or (rg.random() &lt; 0.5)
+            if cresce:
+                h = fl[rg.integers(len(fl))]; v = T.no[h]; j = rg.integers(p)
+                xs = Xtr[v['itr'], j]; cand = grade[j][(grade[j] &gt;= xs.min()) &amp; (grade[j] &lt; xs.max())]
+                if len(cand):
+                    c_ = cand[rg.integers(len(cand))]; esq = xs &lt;= c_
+                    ie, idd = v['itr'][esq], v['itr'][~esq]
+                    if len(ie) &gt;= minfolha and len(idd) &gt;= minfolha:
+                        d = v['prof']; aceite[0] += 1
+                        lr = (logml(R[ie].sum(), len(ie), s2, s2mu) + logml(R[idd].sum(), len(idd), s2, s2mu)
+                              - logml(R[v['itr']].sum(), len(v['itr']), s2, s2mu))
+                        pai_nog = (v['pai'] is not None and v['pai'] in ng)
+                        w2 = len(ng) + 1 - (1 if pai_nog else 0)
+                        lt = np.log((0.5)/(1.0 if len(fl) == 1 else 0.5)) + np.log(len(fl)/w2)
+                        lp = np.log(psplit(d)) + 2*np.log(1 - psplit(d + 1)) - np.log(1 - psplit(d))
+                        if np.log(rg.random()) &lt; lr + lt + lp:
+                            aceite[1] += 1
+                            ee = Xte[v['ite'], j] &lt;= c_
+                            a, b = T.prox, T.prox + 1; T.prox += 2
+                            T.no[a] = dict(prof=d+1, folha=True, mu=0.0, itr=ie, ite=v['ite'][ee], pai=h)
+                            T.no[b] = dict(prof=d+1, folha=True, mu=0.0, itr=idd, ite=v['ite'][~ee], pai=h)
+                            v.update(folha=False, var=j, corte=c_, e=a, d=b)
+            elif ng:
+                h = ng[rg.integers(len(ng))]; v = T.no[h]; a, b = T.no[v['e']], T.no[v['d']]; d = v['prof']
+                aceite[2] += 1
+                lr = (logml(R[v['itr']].sum(), len(v['itr']), s2, s2mu)
+                      - logml(R[a['itr']].sum(), len(a['itr']), s2, s2mu) - logml(R[b['itr']].sum(), len(b['itr']), s2, s2mu))
+                nfl_dep = len(fl) - 1
+                pai_vira_nog = v['pai'] is not None and all(T.no[x]['folha'] or x == h for x in (T.no[v['pai']]['e'], T.no[v['pai']]['d']))
+                w2_dep = len(ng) - 1 + (1 if pai_vira_nog else 0)
+                lt = np.log((1.0 if nfl_dep == 1 else 0.5)/0.5) + np.log(len(ng)/nfl_dep)
+                lp = np.log(1 - psplit(d)) - np.log(psplit(d)) - 2*np.log(1 - psplit(d + 1))
+                if np.log(rg.random()) &lt; lr + lt + lp:
+                    aceite[3] += 1
+                    del T.no[v['e']], T.no[v['d']]; v.update(folha=True, mu=0.0)
+            # sorteio das médias das folhas, dada a estrutura
+            ftr = np.empty(n); fte = np.empty(nte)
+            for h in T.folhas():
+                v = T.no[h]; nn = len(v['itr']); S = R[v['itr']].sum()
+                prec = nn/s2 + 1/s2mu
+                v['mu'] = rg.normal((S/s2)/prec, np.sqrt(1/prec))
+                ftr[v['itr']] = v['mu']; fte[v['ite']] = v['mu']
+            tot += ftr - ajtr[t]; ajtr[t] = ftr; ajte[t] = fte
+        # sorteio de sigma²
+        sse = np.sum((ys - tot)**2)
+        s2 = 1/rg.gamma((nu + n)/2, 2/(nu*lam + sse))
+        sig_cad.append(np.sqrt(s2)*(hi - lo))
+        if it &gt;= queima:
+            pred.append((ajte.sum(0) + 0.5)*(hi - lo) + lo)
+            folhas.append(np.mean([len(T.folhas()) for T in arv]))
+            for T in arv:
+                for v in T.no.values():
+                    if not v['folha']: usos[v['var']] += 1
+    return dict(pred=np.array(pred), sigma=np.array(sig_cad), folhas=np.array(folhas),
+                usos=usos/usos.sum(), aceite=aceite, s2mu=s2mu, lam=lam, sig_ols=sig_ols*(hi - lo))
+
+y = NOTA
+rg = np.random.default_rng(5); idx = rg.permutation(NC); te, tr = idx[:200], idx[200:]
+print('LOTES DE CAFÉ:', DADOS_TXT)
+print('Treino: 400 lotes. Teste: 200. Verdade conhecida: sigma = %s.' % c(SIGN, 2))
+
+print('\n' + '='*70)
+print('AS PRIORIS, como ficam nestes dados (m = 50 árvores)')
+r = bart(X[tr], y[tr], X[te], m=50, iters=1500, queima=500, semente=1)
+print()
+print('  profundidade: P(dividir um nó de profundidade d) = 0,95 (1 + d)^-2')
+for d in range(4): print('     d = %d: %s' % (d, c(0.95*(1 + d)**-2.0)))
+print('  folhas: mu ~ N(0, sigma_mu²), sigma_mu = 0,5/(k raiz(m)) = %s (escala [-0,5; 0,5])' % c(np.sqrt(r['s2mu'])))
+print('  sigma²: qui-quadrado inversa escalada, nu = 3, ancorada no sigma do modelo')
+print('          linear (%s), com P(sigma &lt; sigma_linear) = 0,90' % c(r['sig_ols'], 3))
+
+print('\n' + '='*70)
+print('A CADEIA: 1.500 iterações, 500 de aquecimento descartadas')
+s = r['sigma']
+print()
+print('%12s %16s' % ('iterações', 'sigma médio'))
+for a, b in [(0, 10), (10, 50), (50, 200), (200, 500), (500, 1000), (1000, 1500)]:
+    print('%12s %16s' % ('%d-%d' % (a + 1, b), c(float(s[a:b].mean()), 3)))
+print()
+print('  propostas de crescer: %d, aceitas %d (%s)' % (r['aceite'][0], r['aceite'][1], c(r['aceite'][1]/r['aceite'][0], 3)))
+print('  propostas de podar:   %d, aceitas %d (%s)' % (r['aceite'][2], r['aceite'][3], c(r['aceite'][3]/r['aceite'][2], 3)))
+print('  número médio de folhas por árvore (pós-aquecimento): %s' % c(float(r['folhas'].mean()), 2))
+
+print('\n' + '='*70)
+print('O QUE O BART ENTREGA: predição E incerteza')
+P = r['pred']; mp = P.mean(0)
+li, ls = np.quantile(P, 0.05, 0), np.quantile(P, 0.95, 0)
+pos = s[500:]
+print()
+print('  EQM no teste (média a posteriori)     = %s' % c(eqm(y[te], mp)))
+print('  EQM da função verdadeira no teste     = %s' % c(eqm(y[te], MU[te])))
+print('  sigma a posteriori: média %s, intervalo 90%% [%s; %s]; verdade %s' % (
+    c(float(pos.mean()), 3), c(float(np.quantile(pos, .05)), 3), c(float(np.quantile(pos, .95)), 3), c(SIGN, 3)))
+cob = np.mean((MU[te] &gt;= li) &amp; (MU[te] &lt;= ls))
+print('  intervalos de 90%% para f(x): cobrem a f VERDADEIRA em %s dos lotes de teste' % c(cob, 3))
+print('  largura média desses intervalos       = %s pontos' % c(float(np.mean(ls - li)), 3))
+sp = P + rg.normal(0, 1, P.shape)*pos[:, None]
+lpi, lps = np.quantile(sp, .05, 0), np.quantile(sp, .95, 0)
+print('  intervalos PREDITIVOS de 90%% para y: cobrem a nota observada em %s' % c(np.mean((y[te] &gt;= lpi) &amp; (y[te] &lt;= lps)), 3))
+
+print('\n' + '='*70)
+print('ONDE A INCERTEZA É MAIOR')
+dist = np.abs(X[te, 0] - 1050)
+print()
+print('%-28s %6s %16s %14s' % ('lotes de teste', 'n', 'largura 90%', 'cobertura'))
+for nm, sel in [('altitude a menos de 25 m do degrau', dist &lt; 25), ('altitude a 25-100 m do degrau', (dist &gt;= 25) &amp; (dist &lt; 100)),
+                ('altitude a mais de 100 m', dist &gt;= 100)]:
+    print('%-28s %6d %16s %14s' % (nm, sel.sum(), c(float(np.mean((ls - li)[sel])), 3), c(float(np.mean(((MU[te] &gt;= li) &amp; (MU[te] &lt;= ls))[sel])), 3)))
+
+print('\n' + '='*70)
+print('QUANTAS VEZES CADA VARIÁVEL É USADA NOS CORTES')
+print()
+for j in np.argsort(-r['usos']): print('  %-14s %s' % (ROT[NOMES[j]], c(100*r['usos'][j], 1) + '%'))
+
+print('\n' + '='*70)
+print('O NÚMERO DE ÁRVORES m')
+print()
+print('%6s %14s %16s %14s' % ('m', 'EQM teste', 'sigma a post.', 'cobertura 90%'))
+for mm in [1, 10, 50, 200]:
+    rr = r if mm == 50 else bart(X[tr], y[tr], X[te], m=mm, iters=1200 if mm &lt; 200 else 700, queima=400 if mm &lt; 200 else 300, semente=2)
+    PP = rr['pred']; a1, a2 = np.quantile(PP, .05, 0), np.quantile(PP, .95, 0)
+    q0 = len(rr['sigma']) - len(PP)
+    print('%6d %14s %16s %14s' % (mm, c(eqm(y[te], PP.mean(0))), c(float(rr['sigma'][q0:].mean()), 3), c(np.mean((MU[te] &gt;= a1) &amp; (MU[te] &lt;= a2)), 3)))
+print()
+print('Com m = 1 o BART é uma árvore bayesiana única. Com m grande, cada árvore')
+print('é forçada pela prior a contribuir pouco: é a soma que modela.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Treino: 400 lotes. Teste: 200. Verdade conhecida: sigma = 1,55.
+
+======================================================================
+AS PRIORIS, como ficam nestes dados (m = 50 árvores)
+
+  profundidade: P(dividir um nó de profundidade d) = 0,95 (1 + d)^-2
+     d = 0: 0,9500
+     d = 1: 0,2375
+     d = 2: 0,1056
+     d = 3: 0,0594
+  folhas: mu ~ N(0, sigma_mu²), sigma_mu = 0,5/(k raiz(m)) = 0,0354 (escala [-0,5; 0,5])
+  sigma²: qui-quadrado inversa escalada, nu = 3, ancorada no sigma do modelo
+          linear (2,301), com P(sigma &lt; sigma_linear) = 0,90
+
+======================================================================
+A CADEIA: 1.500 iterações, 500 de aquecimento descartadas
+
+   iterações      sigma médio
+        1-10            2,105
+       11-50            1,590
+      51-200            1,526
+     201-500            1,506
+    501-1000            1,511
+   1001-1500            1,487
+
+  propostas de crescer: 36646, aceitas 12818 (0,350)
+  propostas de podar:   35564, aceitas 12748 (0,358)
+  número médio de folhas por árvore (pós-aquecimento): 2,45
+
+======================================================================
+O QUE O BART ENTREGA: predição E incerteza
+
+  EQM no teste (média a posteriori)     = 3,5757
+  EQM da função verdadeira no teste     = 2,6360
+  sigma a posteriori: média 1,499, intervalo 90% [1,391; 1,619]; verdade 1,550
+  intervalos de 90% para f(x): cobrem a f VERDADEIRA em 0,900 dos lotes de teste
+  largura média desses intervalos       = 2,688 pontos
+  intervalos PREDITIVOS de 90% para y: cobrem a nota observada em 0,865
+
+======================================================================
+ONDE A INCERTEZA É MAIOR
+
+lotes de teste                    n      largura 90%      cobertura
+altitude a menos de 25 m do degrau     17            3,136          0,706
+altitude a 25-100 m do degrau     24            2,764          0,833
+altitude a mais de 100 m        159            2,628          0,931
+
+======================================================================
+QUANTAS VEZES CADA VARIÁVEL É USADA NOS CORTES
+
+  Altitude       18,7%
+  pH             18,4%
+  Sombreamento   17,3%
+  Temperatura    16,7%
+  N foliar       16,7%
+  Chuva          12,2%
+
+======================================================================
+O NÚMERO DE ÁRVORES m
+
+     m      EQM teste    sigma a post.  cobertura 90%
+     1         5,2185            2,134          0,270
+    10         3,5354            1,639          0,745
+    50         3,5757            1,499          0,900
+   200         3,7160            1,458          0,905
+
+Com m = 1 o BART é uma árvore bayesiana única. Com m grande, cada árvore
+é forçada pela prior a contribuir pouco: é a soma que modela.</pre></div><figure class="fig"><img src="../assets/resultados/bart.png" alt="Intervalos de 90% para cada lote de teste, largura e cobertura por distância ao degrau e efeito do número de árvores" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, para os 200 lotes de teste ordenados pela f verdadeira, o intervalo de 90% (barras) e o valor verdadeiro (pontos, vermelhos quando fora do intervalo). No centro, largura e cobertura dos intervalos conforme a distância da altitude ao degrau: mais largos e com cobertura menor perto dele. À direita, EQM e cobertura em função do número de árvores m. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O que o BART entrega (m = 50)</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>EQM no teste (média a posteriori)</td><td>3,5757</td></tr><tr><td>EQM da função verdadeira no mesmo teste</td><td>2,6360</td></tr><tr><td>σ a posteriori: média</td><td>1,499</td></tr><tr><td>σ a posteriori: intervalo de 90%</td><td>[1,391; 1,619]</td></tr><tr><td>σ verdadeiro</td><td>1,550</td></tr><tr><td><strong>Cobertura dos intervalos de 90% para f(x)</strong></td><td><strong>0,900</strong></td></tr><tr><td>Largura média desses intervalos</td><td>2,688 pontos</td></tr><tr><td>Cobertura dos intervalos preditivos de 90% para y</td><td>0,865</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Onde a incerteza é maior</caption><thead><tr><th>Lotes de teste</th><th>n</th><th>Largura do intervalo de 90%</th><th>Cobertura</th></tr></thead><tbody><tr><td>Altitude a menos de 25 m do degrau</td><td>17</td><td>3,136</td><td>0,706</td></tr><tr><td>A 25-100 m do degrau</td><td>24</td><td>2,764</td><td>0,833</td></tr><tr><td>A mais de 100 m</td><td>159</td><td>2,628</td><td>0,931</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O número de árvores</caption><thead><tr><th>m</th><th>EQM no teste</th><th>σ a posteriori</th><th>Cobertura de 90%</th></tr></thead><tbody><tr><td>1</td><td>5,2185</td><td>2,134</td><td>0,270</td></tr><tr><td>10</td><td>3,5354</td><td>1,639</td><td>0,745</td></tr><tr><td><strong>50</strong></td><td><strong>3,5757</strong></td><td><strong>1,499</strong></td><td><strong>0,900</strong></td></tr><tr><td>200</td><td>3,7160</td><td>1,458</td><td>0,905</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Uso das variáveis nos cortes (m = 50)</caption><thead><tr><th>Variável</th><th>Proporção</th></tr></thead><tbody><tr><td>Altitude</td><td>18,7%</td></tr><tr><td>pH</td><td>18,4%</td></tr><tr><td>Sombreamento</td><td>17,3%</td></tr><tr><td>Temperatura</td><td>16,7%</td></tr><tr><td>N foliar</td><td>16,7%</td></tr><tr><td>Chuva</td><td>12,2%</td></tr></tbody></table></div><p><strong>Leitura:</strong> a predição pontual do BART (3,5757 no teste) é da mesma ordem das dos outros comitês — não é aí que ele se destaca. O que ele acrescenta está na primeira tabela: o \(\sigma\) a posteriori tem média 1,499 e intervalo [1,391; 1,619], que contém o verdadeiro 1,550; e os intervalos de 90% para a média de cada lote cobriram o valor verdadeiro em exatamente 90,0% dos casos. Os intervalos preditivos, para uma nota nova, cobriram 86,5% — um pouco abaixo do nominal.</p><p><strong>A incerteza está onde deveria.</strong> Perto do degrau, onde um erro de alguns metros na posição do corte muda a nota em 4,6 pontos, os intervalos são 19% mais largos (3,136 contra 2,628) — e mesmo assim cobrem só 70,6%, porque nenhuma soma de árvores pequenas reproduz um degrau exatamente. Longe dele, a cobertura é 93,1%. Um intervalo honesto é mais largo onde o modelo sabe menos, e é isso que se vê.</p><p><strong>O número de árvores:</strong> com m = 1, o BART é uma única árvore bayesiana, e é fraca — EQM 5,2185, \(\sigma\) superestimado (2,134) e cobertura de 27%. De m = 10 em diante a predição se estabiliza, mas a cobertura só chega a 90% com m = 50 ou 200. A tabela de uso das variáveis, com m = 50, é quase uniforme e por isso pouco informativa: com muitas árvores pequenas, cortes "de enchimento" em variáveis irrelevantes custam pouco. Para seleção de variáveis, a recomendação da literatura é usar m pequeno (10 a 20).</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Não verificar a convergência</td><td>Traço de σ; várias cadeias; aquecimento longo.</td></tr><tr><td>Ler o intervalo de f(x) como intervalo para uma nova y</td><td>Some o erro σ.</td></tr><tr><td>Usar a proporção de uso das variáveis com m grande</td><td>Use m = 10 a 20 para seleção.</td></tr><tr><td>Esperar que o BART reproduza descontinuidades com precisão</td><td>Perto de degraus, a cobertura cai.</td></tr><tr><td>Esquecer a semente</td><td>O MCMC é aleatório.</td></tr><tr><td>Comparar só o erro pontual</td><td>A vantagem do BART é a incerteza.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="boosting.html">Boosting</a></td><td>Menor erro pontual com ajuste cuidadoso.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>Rapidez e simplicidade.</td></tr><tr><td>Florestas quantílicas</td><td>Intervalos de predição sem modelo bayesiano.</td></tr><tr><td>Processos gaussianos</td><td>Funções suaves com incerteza; n moderado.</td></tr><tr><td>Bayesian causal forests (BCF)</td><td>Efeitos de tratamento heterogêneos.</td></tr><tr><td><a href="gam.html">GAM</a> bayesiano (<code>brms</code>, <code>mgcv</code>)</td><td>Relações suaves e aditivas com incerteza.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste com os padrões das priors.</li><li>Verifique a convergência de σ.</li><li>Compare o erro com o de uma random forest.</li><li>Examine os intervalos de credibilidade e, se possível, sua cobertura.</li><li>Para seleção de variáveis, reajuste com m pequeno.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>CHIPMAN, Hugh A.; GEORGE, Edward I.; McCULLOCH, Robert E. BART: Bayesian additive regression trees. <em>The Annals of Applied Statistics</em>, v. 4, n. 1, p. 266-298, 2010.</li><li>CHIPMAN, Hugh A.; GEORGE, Edward I.; McCULLOCH, Robert E. Bayesian CART model search. <em>Journal of the American Statistical Association</em>, v. 93, n. 443, p. 935-948, 1998.</li><li>BLEICH, Justin; KAPELNER, Adam; GEORGE, Edward I.; JENSEN, Shane T. Variable selection for BART: an application to gene regulation. <em>The Annals of Applied Statistics</em>, v. 8, n. 3, p. 1750-1781, 2014.</li><li>KAPELNER, Adam; BLEICH, Justin. bartMachine: machine learning with Bayesian additive regression trees. <em>Journal of Statistical Software</em>, v. 70, n. 4, p. 1-40, 2016.</li><li>HILL, Jennifer L. Bayesian nonparametric modeling for causal inference. <em>Journal of Computational and Graphical Statistics</em>, v. 20, n. 1, p. 217-240, 2011.</li><li>HAHN, P. Richard; MURRAY, Jared S.; CARVALHO, Carlos M. Bayesian regression tree models for causal inference: regularization, confounding, and heterogeneous effects. <em>Bayesian Analysis</em>, v. 15, n. 3, p. 965-1056, 2020.</li><li>SPARAPANI, Rodney; SPANBAUER, Charles; McCULLOCH, Robert. Nonparametric machine learning and efficient computation with Bayesian additive regression trees: the BART R package. <em>Journal of Statistical Software</em>, v. 97, n. 1, p. 1-66, 2021.</li><li>DORIE, Vincent. <em>dbarts: discrete Bayesian additive regression trees sampler.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=dbarts" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=dbarts</a>.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Erro normal com variância constante, observações independentes, convergência do MCMC verificada e aquecimento descartado.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>BART ou dbarts</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="boosting.html"><span>← ANTERIOR</span>Gradient boosting de árvores</a><a href="knn.html"><span>PRÓXIMO →</span>K-nearest neighbors (KNN)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>
