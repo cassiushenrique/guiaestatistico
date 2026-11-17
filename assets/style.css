@@ -93,3 +93,8 @@ main,.detail-main{max-width:1200px;margin:0 auto;padding:0 25px}.eyebrow,.sectio
 .gloss-item dd{margin:.35rem 0 0;font-size:13.5px;line-height:1.75;color:#3d5042}
 .gloss-item dd a{color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .detail-panel .method-table a,.detail-panel p a,.detail-panel .checklist a,.callout a{color:var(--green2);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+.aside-card .aside-label + a{display:block;margin-top:12px}
+/* Fórmulas em telas estreitas: se alguma ainda não couber, rola na horizontal em vez de ser cortada */
+.math-display{max-width:100%;overflow-x:auto;overflow-y:hidden}
+mjx-container[display="true"]{max-width:100%;overflow-x:auto;overflow-y:hidden}
