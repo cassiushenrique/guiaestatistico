@@ -4,314 +4,271 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANOVA de Welch: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANOVA de Welch | Estatística e Ciência de Dados
-  </title>
+<meta content="ANOVA de Welch: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANOVA de Welch | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANOVA de Welch
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANOVA de Welch
-    </h1>
-<p class="detail-lead">
-     Compara médias de três ou mais grupos sem exigir variâncias iguais.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/aovwelch.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara médias de três ou mais grupos sem exigir variâncias iguais.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes.</li><li>Variáveis quantitativas.</li><li>Amostras com informação suficiente em cada grupo.</li><li>Robustez limitada a forte assimetria e outliers.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_1=\cdots=\mu_k\\ H_1&amp;:\ \exists\,i\neq j:\mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[F_W\ \text{(médias ponderadas por }w_i=n_i/S_i^2\text{; gl aproximados)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(F_W\)
-        </dt>
-<dd>
-         estatística de Welch, construída com médias ponderadas e correção para variâncias diferentes
-        </dd>
-</div>
-<div>
-<dt>
-         \(w_i\)
-        </dt>
-<dd>
-         peso n_i/S_i² do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo
-        </dd>
-</div>
-<div>
-<dt>
-         \(S_i^2\)
-        </dt>
-<dd>
-         variância amostral no grupo i
-        </dd>
-</div>
-</dl>
-<p>
-       F de Welch com graus de liberdade calculados a partir dos tamanhos e variâncias amostrais.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de diferença global. Games–Howell pode esclarecer pares, mantendo a heterogeneidade.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks fornece contagens de quebras por condição de tensão.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Verificar diferenças entre médias de mais de dois grupos, permitindo variâncias distintas.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-aovwelch" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-aovwelch"><code># ANOVA de Welch ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANOVA de Welch</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANOVA de Welch</h1><p class="detail-lead">Compara médias de três ou mais grupos sem supor variâncias iguais, ponderando cada grupo pela precisão da sua média.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/aovwelch.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/aovwelch.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="aov1.html">ANOVA de um fator</a> divide a variação entre os grupos por uma única estimativa de ruído, o quadrado médio do resíduo, calculada agrupando todos os grupos. Isso só faz sentido se todos tiverem a mesma variância. Quando não têm — e isso é a regra, não a exceção, em dados reais — esse denominador comum descreve mal cada grupo, e o teste deixa de valer. A ANOVA de Welch dá a cada média o peso que a precisão dela merece.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: ANOVA de Welch" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA sem supor</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">variâncias iguais</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pondera cada grupo</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">por n/s²</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade em</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">cada grupo</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Depois</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Games–Howell,</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">não Tukey</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">oneway.test(y ~ g,</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">var.equal = FALSE)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Kruskal–Wallis</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Médias aparadas</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Bootstrap</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">ANOVA de Welch</text></svg><figcaption>Visão geral da ANOVA de Welch. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O análogo da ANOVA ao teste t de Welch</strong><p>Assim como o <a href="twelch.html">teste t de Welch</a> dispensa a hipótese de variâncias iguais na comparação de dois grupos, a ANOVA de Welch faz o mesmo para três ou mais. E, como lá, o custo em poder quando as variâncias <em>são</em> iguais é pequeno, enquanto o ganho em validade quando não são é grande.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Na ANOVA clássica, todos os grupos entram na conta com o mesmo desvio-padrão agrupado. Na de Welch, cada grupo recebe um peso \(w_i=n_i/s_i^2\) — o inverso da variância da sua própria média. Grupos medidos com precisão pesam mais; grupos dispersos ou pequenos pesam menos. Os graus de liberdade do denominador também deixam de ser \(N-k\) e passam a ser estimados a partir dos dados.</p><figure class="fig"><img src="../assets/resultados/aovwelch-didatica.png" alt="Grupos com dispersões muito diferentes e taxas de erro simuladas" loading="lazy"/><figcaption><strong>O problema e sua consequência.</strong> À esquerda, quatro grupos com desvios-padrão de 9,0, 2,0, 2,5 e 2,0; a faixa clara marca ±1 desvio-padrão agrupado, a única medida de ruído que a ANOVA clássica usa — larga demais para três grupos e estreita demais para um. À direita, o que isso custa: em 20.000 experimentos simulados com médias populacionais <em>iguais</em>, toda rejeição é um falso positivo. Quando a variância maior cai no grupo pequeno, a ANOVA clássica rejeita em 26,62% dos casos, contra os 5% nominais; a de Welch fica em 5,79%. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Dois erros em direções opostas</strong><p>A heterogeneidade distorce a ANOVA clássica nos dois sentidos, e o que decide a direção é o <em>pareamento</em> entre tamanho e variância. Se o grupo com maior variância é também o maior, o quadrado médio do resíduo fica inflado, o teste vira conservador e perde poder (2,74% de rejeições em vez de 5%). Se a maior variância está no grupo menor, o resíduo fica subestimado e o teste vira liberal, produzindo falsos positivos em excesso. Só o segundo caso costuma ser lembrado, mas o primeiro é igualmente danoso: ele faz desaparecer efeitos reais.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Continua sendo indispensável.</td><td>Delineamento.</td></tr><tr><td>Normalidade <strong>dentro de cada grupo</strong></td><td>É o que sustenta a aproximação F.</td><td><code>by(y, g, shapiro.test)</code>; Q-Q por grupo. Não use os resíduos agrupados.</td></tr><tr><td>Variâncias homogêneas</td><td><strong>Não é exigida</strong> — é justamente o que se dispensa.</td><td>Verifique ainda assim, para decidir entre esta ANOVA e a clássica.</td></tr><tr><td>Pelo menos cerca de 5 a 10 observações por grupo</td><td>A estimativa dos graus de liberdade depende de cada s².</td><td>Conte as observações.</td></tr><tr><td>Ausência de valores extremos dominantes</td><td>As variâncias amostrais ficam instáveis.</td><td>Boxplots; considere médias aparadas (ver <a href="yuen.html">Yuen</a>).</td></tr></tbody></table></div><div class="callout "><strong>Um teste de normalidade que falha pelo motivo errado</strong><p>No exemplo desta ficha, o Shapiro–Wilk aplicado aos resíduos agrupados devolve p = 0,0001, enquanto o mesmo teste aplicado grupo a grupo não acusa problema algum (p entre 0,07 e 0,89). Não há violação de normalidade: o que ocorre é que juntar resíduos de grupos com variâncias muito diferentes produz uma mistura de normais, cuja forma tem caudas mais pesadas que a normal. É mais um sintoma da heterogeneidade — e mais uma razão para, aqui, testar a normalidade dentro de cada grupo.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu_1=\mu_2=\cdots=\mu_k \\ H_1&:\ \text{ao menos uma média difere } \\ &\quad \text{das demais}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[w_i=\frac{n_i}{s_i^{2}},\]\[\tilde{\mu}=\frac{\sum_i w_i\bar{y}_i}{\sum_i w_i},\]\[\Lambda=\sum_{i=1}^{k}\frac{\left(1-w_i/\sum_j w_j\right)^{2}}{n_i-1}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}F_{W} &= \frac{\dfrac{1}{k-1}\displaystyle\sum_{i=1}^{k}w_i\left(\bar{y}_i-\tilde{\mu}\right)^{2}}{1+\dfrac{2(k-2)}{k^{2}-1}\,\Lambda}\ \\ &\sim \ F_{\,k-1,\;\nu},\end{aligned}\]\[\nu=\frac{k^{2}-1}{3\Lambda}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(w_i\)</dt><dd>peso do grupo i: o inverso da variância estimada da sua média</dd></div><div><dt>\(\bar{y}_i,\ s_i^2,\ n_i\)</dt><dd>média, variância e tamanho do grupo i</dd></div><div><dt>\(\tilde{\mu}\)</dt><dd>média geral ponderada pelos pesos</dd></div><div><dt>\(\Lambda\)</dt><dd>medida do desequilíbrio entre os pesos</dd></div><div><dt>\(\nu\)</dt><dd>graus de liberdade do denominador, estimados a partir dos dados</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Com os dados das quatro centrais dosadoras:</p><div class="table-wrap"><table class="method-table"><caption>Pesos e contribuições</caption><thead><tr><th>Central</th><th>n</th><th>Média</th><th>Variância</th><th>w = n/s²</th><th>w(média − μ̃)²</th></tr></thead><tbody><tr><td>A</td><td>20</td><td>51,435</td><td>72,644</td><td>0,2753</td><td>0,3748</td></tr><tr><td>B</td><td>10</td><td>49,170</td><td>5,525</td><td>1,8101</td><td>21,3173</td></tr><tr><td>C</td><td>12</td><td>52,525</td><td>10,604</td><td>1,1317</td><td>0,0067</td></tr><tr><td>D</td><td>10</td><td>55,320</td><td>4,106</td><td>2,4353</td><td>17,9945</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>A soma dos pesos é 5,6524 e a média ponderada \(\tilde{\mu}=52{,}6017\). Note que a central A, apesar de ter o dobro de observações de B, recebe um peso <em>seis vezes menor</em>: sua variância é treze vezes maior.</p><p>O numerador é \[\begin{aligned}&(0{,}3748+21{,}3173+0{,}0067 \\ &\quad +17{,}9945)/3 \\ &= 13{,}2311.\end{aligned}\]</p><p>\(\Lambda=0{,}193116\), de modo que o denominador vale \(1+\frac{2\times2}{15}\times0{,}193116=1{,}051497\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F_W=\frac{13{,}2311}{1{,}051497}=12{,}583,\]\[\nu=\frac{15}{3\times0{,}193116}=25{,}891,\]\[p=2{,}9\times10^{-5}.\]</div><p>A ANOVA clássica, nos mesmos dados, devolve \(F=2{,}021\) com \(p=0{,}123\): não detectaria nada.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com variâncias iguais, \(F_W\) é muito próximo do F clássico, e a perda de poder é pequena.</li><li>\(\nu\) não é inteiro e nunca excede \(N-k\).</li><li>Com k = 2, equivale ao <a href="twelch.html">teste t de Welch</a>.</li><li>Mantém a taxa de erro perto do nominal numa faixa ampla de configurações de n e de variância.</li><li>É sensível a desvios de normalidade quando os grupos são pequenos; nesse caso, considere médias aparadas ou <a href="bootstrap.html">bootstrap</a>.</li><li>Não tem tabela de somas de quadrados: como os pesos variam, não há decomposição aditiva da variação total.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>F</td><td>Dispersão ponderada das médias.</td><td>Não vem de uma tabela de somas de quadrados.</td></tr><tr><td>num df</td><td>k − 1.</td><td>Igual ao da ANOVA clássica.</td></tr><tr><td>denom df</td><td>ν, estimado dos dados.</td><td>Fracionário; menor que N − k.</td></tr><tr><td>Valor-p</td><td>Evidência de diferença entre as médias.</td><td>Não indica quais grupos diferem.</td></tr><tr><td>Médias com IC próprio</td><td>Comparação visual honesta.</td><td>Use o erro-padrão de cada grupo, nunca o agrupado.</td></tr><tr><td>Games–Howell</td><td>Pares que diferem.</td><td>Tukey não serve aqui.</td></tr></tbody></table></div><p>Reporte: F, os dois graus de liberdade (o segundo com casas decimais), o valor-p, as médias com desvios-padrão e tamanhos de cada grupo, e as comparações de Games–Howell.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>oneway.test()</code> está no pacote <code>stats</code>, já instalado com o R: o argumento <code>var.equal = FALSE</code> (que é o padrão) produz a ANOVA de Welch, e <code>TRUE</code> reproduz a clássica. Para as comparações múltiplas, <code>rstatix::games_howell_test()</code> ou <code>PMCMRplus::gamesHowellTest()</code>; <code>pairwise.t.test()</code> com <code>pool.sd = FALSE</code> é uma alternativa aceitável. <code>car::leveneTest()</code> com <code>center = median</code> fornece o Brown–Forsythe.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-aovwelch-min" type="button">Copiar código</button></div><pre id="code-aovwelch-min"><code>oneway.test(resistencia ~ central, data = dados, var.equal = FALSE)
+rstatix::games_howell_test(dados, resistencia ~ central)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. Quatro centrais dosadoras forneceram concreto para uma obra e os corpos de prova foram rompidos aos 28 dias. O número de amostras difere entre as centrais, e a central A, que forneceu o maior volume, tem o processo visivelmente menos controlado.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-aovwelch" type="button">Copiar código</button></div><pre id="code-aovwelch"><code># ANOVA de Welch: exemplo completo ----
+# Pacotes: stats (base), car (Brown-Forsythe), rstatix ou PMCMRplus (Games-Howell)
+# install.packages(c("car", "rstatix"))
+library(car)
 
-# Ajuste e resultados ----
-resultado &lt;- oneway.test(breaks ~ tension, data = warpbreaks,
-                       var.equal = FALSE)
-print(resultado)
-boxplot(breaks ~ tension, data = warpbreaks)
+# 1. Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+#    de quatro centrais dosadoras, com números de amostras diferentes.
+resistencia &lt;- c(57.0, 54.0, 51.5, 31.1, 55.9, 32.9, 60.2, 57.5, 59.5, 59.4,
+                 54.7, 47.2, 49.2, 65.6, 46.8, 49.9, 45.5, 47.3, 49.2, 54.3,
+                 48.4, 48.3, 47.8, 49.2, 46.3, 49.1, 51.6, 47.5, 48.9, 54.6,
+                 50.5, 48.9, 51.9, 57.5, 58.1, 50.0, 54.4, 53.0, 51.5, 48.1, 55.6, 50.8,
+                 55.6, 55.2, 58.7, 57.4, 52.7, 54.5, 57.1, 52.3, 54.2, 55.5)
+central &lt;- factor(rep(c("A", "B", "C", "D"), times = c(20, 10, 12, 10)))
+dados &lt;- data.frame(central, resistencia)
+aggregate(resistencia ~ central, data = dados,
+          FUN = function(x) c(n = length(x), media = mean(x), dp = sd(x), var = var(x)))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, warpbreaks, main = "Quebras por tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. O pressuposto que decide qual ANOVA usar
+leveneTest(resistencia ~ central, data = dados, center = median)   # Brown-Forsythe
+bartlett.test(resistencia ~ central, data = dados)
+v &lt;- tapply(dados$resistencia, dados$central, var)
+max(v) / min(v)                                   # razão entre as variâncias
+boxplot(resistencia ~ central, data = dados, col = "gray85")
 
+# 3. As duas ANOVAs, lado a lado
+oneway.test(resistencia ~ central, data = dados, var.equal = TRUE)    # clássica
+oneway.test(resistencia ~ central, data = dados, var.equal = FALSE)   # de Welch
+summary(aov(resistencia ~ central, data = dados))                     # igual à clássica
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="aov1.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANOVA de um fator
-    </a>
-<a href="aovrepetida.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANOVA de medidas repetidas
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Normalidade: examine POR GRUPO, não nos resíduos agrupados
+by(dados$resistencia, dados$central, shapiro.test)
+shapiro.test(residuals(aov(resistencia ~ central, data = dados)))
+
+# 5. Comparações múltiplas compatíveis com variâncias desiguais
+library(rstatix)
+games_howell_test(dados, resistencia ~ central)
+# alternativas: PMCMRplus::gamesHowellTest(resistencia ~ central, data = dados)
+#               pairwise.t.test(dados$resistencia, dados$central, pool.sd = FALSE,
+#                               p.adjust.method = "holm")
+TukeyHSD(aov(resistencia ~ central, data = dados))   # para comparar: usa variância agrupada
+
+# 6. Tamanho de efeito
+tab &lt;- summary(aov(resistencia ~ central, data = dados))[[1]]
+tab[1, "Sum Sq"] / sum(tab[, "Sum Sq"])            # eta ao quadrado
+
+# 7. Gráficos
+par(mfrow = c(1, 2))
+medias &lt;- tapply(dados$resistencia, dados$central, mean)
+eps &lt;- tapply(dados$resistencia, dados$central, function(x) sd(x) / sqrt(length(x)))
+plot(1:4, medias, ylim = range(dados$resistencia), pch = 18, cex = 2, xaxt = "n",
+     xlab = "Central", ylab = "Resistência (MPa)")
+axis(1, at = 1:4, labels = levels(dados$central))
+arrows(1:4, medias - 1.96 * eps, 1:4, medias + 1.96 * eps, angle = 90, code = 3, length = 0.1)
+boxplot(resistencia ~ central, data = dados, col = "gray85",
+        xlab = "Central", ylab = "Resistência (MPa)")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-aovwelch" type="button">Copiar código</button></div><pre id="code-py-aovwelch"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+# de quatro centrais dosadoras. A central A tem o processo menos controlado:
+# muitos corpos de prova e dispersão muito maior que as demais.
+A = np.array([57.0, 54.0, 51.5, 31.1, 55.9, 32.9, 60.2, 57.5, 59.5, 59.4,
+              54.7, 47.2, 49.2, 65.6, 46.8, 49.9, 45.5, 47.3, 49.2, 54.3])
+B = np.array([48.4, 48.3, 47.8, 49.2, 46.3, 49.1, 51.6, 47.5, 48.9, 54.6])
+C = np.array([50.5, 48.9, 51.9, 57.5, 58.1, 50.0, 54.4, 53.0, 51.5, 48.1, 55.6, 50.8])
+D = np.array([55.6, 55.2, 58.7, 57.4, 52.7, 54.5, 57.1, 52.3, 54.2, 55.5])
+grupos = [A, B, C, D]
+nomes = ["A", "B", "C", "D"]
+k = len(grupos)
+ns = np.array([len(g) for g in grupos], dtype=float)
+N = int(ns.sum())
+medias = np.array([g.mean() for g in grupos])
+vars_ = np.array([g.var(ddof=1) for g in grupos])
+todos = np.concatenate(grupos)
+
+print("central   n    média     DP   variância   EP da média")
+for i, nm in enumerate(nomes):
+    print(f"   {nm}    {int(ns[i]):2d}   {medias[i]:6.3f}  {np.sqrt(vars_[i]):5.3f}    {vars_[i]:7.3f}      {np.sqrt(vars_[i]/ns[i]):.3f}")
+print(f"Razão entre a maior e a menor variância = {vars_.max()/vars_.min():.2f}")
+
+# 1. Pressupostos
+res = np.concatenate([g - g.mean() for g in grupos])
+print(f"\nShapiro-Wilk dos resíduos: W = {stats.shapiro(res)[0]:.4f}, p-valor = {stats.shapiro(res)[1]:.4f}")
+for nm, g in zip(nomes, grupos):
+    print(f"  Shapiro-Wilk (central {nm}): p-valor = {stats.shapiro(g)[1]:.4f}")
+print(f"Levene (centro = média):   W = {stats.levene(*grupos, center='mean')[0]:.4f}, p-valor = {stats.levene(*grupos, center='mean')[1]:.5f}")
+print(f"Brown-Forsythe (mediana):  W = {stats.levene(*grupos, center='median')[0]:.4f}, p-valor = {stats.levene(*grupos, center='median')[1]:.5f}")
+print(f"Bartlett: qui-quadrado = {stats.bartlett(*grupos)[0]:.4f}, p-valor = {stats.bartlett(*grupos)[1]:.3e}")
+
+# 2. ANOVA clássica (de variância agrupada)
+SQ_entre = np.sum(ns * (medias - todos.mean())**2)
+SQ_dentro = np.sum((ns - 1) * vars_)
+gl1, gl2 = k - 1, N - k
+QM_entre, QM_dentro = SQ_entre / gl1, SQ_dentro / gl2
+Fc = QM_entre / QM_dentro
+pc = stats.f.sf(Fc, gl1, gl2)
+print("\nANOVA clássica")
+print("Fonte         GL       SQ       QM       F     p-valor")
+print(f"Central     {gl1:3d}  {SQ_entre:8.3f}  {QM_entre:7.3f}  {Fc:.4f}  {pc:.5f}")
+print(f"Resíduo     {gl2:3d}  {SQ_dentro:8.3f}  {QM_dentro:7.3f}")
+print(f"QM do resíduo = {QM_dentro:.3f} -&gt; DP agrupado = {np.sqrt(QM_dentro):.3f} MPa")
+print(f"scipy: {stats.f_oneway(*grupos)}")
+
+# 3. ANOVA de Welch, passo a passo
+w = ns / vars_                                  # peso de cada grupo: precisão da média
+mu_w = np.sum(w * medias) / np.sum(w)           # média geral ponderada
+print("\nANOVA de Welch, passo a passo")
+print("central     w = n/s²   contribuição w(média - mu_w)²")
+for i, nm in enumerate(nomes):
+    print(f"   {nm}       {w[i]:7.4f}        {w[i]*(medias[i]-mu_w)**2:8.4f}")
+print(f"Soma dos pesos = {w.sum():.4f} | média geral ponderada mu_w = {mu_w:.4f}")
+lam = np.sum((1 - w / w.sum())**2 / (ns - 1))
+Aw = np.sum(w * (medias - mu_w)**2) / (k - 1)
+Bw = 1 + 2 * (k - 2) / (k**2 - 1) * lam
+Fw = Aw / Bw
+glw = (k**2 - 1) / (3 * lam)
+pw = stats.f.sf(Fw, k - 1, glw)
+print(f"Numerador A = {Aw:.4f} | lambda = {lam:.6f} | denominador B = {Bw:.6f}")
+print(f"F de Welch = {Fw:.4f} | gl = ({k-1}; {glw:.3f}) | p-valor = {pw:.3e}")
+
+# 4. Comparações múltiplas: Tukey (variância agrupada) x Games-Howell (variâncias próprias)
+print("\nComparações múltiplas")
+print("par      diferença   Tukey (p ajustado)   Games-Howell (p ajustado)")
+for i, j in itertools.combinations(range(k), 2):
+    dif = medias[j] - medias[i]
+    ep_t = np.sqrt(QM_dentro / 2 * (1/ns[i] + 1/ns[j]))
+    p_tukey = stats.studentized_range.sf(abs(dif) / ep_t, k, gl2)
+    ep_gh = np.sqrt((vars_[i]/ns[i] + vars_[j]/ns[j]) / 2)
+    gl_gh = (vars_[i]/ns[i] + vars_[j]/ns[j])**2 / (
+        (vars_[i]/ns[i])**2/(ns[i]-1) + (vars_[j]/ns[j])**2/(ns[j]-1))
+    p_gh = stats.studentized_range.sf(abs(dif) / ep_gh, k, gl_gh)
+    marca = lambda v: "*" if v &lt; 0.05 else " "
+    print(f"{nomes[i]} vs {nomes[j]}   {dif:+7.3f}        {p_tukey:.4f} {marca(p_tukey)}"
+          f"              {p_gh:.4f} {marca(p_gh)}  (gl = {gl_gh:.2f})")
+
+# 5. Tamanho de efeito
+eta2 = SQ_entre / (SQ_entre + SQ_dentro)
+print(f"\neta² = {eta2:.4f} (ANOVA clássica)")
+print(f"omega² = {(SQ_entre - gl1*QM_dentro)/(SQ_entre + SQ_dentro + QM_dentro):.4f}")
+
+# 6. Simulação: taxa de erro tipo I quando as variâncias diferem e as médias são iguais
+print("\nSimulação: 20.000 experimentos com as MESMAS médias populacionais (52 MPa)")
+print("e os desvios-padrão e tamanhos deste exemplo (20/9; 10/2; 12/2,5; 10/2).")
+rng = np.random.default_rng(2026)
+ns_sim = [20, 10, 12, 10]
+sd_sim = [9.0, 2.0, 2.5, 2.0]
+rej_c = rej_w = 0
+M = 20000
+for _ in range(M):
+    gs = [rng.normal(52.0, s, n) for n, s in zip(ns_sim, sd_sim)]
+    if stats.f_oneway(*gs)[1] &lt; 0.05:
+        rej_c += 1
+    m = np.array([g.mean() for g in gs]); v = np.array([g.var(ddof=1) for g in gs])
+    nn = np.array(ns_sim, dtype=float); ww = nn / v
+    muw = np.sum(ww*m)/ww.sum()
+    lm = np.sum((1 - ww/ww.sum())**2/(nn-1))
+    fw = (np.sum(ww*(m-muw)**2)/(k-1)) / (1 + 2*(k-2)/(k**2-1)*lm)
+    if stats.f.sf(fw, k-1, (k**2-1)/(3*lm)) &lt; 0.05:
+        rej_w += 1
+print(f"ANOVA clássica rejeita H0 em {100*rej_c/M:.2f}% dos casos (o nominal é 5%)")
+print(f"ANOVA de Welch rejeita H0 em {100*rej_w/M:.2f}% dos casos")
+
+# 7. Cenário inverso: variância grande no grupo PEQUENO
+print("\nCenário inverso: a maior variância no grupo de menor tamanho (10/2; 12/2,5; 20/2; 6/9)")
+rng = np.random.default_rng(7)
+ns_inv = [10, 12, 20, 6]
+sd_inv = [2.0, 2.5, 2.0, 9.0]
+rej_c = rej_w = 0
+for _ in range(M):
+    gs = [rng.normal(52.0, s, n) for n, s in zip(ns_inv, sd_inv)]
+    if stats.f_oneway(*gs)[1] &lt; 0.05:
+        rej_c += 1
+    m = np.array([g.mean() for g in gs]); v = np.array([g.var(ddof=1) for g in gs])
+    nn = np.array(ns_inv, dtype=float); ww = nn / v
+    muw = np.sum(ww*m)/ww.sum()
+    lm = np.sum((1 - ww/ww.sum())**2/(nn-1))
+    fw = (np.sum(ww*(m-muw)**2)/(k-1)) / (1 + 2*(k-2)/(k**2-1)*lm)
+    if stats.f.sf(fw, k-1, (k**2-1)/(3*lm)) &lt; 0.05:
+        rej_w += 1
+print(f"ANOVA clássica rejeita H0 em {100*rej_c/M:.2f}% dos casos")
+print(f"ANOVA de Welch rejeita H0 em {100*rej_w/M:.2f}% dos casos")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">central   n    média     DP   variância   EP da média
+   A    20   51.435  8.523     72.644      1.906
+   B    10   49.170  2.350      5.525      0.743
+   C    12   52.525  3.256     10.604      0.940
+   D    10   55.320  2.026      4.106      0.641
+Razão entre a maior e a menor variância = 17.69
+
+Shapiro-Wilk dos resíduos: W = 0.8755, p-valor = 0.0001
+  Shapiro-Wilk (central A): p-valor = 0.1014
+  Shapiro-Wilk (central B): p-valor = 0.0710
+  Shapiro-Wilk (central C): p-valor = 0.5261
+  Shapiro-Wilk (central D): p-valor = 0.8890
+Levene (centro = média):   W = 6.2538, p-valor = 0.00114
+Brown-Forsythe (mediana):  W = 5.8593, p-valor = 0.00171
+Bartlett: qui-quadrado = 31.1313, p-valor = 7.976e-07
+
+ANOVA clássica
+Fonte         GL       SQ       QM       F     p-valor
+Central       3   200.005   66.668  2.0208  0.12349
+Resíduo      48  1583.565   32.991
+QM do resíduo = 32.991 -&gt; DP agrupado = 5.744 MPa
+scipy: F_onewayResult(statistic=np.float64(2.0208055388171147), pvalue=np.float64(0.1234914737978088))
+
+ANOVA de Welch, passo a passo
+central     w = n/s²   contribuição w(média - mu_w)²
+   A        0.2753          0.3748
+   B        1.8101         21.3173
+   C        1.1317          0.0067
+   D        2.4353         17.9945
+Soma dos pesos = 5.6524 | média geral ponderada mu_w = 52.6017
+Numerador A = 13.2311 | lambda = 0.193116 | denominador B = 1.051497
+F de Welch = 12.5831 | gl = (3; 25.891) | p-valor = 2.893e-05
+
+Comparações múltiplas
+par      diferença   Tukey (p ajustado)   Games-Howell (p ajustado)
+A vs B    -2.265        0.7397                0.6886    (gl = 24.04)
+A vs C    +1.090        0.9540                0.9553    (gl = 26.65)
+A vs D    +3.885        0.3116                0.2429    (gl = 22.92)
+B vs C    +3.355        0.5276                0.0504    (gl = 19.66)
+B vs D    +6.150        0.0918                0.0000 *  (gl = 17.62)
+C vs D    +2.795        0.6691                0.1005    (gl = 18.67)
+
+eta² = 0.1121 (ANOVA clássica)
+omega² = 0.0556
+
+Simulação: 20.000 experimentos com as MESMAS médias populacionais (52 MPa)
+e os desvios-padrão e tamanhos deste exemplo (20/9; 10/2; 12/2,5; 10/2).
+ANOVA clássica rejeita H0 em 2.74% dos casos (o nominal é 5%)
+ANOVA de Welch rejeita H0 em 5.04% dos casos
+
+Cenário inverso: a maior variância no grupo de menor tamanho (10/2; 12/2,5; 20/2; 6/9)
+ANOVA clássica rejeita H0 em 26.62% dos casos
+ANOVA de Welch rejeita H0 em 5.79% dos casos</pre></div><figure class="fig"><img src="../assets/resultados/aovwelch.png" alt="Médias com intervalos próprios e comparação entre Tukey e Games–Howell" loading="lazy"/><figcaption><strong>Os dados e as comparações.</strong> À esquerda, a média de cada central com o intervalo de 95% construído a partir da <em>sua</em> variância: o da central A é largo, apesar de ela ter o dobro de observações das outras. À direita, os valores-p ajustados das seis comparações; o par B–D, que a variância agrupada esconde (p = 0,092 por Tukey), aparece com clareza quando cada grupo usa a sua (p < 0,0001 por Games–Howell). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Brown–Forsythe</td><td>W = 5,859; p = 0,0017</td><td>Variâncias claramente heterogêneas.</td></tr><tr><td>Razão entre variâncias</td><td>17,69</td><td>Muito acima do tolerável para a ANOVA clássica.</td></tr><tr><td>ANOVA clássica</td><td>F(3; 48) = 2,021; p = 0,1235</td><td>Não detecta diferença.</td></tr><tr><td>ANOVA de Welch</td><td>F(3; 25,891) = 12,583; p = 2,9 × 10⁻⁵</td><td>Detecta com folga.</td></tr><tr><td>Shapiro–Wilk por grupo</td><td>p entre 0,071 e 0,889</td><td>Normalidade aceitável em todos.</td></tr><tr><td>Shapiro–Wilk dos resíduos agrupados</td><td>p = 0,0001</td><td>Reflete a heterogeneidade, não a não normalidade.</td></tr><tr><td>Tukey B–D</td><td>p = 0,0918</td><td>Não significativo.</td></tr><tr><td>Games–Howell B–D</td><td>p < 0,0001 (gl = 17,62)</td><td>Significativo.</td></tr><tr><td>Games–Howell B–C</td><td>p = 0,0504</td><td>No limite.</td></tr><tr><td>η² (da ANOVA clássica)</td><td>0,112</td><td>Subestimado, pelo mesmo motivo.</td></tr></tbody></table></div><p><strong>Leitura:</strong> as centrais não entregam concreto com a mesma resistência média. A diferença mais nítida é entre B (49,17 MPa) e D (55,32 MPa), 6,15 MPa de distância — relevante em termos de projeto estrutural.</p><p>O que torna este exemplo interessante é que a ANOVA clássica <em>não encontra nada</em>: p = 0,123. O motivo está na central A, cujo desvio-padrão de 8,52 MPa é quatro vezes o das demais. Como A tem 20 das 52 observações, ela domina o quadrado médio do resíduo, que sobe para 32,99 (desvio-padrão agrupado de 5,74 MPa) e passa a servir de régua para comparar B com D — duas centrais cujo desvio-padrão real é de cerca de 2 MPa. É como medir a espessura de uma folha de papel com uma trena. Welch simplesmente deixa de impor a régua comum.</p><p>Vale notar que a dispersão da central A não é um estorvo estatístico: é um achado. Um processo com desvio-padrão de 8,5 MPa e corpos de prova rompendo a 31 MPa merece investigação independentemente de qualquer teste de média.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Decidir usar Welch só quando o teste de homogeneidade rejeita</td><td>Esse encadeamento de testes distorce a taxa de erro; muitos autores recomendam usar Welch por padrão.</td></tr><tr><td>Aplicar Tukey depois de uma ANOVA de Welch</td><td>Tukey usa variância agrupada; use Games–Howell.</td></tr><tr><td>Reportar os graus de liberdade arredondados para inteiro</td><td>ν é fracionário e deve ser informado como tal.</td></tr><tr><td>Procurar uma tabela de somas de quadrados</td><td>Ela não existe aqui: os pesos variam entre os grupos.</td></tr><tr><td>Testar normalidade nos resíduos agrupados</td><td>Com variâncias desiguais eles formam uma mistura; teste por grupo.</td></tr><tr><td>Desenhar barras de erro com o erro-padrão agrupado</td><td>Use o erro-padrão de cada grupo.</td></tr><tr><td>Achar que Welch resolve assimetria e valores extremos</td><td>Ele trata variâncias desiguais, não a forma da distribuição.</td></tr><tr><td>Supor que a ANOVA clássica só erra para mais</td><td>Quando a maior variância está no grupo maior, ela perde poder.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aov1.html">ANOVA clássica</a></td><td>Variâncias homogêneas e grupos balanceados.</td></tr><tr><td>ANOVA de Brown–Forsythe (<code>onewaytests::bf.test</code>)</td><td>Outra correção para variâncias desiguais; desempenho parecido.</td></tr><tr><td>ANOVA de médias aparadas (<code>WRS2::t1way</code>)</td><td>Caudas pesadas ou valores extremos (ver <a href="yuen.html">Yuen</a>).</td></tr><tr><td><a href="kruskal.html">Kruskal–Wallis</a></td><td>Resposta ordinal ou assimetria forte; atenção, ele também é sensível a variâncias desiguais.</td></tr><tr><td>Teste de Brunner–Munzel generalizado</td><td>Formas de distribuição diferentes entre os grupos.</td></tr><tr><td><a href="bootstrap.html">Bootstrap</a></td><td>Amostras pequenas; qualquer estatística de interesse.</td></tr><tr><td><a href="wls.html">Mínimos quadrados ponderados</a></td><td>Modelar explicitamente a variância de cada grupo.</td></tr><tr><td>Modelo com variância por grupo (<code>nlme::gls</code>, <code>weights = varIdent</code>)</td><td>Estrutura de variância a estimar, com covariáveis.</td></tr></tbody></table></div><ol class="steps"><li>Descreva cada grupo: n, média, desvio-padrão e variância.</li><li>Calcule a razão entre a maior e a menor variância e faça o boxplot.</li><li>Verifique a normalidade dentro de cada grupo.</li><li>Aplique a ANOVA de Welch (e, se quiser contrastar, a clássica também).</li><li>Reporte F, os dois graus de liberdade e o valor-p.</li><li>Faça as comparações de Games–Howell.</li><li>Apresente cada média com o intervalo construído a partir da sua própria variância.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>WELCH, B. L. On the comparison of several mean values: an alternative approach. <em>Biometrika</em>, v. 38, n. 3-4, p. 330-336, 1951.</li><li>GAMES, Paul A.; HOWELL, John F. Pairwise multiple comparison procedures with unequal n’s and/or variances: a Monte Carlo study. <em>Journal of Educational Statistics</em>, v. 1, n. 2, p. 113-125, 1976.</li><li>BROWN, Morton B.; FORSYTHE, Alan B. The small sample behavior of some statistics which test the equality of several means. <em>Technometrics</em>, v. 16, n. 1, p. 129-132, 1974.</li><li>TOMARKEN, Andrew J.; SERLIN, Ronald C. Comparison of ANOVA alternatives under variance heterogeneity and specific noncentrality structures. <em>Psychological Bulletin</em>, v. 99, n. 1, p. 90-99, 1986.</li><li>DELACRE, Marie et al. Taking parametric assumptions seriously: arguments for the use of Welch’s F-test instead of the classical F-test in one-way ANOVA. <em>International Review of Social Psychology</em>, v. 32, n. 1, art. 13, 2019.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>oneway.test</code>, pacote <code>stats</code>.)</li><li>KASSAMBARA, Alboukadel. <em>rstatix: pipe-friendly framework for basic statistical tests.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rstatix" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rstatix</a>. (Função <code>games_howell_test</code>.)</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes e normalidade dentro de cada grupo; não exige variâncias homogêneas.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>car, rstatix</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="aov1.html"><span>← ANTERIOR</span>ANOVA de um fator</a><a href="aovrepetida.html"><span>PRÓXIMO →</span>ANOVA de medidas repetidas</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

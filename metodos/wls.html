@@ -4,311 +4,198 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Mínimos quadrados ponderados (WLS): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Mínimos quadrados ponderados (WLS) | Estatística e Ciência de Dados
-  </title>
+<meta content="Mínimos quadrados ponderados (WLS): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Mínimos quadrados ponderados (WLS) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Mínimos quadrados ponderados (WLS)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Mínimos quadrados ponderados (WLS)
-    </h1>
-<p class="detail-lead">
-     Estima relações entre variáveis quando a precisão das observações não é constante.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/wls.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima relações entre variáveis quando a precisão das observações não é constante.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência, linearidade na média.</li><li>Pesos positivos e apropriados à variância condicional.</li><li>Diagnósticos dos resíduos ponderados.</li><li>Não basta atribuir pesos arbitrários para garantir eficiência.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_{j}=0\\ H_1&amp;:\ \beta_{j}\neq0 \text{ sob modelo ponderado correto}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat{\boldsymbol\beta}_{\mathrm{MQP}}=(\mathbf X^\top\mathbf W\mathbf X)^{-1}\mathbf X^\top\mathbf W\mathbf Y\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       t de coeficientes e F global com erros-padrão apropriados aos pesos, quando as hipóteses se sustentam.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) indica associação na regressão ponderada; \(IC_{95\%}\) depende da validade dos pesos.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Distância de frenagem segundo velocidade (cars), usando ponderação demonstrativa inversa ao quadrado da velocidade.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-wls" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-wls"><code># Mínimos quadrados ponderados (WLS) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Mínimos quadrados ponderados (WLS)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Mínimos quadrados ponderados (WLS)</h1><p class="detail-lead">Estima relações entre variáveis quando as observações não têm a mesma precisão, atribuindo a cada uma um peso.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/wls.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/wls.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o método</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="linear-simples.html">regressão linear</a> trata todas as observações como igualmente confiáveis. Nem sempre elas são. Uma média calculada a partir de 20 medições é muito mais precisa que outra obtida de apenas 2; um sensor pode ser mais errático em temperaturas altas; o erro de um instrumento pode crescer com a magnitude medida. Nesses casos, dar o mesmo peso a todos os pontos desperdiça informação. Os mínimos quadrados ponderados corrigem isso.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Mínimos quadrados ponderados" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Regressão em que cada</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">observação tem um peso</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Regra do peso</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">w proporcional a 1/variância</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Mais precisão, mais peso</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Os da regressão linear,</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">mas sem variância constante</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Coeficientes com o mesmo</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">sentido, com mais precisão</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">lm(y ~ x, weights = w)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Erros-padrão robustos</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Transformação</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">GLM e mínimos quadrados generalizados</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Mínimos quadrados ponderados</text></svg><figcaption>Visão geral dos mínimos quadrados ponderados. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>A formulação geral é de Alexander Aitken (1935), que mostrou que, quando se conhece a matriz de covariâncias dos erros, o estimador de mínimos quadrados generalizados é o de menor variância entre os lineares não viesados. Os mínimos quadrados ponderados são o caso em que essa matriz é diagonal.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o método</h2><p>Nos mínimos quadrados comuns, procura-se a reta que minimiza \(\sum (y_i-\hat y_i)^2\): cada resíduo contribui igualmente. Nos ponderados, minimiza-se \(\sum w_i (y_i-\hat y_i)^2\), de modo que um resíduo grande em uma observação de peso pequeno custa pouco. A regra é simples: <strong>o peso deve ser proporcional ao inverso da variância</strong> da observação.</p><figure class="fig"><img src="../assets/resultados/wls-didatica.png" alt="Médias de lotes com precisões diferentes e a relação entre variância e peso" loading="lazy"/><figcaption><strong>Por que ponderar.</strong> À esquerda, duas médias de lotes: a de 20 medições tem barra de incerteza bem menor que a de 3. À direita, a relação entre as duas escalas: a variância da média cai com n, e o peso cresce com n. Ignorar isso é tratar as duas médias como se fossem igualmente confiáveis. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>De onde vêm os pesos, na prática</caption><thead><tr><th>Situação</th><th>Peso adequado</th></tr></thead><tbody><tr><td>A resposta é uma média de nᵢ medições</td><td>wᵢ = nᵢ</td></tr><tr><td>A variância de cada observação é conhecida (σᵢ²)</td><td>wᵢ = 1 / σᵢ²</td></tr><tr><td>A resposta é uma proporção baseada em nᵢ ensaios</td><td>wᵢ = nᵢ (ou use um <a href="glm.html">GLM binomial</a>)</td></tr><tr><td>A variância cresce com o preditor, de forma conhecida</td><td>wᵢ = 1 / xᵢ ou wᵢ = 1 / xᵢ², conforme o padrão observado</td></tr><tr><td>A variância é desconhecida</td><td>Estime-a em duas etapas (mínimos quadrados generalizados factíveis) ou use erros-padrão robustos</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Linearidade</td><td>Mesma exigência da regressão comum.</td><td>Resíduos ponderados contra valores ajustados.</td></tr><tr><td>Erros independentes</td><td>Os pesos corrigem a variância, não a dependência.</td><td>Delineamento do estudo.</td></tr><tr><td>Variância conhecida a menos de uma constante</td><td>É o que os pesos representam: σᵢ² = σ²/wᵢ.</td><td>Conhecimento do processo de medida; nunca invente pesos.</td></tr><tr><td>Normalidade dos erros ponderados</td><td>Validade dos testes t e F em amostras pequenas.</td><td>Q–Q dos resíduos padronizados ponderados.</td></tr><tr><td>Pesos corretos</td><td>Pesos errados podem ser piores que nenhum peso.</td><td>Verifique se os resíduos padronizados têm dispersão semelhante em todas as faixas de peso.</td></tr><tr><td>Pesos positivos e não aleatórios</td><td>Pesos estimados dos mesmos dados introduzem incerteza adicional.</td><td>Prefira pesos vindos do delineamento (nᵢ, variância conhecida).</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0\\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf b=\left(\mathbf X^{\top}\mathbf W\mathbf X\right)^{-1}\mathbf X^{\top}\mathbf W\mathbf y,\]\[\mathbf W=\operatorname{diag}(w_1,\ldots,w_n),\]\[w_i\propto\frac{1}{\sigma_i^2}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\sigma^2=\frac{\sum_{i=1}^{n}w_i\left(y_i-\hat y_i\right)^2}{n-p},\]\[\widehat{\operatorname{Var}}(\mathbf b)=\hat\sigma^2\left(\mathbf X^{\top}\mathbf W\mathbf X\right)^{-1},\]\[t=\frac{b_j}{EP(b_j)}\sim t_{\,n-p}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mathbf W\)</dt><dd>matriz diagonal com os pesos</dd></div><div><dt>\(w_i\)</dt><dd>peso da observação i, proporcional ao inverso de sua variância</dd></div><div><dt>\(\sigma_i^2\)</dt><dd>variância da observação i</dd></div><div><dt>\(\hat\sigma^2\)</dt><dd>variância residual na escala dos pesos; vale 1 quando \(w_i=1/\sigma_i^2\) exatamente</dd></div><div><dt>\(n,\ p\)</dt><dd>número de observações e de parâmetros</dd></div><div><dt>\(\mathbf b\)</dt><dd>vetor de coeficientes ponderados</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Suponha três lotes com o mesmo teor de aditivo e médias de resistência diferentes, obtidas de números diferentes de corpos de prova.</p><div class="table-wrap"><table class="method-table"><caption>Três médias com precisões diferentes</caption><thead><tr><th>Lote</th><th>n</th><th>Média observada</th><th>Peso (w = n)</th><th>w × média</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>38,0</td><td>2</td><td>76,0</td></tr><tr><td>2</td><td>8</td><td>34,0</td><td>8</td><td>272,0</td></tr><tr><td>3</td><td>20</td><td>33,0</td><td>20</td><td>660,0</td></tr><tr><td>Soma</td><td>30</td><td>—</td><td>30</td><td>1008,0</td></tr></tbody></table></div><div class="worked"><strong>Média comum e média ponderada</strong><p>Média simples: \((38+34+33)/3=35{,}00\).</p><p>Média ponderada: \(1008/30=33{,}60\) — bem mais próxima dos lotes medidos muitas vezes.</p><p>A média simples trata a média de 2 corpos de prova como igual à de 20. A ponderada reconhece que a primeira tem variância dez vezes maior e, por isso, merece dez vezes menos peso.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com todos os pesos iguais, as fórmulas se reduzem exatamente às dos mínimos quadrados comuns.</li><li>Multiplicar todos os pesos por uma constante não altera as estimativas nem seus erros-padrão: só a escala de \(\hat\sigma^2\) muda. O que importa são os pesos <em>relativos</em>.</li><li>Com pesos corretos, o estimador é não viesado e de variância mínima entre os lineares não viesados (teorema de Gauss–Markov generalizado).</li><li>Com pesos incorretos, as estimativas continuam não viesadas, mas perdem eficiência e os erros-padrão ficam errados.</li><li>É equivalente a ajustar mínimos quadrados comuns às variáveis transformadas \(\sqrt{w_i}\,y_i\) e \(\sqrt{w_i}\,\mathbf x_i\).</li><li>Os resíduos a examinar são os ponderados, \(\sqrt{w_i}\,(y_i-\hat y_i)\); os brutos continuarão mostrando o padrão de funil.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficientes</td><td>Mesmo sentido da regressão comum.</td><td>Diferenças grandes entre as duas versões indicam que os pontos imprecisos estavam distorcendo o ajuste.</td></tr><tr><td>Erros-padrão</td><td>Em geral menores que os da versão comum.</td><td>Só são confiáveis se os pesos estiverem certos.</td></tr><tr><td>R² ponderado</td><td>Ajuste na escala ponderada.</td><td>Não é comparável ao R² da versão comum.</td></tr><tr><td>Erro-padrão residual</td><td>Deve ficar próximo de 1 quando wᵢ = 1/σᵢ².</td><td>Valor muito diferente de 1 sugere pesos mal especificados.</td></tr><tr><td>Resíduos padronizados</td><td>Devem ter dispersão semelhante em todas as faixas de peso.</td><td>Se ainda houver funil, os pesos não resolveram o problema.</td></tr></tbody></table></div><p>Reporte a origem dos pesos, os coeficientes com intervalos de confiança e a comparação com o ajuste não ponderado.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não é preciso função especial: <code>lm()</code> aceita o argumento <code>weights</code>. A função pertence ao pacote <code>stats</code>, já instalado com o R. Para erros-padrão robustos sem usar pesos, os pacotes <code>sandwich</code> e <code>lmtest</code> oferecem <code>vcovHC()</code> e <code>coeftest()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-wls-min" type="button">Copiar código</button></div><pre id="code-wls-min"><code>m_ols &lt;- lm(resistencia ~ teor, data = dados)              # sem pesos
+m_wls &lt;- lm(resistencia ~ teor, data = dados, weights = n)  # ponderado
+summary(m_wls)
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Vinte lotes de um material foram produzidos com teores diferentes de aditivo. De cada lote foram ensaiados alguns corpos de prova, entre 2 e 20, e registrou-se apenas a <strong>resistência média</strong> do lote. Queremos estimar como a resistência varia com o teor, levando em conta que nem todas as médias têm a mesma precisão. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-wls" type="button">Copiar código</button></div><pre id="code-wls"><code># Mínimos quadrados ponderados: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R).
 
-# Ajuste e resultados ----
-d &lt;- cars
-# Pesos didáticos: supõe Var(erro | speed) proporcional a speed²
-w &lt;- 1 / d$speed^2
-ajuste &lt;- lm(dist ~ speed, data = d, weights = w)
-print(summary(ajuste)); print(confint(ajuste))
-plot(fitted(ajuste), residuals(ajuste) * sqrt(w),
-     xlab = "Ajustados", ylab = "Resíduos ponderados")
+# 1. Dados: 20 lotes de produção (dados fictícios)
+dados &lt;- data.frame(
+  teor = c(0.5, 0.7, 1.0, 1.2, 1.4, 1.7, 1.9, 2.2, 2.4, 2.6,
+           2.9, 3.1, 3.3, 3.6, 3.8, 4.1, 4.3, 4.5, 4.8, 5.0),
+  n    = c(2, 20, 12, 18, 18, 2, 12, 4, 15, 20, 5, 3, 10, 4, 10, 3, 5, 8, 15, 8),
+  resistencia = c(38.24, 32.48, 33.92, 34.87, 34.61, 40.46, 37.01, 34.39, 40.48, 41.85,
+                  40.08, 44.83, 42.93, 45.74, 43.56, 44.85, 47.84, 45.71, 49.73, 50.30))
+
+# 2. Mínimos quadrados comuns: todos os lotes com o mesmo peso
+m_ols &lt;- lm(resistencia ~ teor, data = dados)
+summary(m_ols); confint(m_ols)
+
+# 3. Mínimos quadrados ponderados: peso proporcional ao número de medições
+m_wls &lt;- lm(resistencia ~ teor, data = dados, weights = n)
+summary(m_wls); confint(m_wls)
+
+# 4. Ganho de precisão na inclinação
+c(ep_comum = summary(m_ols)$coefficients[2, 2],
+  ep_ponderado = summary(m_wls)$coefficients[2, 2])
+
+# 5. Resíduos padronizados: só os ponderados são comparáveis entre lotes
+par(mfrow = c(1, 2))
+plot(dados$n, rstandard(m_ols), pch = 19, xlab = "n do lote", ylab = "Resíduo padronizado (comum)")
 abline(h = 0, col = "red")
+plot(dados$n, rstandard(m_wls), pch = 19, xlab = "n do lote", ylab = "Resíduo padronizado (ponderado)")
+abline(h = 0, col = "red")
+par(mfrow = c(1, 1))
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 6. Pesos vindos de uma variância conhecida: w = 1 / s²
+m_var &lt;- lm(resistencia ~ teor, data = dados, weights = 1 / (18 / n))
+coef(m_var)          # idêntico ao item 3: multiplicar os pesos por uma constante não muda nada
 
+# 7. Quando a variância não é conhecida, estima-se em duas etapas (FGLS)
+res2 &lt;- residuals(m_ols)^2
+aux  &lt;- lm(log(res2) ~ teor, data = dados)          # modelo para a variância
+m_fgls &lt;- lm(resistencia ~ teor, data = dados, weights = 1 / exp(fitted(aux)))
+coef(m_fgls)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="quantilica.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão quantílica
-    </a>
-<a href="glm.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Modelos lineares generalizados (GLM)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 8. Alternativa sem pesos: erros-padrão robustos à heterocedasticidade
+# install.packages(c("sandwich", "lmtest"))
+# lmtest::coeftest(m_ols, vcov = sandwich::vcovHC(m_ols, type = "HC3"))
+
+# 9. Gráfico: as duas retas, com o tamanho do ponto proporcional a n
+plot(resistencia ~ teor, data = dados, pch = 19, cex = sqrt(dados$n) / 2,
+     xlab = "Teor de aditivo (%)", ylab = "Resistência média (MPa)")
+abline(m_ols, lty = 2); abline(m_wls, col = "red", lwd = 2)
+legend("topleft", c("comum", "ponderado"), lty = c(2, 1), col = c("black", "red"), bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-wls" type="button">Copiar código</button></div><pre id="code-py-wls"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Dados: 20 lotes de produção (dados fictícios).
+# teor  = teor de aditivo (%) | n = número de corpos de prova medidos no lote
+# resistencia = resistência média do lote (MPa)
+teor        = np.array([0.5, 0.7, 1.0, 1.2, 1.4, 1.7, 1.9, 2.2, 2.4, 2.6,
+                        2.9, 3.1, 3.3, 3.6, 3.8, 4.1, 4.3, 4.5, 4.8, 5.0])
+n           = np.array([2, 20, 12, 18, 18, 2, 12, 4, 15, 20, 5, 3, 10, 4, 10, 3, 5, 8, 15, 8.])
+resistencia = np.array([38.24, 32.48, 33.92, 34.87, 34.61, 40.46, 37.01, 34.39, 40.48, 41.85,
+                        40.08, 44.83, 42.93, 45.74, 43.56, 44.85, 47.84, 45.71, 49.73, 50.30])
+N = len(teor)
+
+def mqp(X, y, w, nomes):
+    """Mínimos quadrados ponderados. Com w = 1 para todos, equivale aos mínimos quadrados comuns."""
+    XtWX = X.T @ (X * w[:, None])
+    b = np.linalg.solve(XtWX, X.T @ (w * y))
+    r = y - X @ b
+    s2 = np.sum(w * r**2) / (len(y) - X.shape[1])          # variância residual ponderada
+    cov = s2 * np.linalg.inv(XtWX); ep = np.sqrt(np.diag(cov))
+    t = b / ep; p = 2 * stats.t.sf(np.abs(t), len(y) - X.shape[1])
+    tc = stats.t.ppf(0.975, len(y) - X.shape[1])
+    print(f"{'Termo':&lt;12}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'t':&gt;8}{'p-valor':&gt;11}{'IC 95%':&gt;22}")
+    for nm, bi, ei, ti, pi in zip(nomes, b, ep, t, p):
+        print(f"{nm:&lt;12}{bi:&gt;11.4f}{ei:&gt;13.4f}{ti:&gt;8.3f}{pi:&gt;11.2e}   [{bi-tc*ei:&gt;7.4f}; {bi+tc*ei:&gt;7.4f}]")
+    sqt = np.sum(w * (y - np.sum(w * y) / np.sum(w))**2)
+    print(f"R² ponderado = {1 - np.sum(w * r**2) / sqt:.4f} | erro-padrão residual = {np.sqrt(s2):.4f}")
+    return dict(b=b, ep=ep, res=r, s2=s2)
+
+X = np.column_stack([np.ones(N), teor])
+
+# 1. Por que ponderar: cada média vem de um número diferente de corpos de prova
+print("Lotes com menos medições (n &lt;= 4):", np.sum(n &lt;= 4), "| com mais (n &gt;= 15):", np.sum(n &gt;= 15))
+print(f"Variância de uma média de 2 medições é {20/2:.0f} vezes a de uma média de 20.")
+
+# 2. Mínimos quadrados comuns (todos os lotes com o mesmo peso)
+print("\nMínimos quadrados comuns:")
+m_ols = mqp(X, resistencia, np.ones(N), ["(Intercepto)", "teor"])
+
+# 3. Mínimos quadrados ponderados (peso = número de medições do lote)
+print("\nMínimos quadrados ponderados (peso = n):")
+m_wls = mqp(X, resistencia, n, ["(Intercepto)", "teor"])
+
+# 4. Ganho de precisão
+print(f"\nErro-padrão da inclinação: comum = {m_ols['ep'][1]:.4f} | ponderado = {m_wls['ep'][1]:.4f}"
+      f" | redução de {100 * (1 - m_wls['ep'][1] / m_ols['ep'][1]):.1f}%")
+print(f"Largura do IC da inclinação: {2*stats.t.ppf(0.975, N-2)*m_ols['ep'][1]:.4f} -&gt; {2*stats.t.ppf(0.975, N-2)*m_wls['ep'][1]:.4f}")
+
+# 5. Resíduos padronizados: só os ponderados têm variância comparável
+r_ols = m_ols["res"] / np.sqrt(m_ols["s2"])
+r_wls = m_wls["res"] * np.sqrt(n) / np.sqrt(m_wls["s2"])
+print("\nDesvio-padrão dos resíduos padronizados, por tamanho de lote:")
+for rot, sel in [("n &lt;= 4 ", n &lt;= 4), ("n &gt;= 15", n &gt;= 15)]:
+    print(f"  {rot}: comum = {r_ols[sel].std(ddof=1):.3f} | ponderado = {r_wls[sel].std(ddof=1):.3f}")
+
+# 6. Observações mais e menos influentes no ajuste comum
+i = np.argsort(-np.abs(r_ols))[:3]
+print("\nMaiores resíduos padronizados no ajuste comum (lote, n, resíduo):")
+for k in i: print(f"  lote {k+1:&gt;2} | n = {int(n[k]):&gt;2} | {r_ols[k]:&gt;6.2f}")
+
+# 7. Quando os pesos vêm da variância conhecida de cada média: w = 1 / s²
+print("\nPesos iguais ao inverso da variância (s² = 18 / n):")
+s2_lote = 18.0 / n
+m_var = mqp(X, resistencia, 1 / s2_lote, ["(Intercepto)", "teor"])
+print("Multiplicar todos os pesos por uma constante não muda as estimativas nem os erros-padrão;")
+print("muda apenas a escala do erro-padrão residual, que agora deve ficar próximo de 1.")
+
+# 8. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+ax[0].scatter(teor, resistencia, s=10 * n, alpha=0.5)
+grade = np.linspace(0.3, 5.2, 50)
+ax[0].plot(grade, m_ols["b"][0] + m_ols["b"][1] * grade, "--", label="mínimos quadrados comuns")
+ax[0].plot(grade, m_wls["b"][0] + m_wls["b"][1] * grade, color="red", label="ponderados")
+ax[0].set_xlabel("Teor de aditivo (%)"); ax[0].set_ylabel("Resistência média (MPa)"); ax[0].legend()
+ax[1].scatter(n, r_ols, label="comum"); ax[1].scatter(n, r_wls, marker="^", label="ponderado")
+ax[1].axhline(0, color="red"); ax[1].set_xlabel("Número de medições do lote"); ax[1].set_ylabel("Resíduo padronizado"); ax[1].legend()
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Lotes com menos medições (n &lt;= 4): 6 | com mais (n &gt;= 15): 6
+Variância de uma média de 2 medições é 10 vezes a de uma média de 20.
+
+Mínimos quadrados comuns:
+Termo        Estimativa  Erro-padrão       t    p-valor                IC 95%
+(Intercepto)    31.4293       1.1134  28.228   2.35e-16   [29.0902; 33.7685]
+teor             3.5508       0.3623   9.801   1.22e-08   [ 2.7896;  4.3119]
+R² ponderado = 0.8422 | erro-padrão residual = 2.2230
+
+Mínimos quadrados ponderados (peso = n):
+Termo        Estimativa  Erro-padrão       t    p-valor                IC 95%
+(Intercepto)    30.0752       0.6818  44.114   8.49e-20   [28.6429; 31.5075]
+teor             3.9494       0.2374  16.637   2.25e-12   [ 3.4506;  4.4481]
+R² ponderado = 0.9389 | erro-padrão residual = 4.5880
+
+Erro-padrão da inclinação: comum = 0.3623 | ponderado = 0.2374 | redução de 34.5%
+Largura do IC da inclinação: 1.5223 -&gt; 0.9975
+
+Desvio-padrão dos resíduos padronizados, por tamanho de lote:
+  n &lt;= 4 : comum = 1.575 | ponderado = 1.367
+  n &gt;= 15: comum = 0.604 | ponderado = 0.854
+
+Maiores resíduos padronizados no ajuste comum (lote, n, resíduo):
+  lote  1 | n =  2 |   2.27
+  lote  8 | n =  4 |  -2.18
+  lote  6 | n =  2 |   1.35
+
+Pesos iguais ao inverso da variância (s² = 18 / n):
+Termo        Estimativa  Erro-padrão       t    p-valor                IC 95%
+(Intercepto)    30.0752       0.6818  44.114   8.49e-20   [28.6429; 31.5075]
+teor             3.9494       0.2374  16.637   2.25e-12   [ 3.4506;  4.4481]
+R² ponderado = 0.9389 | erro-padrão residual = 1.0814
+Multiplicar todos os pesos por uma constante não muda as estimativas nem os erros-padrão;
+muda apenas a escala do erro-padrão residual, que agora deve ficar próximo de 1.</pre></div><figure class="fig"><img src="../assets/resultados/wls.png" alt="Retas ajustadas com e sem pesos, e resíduos padronizados por tamanho de lote" loading="lazy"/><figcaption><strong>O efeito da ponderação.</strong> À esquerda, o tamanho de cada ponto é proporcional ao número de medições do lote. A reta comum (tracejada) é puxada pelos dois lotes de apenas 2 corpos de prova, que ficaram bem acima da tendência; a ponderada acompanha os lotes mais confiáveis. À direita, os resíduos padronizados: na versão comum eles encolhem conforme n cresce, enquanto na ponderada ficam com dispersão parecida em toda a faixa. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Comparação dos ajustes</caption><thead><tr><th>Elemento</th><th>Mínimos quadrados comuns</th><th>Ponderados (w = n)</th></tr></thead><tbody><tr><td>Intercepto (IC 95%)</td><td>31,429 [29,090; 33,769]</td><td>30,075 [28,643; 31,508]</td></tr><tr><td>Inclinação (IC 95%)</td><td>3,551 [2,790; 4,312]</td><td>3,949 [3,451; 4,448]</td></tr><tr><td>Erro-padrão da inclinação</td><td>0,3623</td><td>0,2374</td></tr><tr><td>Largura do IC da inclinação</td><td>1,522</td><td>0,998</td></tr><tr><td>R²</td><td>0,842</td><td>0,939 (ponderado)</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resíduos padronizados por tamanho de lote</caption><thead><tr><th>Faixa</th><th>Desvio-padrão (comum)</th><th>Desvio-padrão (ponderado)</th></tr></thead><tbody><tr><td>n ≤ 4</td><td>1,575</td><td>1,367</td></tr><tr><td>n ≥ 15</td><td>0,604</td><td>0,854</td></tr></tbody></table></div><p><strong>Leitura:</strong> a inclinação estimada passa de 3,55 para 3,95 MPa por ponto percentual de aditivo, e o erro-padrão cai 34,5%: o intervalo de confiança encurta de 1,52 para 1,00. Os três maiores resíduos do ajuste comum pertencem a lotes de apenas 2 ou 4 corpos de prova — exatamente os pontos que deveriam pesar menos. Na versão comum, os resíduos dos lotes grandes são sistematicamente menores (desvio-padrão de 0,60 contra 1,58 nos lotes pequenos), um sinal claro de que a variância não é constante. Depois de ponderar, as duas faixas ficam comparáveis.</p><p>A última parte do código mostra que usar \(w_i=1/\sigma_i^2\), com \(\sigma_i^2=18/n_i\), dá exatamente as mesmas estimativas: o que importa é a proporção entre os pesos, não sua escala. A diferença aparece no erro-padrão residual, que passa a ficar próximo de 1 — um teste útil de que os pesos foram bem escolhidos.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Inventar pesos sem justificativa</td><td>Pesos errados podem piorar o ajuste; use o delineamento.</td></tr><tr><td>Usar w = σᵢ em vez de w = 1/σᵢ²</td><td>O peso é o inverso da <strong>variância</strong>, não do desvio-padrão.</td></tr><tr><td>Examinar os resíduos brutos</td><td>Use os resíduos ponderados (<code>rstandard()</code> já faz isso no R).</td></tr><tr><td>Comparar o R² ponderado com o comum</td><td>São escalas diferentes.</td></tr><tr><td>Estimar os pesos dos mesmos dados e ignorar essa incerteza</td><td>Os erros-padrão ficam otimistas; considere <em>bootstrap</em>.</td></tr><tr><td>Usar pesos para corrigir dependência entre observações</td><td>Pesos tratam variância, não correlação; use <a href="gee.html">GEE</a> ou modelos mistos.</td></tr><tr><td>Confundir pesos de precisão com pesos amostrais</td><td>Pesos de pesquisa amostral exigem variância de desenho, não esta fórmula.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Erros-padrão robustos à heterocedasticidade (HC0 a HC3)</td><td>A variância não é constante, mas não se conhece sua forma e o interesse está na inferência.</td></tr><tr><td>Transformação da resposta (log, raiz)</td><td>A variância cresce com a média de forma multiplicativa.</td></tr><tr><td><a href="glm.html">Modelos lineares generalizados</a></td><td>A variância é função da média (contagens, proporções).</td></tr><tr><td>Mínimos quadrados generalizados (<code>nlme::gls</code>)</td><td>Erros correlacionados, além de heterocedásticos.</td></tr><tr><td><a href="quantilica.html">Regressão quantílica</a></td><td>Interesse em quantis ou presença de valores extremos.</td></tr><tr><td><a href="gee.html">GEE</a> / modelos mistos</td><td>Observações agrupadas ou repetidas.</td></tr></tbody></table></div><ol class="steps"><li>Identifique por que a variância difere entre observações.</li><li>Defina os pesos a partir do delineamento, não dos resíduos.</li><li>Ajuste as duas versões e compare estimativas e erros-padrão.</li><li>Examine os resíduos ponderados.</li><li>Se a variância residual ponderada ficar longe de 1, revise os pesos.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>AITKEN, Alexander C. On least squares and linear combination of observations. <em>Proceedings of the Royal Society of Edinburgh</em>, v. 55, p. 42-48, 1935.</li><li>MONTGOMERY, Douglas C.; PECK, Elizabeth A.; VINING, G. Geoffrey. <em>Introduction to linear regression analysis.</em> 6. ed. Hoboken: Wiley, 2021.</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: SAGE, 2019.</li><li>CARROLL, Raymond J.; RUPPERT, David. <em>Transformation and weighting in regression.</em> London: Chapman &amp; Hall, 1988.</li><li>ZEILEIS, Achim. Econometric computing with HC and HAC covariance matrix estimators. <em>Journal of Statistical Software</em>, v. 11, n. 10, p. 1-17, 2004. (Pacote <code>sandwich</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>lm</code> com o argumento <code>weights</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta quantitativa, relação linear, erros independentes e variância conhecida a menos de uma constante.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="quantilica.html"><span>← ANTERIOR</span>Regressão quantílica</a><a href="glm.html"><span>PRÓXIMO →</span>Modelos lineares generalizados (GLM)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

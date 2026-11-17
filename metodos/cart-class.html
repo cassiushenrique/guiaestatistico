@@ -4,308 +4,387 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Árvore de classificação (CART): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Árvore de classificação (CART) | Estatística e Ciência de Dados
-  </title>
+<meta content="Árvore de classificação (CART): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Árvore de classificação (CART) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Árvore de classificação (CART)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Árvore de classificação (CART)
-    </h1>
-<p class="detail-lead">
-     Classifica observações em categorias por regras de decisão interpretáveis.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/cart-class.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Classifica observações em categorias por regras de decisão interpretáveis.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Treino/teste adequados, número mínimo de observações por folha, hiperparâmetros validados.</li><li>Classes desbalanceadas exigem custos/estratificação.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[G(R_m)=1-\sum_{k=1}^{K}\widehat p_{mk}^{\,2}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Uma classe prevista expressa maioria estimada da folha; \(p&lt;0{,}05\) não determina sua validade.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar transmissão (manual/automática) conforme massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-cart-class" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-cart-class"><code># Árvore de classificação (CART) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Árvore de classificação (CART)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Árvore de classificação (CART)</h1><p class="detail-lead">Partição em retângulos com a classe majoritária em cada folha — cresce por Gini ou entropia, poda pelo erro validado, e dá probabilidades grosseiras.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/cart-class.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/cart-class.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma árvore de classificação</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A árvore de classificação é a irmã da <a href="cart-reg.html">árvore de regressão</a>: mesma partição do espaço em retângulos, mesmo crescimento guloso e mesma poda. Muda o que se prevê em cada folha — a <strong>classe majoritária</strong> e a <strong>proporção</strong> de cada classe — e muda o critério de corte, que passa a ser uma medida de <strong>impureza</strong> do nó.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Árvore de classificação" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A folha</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Classe majoritária</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">e proporções</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O critério</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Gini ou entropia,</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">não o erro</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A poda</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Custo-complexidade</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">com erro validado</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">As probabilidades</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Poucas e</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">grosseiras</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Os custos</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Matriz de perda</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">ou limiar</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O limite</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Instável, como</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">a de regressão</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Árvore de classificação</text></svg><figcaption>Visão geral da árvore de classificação. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O resultado que surpreende</strong><p>Nos dados de café, a melhor árvore de classificação tem <strong>três folhas</strong>: altitude ≤ 1.050,9 m; acima disso, pH ≤ 4,7; e o resto. Com essas duas regras ela erra 19,20% dos lotes na validação cruzada — menos que a regressão logística com as seis variáveis (23,07%). É um bom exemplo de que um modelo simples, com a forma certa, pode bater um modelo com mais parâmetros e a forma errada.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma árvore de classificação</h2><p>Em cada nó, calcula-se a proporção \(\hat p_{mk}\) de observações da classe \(k\). A folha prevê a classe com maior proporção, e a proporção é a estimativa da probabilidade. Os cortes são escolhidos para tornar os nós filhos o mais <strong>puros</strong> possível — isto é, dominados por uma classe.</p><figure class="fig"><img src="../assets/resultados/cart-class-didatica.png" alt="As três medidas de impureza em função da proporção e a árvore escolhida como partição do plano altitude por pH" loading="lazy"/><figcaption><strong>As medidas de impureza e a árvore escolhida.</strong> À esquerda, Gini, entropia (dividida por 2, para ficar na mesma escala) e erro de classificação em função da proporção de lotes finos no nó. Gini e entropia são estritamente côncavas; o erro é linear por partes. À direita, a árvore escolhida pela validação cruzada: três folhas, definidas por dois cortes. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As três medidas de impureza de um nó com proporção p da classe 1</caption><thead><tr><th>Medida</th><th>Fórmula</th><th>Na raiz (p = 0,34)</th></tr></thead><tbody><tr><td>Gini</td><td>\(2p(1-p)\)</td><td>0,4488</td></tr><tr><td>Entropia</td><td>\(-p\log_2p-(1-p)\log_2(1-p)\)</td><td>0,9248</td></tr><tr><td>Erro de classificação</td><td>\(\min(p,\,1-p)\)</td><td>0,3400</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>A validação cruzada escolhe a poda.</td><td>Desenho; valide por grupo se houver grupos.</td></tr><tr><td><strong>Poda por validação cruzada</strong></td><td>A árvore máxima tem folhas puras e decora o treino.</td><td><code>printcp</code>, <code>plotcp</code>.</td></tr><tr><td>Classes com representação suficiente</td><td>Uma classe rara pode nunca dominar uma folha.</td><td>Tabela de frequências; pesos ou custos.</td></tr><tr><td>Custos de erro explícitos</td><td>O limiar 0,5 supõe custos iguais.</td><td>Matriz de perda ou limiar \(1/(1+C)\).</td></tr><tr><td>Probabilidades usadas com cautela</td><td>São proporções de poucas folhas.</td><td>Calibração; log-loss validado.</td></tr><tr><td>Estabilidade</td><td>As regras mudam entre amostras.</td><td>Reamostras bootstrap.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Para um nó \(m\) com \(n_m\) observações, a proporção da classe \(k\) é</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat p_{mk}=\frac{1}{n_m}\sum_{x_i\in R_m}\mathbb{1}\left(y_i=k\right),\]\[\text{Gini}(m)=\sum_{k}\hat p_{mk}\left(1-\hat p_{mk}\right),\]\[H(m)=-\sum_k\hat p_{mk}\log_2\hat p_{mk}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(R_m\)</dt><dd>a região do nó \(m\)</dd></div><div><dt>\(\hat p_{mk}\)</dt><dd>proporção de observações da classe \(k\) no nó</dd></div><div><dt>\(\text{Gini}(m)\)</dt><dd>índice de Gini: a probabilidade de errar ao sortear o rótulo segundo as proporções do nó</dd></div><div><dt>\(H(m)\)</dt><dd>entropia, em bits</dd></div></dl><p>O corte escolhido é o que mais reduz a impureza média ponderada dos filhos:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\Delta=I(\text{pai})-\left[\frac{n_E}{n}\,I(E)+\frac{n_D}{n}\,I(D)\right]\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(I\)</dt><dd>a medida de impureza (Gini ou entropia)</dd></div><div><dt>\(n_E,\ n_D\)</dt><dd>tamanhos dos filhos esquerdo e direito</dd></div></dl><h3>Exemplo numérico: o corte em altitude, nas três medidas</h3><p>O corte altitude ≤ 1.050,9 separa 295 lotes com proporção de finos 0,0373 de 305 lotes com proporção 0,6328.</p><div class="table-wrap"><table class="method-table"><caption>A redução de impureza do primeiro corte</caption><thead><tr><th>Medida</th><th>Esquerda</th><th>Direita</th><th>Média ponderada</th><th>Redução</th></tr></thead><tbody><tr><td>Gini</td><td>0,0718</td><td>0,4647</td><td>0,2715</td><td>0,1773</td></tr><tr><td>Entropia</td><td>0,2297</td><td>0,9485</td><td>0,5951</td><td>0,3297</td></tr><tr><td>Erro</td><td>0,0373</td><td>0,3672</td><td>0,2050</td><td>0,1350</td></tr></tbody></table></div><div class="worked"><strong>Por que não crescer a árvore pelo erro de classificação</strong><p>Dentro do ramo de altitude ≤ 1.050,9 (295 lotes, só 3,73% finos), o melhor corte pelo Gini é sombreamento ≤ 46,3. Ele separa 247 lotes com 1,21% de finos de 48 com 16,67%. O Gini ponderado cai de 0,0718 para 0,0653. O erro ponderado <strong>não cai nada</strong>: era 0,0373 e continua 0,0373, porque nos dois filhos a classe majoritária continua sendo "não fino".</p><p>Esse corte é útil — isola um grupo com probabilidade de fino quatro vezes maior, que um corte seguinte pode refinar —, mas o erro de classificação não o enxerga. Como o erro é linear por partes em \(p\), qualquer corte que não troque a classe majoritária de algum filho tem redução zero. Gini e entropia, sendo estritamente côncavas, premiam todo aumento de pureza. Por isso se cresce com Gini ou entropia e se poda com o erro (ou com outra perda de interesse).</p></div><h3>Propriedades</h3><ul class="checklist"><li>Gini e entropia dão árvores muito parecidas na prática; a entropia penaliza um pouco mais os nós equilibrados.</li><li>A probabilidade estimada numa folha é a proporção de classes nela — há tantas probabilidades distintas quanto folhas.</li><li>Uma folha pura dá probabilidade 0 ou 1: num erro, a perda logarítmica é infinita.</li><li>Custos desiguais entram como matriz de perda (no crescimento) ou como limiar (na decisão).</li><li>Herda da árvore de regressão a invariância a transformações monótonas e a instabilidade.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Classe da folha</td><td>A decisão com custos iguais.</td><td>Muda com outra matriz de perda.</td></tr><tr><td>Proporções na folha</td><td>A probabilidade estimada.</td><td>Uma por folha; grosseira.</td></tr><tr><td>Pesos na folha (<code>show_weights</code>)</td><td>Contagens de cada classe.</td><td>Olhe o n antes de confiar.</td></tr><tr><td><code>xerror</code></td><td>Erro validado relativo ao da raiz.</td><td>A raiz erra a prevalência da minoria.</td></tr><tr><td>Sensibilidade e especificidade</td><td>Desempenho por classe.</td><td>Dependem do limiar.</td></tr></tbody></table></div><div class="callout warn"><strong>A árvore de três folhas é um bom modelo?</strong><p>Para <em>decidir</em>, sim: erro validado de 19,20%, a 3,2 pontos do erro de Bayes (15,96%). Para <em>estimar probabilidades</em>, não: a folha 3 atribui 0,667 a todos os 288 lotes altos com pH acima de 4,7, quando as probabilidades verdadeiras desses lotes vão de quase 0 a quase 1. E a folha 2, com 17 lotes, estima 0,059 para um grupo cuja probabilidade verdadeira média é 0,361: folhas pequenas dão estimativas ruins.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>rpart()</code> com <code>method = "class"</code> e a resposta como fator. O critério de corte é escolhido em <code>parms = list(split = "gini")</code> (padrão) ou <code>"information"</code> (entropia); a matriz de perda, em <code>parms = list(loss = matriz)</code>, com linhas = classe real e colunas = classe prevista; as probabilidades a priori, em <code>parms = list(prior = …)</code>. <code>predict(arv, type = "prob")</code> devolve as proporções das folhas e <code>type = "class"</code> a classe. Em Python, <code>sklearn.tree.DecisionTreeClassifier</code>, com <code>criterion</code>, <code>ccp_alpha</code> e <code>class_weight</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-cart-class-min" type="button">Copiar código</button></div><pre id="code-cart-class-min"><code>library(rpart)
+arv &lt;- rpart(fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+             method = "class", control = rpart.control(cp = 0, xval = 10))
+printcp(arv)
+poda &lt;- prune(arv, cp = arv$cptable[which.min(arv$cptable[, "xerror"]), "CP"])
+predict(poda, type = "prob")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-cart-class" type="button">Copiar código</button></div><pre id="code-cart-class"><code># Árvore de classificação (CART): exemplo completo ----
+# Pacotes: rpart (incluído no R) e rpart.plot (opcional)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("rpart", quietly = TRUE)) install.packages("rpart")
 library(rpart)
-d &lt;- transform(mtcars, am = factor(am))
-ajuste &lt;- rpart(am ~ wt + hp, data = d, method = "class",
-               control = rpart.control(cp = 0.01))
-printcp(ajuste)
-plot(ajuste); text(ajuste, use.n = TRUE)
-print(table(real = d$am, previsto = predict(ajuste, type = "class")))
+f &lt;- fino_f ~ alt + temp + chuva + somb + nfol + ph
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. Árvore máxima, critério de Gini (padrão), validação cruzada interna
+set.seed(1)
+arv_max &lt;- rpart(f, data = cafe, method = "class",
+                 parms = list(split = "gini"),
+                 control = rpart.control(cp = 0, minsplit = 2, xval = 10))
+printcp(arv_max); plotcp(arv_max)
+tab &lt;- arv_max$cptable
+arv &lt;- prune(arv_max, cp = tab[which.min(tab[, "xerror"]), "CP"])
+print(arv)
+library(rpart.plot); rpart.plot(arv, extra = 104)   # proporção de cada classe na folha
 
+# ---- 2. Entropia em vez de Gini
+arv_ent &lt;- rpart(f, data = cafe, method = "class", parms = list(split = "information"))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="cart-reg.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Árvore de regressão (CART)
-    </a>
-<a href="bagging.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Bagging (bootstrap aggregation)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Probabilidades: a proporção de finos em cada folha
+p &lt;- predict(arv, type = "prob")[, "fino"]
+table(round(p, 3))                 # poucas probabilidades distintas
+
+# ---- 4. Custos desiguais: perder um lote fino custa 3 vezes mais
+# Matriz de perda: linhas = classe real, colunas = classe prevista
+perda &lt;- matrix(c(0, 1,
+                  3, 0), nrow = 2, byrow = TRUE)
+arv_c &lt;- rpart(f, data = cafe, method = "class", parms = list(loss = perda))
+# Alternativa equivalente na decisão: limiar 1/(1 + 3) = 0,25 na probabilidade
+prev &lt;- ifelse(predict(arv, type = "prob")[, "fino"] &gt;= 0.25, "fino", "nao")
+table(real = cafe$fino_f, previsto = prev)
+
+# ---- 5. Comparação com a regressão logística (validação cruzada)
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(cafe)))
+err &lt;- matrix(NA, 10, 2, dimnames = list(NULL, c("arvore", "logistica")))
+for (j in 1:10) {
+  tr &lt;- cafe[d != j, ]; te &lt;- cafe[d == j, ]
+  a &lt;- rpart(f, data = tr, method = "class", control = rpart.control(cp = 0, xval = 10))
+  a &lt;- prune(a, cp = a$cptable[which.min(a$cptable[, "xerror"]), "CP"])
+  g &lt;- glm(fino ~ alt + temp + chuva + somb + nfol + ph, data = tr, family = binomial)
+  err[j, ] &lt;- c(mean(predict(a, te, type = "class") != te$fino_f),
+                mean((predict(g, te, type = "response") &gt;= 0.5) != te$fino))
+}
+colMeans(err)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-cart-class" type="button">Copiar código</button></div><pre id="code-py-cart-class"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, export_text
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+y=FINO
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (1) ou não (0). Prevalência = %s (%d de %d).'%(c(y.mean()),int(y.sum()),NC))
+print('Como o processo gerador é conhecido, sabe-se o ERRO DE BAYES, o menor')
+print('erro que QUALQUER classificador pode ter com essas seis variáveis:')
+print('  erro de Bayes = %s'%c(ERRO_BAYES))
+print('  erro de quem chuta sempre "não fino" = %s'%c(1-y.mean()))
+
+print('\n'+'='*70)
+print('AS TRÊS MEDIDAS DE IMPUREZA, na raiz e no primeiro corte')
+def gini(p): return 2*p*(1-p)
+def entr(p): return 0.0 if p in (0,1) else -(p*np.log2(p)+(1-p)*np.log2(1-p))
+def mcl(p): return min(p,1-p)
+p0=y.mean()
+print()
+print('Na raiz, p = %s:'%c(p0))
+print('  Gini        = 2p(1-p)          = %s'%c(gini(p0)))
+print('  Entropia    = -p log2 p - ...   = %s'%c(entr(p0)))
+print('  Erro        = min(p, 1-p)       = %s'%c(mcl(p0)))
+t=1050.9
+e=X[:,0]&lt;=t; nE,nD=e.sum(),(~e).sum(); pE,pD=y[e].mean(),y[~e].mean()
+print()
+print('Corte Altitude &lt;= %s: esquerda n=%d p=%s | direita n=%d p=%s'%(c(t,1),nE,c(pE),nD,c(pD)))
+print()
+print('%-12s %10s %10s %10s %12s'%('medida','esquerda','direita','média pond.','redução'))
+for nm,f in [('Gini',gini),('Entropia',entr),('Erro',mcl)]:
+    m=(nE*f(pE)+nD*f(pD))/NC
+    print('%-12s %10s %10s %10s %12s'%(nm,c(f(pE)),c(f(pD)),c(m),c(f(p0)-m)))
+
+print('\n'+'='*70)
+print('POR QUE NÃO CRESCER PELO ERRO DE CLASSIFICAÇÃO')
+print('Um corte que torna os nós mais PUROS sem mudar a classe majoritária')
+print('não reduz o erro, mas reduz o Gini. Exemplo nos dados: dentro do ramo')
+print('Altitude &lt;= 1050,9 (onde quase todos são "não fino"):')
+sub=e
+Xs,ys=X[sub],y[sub]
+best=None
+for j in range(6):
+    xs=np.unique(Xs[:,j]); 
+    for tt in (xs[:-1]+xs[1:])/2:
+        a=Xs[:,j]&lt;=tt
+        if a.sum()&lt;10 or (~a).sum()&lt;10: continue
+        g=(a.sum()*gini(ys[a].mean())+(~a).sum()*gini(ys[~a].mean()))/len(ys)
+        er=(a.sum()*mcl(ys[a].mean())+(~a).sum()*mcl(ys[~a].mean()))/len(ys)
+        if best is None or g&lt;best[0]: best=(g,er,j,tt,a.sum(),ys[a].mean(),(~a).sum(),ys[~a].mean())
+g,er,j,tt,n1,p1,n2,p2=best
+print('  pai: n=%d, p=%s, Gini=%s, erro=%s'%(len(ys),c(ys.mean()),c(gini(ys.mean())),c(mcl(ys.mean()))))
+print('  melhor corte por Gini: %s &lt;= %s'%(ROT[NOMES[j]],c(tt,1)))
+print('    filhos: n=%d p=%s | n=%d p=%s'%(n1,c(p1),n2,c(p2)))
+print('    Gini ponderado = %s (cai %s)'%(c(g),c(gini(ys.mean())-g)))
+print('    erro ponderado = %s (cai %s)'%(c(er),c(mcl(ys.mean())-er)))
+
+print('\n'+'='*70)
+print('CRESCER E PODAR, com o erro validado')
+cam=DecisionTreeClassifier(random_state=0).cost_complexity_pruning_path(X,y)
+al=np.unique(np.concatenate([[0],np.quantile(cam.ccp_alphas[cam.ccp_alphas&gt;0],np.linspace(0,1,35))]))
+res=[]
+for a in al:
+    er,sd=cv_clf(lambda a=a: DecisionTreeClassifier(ccp_alpha=a,random_state=0),X,y,10,0,5)
+    nf=DecisionTreeClassifier(ccp_alpha=a,random_state=0).fit(X,y).get_n_leaves()
+    res.append((a,er,sd,nf))
+res=np.array(res); jm=int(np.argmin(res[:,1]))
+print()
+print('%12s %8s %14s'%('alpha','folhas','erro 10-fold'))
+for i in sorted(set(list(range(0,len(res),4))+[jm,len(res)-1])):
+    print('%12s %8d %14s%s'%(c(res[i,0],5),int(res[i,3]),c(res[i,1]),' &lt;- menor erro' if i==jm else ''))
+am=res[jm,0]
+arv=DecisionTreeClassifier(ccp_alpha=am,random_state=0).fit(X,y)
+print()
+print('A árvore escolhida (%d folhas):'%arv.get_n_leaves())
+print(export_text(arv,feature_names=[ROT[k] for k in NOMES],show_weights=True,decimals=1))
+
+print('='*70)
+print('A FOLHA DÁ UMA PROBABILIDADE: a proporção de finos nela')
+fo=arv.apply(X); pp=arv.predict_proba(X)[:,1]
+print()
+print('%6s %6s %14s %20s'%('folha','n','p observada','P(fino) verdadeira'))
+for f in np.unique(fo):
+    i=fo==f
+    print('%6d %6d %14s %20s'%(f,i.sum(),c(y[i].mean()),c(PVER[i].mean())))
+print()
+print('A probabilidade verdadeira varia DENTRO de cada folha; a árvore dá a')
+print('todos os lotes da folha o mesmo valor. Só há %d probabilidades distintas.'%len(np.unique(pp)))
+
+print('\n'+'='*70)
+print('COMPARAÇÃO, por validação cruzada (10 dobras, 5 repetições)')
+mods=[('árvore sem poda',lambda: DecisionTreeClassifier(random_state=0)),
+      ('árvore de profundidade 2',lambda: DecisionTreeClassifier(max_depth=2,random_state=0)),
+      ('árvore podada (alpha do menor erro)',lambda: DecisionTreeClassifier(ccp_alpha=am,random_state=0)),
+      ('árvore podada, critério entropia',lambda: DecisionTreeClassifier(ccp_alpha=am,criterion='entropy',random_state=0)),
+      ('regressão logística nas seis',lambda: make_pipeline(StandardScaler(),LogisticRegression(C=1e4,max_iter=2000)))]
+print()
+print('%-38s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for nm,f in mods:
+    er,ll,br=cv_clf(f,X,y,10,0,5,prob=True)
+    print('%-38s %10s %10s %10s'%(nm,c(er),c(ll),c(br)))
+print('%-38s %10s'%('regra de Bayes (o piso)',c(ERRO_BAYES)))
+print()
+print('O log-loss da árvore sem poda é enorme: suas folhas são puras, e ela')
+print('atribui probabilidade 0 ou 1 — quando erra, erra com certeza total.')
+
+print('\n'+'='*70)
+print('CUSTOS DESIGUAIS: perder um lote fino custa 3 vezes mais')
+print('Duas formas: pesos de classe no crescimento, ou limiar na probabilidade.')
+d=dobras(NC,10,0); pr=np.empty(NC); pw=np.empty(NC)
+for j in range(10):
+    tr,te=d!=j,d==j
+    m=DecisionTreeClassifier(ccp_alpha=am,random_state=0).fit(X[tr],y[tr]); pr[te]=m.predict_proba(X[te])[:,1]
+    m=DecisionTreeClassifier(ccp_alpha=am,random_state=0,class_weight={0:1,1:3}).fit(X[tr],y[tr]); pw[te]=m.predict(X[te])
+def custo(pred): return float((3*np.sum((pred==0)&amp;(y==1))+np.sum((pred==1)&amp;(y==0)))/NC)
+print()
+print('%-34s %10s %10s %10s'%('regra','sensib.','especif.','custo médio'))
+for nm,pred in [('limiar 0,50 (custos iguais)',(pr&gt;=.5).astype(int)),('limiar 0,25 = 1/(1+3)',(pr&gt;=.25).astype(int)),('pesos 1:3 no crescimento',pw.astype(int)),('regra de Bayes com custos',(PVER&gt;=.25).astype(int))]:
+    print('%-34s %10s %10s %10s'%(nm,c(np.mean(pred[y==1]==1)),c(np.mean(pred[y==0]==0)),c(custo(pred))))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (1) ou não (0). Prevalência = 0,3400 (204 de 600).
+Como o processo gerador é conhecido, sabe-se o ERRO DE BAYES, o menor
+erro que QUALQUER classificador pode ter com essas seis variáveis:
+  erro de Bayes = 0,1596
+  erro de quem chuta sempre "não fino" = 0,6600
+
+======================================================================
+AS TRÊS MEDIDAS DE IMPUREZA, na raiz e no primeiro corte
+
+Na raiz, p = 0,3400:
+  Gini        = 2p(1-p)          = 0,4488
+  Entropia    = -p log2 p - ...   = 0,9248
+  Erro        = min(p, 1-p)       = 0,3400
+
+Corte Altitude &lt;= 1050,9: esquerda n=295 p=0,0373 | direita n=305 p=0,6328
+
+medida         esquerda    direita média pond.      redução
+Gini             0,0718     0,4647     0,2715       0,1773
+Entropia         0,2297     0,9485     0,5951       0,3297
+Erro             0,0373     0,3672     0,2050       0,1350
+
+======================================================================
+POR QUE NÃO CRESCER PELO ERRO DE CLASSIFICAÇÃO
+Um corte que torna os nós mais PUROS sem mudar a classe majoritária
+não reduz o erro, mas reduz o Gini. Exemplo nos dados: dentro do ramo
+Altitude &lt;= 1050,9 (onde quase todos são "não fino"):
+  pai: n=295, p=0,0373, Gini=0,0718, erro=0,0373
+  melhor corte por Gini: Sombreamento &lt;= 46,3
+    filhos: n=247 p=0,0121 | n=48 p=0,1667
+    Gini ponderado = 0,0653 (cai 0,0065)
+    erro ponderado = 0,0373 (cai 0,0000)
+
+======================================================================
+CRESCER E PODAR, com o erro validado
+
+       alpha   folhas   erro 10-fold
+     0,00000       84         0,2403
+     0,00158       76         0,2397
+     0,00238       62         0,2327
+     0,00254       52         0,2327
+     0,00286       47         0,2307
+     0,00332       23         0,2200
+     0,00372       14         0,2143
+     0,00818        7         0,2047
+     0,01820        3         0,1920 &lt;- menor erro
+     0,17726        1         0,3100
+
+A árvore escolhida (3 folhas):
+|--- Altitude &lt;= 1050.9
+|   |--- weights: [284.0, 11.0] class: 0
+|--- Altitude &gt;  1050.9
+|   |--- pH &lt;= 4.7
+|   |   |--- weights: [16.0, 1.0] class: 0
+|   |--- pH &gt;  4.7
+|   |   |--- weights: [96.0, 192.0] class: 1
+
+======================================================================
+A FOLHA DÁ UMA PROBABILIDADE: a proporção de finos nela
+
+ folha      n    p observada   P(fino) verdadeira
+     1    295         0,0373               0,0383
+     3     17         0,0588               0,3613
+     4    288         0,6667               0,6343
+
+A probabilidade verdadeira varia DENTRO de cada folha; a árvore dá a
+todos os lotes da folha o mesmo valor. Só há 3 probabilidades distintas.
+
+======================================================================
+COMPARAÇÃO, por validação cruzada (10 dobras, 5 repetições)
+
+modelo                                       erro   log-loss      Brier
+árvore sem poda                            0,2403     3,3203     0,2403
+árvore de profundidade 2                   0,1877     0,4285     0,1327
+árvore podada (alpha do menor erro)        0,1920     0,4294     0,1335
+árvore podada, critério entropia           0,1903     0,4769     0,1345
+regressão logística nas seis               0,2307     0,4489     0,1477
+regra de Bayes (o piso)                    0,1596
+
+O log-loss da árvore sem poda é enorme: suas folhas são puras, e ela
+atribui probabilidade 0 ou 1 — quando erra, erra com certeza total.
+
+======================================================================
+CUSTOS DESIGUAIS: perder um lote fino custa 3 vezes mais
+Duas formas: pesos de classe no crescimento, ou limiar na probabilidade.
+
+regra                                 sensib.   especif. custo médio
+limiar 0,50 (custos iguais)            0,9363     0,7449     0,2333
+limiar 0,25 = 1/(1+3)                  0,9363     0,7449     0,2333
+pesos 1:3 no crescimento               0,9412     0,7449     0,2283
+regra de Bayes com custos              0,9461     0,7475     0,2217</pre></div><figure class="fig"><img src="../assets/resultados/cart-class.png" alt="Erro validado por número de folhas, probabilidades verdadeiras dentro de cada folha e log-loss dos modelos" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro validado em função do tamanho da árvore: mínimo com 3 folhas. No centro, a probabilidade verdadeira de cada lote dentro de cada folha (pontos) contra a probabilidade única que a árvore atribui (barra). À direita, o log-loss validado: a árvore sem poda, de folhas puras, tem perda quase oito vezes maior que as demais. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A poda</caption><thead><tr><th>α (sklearn)</th><th>Folhas</th><th>Erro 10-fold</th></tr></thead><tbody><tr><td>0,00000</td><td>84</td><td>0,2403</td></tr><tr><td>0,00286</td><td>47</td><td>0,2307</td></tr><tr><td>0,00372</td><td>14</td><td>0,2143</td></tr><tr><td>0,00818</td><td>7</td><td>0,2047</td></tr><tr><td><strong>0,01820</strong></td><td><strong>3</strong></td><td><strong>0,1920</strong></td></tr><tr><td>0,17726</td><td>1</td><td>0,3100</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As três folhas</caption><thead><tr><th>Folha</th><th>Regra</th><th>n</th><th>Proporção de finos</th><th>P(fino) verdadeira média</th></tr></thead><tbody><tr><td>1</td><td>altitude ≤ 1.050,9</td><td>295</td><td>0,0373</td><td>0,0383</td></tr><tr><td>2</td><td>altitude > 1.050,9 e pH ≤ 4,7</td><td>17</td><td>0,0588</td><td>0,3613</td></tr><tr><td>3</td><td>altitude > 1.050,9 e pH > 4,7</td><td>288</td><td>0,6667</td><td>0,6343</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação por validação cruzada (10 dobras × 5 repetições)</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>Árvore sem poda</td><td>0,2403</td><td>3,3203</td><td>0,2403</td></tr><tr><td>Árvore de profundidade 2</td><td>0,1877</td><td>0,4285</td><td>0,1327</td></tr><tr><td><strong>Árvore podada (3 folhas)</strong></td><td><strong>0,1920</strong></td><td><strong>0,4294</strong></td><td><strong>0,1335</strong></td></tr><tr><td>Árvore podada, entropia</td><td>0,1903</td><td>0,4769</td><td>0,1345</td></tr><tr><td>Regressão logística</td><td>0,2307</td><td>0,4489</td><td>0,1477</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Custos desiguais: perder um lote fino custa 3</caption><thead><tr><th>Regra</th><th>Sensibilidade</th><th>Especificidade</th><th>Custo médio</th></tr></thead><tbody><tr><td>Limiar 0,50</td><td>0,9363</td><td>0,7449</td><td>0,2333</td></tr><tr><td>Limiar 0,25 = 1/(1+3)</td><td>0,9363</td><td>0,7449</td><td>0,2333</td></tr><tr><td>Pesos 1:3 no crescimento</td><td>0,9412</td><td>0,7449</td><td>0,2283</td></tr><tr><td><em>Regra de Bayes com custos</em></td><td><em>0,9461</em></td><td><em>0,7475</em></td><td><em>0,2217</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a árvore de três folhas erra menos que a logística porque o processo tem um degrau — e a logística, com um termo linear em altitude, aproxima o degrau por uma rampa suave. A árvore sem poda ilustra o problema das folhas puras: erro de 24,03% e log-loss de 3,3203, contra 0,4294 da podada. Quem atribui probabilidade 0 a um lote que acaba sendo fino paga perda infinita (aqui, limitada numericamente).</p><p><strong>O limiar 0,25 não mudou nada</strong>, e a razão é estrutural: a árvore só tem três probabilidades — 0,037, 0,059 e 0,667 —, e nenhuma está entre 0,25 e 0,50. Mover o limiar nesse intervalo não troca a decisão de nenhum lote. Os pesos no crescimento mudam a própria árvore e ganham um pouco (custo 0,2283 contra 0,2333). A regra ótima com os custos, calculada com as probabilidades verdadeiras, chega a 0,2217: a árvore fica perto do possível.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Crescer pelo erro de classificação</td><td>Use Gini ou entropia; o erro não vê cortes úteis.</td></tr><tr><td>Usar a árvore máxima</td><td>Folhas puras: probabilidades 0 e 1.</td></tr><tr><td>Tratar a proporção da folha como probabilidade precisa</td><td>É uma média grosseira; veja o n da folha.</td></tr><tr><td>Mudar o limiar esperando mudar as decisões</td><td>Com poucas folhas, muitos limiares dão a mesma regra.</td></tr><tr><td>Ignorar custos desiguais</td><td>Use matriz de perda ou limiar \(1/(1+C)\).</td></tr><tr><td>Avaliar só a acurácia</td><td>Com 34% de finos, chutar "não" acerta 66%.</td></tr><tr><td>Interpretar as regras como causais</td><td>São separadoras, não mecanismos.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="logistica.html">Regressão logística</a></td><td>Quando os efeitos são aproximadamente lineares no logito e se quer inferência.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>Quando a predição importa mais que a legibilidade.</td></tr><tr><td><a href="boosting.html">Boosting</a></td><td>Menor erro, com ajuste de hiperparâmetros.</td></tr><tr><td><a href="knn.html">kNN</a></td><td>Fronteiras irregulares, poucas variáveis.</td></tr><tr><td><a href="naive-bayes.html">Naive Bayes</a></td><td>Muitas variáveis, poucos dados.</td></tr><tr><td><a href="svm-rbf.html">SVM com núcleo radial</a></td><td>Fronteiras curvas, variáveis contínuas.</td></tr><tr><td><a href="lda.html">LDA</a></td><td>Classes aproximadamente normais com covariância comum.</td></tr></tbody></table></div><ol class="steps"><li>Veja a prevalência e defina os custos de erro.</li><li>Cresça com Gini e pode por validação cruzada.</li><li>Leia a árvore e o n das folhas.</li><li>Avalie erro, log-loss e Brier por validação cruzada.</li><li>Ajuste o limiar ou a matriz de perda aos custos.</li><li>Compare com a logística e com um comitê de árvores.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>BREIMAN, Leo; FRIEDMAN, Jerome H.; OLSHEN, Richard A.; STONE, Charles J. <em>Classification and regression trees.</em> Belmont: Wadsworth, 1984.</li><li>QUINLAN, J. Ross. <em>C4.5: programs for machine learning.</em> San Mateo: Morgan Kaufmann, 1993.</li><li>RAILEANU, Laura Elena; STOFFEL, Kilian. Theoretical comparison between the Gini index and information gain criteria. <em>Annals of Mathematics and Artificial Intelligence</em>, v. 41, n. 1, p. 77-93, 2004.</li><li>LOH, Wei-Yin. Fifty years of classification and regression trees. <em>International Statistical Review</em>, v. 82, n. 3, p. 329-348, 2014.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>THERNEAU, Terry; ATKINSON, Beth. <em>rpart: recursive partitioning and regression trees.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rpart" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rpart</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, poda por validação cruzada, classes com representação suficiente e custos de erro explicitados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>rpart (incluído no R); rpart.plot (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="cart-reg.html"><span>← ANTERIOR</span>Árvore de regressão (CART)</a><a href="bagging.html"><span>PRÓXIMO →</span>Bagging (bootstrap aggregation)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

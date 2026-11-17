@@ -4,315 +4,416 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Separação treino–teste (holdout): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Separação treino–teste (holdout) | Estatística e Ciência de Dados
-  </title>
+<meta content="Separação treino–teste (holdout): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Separação treino–teste (holdout) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Separação treino–teste (holdout)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 13 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Separação treino–teste (holdout)
-    </h1>
-<p class="detail-lead">
-     Verifica a capacidade de previsão do modelo em dados separados daqueles usados no ajuste.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/holdout.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica a capacidade de previsão do modelo em dados separados daqueles usados no ajuste.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência ou divisão por grupos/tempo conforme o processo gerador.</li><li>Evitar vazamento de dados.</li><li>Pré-processamento aprendido apenas no treino.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{RMSE}=\sqrt{\frac1{n_{\mathrm{teste}}}\sum_{i\in\mathrm{teste}}(y_i-\widehat y_i)^2}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n_{\mathrm{teste}}\)
-        </dt>
-<dd>
-         número de observações reservadas para teste
-        </dd>
-</div>
-<div>
-<dt>
-         \(y_i\)
-        </dt>
-<dd>
-         valor observado da resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(\widehat y_i\)
-        </dt>
-<dd>
-         predição gerada por modelo que não utilizou a observação i no ajuste
-        </dd>
-</div>
-<div>
-<dt>
-         \(RMSE\)
-        </dt>
-<dd>
-         raiz do erro quadrático médio no conjunto de teste
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       A decisão não usa automaticamente 5%: menor erro em teste sugere melhor predição, com incerteza e amostra de teste consideradas.
-      </p>
-<p>
-       Compare as medidas obtidas em observações não usadas no treinamento. Uma estimativa baixa do erro em treino não demonstra capacidade de generalização.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição de autonomia de veículos (mtcars) a partir de massa e potência.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-holdout" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-holdout"><code># Separação treino–teste (holdout) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Separação treino–teste (holdout)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · AVALIAÇÃO DE MODELOS</span><h1>Separação treino–teste (holdout)</h1><p class="detail-lead">Reserva parte das observações para medir o erro do modelo em dados que não participaram do ajuste.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/holdout.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/holdout.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a separação treino-teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Um modelo ajustado a um conjunto de dados sempre parece melhor nesses mesmos dados do que será em dados novos — ele foi construído, afinal, para minimizar o erro ali. A separação treino-teste é a maneira mais simples de medir o desempenho real: reserva-se uma parte das observações, ajusta-se o modelo sem elas e mede-se o erro nessa parte reservada.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Separação treino-teste" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Reservar parte dos dados</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">para medir o erro</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Por quê</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">O erro de resubstituição</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">é otimista</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Proporções</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">70/30 e 80/20</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">são convenção</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">A estimativa depende</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">do sorteio</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Com seleção</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">TRÊS partes: treino,</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">validação e teste</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativa</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">&lt;a href="kfold.html"&gt;validação cruzada&lt;/a&gt;</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Separação treino-teste</text></svg><figcaption>Visão geral da separação treino-teste. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O número que ela produz depende da semente</strong><p>Nos dados desta ficha, 2 000 separações 70/30 diferentes do <em>mesmo</em> conjunto, com o <em>mesmo</em> modelo, produzem EQM de teste entre <strong>0,37 e 1,34</strong> — o maior é 3,65 vezes o menor, com coeficiente de variação de 17%. Reportar uma separação é reportar um número que depende de qual semente o analista escolheu.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a separação treino-teste</h2><p>O procedimento tem três passos: sortear uma partição das observações em treino e teste; ajustar o modelo usando <em>apenas</em> o treino; e calcular a medida de erro no teste. A ideia é que o teste funcione como um substituto de "dados novos", e a condição para isso é que nenhuma informação dele tenha entrado no ajuste.</p><figure class="fig"><img src="../assets/resultados/holdout-didatica.png" alt="O esquema da separação, a variabilidade entre sorteios e o compromisso da proporção" loading="lazy"/><figcaption><strong>A ideia e os seus dois problemas.</strong> À esquerda, o esquema: os 120 talhões em ordem aleatória, 84 no treino e 36 no teste. O EQM de treino é 0,6839 e o de teste 0,7883 — a diferença de 13% é o otimismo da resubstituição. No centro, a distribuição do EQM de teste em 2 000 sorteios diferentes: o mesmo modelo nos mesmos dados produz valores de 0,37 a 1,34. À direita, o efeito da proporção: treinos maiores reduzem o viés (pontos verdes descem em direção à linha vermelha) e aumentam a variância da estimativa (linha laranja sobe). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>O que exatamente se está estimando</strong><p>Há duas quantidades diferentes, e convém não confundi-las. Uma é o erro do modelo <em>que seria ajustado com todos os n dados</em> — é o que interessa, porque é esse o modelo que vai para o campo. A outra é o erro do modelo ajustado com os 70% do treino, que é o que a separação mede. Como treinar com menos dados piora o modelo, a separação <strong>superestima</strong> o erro do modelo final, e o viés cresce quanto menor for o treino.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes e identicamente distribuídas</td><td>O sorteio aleatório só é válido assim.</td><td>Delineamento; com dados agrupados ou temporais, o sorteio simples não serve.</td></tr><tr><td><strong>Nada do teste entra no ajuste</strong></td><td>Qualquer vazamento torna a estimativa otimista.</td><td>Padronização, seleção de variáveis e imputação têm de ser feitas SÓ no treino.</td></tr><tr><td>Teste grande o bastante</td><td>Com poucas observações, a estimativa é instável.</td><td>Com 36 talhões, o CV da estimativa é 17%.</td></tr><tr><td>Treino grande o bastante</td><td>Com poucas, o modelo fica pior que o final.</td><td>Compare o desempenho com diferentes proporções.</td></tr><tr><td>Classes representadas nos dois conjuntos</td><td>Com classes raras, o sorteio pode falhar.</td><td>Use separação estratificada.</td></tr><tr><td>O teste é aberto UMA vez</td><td>Cada uso para escolher algo o corrompe.</td><td>Protocolo; com seleção, separe três partes.</td></tr><tr><td>Distribuição estável entre treino e teste</td><td>Se os dados mudam no tempo, a separação aleatória engana.</td><td>Com séries, separe por tempo, não por sorteio.</td></tr></tbody></table></div><div class="callout warn"><strong>Vazamento: o erro que mais aparece na prática</strong><p>Padronizar as variáveis usando média e desvio-padrão calculados no conjunto <em>inteiro</em>, selecionar preditores pela correlação com a resposta antes de separar, imputar valores faltantes com a média geral, ou escolher o corte de um classificador olhando o teste — todas essas operações fazem informação do teste entrar no modelo. O resultado é uma estimativa otimista, às vezes dramaticamente. A regra é simples: tudo o que depende dos dados é parte do procedimento de ajuste, e tem de ficar dentro do treino.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Não há hipótese a testar: trata-se de estimar uma quantidade, o erro esperado de predição.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{Err}=\mathbb{E}\left[L\left(y_0,\hat f(x_0)\right)\right],\]\[\begin{aligned}&(x_0,y_0)\ \text{independente do } \\ &\quad \text{conjunto de ajuste}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\widehat{\text{Err}}_{\text{teste}} &= \frac{1}{\lvert T\rvert}\sum_{i\in T}L\left(y_i,\hat f_{-T}(x_i)\right),\end{aligned}\]\[\widehat{\text{Err}}_{\text{resub}}=\frac{1}{n}\sum_{i=1}^{n}L\left(y_i,\hat f(x_i)\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(L\)</dt><dd>função de perda; aqui o erro quadrático \((y-\hat y)^2\)</dd></div><div><dt>\(T\)</dt><dd>conjunto de índices reservados para teste</dd></div><div><dt>\(\hat f_{-T}\)</dt><dd>modelo ajustado sem as observações de \(T\)</dd></div><div><dt>\(\hat f\)</dt><dd>modelo ajustado com todas as \(n\) observações</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Modelo: produtividade em função de nitrogênio, densidade, matéria orgânica e precipitação, com termos quadráticos para nitrogênio e densidade (7 parâmetros). Separação 70/30 com semente fixada.</p><div class="table-wrap"><table class="method-table"><caption>Uma separação</caption><thead><tr><th>Conjunto</th><th>n</th><th>EQM</th><th>REQM</th><th>R²</th></tr></thead><tbody><tr><td>Treino</td><td>84</td><td>0,6839</td><td>0,8270</td><td>0,6777</td></tr><tr><td>Teste</td><td>36</td><td>0,7883</td><td>0,8879</td><td>0,7165</td></tr></tbody></table></div><div class="worked"><strong>A leitura</strong><p>O EQM de treino é 13,2% menor que o de teste. Essa diferença é o otimismo da resubstituição: os sete coeficientes foram escolhidos para minimizar justamente a soma de quadrados dos 84 talhões do treino, e parte desse ajuste é ao ruído daquelas observações específicas.</p><p>O R² de teste ser <em>maior</em> que o de treino, apesar do EQM maior, é um lembrete útil: o R² depende também da variabilidade da resposta no conjunto, e por acaso os 36 talhões do teste eram mais heterogêneos. Entre os dois, o EQM é a medida a comparar.</p></div><h3>A variabilidade da estimativa</h3><div class="table-wrap"><table class="method-table"><caption>2 000 separações 70/30 dos mesmos dados</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>Média</td><td>0,8091</td></tr><tr><td>Desvio-padrão</td><td>0,1399</td></tr><tr><td>Mínimo</td><td>0,3680</td></tr><tr><td>Percentil 5</td><td>0,5925</td></tr><tr><td>Mediana</td><td>0,8020</td></tr><tr><td>Percentil 95</td><td>1,0447</td></tr><tr><td>Máximo</td><td>1,3432</td></tr><tr><td><strong>Coeficiente de variação</strong></td><td><strong>17,3%</strong></td></tr></tbody></table></div><h3>O compromisso da proporção</h3><div class="table-wrap"><table class="method-table"><caption>Efeito da fração destinada ao treino (3 000 sorteios cada)</caption><thead><tr><th>Treino</th><th>Teste</th><th>EQM médio</th><th>DP do EQM</th><th>Viés aparente*</th></tr></thead><tbody><tr><td>60</td><td>60</td><td>0,8355</td><td>0,1055</td><td>+0,0867</td></tr><tr><td>72</td><td>48</td><td>0,8159</td><td>0,1147</td><td>+0,0671</td></tr><tr><td>84</td><td>36</td><td>0,8087</td><td>0,1403</td><td>+0,0599</td></tr><tr><td>96</td><td>24</td><td>0,7979</td><td>0,1750</td><td>+0,0491</td></tr><tr><td>108</td><td>12</td><td>0,7887</td><td>0,2537</td><td>+0,0399</td></tr></tbody></table></div><p><small>* diferença em relação a σ² = 0,7488, estimado com os 120 talhões.</small></p><h3>Propriedades</h3><ul class="checklist"><li>\(\widehat{\text{Err}}_{\text{teste}}\) é não viesado para o erro do modelo ajustado com \(\lvert T^c\rvert\) observações, e <strong>viesado para cima</strong> para o erro do modelo ajustado com todas as \(n\).</li><li>O viés diminui e a variância aumenta quando a fração de treino cresce: não há proporção ótima universal.</li><li>A variância da estimativa tem duas fontes: o tamanho do teste e a instabilidade do modelo ajustado.</li><li>Usar o teste para escolher entre modelos introduz otimismo adicional, porque se reporta o mínimo de várias estimativas ruidosas.</li><li>Com classes desequilibradas, o sorteio simples pode produzir conjuntos sem representantes de uma classe.</li><li>É o caso \(k=1\) de uma família que inclui a <a href="kfold.html">validação cruzada k-fold</a> e a <a href="loocv.html">deixa-um-de-fora</a>.</li><li>A separação aleatória pressupõe dados permutáveis; com séries temporais, a separação tem de respeitar a ordem.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>EQM de teste</td><td>A estimativa do erro de predição.</td><td>Depende do sorteio; reporte a semente.</td></tr><tr><td>EQM de treino</td><td>O ajuste aos próprios dados.</td><td>Não é desempenho.</td></tr><tr><td>Diferença entre os dois</td><td>O otimismo da resubstituição.</td><td>Diferença grande sugere sobreajuste.</td></tr><tr><td>Tamanho do teste</td><td>A precisão da estimativa.</td><td>Com menos de 30, é muito instável.</td></tr><tr><td>R² de teste</td><td>Variação explicada no teste.</td><td>Depende da heterogeneidade do teste.</td></tr><tr><td>Proporção usada</td><td>O viés da estimativa.</td><td>Treino menor superestima o erro.</td></tr></tbody></table></div><div class="callout "><strong>Quando a separação simples basta</strong><p>Ela é adequada quando há dados de sobra — milhares de observações, de modo que mesmo 20% formem um teste grande —, quando o custo computacional de reajustar o modelo várias vezes é proibitivo, ou quando existe uma separação <em>natural</em> a respeitar: safras diferentes, regiões diferentes, períodos diferentes. Nesses casos a separação não é um sorteio, é parte do delineamento, e é justamente o que se quer medir. Com n de algumas centenas e um modelo barato de ajustar, a <a href="kfold.html">validação cruzada</a> é preferível.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>No R base, <code>sample()</code> sorteia os índices e <code>lm(..., data = milho[tr, ])</code> ajusta no treino. Para separação estratificada, <code>caret::createDataPartition()</code> ou <code>rsample::initial_split(..., strata = )</code>, que preservam a proporção das classes. O pacote <code>rsample</code> oferece ainda <code>initial_time_split()</code> para séries temporais e <code>group_initial_split()</code> para dados agrupados, em que a separação tem de respeitar os grupos.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-holdout-min" type="button">Copiar código</button></div><pre id="code-holdout-min"><code>set.seed(1)
+tr &lt;- sample(nrow(milho), round(0.70*nrow(milho)))
+m  &lt;- lm(f_completo, data = milho[tr, ])
+mean((milho$y[-tr] - predict(m, newdata = milho[-tr, ]))^2)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 120 talhões de milho, com a produtividade em t/ha e quatro variáveis explicativas — dose de nitrogênio (kg/ha), densidade de plantio (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm). O processo gerador tem resposta quadrática ao nitrogênio e à densidade, e um erro de desvio-padrão 0,85 t/ha. O mesmo conjunto atravessa as fichas de avaliação de modelos, de modo que as estimativas de erro produzidas por cada método podem ser comparadas diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-holdout" type="button">Copiar código</button></div><pre id="code-holdout"><code># Separação treino-teste (holdout): exemplo completo ----
+# Pacotes: caret, rsample (tidymodels); base R também resolve
+# install.packages(c("caret", "rsample"))
 
-# Ajuste e resultados ----
-set.seed(2026)
-i &lt;- sample(seq_len(nrow(mtcars)), size = 22)
-treino &lt;- mtcars[i, ]; teste &lt;- mtcars[-i, ]
-ajuste &lt;- lm(mpg ~ wt + hp, data = treino)
-pred &lt;- predict(ajuste, newdata = teste)
-print(c(RMSE_teste = sqrt(mean((teste$mpg - pred)^2)),
-        MAE_teste = mean(abs(teste$mpg - pred))))
+# Dados fictícios: 120 talhões de milho. Produtividade (t/ha) em função da
+# dose de nitrogênio, densidade de plantio, matéria orgânica e precipitação.
+# O arquivo scripts/milho.csv acompanha o repositório.
+milho &lt;- read.csv("milho.csv")
+str(milho); summary(milho$y)
+colMeans(milho)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O modelo usado em todas as fichas deste grupo
+f_completo &lt;- y ~ N + I(N^2) + densidade + I(densidade^2) + mo + chuva
+
+# ---- UMA separação 70/30
+set.seed(1)
+n &lt;- nrow(milho)
+tr &lt;- sample(n, round(0.70*n))
+treino &lt;- milho[tr, ]; teste &lt;- milho[-tr, ]
+c(treino = nrow(treino), teste = nrow(teste))
+
+m &lt;- lm(f_completo, data = treino)
+eqm &lt;- function(obs, prev) mean((obs - prev)^2)
+eqm(treino$y, predict(m))                     # EQM de treino
+eqm(teste$y,  predict(m, newdata = teste))    # EQM de teste
+# O de treino é sempre menor: é o otimismo da resubstituição.
+
+# ---- A estimativa depende do sorteio
+set.seed(7)
+est &lt;- replicate(2000, {
+  i &lt;- sample(n, round(0.70*n))
+  mm &lt;- lm(f_completo, data = milho[i, ])
+  eqm(milho$y[-i], predict(mm, newdata = milho[-i, ]))
+})
+c(media = mean(est), dp = sd(est), min = min(est), max = max(est))
+hist(est, breaks = 50, col = "darkseagreen",
+     xlab = "EQM de teste", main = "2.000 separações 70/30")
+
+# ---- A proporção de treino
+for (p in c(0.5, 0.6, 0.7, 0.8, 0.9)) {
+  v &lt;- replicate(1000, {
+    i &lt;- sample(n, round(p*n))
+    mm &lt;- lm(f_completo, data = milho[i, ])
+    eqm(milho$y[-i], predict(mm, newdata = milho[-i, ]))
+  })
+  cat(sprintf("treino %2.0f%%: EQM medio %.4f, DP %.4f\n", 100*p, mean(v), sd(v)))
+}
+
+# ---- Separação em TRÊS partes, quando há seleção de modelo
+set.seed(3)
+i &lt;- sample(n)
+treino &lt;- milho[i[1:72], ]; valid &lt;- milho[i[73:96], ]; teste &lt;- milho[i[97:120], ]
+cands &lt;- list(y ~ N,
+              y ~ N + densidade,
+              y ~ N + densidade + mo + chuva,
+              y ~ N + I(N^2) + densidade + mo + chuva,
+              y ~ N + densidade + I(densidade^2) + mo + chuva,
+              f_completo)
+ev &lt;- sapply(cands, function(f) {
+  mm &lt;- lm(f, data = treino); eqm(valid$y, predict(mm, newdata = valid)) })
+j &lt;- which.min(ev)
+mm &lt;- lm(cands[[j]], data = treino)
+c(validacao = ev[j], teste = eqm(teste$y, predict(mm, newdata = teste)))
+# O EQM de validação é otimista; o de teste é a estimativa honesta.
+
+# ---- Separação ESTRATIFICADA, com classes raras
+library(rsample)
+# div &lt;- initial_split(dados, prop = 0.7, strata = classe)
+# treino &lt;- training(div); teste &lt;- testing(div)
+library(caret)
+# idx &lt;- createDataPartition(dados$classe, p = 0.7, list = FALSE)
+
+# ---- A alternativa: validação cruzada (ver as fichas kfold e loocv)
+library(caret)
+ctrl &lt;- trainControl(method = "cv", number = 10)
+train(f_completo, data = milho, method = "lm", trControl = ctrl)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-holdout" type="button">Copiar código</button></div><pre id="code-py-holdout"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# avaliação de modelos: 120 talhões de milho, com a produtividade (t/ha)
+# e quatro variáveis: dose de nitrogênio (kg/ha), densidade de plantio
+# (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm).
+# Colunas: y, N, densidade, materia_organica, chuva
+# ===================================================================
+MILHO = np.array([
+ [7.65,40,56.3,1.86,572], [9.35,200,65.2,3.67,736], [6.8,160,71.1,2.46,372], [7.52,80,62.6,3.54,340],
+ [6.39,0,64,3.17,528], [8.54,160,58.2,2.81,433], [9.29,80,60.3,3.48,530], [6.85,120,59.8,2.58,375],
+ [8.76,120,60,3.54,532], [8,40,57.8,1.87,638], [5.86,80,64.8,2.27,620], [9.23,200,71.1,3.65,421],
+ [7.37,160,55.4,1.32,492], [8.55,200,71.8,3.13,600], [5.73,0,59.2,2.51,684], [6.3,80,59.4,2.41,434],
+ [5.66,0,46.9,2.31,443], [10.2,200,45,3.7,621], [8.84,120,67.1,1.72,488], [7.22,40,54.4,3.38,428],
+ [8.62,160,67.6,3.13,615], [8.97,160,62.4,2.5,369], [5.58,40,63.8,2.74,458], [8.52,160,71.3,3.29,607],
+ [6.97,0,61.5,2.38,463], [7.8,80,39.1,1.73,589], [8.8,120,49.8,3,410], [6.51,0,68.8,2.21,590],
+ [8.1,160,76,2.51,562], [10.13,200,61.3,2.84,666], [8.7,160,57.1,3.32,498], [9.12,120,52.3,4.07,488],
+ [9.21,200,65.8,3.04,511], [9.56,80,49.4,2.88,614], [7.59,80,53.3,3.37,453], [9,80,63,3,507],
+ [7.84,80,62.7,1.62,695], [7.23,120,60.2,2.38,590], [5.79,80,69.4,1.93,585], [7.6,80,53.3,3.29,473],
+ [10.46,120,53.7,3.69,597], [8.81,120,59.1,3.05,415], [6.29,0,62.5,2.08,386], [8.3,80,59.6,3.36,435],
+ [8.54,80,75.9,2.13,648], [6.05,0,57.8,2.98,535], [3.93,0,66.4,1.96,436], [6.95,40,57.9,1.83,488],
+ [5.84,40,64.2,1.82,561], [8.31,200,58.9,2.81,626], [7.77,200,59.2,2.34,373], [8.83,160,73.4,3.11,640],
+ [7.99,80,59.6,1.89,604], [9.28,160,74,3.14,457], [9.28,160,56.8,2.37,484], [10.55,80,58.7,3.68,564],
+ [6.44,80,69.8,3.51,494], [8.6,200,44.6,2.65,532], [9.92,80,50.3,2.88,425], [8.44,200,62.1,2.97,356],
+ [7.78,80,65.3,3.12,739], [6.18,40,66,2.61,535], [8.88,200,59.7,3.57,540], [8.22,120,51.9,2.44,566],
+ [9.58,120,67.8,1.45,640], [8.23,200,65.1,2.97,604], [4.71,0,54,2.72,427], [10.63,160,62.6,3.38,510],
+ [6.94,40,74.7,3.22,526], [8.58,80,62.9,2.89,589], [8.7,200,53.6,2.88,466], [9.05,80,59,2.89,554],
+ [5.96,40,59.4,2.34,540], [9.37,120,64.4,1.95,644], [7.89,160,68.4,2.23,285], [9,200,55.3,2.74,527],
+ [4.34,0,57.4,1.21,551], [9.67,160,69.2,2.49,581], [8.81,160,67.2,2.11,519], [7.04,80,71.6,2.74,445],
+ [6.92,40,51.6,2.23,580], [7.32,80,55.2,2.84,553], [7.51,40,69.1,2.64,444], [7.03,0,55.2,3.71,397],
+ [7.94,40,64.3,2.56,570], [7.95,80,61.6,2.63,442], [9.43,120,56.7,2.82,578], [5.06,40,72.4,1.53,656],
+ [6.3,40,61.9,2.05,539], [6.17,0,58.4,3.81,541], [8.22,80,60.8,3.16,531], [6.58,0,63.7,2.86,645],
+ [7.46,40,50.8,3.56,646], [6.37,40,55.8,2.67,528], [6.78,0,52.9,2.63,587], [8.54,160,47,2.59,524],
+ [3.94,0,68.9,1.56,475], [5.5,40,72.2,3.46,589], [6.46,80,70.4,2.67,512], [8.17,120,49.4,2.73,444],
+ [8.73,200,64.8,2.57,385], [7.1,120,66.8,2.36,609], [5.78,40,57.9,1.22,433], [8.98,200,67.8,2.91,420],
+ [9.57,160,54,4.33,496], [8.76,80,54.3,3.49,587], [8.66,80,56,2.6,365], [8.29,160,56.8,2.15,577],
+ [4.35,0,54.8,2.82,555], [4.89,0,68.8,3.06,411], [4.53,0,54.4,2.72,417], [9.05,120,58.7,3.38,504],
+ [8.82,80,57.4,2.13,694], [9.44,200,77.6,3.55,497], [9.43,120,55.6,2.91,618], [6.77,0,65.3,2.42,605],
+ [8.24,200,74.9,2.6,377], [10.17,200,53.6,3.04,520], [7.96,40,56.1,3.33,609], [5.79,0,59.6,2.85,475]])
+
+y = MILHO[:, 0]; Xv = MILHO[:, 1:]
+nomes = ["nitrogênio", "densidade", "mat. orgânica", "chuva"]
+n = len(y)
+
+def monta(X, grau_n=1, grau_d=1):
+    """Matriz de delineamento: intercepto, as quatro variáveis e termos
+       quadráticos opcionais para nitrogênio e densidade."""
+    cols = [np.ones(len(X))] + [X[:, j] for j in range(4)]
+    if grau_n &gt;= 2: cols.append(X[:, 0]**2)
+    if grau_d &gt;= 2: cols.append(X[:, 1]**2)
+    return np.column_stack(cols)
+
+def ajusta(Xd, yy):
+    return np.linalg.lstsq(Xd, yy, rcond=None)[0]
+
+def eqm(obs, prev):
+    return float(np.mean((obs - prev)**2))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="gwet.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Coeficiente AC1 de Gwet
-    </a>
-<a href="kfold.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Validação cruzada k-fold
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ===================================================================
+# PARTE 1 - uma separação treino-teste, feita uma vez
+# ===================================================================
+print(f"{n} talhões de milho, produtividade média {y.mean():.3f} t/ha "
+      f"(DP {y.std(ddof=1):.3f})")
+print("Modelo: produtividade ~ N + densidade + mat. orgânica + chuva,")
+print("com termos quadráticos para N e densidade.")
+
+rng = np.random.default_rng(1)
+idx = rng.permutation(n)
+ntr = int(0.70*n)
+tr, te = idx[:ntr], idx[ntr:]
+print(f"\nSeparação 70/30: {len(tr)} talhões no treino, {len(te)} no teste")
+
+Xd = monta(Xv, 2, 2)
+b = ajusta(Xd[tr], y[tr])
+eqm_tr = eqm(y[tr], Xd[tr] @ b)
+eqm_te = eqm(y[te], Xd[te] @ b)
+print(f"\n{'conjunto':&lt;12}{'n':&gt;6}{'EQM':&gt;12}{'REQM':&gt;10}{'R²':&gt;9}")
+for rot, m_, ee in [("treino", tr, eqm_tr), ("teste", te, eqm_te)]:
+    r2 = 1 - ee/np.mean((y[m_] - y[tr].mean())**2)
+    print(f"{rot:&lt;12}{len(m_):&gt;6}{ee:&gt;12.4f}{np.sqrt(ee):&gt;10.4f}{r2:&gt;9.4f}")
+print(f"\nO EQM de treino é {100*(1-eqm_tr/eqm_te):.1f}% menor que o de teste.")
+print("A diferença é o otimismo da reclassificação: o modelo foi ajustado")
+print("para minimizar o erro justamente nas observações do treino.")
+
+# ===================================================================
+# PARTE 2 - o problema: a estimativa depende da separação sorteada
+# ===================================================================
+print("\n" + "=" * 70)
+print("A MESMA análise, repetida com 2.000 separações 70/30 diferentes")
+rng = np.random.default_rng(7)
+est = []
+for _ in range(2000):
+    i2 = rng.permutation(n); t2, s2 = i2[:ntr], i2[ntr:]
+    bb = ajusta(Xd[t2], y[t2])
+    est.append(eqm(y[s2], Xd[s2] @ bb))
+est = np.array(est)
+print(f"\n  EQM de teste: média {est.mean():.4f}, DP {est.std(ddof=1):.4f}")
+print(f"  mínimo {est.min():.4f} | percentil 5 {np.percentile(est,5):.4f} "
+      f"| mediana {np.median(est):.4f}")
+print(f"  percentil 95 {np.percentile(est,95):.4f} | máximo {est.max():.4f}")
+print(f"  razão entre o maior e o menor: {est.max()/est.min():.2f} vezes")
+print(f"  coeficiente de variação: {100*est.std(ddof=1)/est.mean():.1f}%")
+print("\nA mesma análise, nos mesmos dados, com o mesmo modelo, produz um EQM")
+print(f"de teste entre {est.min():.2f} e {est.max():.2f} conforme o sorteio. Reportar UMA")
+print("separação é reportar um número que depende da semente aleatória.")
+
+# ===================================================================
+# PARTE 3 - a proporção de treino: o compromisso
+# ===================================================================
+print("\n" + "=" * 70)
+print("Qual proporção usar? O compromisso entre VIÉS e VARIÂNCIA da estimativa.")
+print("Treino pequeno: o modelo fica pior do que ficaria com todos os dados,")
+print("e o EQM é superestimado. Teste pequeno: a estimativa fica instável.")
+rng = np.random.default_rng(11)
+b_full = ajusta(Xd, y)
+print(f"\n{'treino':&gt;8}{'teste':&gt;8}{'EQM médio':&gt;13}{'DP do EQM':&gt;12}"
+      f"{'viés aparente':&gt;16}")
+# referência: erro verdadeiro do modelo ajustado com TODOS os dados,
+# estimado em dados novos simulados do mesmo processo
+sig = np.sqrt(np.sum((y - Xd @ b_full)**2)/(n - Xd.shape[1]))
+for frac in [0.50, 0.60, 0.70, 0.80, 0.90]:
+    k = int(frac*n); vals = []
+    for _ in range(3000):
+        i2 = rng.permutation(n); t2, s2 = i2[:k], i2[k:]
+        bb = ajusta(Xd[t2], y[t2])
+        vals.append(eqm(y[s2], Xd[s2] @ bb))
+    vals = np.array(vals)
+    print(f"{k:&gt;8}{n-k:&gt;8}{vals.mean():&gt;13.4f}{vals.std(ddof=1):&gt;12.4f}"
+          f"{vals.mean()-sig**2:&gt;16.4f}")
+print(f"\n(σ² estimado com todos os {n} dados = {sig**2:.4f})")
+print("Treinos maiores reduzem o viés e AUMENTAM a variância da estimativa,")
+print("porque sobra menos para testar. Não há proporção ótima universal; a")
+print("faixa de 70% a 80% é a convenção, e a validação cruzada existe")
+print("justamente para não ter de escolher.")
+
+# ===================================================================
+# PARTE 4 - o uso indevido mais comum: o teste usado duas vezes
+# ===================================================================
+print("\n" + "=" * 70)
+print("Se o conjunto de teste for usado para ESCOLHER o modelo, ele deixa")
+print("de estimar o erro. Demonstração: seis modelos candidatos, e o teste")
+print("usado para escolher o melhor deles.")
+modelos = [("só nitrogênio", lambda X: np.column_stack([np.ones(len(X)), X[:,0]])),
+           ("N + densidade", lambda X: np.column_stack([np.ones(len(X)), X[:,0], X[:,1]])),
+           ("as quatro, linear", lambda X: monta(X, 1, 1)),
+           ("com N²", lambda X: monta(X, 2, 1)),
+           ("com densidade²", lambda X: monta(X, 1, 2)),
+           ("com os dois quadráticos", lambda X: monta(X, 2, 2))]
+rng = np.random.default_rng(3)
+i2 = rng.permutation(n); t2, s2 = i2[:ntr], i2[ntr:]
+print(f"\n{'modelo':&lt;26}{'p':&gt;4}{'EQM treino':&gt;13}{'EQM teste':&gt;12}")
+eq_te = []
+for rot, f in modelos:
+    Xm = f(Xv); bb = ajusta(Xm[t2], y[t2])
+    a, t_ = eqm(y[t2], Xm[t2]@bb), eqm(y[s2], Xm[s2]@bb)
+    eq_te.append(t_)
+    print(f"{rot:&lt;26}{Xm.shape[1]:&gt;4}{a:&gt;13.4f}{t_:&gt;12.4f}")
+jmin = int(np.argmin(eq_te))
+print(f"\nO menor EQM de teste é o do modelo '{modelos[jmin][0]}': "
+      f"{eq_te[jmin]:.4f}.")
+print("Esse número NÃO é uma estimativa honesta do erro desse modelo em dados")
+print("novos: ele é o mínimo de seis estimativas ruidosas, e portanto")
+print("enviesado para baixo. Quanto? A simulação a seguir mede.")
+
+rng = np.random.default_rng(23)
+vies = []
+for _ in range(2000):
+    i3 = rng.permutation(n)
+    t3, v3, s3 = i3[:72], i3[72:96], i3[96:]      # treino, validação, teste
+    eqv, eqs = [], []
+    for rot, f in modelos:
+        Xm = f(Xv); bb = ajusta(Xm[t3], y[t3])
+        eqv.append(eqm(y[v3], Xm[v3]@bb))
+        eqs.append(eqm(y[s3], Xm[s3]@bb))
+    j = int(np.argmin(eqv))
+    vies.append((eqv[j], eqs[j]))
+vies = np.array(vies)
+print(f"\nSeparação em TRÊS partes (72 treino, 24 validação, 24 teste),")
+print("2.000 repetições. O modelo é escolhido pela validação e avaliado")
+print("no teste, que nunca foi usado para escolher nada.")
+print(f"  EQM no conjunto de VALIDAÇÃO (usado para escolher) = {vies[:,0].mean():.4f}")
+print(f"  EQM no conjunto de TESTE     (nunca usado)         = {vies[:,1].mean():.4f}")
+print(f"  otimismo = {vies[:,1].mean()-vies[:,0].mean():.4f} "
+      f"({100*(vies[:,1].mean()/vies[:,0].mean()-1):.1f}%)")
+print("\nO conjunto usado para escolher subestima o erro em cerca de 9%, e o")
+print("efeito cresce com o número de modelos comparados.")
+print("É por isso que, quando há seleção de modelo, a separação precisa ser")
+print("em TRÊS partes: treino para ajustar, validação para escolher, teste")
+print("para estimar o erro - e o teste é aberto uma única vez, no fim.")
+
+# ===================================================================
+# PARTE 5 - estratificação, e quando ela importa
+# ===================================================================
+print("\n" + "=" * 70)
+print("Em problemas de CLASSIFICAÇÃO com classes raras, uma separação")
+print("aleatória pode produzir conjuntos muito desequilibrados.")
+rng = np.random.default_rng(5)
+N_, prev = 200, 0.10
+print(f"\nSimulação: {N_} unidades, {100*prev:.0f}% da classe rara, "
+      f"separação 70/30, 10.000 sorteios")
+rotulos = np.r_[np.ones(int(N_*prev)), np.zeros(N_-int(N_*prev))]
+prop = []
+for _ in range(10000):
+    i4 = rng.permutation(N_); s4 = i4[int(0.7*N_):]
+    prop.append(rotulos[s4].sum())
+prop = np.array(prop)
+print(f"  casos da classe rara no teste: esperado "
+      f"{prev*N_*0.3:.1f}, observado de {prop.min():.0f} a {prop.max():.0f}")
+print(f"  em {100*np.mean(prop &lt;= 2):.2f}% dos sorteios o teste tem 2 casos ou menos")
+print(f"  em {100*np.mean(prop == 0):.3f}% dos sorteios o teste não tem NENHUM")
+print("A separação ESTRATIFICADA sorteia dentro de cada classe e garante a")
+print("mesma proporção nos dois conjuntos. Com classes raras, séries")
+print("temporais ou dados agrupados, a separação puramente aleatória não serve.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">120 talhões de milho, produtividade média 7.757 t/ha (DP 1.529)
+Modelo: produtividade ~ N + densidade + mat. orgânica + chuva,
+com termos quadráticos para N e densidade.
+
+Separação 70/30: 84 talhões no treino, 36 no teste
+
+conjunto         n         EQM      REQM       R²
+treino          84      0.6839    0.8270   0.6777
+teste           36      0.7883    0.8879   0.7165
+
+O EQM de treino é 13.2% menor que o de teste.
+A diferença é o otimismo da reclassificação: o modelo foi ajustado
+para minimizar o erro justamente nas observações do treino.
+
+======================================================================
+A MESMA análise, repetida com 2.000 separações 70/30 diferentes
+
+  EQM de teste: média 0.8091, DP 0.1399
+  mínimo 0.3680 | percentil 5 0.5925 | mediana 0.8020
+  percentil 95 1.0447 | máximo 1.3432
+  razão entre o maior e o menor: 3.65 vezes
+  coeficiente de variação: 17.3%
+
+A mesma análise, nos mesmos dados, com o mesmo modelo, produz um EQM
+de teste entre 0.37 e 1.34 conforme o sorteio. Reportar UMA
+separação é reportar um número que depende da semente aleatória.
+
+======================================================================
+Qual proporção usar? O compromisso entre VIÉS e VARIÂNCIA da estimativa.
+Treino pequeno: o modelo fica pior do que ficaria com todos os dados,
+e o EQM é superestimado. Teste pequeno: a estimativa fica instável.
+
+  treino   teste    EQM médio   DP do EQM   viés aparente
+      60      60       0.8355      0.1055          0.0867
+      72      48       0.8159      0.1147          0.0671
+      84      36       0.8087      0.1403          0.0599
+      96      24       0.7979      0.1750          0.0491
+     108      12       0.7887      0.2537          0.0399
+
+(σ² estimado com todos os 120 dados = 0.7488)
+Treinos maiores reduzem o viés e AUMENTAM a variância da estimativa,
+porque sobra menos para testar. Não há proporção ótima universal; a
+faixa de 70% a 80% é a convenção, e a validação cruzada existe
+justamente para não ter de escolher.
+
+======================================================================
+Se o conjunto de teste for usado para ESCOLHER o modelo, ele deixa
+de estimar o erro. Demonstração: seis modelos candidatos, e o teste
+usado para escolher o melhor deles.
+
+modelo                       p   EQM treino   EQM teste
+só nitrogênio                2       1.1824      0.9766
+N + densidade                3       1.1183      0.8947
+as quatro, linear            5       0.9473      0.7237
+com N²                       6       0.8162      0.5318
+com densidade²               6       0.9463      0.7143
+com os dois quadráticos      7       0.8159      0.5263
+
+O menor EQM de teste é o do modelo 'com os dois quadráticos': 0.5263.
+Esse número NÃO é uma estimativa honesta do erro desse modelo em dados
+novos: ele é o mínimo de seis estimativas ruidosas, e portanto
+enviesado para baixo. Quanto? A simulação a seguir mede.
+
+Separação em TRÊS partes (72 treino, 24 validação, 24 teste),
+2.000 repetições. O modelo é escolhido pela validação e avaliado
+no teste, que nunca foi usado para escolher nada.
+  EQM no conjunto de VALIDAÇÃO (usado para escolher) = 0.7833
+  EQM no conjunto de TESTE     (nunca usado)         = 0.8536
+  otimismo = 0.0703 (9.0%)
+
+O conjunto usado para escolher subestima o erro em cerca de 9%, e o
+efeito cresce com o número de modelos comparados.
+É por isso que, quando há seleção de modelo, a separação precisa ser
+em TRÊS partes: treino para ajustar, validação para escolher, teste
+para estimar o erro - e o teste é aberto uma única vez, no fim.
+
+======================================================================
+Em problemas de CLASSIFICAÇÃO com classes raras, uma separação
+aleatória pode produzir conjuntos muito desequilibrados.
+
+Simulação: 200 unidades, 10% da classe rara, separação 70/30, 10.000 sorteios
+  casos da classe rara no teste: esperado 6.0, observado de 0 a 14
+  em 2.66% dos sorteios o teste tem 2 casos ou menos
+  em 0.060% dos sorteios o teste não tem NENHUM
+A separação ESTRATIFICADA sorteia dentro de cada classe e garante a
+mesma proporção nos dois conjuntos. Com classes raras, séries
+temporais ou dados agrupados, a separação puramente aleatória não serve.</pre></div><figure class="fig"><img src="../assets/resultados/holdout.png" alt="Seis modelos em uma separação, o otimismo da seleção e o efeito da estratificação" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, seis modelos candidatos avaliados em uma única separação: o EQM de treino cai monotonicamente com o número de parâmetros, e o de teste tem um mínimo, marcado pela estrela. No centro, a demonstração do otimismo da seleção, com separação em três partes: o conjunto que escolheu o modelo devolve EQM médio de 0,7833 e o conjunto de teste, que nunca participou da escolha, devolve 0,8536. À direita, o risco de não estratificar: em 10 000 sorteios de uma amostra com 10% de classe rara, o teste fica com dois casos ou menos em 2,7% das vezes. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Seis modelos candidatos, uma separação 70/30</caption><thead><tr><th>Modelo</th><th>p</th><th>EQM de treino</th><th>EQM de teste</th></tr></thead><tbody><tr><td>Só nitrogênio</td><td>2</td><td>1,1824</td><td>0,9766</td></tr><tr><td>N + densidade</td><td>3</td><td>1,1183</td><td>0,8947</td></tr><tr><td>As quatro, lineares</td><td>5</td><td>0,9473</td><td>0,7237</td></tr><tr><td>Com N²</td><td>6</td><td>0,8162</td><td>0,5318</td></tr><tr><td>Com densidade²</td><td>6</td><td>0,9463</td><td>0,7143</td></tr><tr><td><strong>Com os dois quadráticos</strong></td><td>7</td><td>0,8159</td><td><strong>0,5263</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Separação em três partes (72 / 24 / 24), 2 000 repetições</caption><thead><tr><th>Conjunto</th><th>Papel</th><th>EQM médio</th></tr></thead><tbody><tr><td>Validação</td><td>escolheu o modelo</td><td>0,7833</td></tr><tr><td><strong>Teste</strong></td><td><strong>nunca foi usado</strong></td><td><strong>0,8536</strong></td></tr><tr><td>Otimismo</td><td>—</td><td>+0,0703 (9,0%)</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Separação não estratificada, 200 unidades com 10% de classe rara</caption><thead><tr><th>Resultado</th><th>Frequência em 10 000 sorteios</th></tr></thead><tbody><tr><td>Casos da classe rara no teste (esperado 6)</td><td>de 0 a 14</td></tr><tr><td>Teste com 2 casos ou menos</td><td>2,66%</td></tr><tr><td>Teste com NENHUM caso</td><td>0,06%</td></tr></tbody></table></div><p><strong>Leitura:</strong> na separação sorteada, o EQM de teste é 0,7883 contra 0,6839 no treino. A diferença de 13% é modesta porque o modelo tem apenas 7 parâmetros para 84 observações de treino; com modelos mais flexíveis ou amostras menores, o otimismo da resubstituição é muito maior.</p><p>A tabela dos seis modelos mostra o padrão que justifica todo o procedimento: o EQM de treino cai monotonicamente à medida que se acrescentam parâmetros — ele <em>sempre</em> cai, porque mais parâmetros permitem seguir melhor os dados de ajuste. O EQM de teste, não: ele cai até o modelo com N² e praticamente estabiliza. É essa diferença de comportamento que torna o conjunto reservado útil.</p><p><strong>Sobre o otimismo da seleção:</strong> esta é a parte mais importante da ficha. Se o conjunto reservado for usado para <em>escolher</em> entre os seis modelos, o menor valor que ele devolve deixa de ser uma estimativa honesta — é o mínimo de seis estimativas ruidosas, e portanto enviesado para baixo. A simulação quantifica: com separação em três partes, o conjunto de validação devolve em média 0,7833 e o de teste, 0,8536. O otimismo é de 9%, e cresce com o número de modelos comparados. A consequência prática é que o conjunto de teste precisa ser aberto uma única vez, no fim de tudo.</p><p><strong>Sobre a estratificação:</strong> com classes raras o sorteio simples é arriscado. Em uma amostra de 200 unidades com 10% de classe rara, 2,7% dos sorteios deixam o teste com dois casos ou menos, e em 0,06% deles o teste não tem nenhum — caso em que a sensibilidade sequer é calculável. A separação estratificada, que sorteia dentro de cada classe, elimina o problema sem custo algum. O mesmo raciocínio vale para dados agrupados (talhões da mesma fazenda, medidas do mesmo paciente), em que a separação deve respeitar os grupos, e para séries temporais, em que deve respeitar a ordem.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Reportar o erro de resubstituição como desempenho</td><td>Ele é otimista por construção.</td></tr><tr><td>Usar o conjunto de teste para escolher o modelo</td><td>Separe três partes: treino, validação e teste.</td></tr><tr><td>Padronizar ou imputar usando os dados inteiros</td><td>Tudo o que depende dos dados fica no treino.</td></tr><tr><td>Selecionar variáveis antes de separar</td><td>A seleção é parte do ajuste.</td></tr><tr><td>Reportar uma única separação sem a semente</td><td>O número depende dela.</td></tr><tr><td>Sortear aleatoriamente séries temporais</td><td>A separação tem de respeitar a ordem.</td></tr><tr><td>Sortear observações de dados agrupados</td><td>Separe por grupo, não por observação.</td></tr><tr><td>Não estratificar com classes raras</td><td>O teste pode ficar sem casos.</td></tr><tr><td>Usar teste pequeno demais</td><td>Com menos de 30, o CV da estimativa passa de 20%.</td></tr><tr><td>Reabrir o teste depois de ver o resultado</td><td>Cada reabertura o corrompe um pouco mais.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kfold.html">Validação cruzada k-fold</a></td><td>n de dezenas a milhares: usa todos os dados e é muito mais estável.</td></tr><tr><td>Validação cruzada repetida</td><td>Quando se quer eliminar a variabilidade do sorteio.</td></tr><tr><td><a href="loocv.html">Deixa-um-de-fora</a></td><td>n pequeno; com modelos lineares, sai de graça pelo atalho da alavancagem.</td></tr><tr><td><a href="bootstrap.html">Bootstrap (0,632 e fora-da-bolsa)</a></td><td>Quando se quer também o erro-padrão de outras estatísticas.</td></tr><tr><td>Validação cruzada aninhada</td><td>Quando há seleção de modelo ou ajuste de hiperparâmetros.</td></tr><tr><td>Separação temporal (<em>rolling origin</em>)</td><td>Séries temporais: treinar no passado, testar no futuro.</td></tr><tr><td>Separação por grupo</td><td>Dados agrupados: todos os registros de um grupo do mesmo lado.</td></tr><tr><td>AIC, BIC e Cp de Mallows</td><td>Modelos lineares: critérios analíticos, sem reamostragem.</td></tr><tr><td>Conjunto de teste externo</td><td>Quando há dados de outra safra, região ou laboratório.</td></tr></tbody></table></div><ol class="steps"><li>Defina a medida de erro antes de ver os dados.</li><li>Decida se a separação deve ser aleatória, estratificada, por grupo ou temporal.</li><li>Separe ANTES de qualquer pré-processamento que dependa dos dados.</li><li>Se houver seleção de modelo, separe em três partes.</li><li>Ajuste no treino e avalie no teste, uma única vez.</li><li>Reporte a semente, a proporção e o tamanho de cada conjunto.</li><li>Reporte os dois erros, de treino e de teste, e comente a diferença.</li><li>Se n permitir, prefira a <a href="kfold.html">validação cruzada</a> e use a separação só para o teste final.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>STONE, M. Cross-validatory choice and assessment of statistical predictions. <em>Journal of the Royal Statistical Society: Series B</em>, v. 36, n. 2, p. 111-147, 1974.</li><li>GEISSER, Seymour. The predictive sample reuse method with applications. <em>Journal of the American Statistical Association</em>, v. 70, n. 350, p. 320-328, 1975.</li><li>KOHAVI, Ron. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: <em>Proceedings of the 14th International Joint Conference on Artificial Intelligence.</em> San Francisco: Morgan Kaufmann, 1995. p. 1137-1143.</li><li>VARMA, Sudhir; SIMON, Richard. Bias in error estimation when using cross-validation for model selection. <em>BMC Bioinformatics</em>, v. 7, art. 91, 2006.</li><li>ARLOT, Sylvain; CELISSE, Alain. A survey of cross-validation procedures for model selection. <em>Statistics Surveys</em>, v. 4, p. 40-79, 2010.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>PICARD, Richard R.; BERK, Kenneth N. Data splitting. <em>The American Statistician</em>, v. 44, n. 2, p. 140-147, 1990.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. Cham: Springer, 2015.</li><li>KAUFMAN, Shachar; ROSSET, Saharon; PERLICH, Claudia; STITELMAN, Ori. Leakage in data mining: formulation, detection, and avoidance. <em>ACM Transactions on Knowledge Discovery from Data</em>, v. 6, n. 4, art. 15, 2012.</li><li>ROBERTS, David R. et al. Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. <em>Ecography</em>, v. 40, n. 8, p. 913-929, 2017.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>KUHN, Max; WICKHAM, Hadley. <em>Tidymodels: a collection of packages for modeling and machine learning using tidyverse principles.</em> Disponível em: <a href="https://www.tidymodels.org" target="_blank" rel="noopener noreferrer">https://www.tidymodels.org</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, nada do conjunto de teste entrando no ajuste, conjuntos grandes o bastante e o teste aberto uma única vez.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>caret, rsample</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="gwet.html"><span>← ANTERIOR</span>Coeficiente AC1 de Gwet</a><a href="kfold.html"><span>PRÓXIMO →</span>Validação cruzada k-fold</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

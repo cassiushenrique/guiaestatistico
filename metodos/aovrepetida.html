@@ -4,306 +4,255 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANOVA de medidas repetidas: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANOVA de medidas repetidas | Estatística e Ciência de Dados
-  </title>
+<meta content="ANOVA de medidas repetidas: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANOVA de medidas repetidas | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANOVA de medidas repetidas
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANOVA de medidas repetidas
-    </h1>
-<p class="detail-lead">
-     Verifica se a resposta média muda entre condições medidas nas mesmas unidades.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/aovrepetida.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se a resposta média muda entre condições medidas nas mesmas unidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Identificação correta dos sujeitos.</li><li>Unidades independentes.</li><li>Resíduos apropriados e esfericidade para F univariado com &gt;2 níveis.</li><li>Verificar Mauchly/correções.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_1=\cdots=\mu_k\\ H_1&amp;:\ \exists\,i\neq j:\mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[F=\frac{QM_{\mathrm{condição}}}{QM_{\mathrm{erro\ intraunidade}}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(QM_{\mathrm{condição}}\)
-        </dt>
-<dd>
-         quadrado médio do efeito das condições
-        </dd>
-</div>
-<div>
-<dt>
-         \(QM_{\mathrm{erro\ intraunidade}}\)
-        </dt>
-<dd>
-         quadrado médio residual apropriado às medidas repetidas
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         razão dos quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de variação média entre condições, considerando repetição. Reporte correção quando esfericidade falhar.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em CO2, a absorção é observada em várias concentrações para cada planta.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Verificar se a absorção média varia com a concentração, respeitando as medições repetidas por unidade.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-aovrepetida" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-aovrepetida"><code># ANOVA de medidas repetidas ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANOVA de medidas repetidas</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANOVA de medidas repetidas</h1><p class="detail-lead">Compara três ou mais condições medidas nas mesmas unidades, isolando a variabilidade entre participantes do erro experimental.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/aovrepetida.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/aovrepetida.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando as mesmas pessoas passam por todas as condições, duas coisas mudam. A primeira é boa: cada participante serve de controle de si mesmo, e a variabilidade entre indivíduos — quase sempre a maior fonte de ruído — pode ser retirada do erro experimental. A segunda exige cuidado: as observações deixam de ser independentes, e a <a href="aov1.html">ANOVA de um fator</a> comum passa a ser inválida.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Medidas repetidas" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA para k medidas</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">nas mesmas unidades</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Isola o efeito do</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">participante do erro</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência entre</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">participantes</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Esfericidade</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Correções</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Greenhouse–Geisser</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Huynh–Feldt</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">aov(y ~ cond +</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">Error(suj/cond))</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelo misto</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Friedman</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">MANOVA</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Medidas repetidas</text></svg><figcaption>Visão geral da ANOVA de medidas repetidas. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O ganho é concreto</strong><p>No exemplo desta ficha, 26,8% da variação total vem das diferenças entre participantes. Isolar essa parcela derruba o quadrado médio do erro de 527,8 para 275,6 — quase pela metade — e o F sobe de 23,6 para 45,1. O mesmo experimento, analisado corretamente, tem cerca do dobro da sensibilidade.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>A variação total é dividida em três parcelas em vez de duas: a que vem das diferenças <strong>entre participantes</strong>, a que vem do <strong>efeito das condições</strong> e o que sobra, o <strong>erro</strong> — tecnicamente, a interação participante × condição, isto é, o quanto cada pessoa reage às condições de forma diferente das demais. O teste do efeito das condições usa só essa última parcela como denominador.</p><figure class="fig"><img src="../assets/resultados/aovrepetida-didatica.png" alt="Perfis individuais e partição da soma de quadrados" loading="lazy"/><figcaption><strong>De onde vem o ganho de precisão.</strong> À esquerda, os doze participantes: os níveis individuais vão de 372 a 517 ms, mas quase todas as linhas sobem na mesma direção. À direita, a mesma variação total repartida de dois modos. Na ANOVA de medidas repetidas, a parcela dos participantes (26,8%) é identificada e retirada, e o erro fica com apenas 14,3%. Na ANOVA comum, as duas se fundem num erro de 41,2% — quase três vezes maior. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>O preço do ganho</strong><p>Ao remover a variação entre participantes, os graus de liberdade do erro caem de \(N-k\) para \((n-1)(k-1)\). No exemplo, de 33 para 22. Vale a pena sempre que a correlação entre as medidas repetidas for apreciável — o que é quase sempre o caso.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Participantes independentes entre si</td><td>A dependência permitida é só dentro do participante.</td><td>Delineamento.</td></tr><tr><td>Todos medidos em todas as condições</td><td>O delineamento tem de ser completo.</td><td><code>table(participante, condicao)</code>; faltantes exigem um modelo misto.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a distribuição F.</td><td><code>shapiro.test</code> nos resíduos do modelo.</td></tr><tr><td><strong>Esfericidade</strong>: as variâncias das diferenças entre pares de condições são iguais</td><td>É o pressuposto crítico, e o único que não existe na ANOVA comum.</td><td>Teste de <a href="mauchly.html">Mauchly</a>; com k = 2 é automaticamente satisfeito.</td></tr><tr><td>Ausência de valores extremos</td><td>Um participante atípico afeta todas as condições.</td><td>Gráfico de perfis.</td></tr></tbody></table></div><div class="callout try"><strong>Esfericidade em uma frase</strong><p>Se você calcular todas as diferenças entre pares de condições (A−B, A−C, B−C) e as variâncias dessas diferenças forem parecidas, há esfericidade. Se forem muito desiguais, não há — e o valor-p sem correção fica <strong>menor do que deveria</strong>, produzindo falsos positivos. No exemplo desta ficha as três variâncias são 56,99, 978,39 e 618,06: a violação é severa.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu_1=\mu_2=\cdots=\mu_k\ \text{(as } \\ &\quad \text{médias das condições são } \\ &\quad \text{iguais)} \\ H_1&:\ \text{ao menos uma condição } \\ &\quad \text{difere das demais}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}SQ_{\text{total}} &= \underbrace{k\sum_{i=1}^{n}\bigl(\bar{y}_{i\cdot}-\bar{y}\bigr)^{2}}_{\text{participantes}} \\ &\quad +\underbrace{n\sum_{j=1}^{k}\bigl(\bar{y}_{\cdot j}-\bar{y}\bigr)^{2}}_{\text{condição}} \\ &\quad +\underbrace{\sum_{i}\sum_{j}\bigl(y_{ij}-\bar{y}_{i\cdot}-\bar{y}_{\cdot j}+\bar{y}\bigr)^{2}}_{\text{erro}}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[F=\frac{SQ_{\text{condição}}/(k-1)}{SQ_{\text{erro}}/\left[(n-1)(k-1)\right]},\]\[\begin{aligned}&\text{sob correção: }F \\ &\sim F_{\,\varepsilon(k-1),\;\varepsilon(n-1)(k-1)}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n\)</dt><dd>número de participantes</dd></div><div><dt>\(k\)</dt><dd>número de condições</dd></div><div><dt>\(\bar{y}_{i\cdot}\)</dt><dd>média do participante i</dd></div><div><dt>\(\bar{y}_{\cdot j}\)</dt><dd>média da condição j</dd></div><div><dt>\(\bar{y}\)</dt><dd>média geral</dd></div><div><dt>\(\varepsilon\)</dt><dd>fator de correção da esfericidade, entre 1/(k−1) e 1</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Doze participantes, três condições de ruído. Médias: 413,42, 428,50 e 475,17 ms; média geral 439,03.</p><div class="worked"><strong>Cálculo</strong><p>\[\begin{aligned}SQ_{\text{condição}} &= 12\bigl[(413{,}42-439{,}03)^2 \\ &\quad +(428{,}50-439{,}03)^2 \\ &\quad +(475{,}17-439{,}03)^2\bigr] \\ &= 24\,873{,}39,\end{aligned}\] com 2 gl.</p><p>\(SQ_{\text{participantes}}=11\,354{,}97\) (11 gl) e, por diferença, \[\begin{aligned}SQ_{\text{erro}} &= 42\,290{,}97-11\,354{,}97 \\ &\quad -24\,873{,}39 \\ &= 6\,062{,}61,\end{aligned}\] com \((12-1)(3-1)=22\) gl.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}F &= \frac{24\,873{,}39/2}{6\,062{,}61/22} \\ &= \frac{12\,436{,}69}{275{,}57} = 45{,}13,\end{aligned}\]\[p=1{,}6\times10^{-8}.\]</div><p>Como a esfericidade falha (Mauchly: \(W=0{,}0536\), \(p=4{,}4\times10^{-7}\)), aplica-se \(\varepsilon_{GG}=0{,}5138\). O \(F\) <strong>não muda</strong>; mudam os graus de liberdade, de (2; 22) para (1,028; 11,303), e o valor-p passa a \(2{,}7\times10^{-5}\).</p></div><h3>As correções de esfericidade</h3><div class="table-wrap"><table class="method-table"><caption>Quando usar cada uma</caption><thead><tr><th>Correção</th><th>Como funciona</th><th>Quando usar</th></tr></thead><tbody><tr><td>Nenhuma</td><td>ε = 1.</td><td>Só quando Mauchly não rejeita e k = 2, ou quando ε estimado > 0,95.</td></tr><tr><td>Greenhouse–Geisser</td><td>ε estimado dos autovalores da matriz de covariâncias transformada.</td><td>Recomendação geral; levemente conservadora. Use quando ε̂ < 0,75.</td></tr><tr><td>Huynh–Feldt</td><td>Correção do viés do ε de GG; sempre ≥ ε de GG.</td><td>Quando ε̂ > 0,75; pode passar de 1 e é então truncada.</td></tr><tr><td>Limite inferior</td><td>ε = 1/(k − 1): o pior caso possível.</td><td>Muito conservadora; serve como verificação de segurança.</td></tr><tr><td>Abordagem multivariada (MANOVA)</td><td>Não supõe esfericidade alguma.</td><td>Quando n é bem maior que k.</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>Com k = 2, equivale ao <a href="tpareado.html">teste t pareado</a>, e a esfericidade é trivialmente satisfeita.</li><li>\(1/(k-1)\leq\varepsilon\leq1\); quanto menor, mais severa a violação.</li><li>As correções nunca alteram a estatística F, apenas os graus de liberdade e, portanto, o valor-p.</li><li>Tamanho de efeito: \(\eta^2_p=SQ_{\text{cond}}/(SQ_{\text{cond}}+SQ_{\text{erro}})\) e \(\eta^2_G\) (generalizado), que é comparável entre delineamentos.</li><li>O modelo equivale a um modelo misto com intercepto aleatório por participante e estrutura de covariância composta simétrica.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Error: participante</td><td>A linha do estrato entre participantes.</td><td>Não se testa; serve para separar a variação.</td></tr><tr><td>Error: participante:condicao</td><td>O estrato que contém o teste.</td><td>É aqui que estão F e o valor-p.</td></tr><tr><td>F e gl</td><td>A razão e seus graus de liberdade.</td><td>Reporte os gl corrigidos quando usar GG ou HF.</td></tr><tr><td>Mauchly</td><td>Teste da esfericidade.</td><td>Sensível ao tamanho da amostra; não decida só por ele.</td></tr><tr><td>ε de GG e HF</td><td>Severidade da violação.</td><td>Perto de 1 indica esfericidade.</td></tr><tr><td>η² parcial e generalizado</td><td>Magnitude do efeito.</td><td>O generalizado é o comparável entre estudos.</td></tr></tbody></table></div><p>Reporte, no padrão usual: <em>F(gl corrigidos) = valor, p = valor, ε de GG = valor, η²<sub>G</sub> = valor</em>, seguido das médias de cada condição e das comparações múltiplas.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A rota mais direta em R base é <code>aov()</code> com o termo <code>Error(participante/condicao)</code>, mas ela não fornece o teste de esfericidade. Para obtê-lo, use <code>ez::ezANOVA()</code> ou <code>rstatix::anova_test()</code>, que devolvem Mauchly, as correções de Greenhouse–Geisser e Huynh–Feldt e os tamanhos de efeito em uma única tabela; ou <code>car::Anova()</code> na forma multivariada. As comparações saem de <code>pairwise.t.test(..., paired = TRUE)</code> ou de <code>emmeans</code>. Os dados precisam estar em formato longo, com uma coluna identificando o participante.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-aovrepetida-min" type="button">Copiar código</button></div><pre id="code-aovrepetida-min"><code>modelo &lt;- aov(tempo ~ condicao + Error(participante / condicao), data = longo)
+summary(modelo)
+ez::ezANOVA(data = longo, dv = tempo, wid = participante, within = condicao, detailed = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. Doze participantes executaram uma tarefa de tempo de reação em três condições de ruído de fundo — silêncio, ruído moderado e ruído intenso —, todos passando pelas três. É o mesmo conjunto analisado na ficha do teste de <a href="mauchly.html">Mauchly</a>, onde a esfericidade foi testada; aqui completamos a análise.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-aovrepetida" type="button">Copiar código</button></div><pre id="code-aovrepetida"><code># ANOVA de medidas repetidas: exemplo completo ----
+# Pacotes: stats (base), ez ou rstatix (esfericidade e correções), emmeans (comparações)
+# install.packages(c("ez", "rstatix", "emmeans"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("ez", quietly = TRUE)) install.packages("ez")
+# 1. Dados fictícios: tempo de reação (ms) de 12 participantes em três condições de ruído.
+#    É o mesmo conjunto usado na ficha do teste de esfericidade de Mauchly.
+tempos &lt;- matrix(c(412, 428, 471, 385, 402, 455, 440, 447, 462, 398, 421, 502,
+                   455, 460, 489, 372, 395, 468, 420, 431, 444, 401, 426, 517,
+                   433, 441, 470, 390, 409, 446, 447, 452, 495, 408, 430, 483),
+                 nrow = 12, byrow = TRUE,
+                 dimnames = list(paste0("p", 1:12),
+                                 c("silencio", "moderado", "intenso")))
+tempos
+colMeans(tempos)
+apply(tempos, 2, sd)
+
+# 2. Formato longo, que é o exigido pelas funções de modelagem
+longo &lt;- data.frame(
+  participante = factor(rep(rownames(tempos), times = 3)),
+  condicao     = factor(rep(colnames(tempos), each = 12),
+                        levels = c("silencio", "moderado", "intenso")),
+  tempo        = as.vector(tempos))
+str(longo)
+
+# 3. O modelo: o termo Error() declara que as medidas são do mesmo participante
+modelo &lt;- aov(tempo ~ condicao + Error(participante / condicao), data = longo)
+summary(modelo)
+
+# 4. Esfericidade: teste de Mauchly e correções
+#    Rota 1 - com o pacote ez, que entrega tudo em uma tabela
 library(ez)
-d &lt;- CO2
-d$Plant &lt;- factor(d$Plant); d$conc &lt;- factor(d$conc)
-resultado &lt;- ezANOVA(data = d, dv = .(uptake), wid = .(Plant),
-                     within = .(conc), detailed = TRUE)
-print(resultado)
+ezANOVA(data = longo, dv = tempo, wid = participante, within = condicao, detailed = TRUE)
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+#    Rota 2 - com stats, pela abordagem multivariada
+mlm &lt;- lm(tempos ~ 1)
+desenho &lt;- data.frame(condicao = factor(colnames(tempos), levels = colnames(tempos)))
+library(car)
+av &lt;- Anova(mlm, idata = desenho, idesign = ~condicao, type = "III")
+summary(av, multivariate = FALSE)     # traz Mauchly, GG e HF
 
+#    Rota 3 - com rstatix
+library(rstatix)
+anova_test(data = longo, dv = tempo, wid = participante, within = condicao)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="aovwelch.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANOVA de Welch
-    </a>
-<a href="aovfatorial.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANOVA fatorial
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 5. Tamanho de efeito
+#    eta parcial = SQ_condicao / (SQ_condicao + SQ_erro)
+#    eta generalizado leva também a variabilidade entre participantes
+# rstatix::anova_test() já devolve o eta generalizado (ges)
+
+# 6. Comparações múltiplas
+with(longo, pairwise.t.test(tempo, condicao, paired = TRUE, p.adjust.method = "holm"))
+library(emmeans)
+emmeans(modelo, ~condicao) |&gt; pairs(adjust = "holm")
+
+# 7. Alternativas
+friedman.test(tempos)                                 # não paramétrica
+library(lme4)
+mm &lt;- lmer(tempo ~ condicao + (1 | participante), data = longo)   # modelo misto
+anova(mm)
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+matplot(t(tempos), type = "b", pch = 19, lty = 1, col = "gray65", xaxt = "n",
+        xlab = "Condição", ylab = "Tempo de reação (ms)")
+axis(1, at = 1:3, labels = colnames(tempos))
+lines(colMeans(tempos), type = "b", pch = 18, col = "red", lwd = 3, cex = 1.8)
+boxplot(tempo ~ condicao, data = longo, col = "gray85",
+        xlab = "Condição", ylab = "Tempo de reação (ms)")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-aovrepetida" type="button">Copiar código</button></div><pre id="code-py-aovrepetida"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados fictícios: tempo de reação (ms) de 12 participantes em três condições de ruído.
+# É o mesmo conjunto usado na ficha do teste de esfericidade de Mauchly.
+dados = np.array([
+    [412, 428, 471], [385, 402, 455], [440, 447, 462], [398, 421, 502],
+    [455, 460, 489], [372, 395, 468], [420, 431, 444], [401, 426, 517],
+    [433, 441, 470], [390, 409, 446], [447, 452, 495], [408, 430, 483]], dtype=float)
+condicoes = ["Silêncio", "Ruído moderado", "Ruído intenso"]
+n, k = dados.shape
+print(f"{n} participantes x {k} condições")
+print("condição            média     DP")
+for j, cd in enumerate(condicoes):
+    print(f"{cd:&lt;18}{dados[:, j].mean():7.2f}  {dados[:, j].std(ddof=1):6.2f}")
+print(f"Média geral = {dados.mean():.4f}")
+print("Média de cada participante:", np.round(dados.mean(axis=1), 2))
+
+# 1. Decomposição da soma de quadrados
+media_geral = dados.mean()
+m_cond = dados.mean(axis=0)          # média de cada condição
+m_suj = dados.mean(axis=1)           # média de cada participante
+SQ_total = ((dados - media_geral)**2).sum()
+SQ_suj = k * ((m_suj - media_geral)**2).sum()         # entre participantes
+SQ_cond = n * ((m_cond - media_geral)**2).sum()       # efeito da condição
+SQ_erro = SQ_total - SQ_suj - SQ_cond                 # resíduo (interação suj x cond)
+gl_suj, gl_cond, gl_erro = n - 1, k - 1, (n - 1) * (k - 1)
+QM_cond, QM_erro = SQ_cond / gl_cond, SQ_erro / gl_erro
+F = QM_cond / QM_erro
+p = stats.f.sf(F, gl_cond, gl_erro)
+print(f"\nSQ total = {SQ_total:.2f} = SQ participantes ({SQ_suj:.2f}) + SQ condição ({SQ_cond:.2f}) + SQ erro ({SQ_erro:.2f})")
+print("\nFonte                 GL        SQ         QM        F      p-valor")
+print(f"Participantes       {gl_suj:3d}  {SQ_suj:9.2f}  {SQ_suj/gl_suj:9.2f}")
+print(f"Condição            {gl_cond:3d}  {SQ_cond:9.2f}  {QM_cond:9.2f}  {F:7.3f}  {p:.3e}")
+print(f"Erro (suj x cond)   {gl_erro:3d}  {SQ_erro:9.2f}  {QM_erro:9.2f}")
+print(f"Total               {n*k-1:3d}  {SQ_total:9.2f}")
+
+# 2. O que se perderia ignorando o pareamento (ANOVA de um fator comum)
+Fi, pi = stats.f_oneway(*[dados[:, j] for j in range(k)])
+SQ_dentro_ind = SQ_suj + SQ_erro
+print(f"\nSe os dados fossem tratados como independentes:")
+print(f"  F = {Fi:.3f}, gl = ({k-1}; {n*k-k}), p-valor = {pi:.3e}")
+print(f"  o resíduo seria {SQ_dentro_ind:.2f} em {n*k-k} gl -&gt; QM = {SQ_dentro_ind/(n*k-k):.2f},")
+print(f"  contra QM do erro = {QM_erro:.2f} no modelo de medidas repetidas.")
+print(f"  A variabilidade entre participantes ({100*SQ_suj/SQ_total:.1f}% do total) iria para o erro.")
+
+# 3. Esfericidade: Mauchly, Greenhouse-Geisser e Huynh-Feldt
+C = np.array([[1, -1, 0], [1, 1, -2]], dtype=float)
+C = C / np.sqrt((C**2).sum(axis=1, keepdims=True))      # contrastes ortonormais
+S = np.cov(dados, rowvar=False)
+Sc = C @ S @ C.T
+pp = k - 1
+W_m = np.linalg.det(Sc) / (np.trace(Sc) / pp)**pp
+f_corr = 1 - (2*pp**2 + pp + 2) / (6 * pp * (n - 1))
+chi2_m = -(n - 1) * f_corr * np.log(W_m)
+gl_m = pp * (pp + 1) / 2 - 1
+p_m = stats.chi2.sf(chi2_m, gl_m)
+autov = np.linalg.eigvalsh(Sc)
+gg = autov.sum()**2 / (pp * (autov**2).sum())
+hf = min(1.0, (n * pp * gg - 2) / (pp * (n - 1 - pp * gg)))
+li = 1 / pp
+print(f"\nMauchly: W = {W_m:.5f}, qui-quadrado = {chi2_m:.4f}, gl = {int(gl_m)}, p-valor = {p_m:.3e}")
+print(f"Epsilon de Greenhouse-Geisser = {gg:.4f} | Huynh-Feldt = {hf:.4f} | limite inferior = {li:.4f}")
+print("\nValor-p sob cada correção (a estatística F não muda; mudam os graus de liberdade):")
+for nome, e in [("sem correção", 1.0), ("Greenhouse-Geisser", gg), ("Huynh-Feldt", hf), ("limite inferior", li)]:
+    print(f"  {nome:&lt;20} gl = ({e*gl_cond:5.3f}; {e*gl_erro:6.3f})  p-valor = {stats.f.sf(F, e*gl_cond, e*gl_erro):.3e}")
+
+# 4. Tamanho de efeito
+eta2_p = SQ_cond / (SQ_cond + SQ_erro)
+eta2_g = SQ_cond / (SQ_cond + SQ_suj + SQ_erro)
+print(f"\neta² parcial = {eta2_p:.4f} | eta² generalizado = {eta2_g:.4f}")
+
+# 5. Comparações múltiplas: testes t pareados com ajuste de Holm e de Bonferroni
+print("\nComparações pareadas (teste t pareado):")
+brutos = []
+pares = list(itertools.combinations(range(k), 2))
+for i, j in pares:
+    d = dados[:, j] - dados[:, i]
+    t, pv = stats.ttest_rel(dados[:, j], dados[:, i])
+    dz = d.mean() / d.std(ddof=1)
+    brutos.append(pv)
+    print(f"  {condicoes[j]} - {condicoes[i]}: diferença = {d.mean():+7.2f} ms | "
+          f"t({n-1}) = {t:+.4f} | p bruto = {pv:.3e} | d de Cohen (dz) = {dz:.3f}")
+ordem = np.argsort(brutos)
+holm = np.empty(len(brutos))
+acum = 0.0
+for pos, idx in enumerate(ordem):
+    acum = max(acum, (len(brutos) - pos) * brutos[idx])
+    holm[idx] = min(1.0, acum)
+print("\npar                                 p bruto    Bonferroni     Holm")
+for m, (i, j) in enumerate(pares):
+    print(f"{condicoes[j]} - {condicoes[i]:&lt;18} {brutos[m]:.3e}  {min(1, 3*brutos[m]):.3e}  {holm[m]:.3e}")
+
+# 6. Alternativa não paramétrica
+Q, pQ = stats.friedmanchisquare(*[dados[:, j] for j in range(k)])
+print(f"\nTeste de Friedman: Q = {Q:.4f}, gl = {k-1}, p-valor = {pQ:.3e}")
+print(f"W de Kendall = {Q/(n*(k-1)):.4f}")
+
+# 7. Normalidade dos resíduos do modelo
+res = dados - m_suj[:, None] - m_cond[None, :] + media_geral
+print(f"\nShapiro-Wilk dos resíduos: W = {stats.shapiro(res.ravel())[0]:.4f}, p-valor = {stats.shapiro(res.ravel())[1]:.4f}")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">12 participantes x 3 condições
+condição            média     DP
+Silêncio           413.42   26.09
+Ruído moderado     428.50   19.82
+Ruído intenso      475.17   22.59
+Média geral = 439.0278
+Média de cada participante: [437.   414.   449.67 440.33 468.   411.67 431.67 448.   448.   415.
+ 464.67 440.33]
+
+SQ total = 42290.97 = SQ participantes (11354.97) + SQ condição (24873.39) + SQ erro (6062.61)
+
+Fonte                 GL        SQ         QM        F      p-valor
+Participantes        11   11354.97    1032.27
+Condição              2   24873.39   12436.69   45.130  1.637e-08
+Erro (suj x cond)    22    6062.61     275.57
+Total                35   42290.97
+
+Se os dados fossem tratados como independentes:
+  F = 23.563, gl = (2; 33), p-valor = 4.398e-07
+  o resíduo seria 17417.58 em 33 gl -&gt; QM = 527.81,
+  contra QM do erro = 275.57 no modelo de medidas repetidas.
+  A variabilidade entre participantes (26.8% do total) iria para o erro.
+
+Mauchly: W = 0.05365, qui-quadrado = 29.2533, gl = 2, p-valor = 4.444e-07
+Epsilon de Greenhouse-Geisser = 0.5138 | Huynh-Feldt = 0.5180 | limite inferior = 0.5000
+
+Valor-p sob cada correção (a estatística F não muda; mudam os graus de liberdade):
+  sem correção         gl = (2.000; 22.000)  p-valor = 1.637e-08
+  Greenhouse-Geisser   gl = (1.028; 11.303)  p-valor = 2.667e-05
+  Huynh-Feldt          gl = (1.036; 11.395)  p-valor = 2.501e-05
+  limite inferior      gl = (1.000; 11.000)  p-valor = 3.296e-05
+
+eta² parcial = 0.8040 | eta² generalizado = 0.5881
+
+Comparações pareadas (teste t pareado):
+  Ruído moderado - Silêncio: diferença =  +15.08 ms | t(11) = +6.9212 | p bruto = 2.516e-05 | d de Cohen (dz) = 1.998
+  Ruído intenso - Silêncio: diferença =  +61.75 ms | t(11) = +6.8387 | p bruto = 2.806e-05 | d de Cohen (dz) = 1.974
+  Ruído intenso - Ruído moderado: diferença =  +46.67 ms | t(11) = +6.5025 | p bruto = 4.412e-05 | d de Cohen (dz) = 1.877
+
+par                                 p bruto    Bonferroni     Holm
+Ruído moderado - Silêncio           2.516e-05  7.549e-05  7.549e-05
+Ruído intenso - Silêncio           2.806e-05  8.418e-05  7.549e-05
+Ruído intenso - Ruído moderado     4.412e-05  1.324e-04  7.549e-05
+
+Teste de Friedman: Q = 24.0000, gl = 2, p-valor = 6.144e-06
+W de Kendall = 1.0000
+
+Shapiro-Wilk dos resíduos: W = 0.9851, p-valor = 0.8982</pre></div><figure class="fig"><img src="../assets/resultados/aovrepetida.png" alt="Diferenças pareadas e efeito da correção de Greenhouse–Geisser" loading="lazy"/><figcaption><strong>Por que a esfericidade importa aqui.</strong> À esquerda, as três diferenças pareadas, participante a participante: a de “moderado − silêncio” é muito mais concentrada que as outras duas, e é exatamente essa desigualdade de variâncias que viola a esfericidade. À direita, a distribuição de F sob a hipótese nula com e sem correção: o valor crítico sobe de 3,44 para 4,78. O F observado, 45,13, está muito além dos dois. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Tabela de ANOVA</caption><thead><tr><th>Fonte</th><th>GL</th><th>SQ</th><th>QM</th><th>F</th><th>p</th></tr></thead><tbody><tr><td>Participantes</td><td>11</td><td>11 354,97</td><td>1 032,27</td><td>—</td><td>—</td></tr><tr><td>Condição</td><td>2</td><td>24 873,39</td><td>12 436,69</td><td>45,130</td><td>1,64 × 10⁻⁸</td></tr><tr><td>Erro (participante × condição)</td><td>22</td><td>6 062,61</td><td>275,57</td><td>—</td><td>—</td></tr><tr><td>Total</td><td>35</td><td>42 290,97</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados complementares</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Médias (ms)</td><td>413,42 / 428,50 / 475,17</td><td>Silêncio / moderado / intenso.</td></tr><tr><td>Mauchly</td><td>W = 0,0536; χ² = 29,25; p = 4,4 × 10⁻⁷</td><td>Esfericidade violada.</td></tr><tr><td>ε de Greenhouse–Geisser</td><td>0,5138</td><td>Próximo do limite inferior (0,5): violação severa.</td></tr><tr><td>ε de Huynh–Feldt</td><td>0,5180</td><td>Praticamente igual.</td></tr><tr><td>p corrigido (GG)</td><td>2,67 × 10⁻⁵</td><td>Conclusão inalterada.</td></tr><tr><td>p corrigido (HF)</td><td>2,50 × 10⁻⁵</td><td>Idem.</td></tr><tr><td>η² parcial</td><td>0,804</td><td>Efeito muito grande.</td></tr><tr><td>η² generalizado</td><td>0,588</td><td>A medida comparável entre delineamentos.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,985; p = 0,898</td><td>Normalidade atendida.</td></tr><tr><td>Comparações (Holm)</td><td>Todas as três com p = 7,5 × 10⁻⁵</td><td>As três condições diferem entre si.</td></tr><tr><td>Diferenças (ms)</td><td>+15,08 / +61,75 / +46,67</td><td>Moderado−silêncio, intenso−silêncio, intenso−moderado.</td></tr><tr><td>Se o pareamento fosse ignorado</td><td>F(2; 33) = 23,563; p = 4,4 × 10⁻⁷</td><td>Mesma conclusão, metade da sensibilidade.</td></tr></tbody></table></div><p><strong>Leitura:</strong> o ruído aumenta o tempo de reação, e as três condições se separam entre si. O salto maior está entre o ruído moderado e o intenso (46,67 ms) — o incômodo não cresce de forma linear com o nível de ruído.</p><p>Dois pontos merecem comentário. O primeiro é que a correção de Greenhouse–Geisser, apesar de severa (os graus de liberdade caem de 2 para 1,03), não altera a conclusão: quando o efeito é grande, a correção é um seguro barato. O segundo é que o teste de <a href="friedman.html">Friedman</a> aplicado a esses dados devolve o valor máximo possível da estatística e W de Kendall igual a 1 — todos os doze participantes ordenaram as três condições exatamente do mesmo modo. É uma concordância perfeita, informativa em si, mas que torna a versão não paramétrica pouco útil aqui: ela já não consegue distinguir graus de evidência.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a <a href="aov1.html">ANOVA de um fator</a> comum</td><td>Ela trata as medidas do mesmo participante como independentes e joga fora o ganho do pareamento.</td></tr><tr><td>Esquecer o termo <code>Error()</code></td><td>Sem ele, <code>aov()</code> ajusta o modelo errado em silêncio.</td></tr><tr><td>Ignorar a esfericidade</td><td>Sem correção, o valor-p fica menor do que deveria.</td></tr><tr><td>Tratar Mauchly como decisivo</td><td>Com n pequeno ele quase nunca rejeita; com n grande rejeita por pouco. Olhe também o ε estimado.</td></tr><tr><td>Aplicar correção com k = 2</td><td>Com duas condições a esfericidade é automática e ε = 1.</td></tr><tr><td>Reportar gl não inteiros como se fossem inteiros</td><td>Os gl corrigidos são fracionários.</td></tr><tr><td>Perder participantes com dados faltantes</td><td><code>aov()</code> descarta o participante inteiro; um modelo misto aproveita o que há.</td></tr><tr><td>Confundir η² parcial com η² generalizado</td><td>O parcial é maior e não é comparável entre delineamentos.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aovmista.html">ANOVA mista</a></td><td>Há também um fator entre participantes (grupos).</td></tr><tr><td>Modelo misto (<code>lme4::lmer</code>)</td><td>Dados faltantes, covariáveis, estruturas de covariância ou mais de um nível de agrupamento.</td></tr><tr><td>Abordagem multivariada (<code>car::Anova</code>)</td><td>n confortavelmente maior que k; não exige esfericidade.</td></tr><tr><td><a href="friedman.html">Teste de Friedman</a></td><td>Resposta ordinal ou assimetria forte.</td></tr><tr><td><a href="tpareado.html">Teste t pareado</a></td><td>Apenas duas condições.</td></tr><tr><td><a href="manova.html">MANOVA</a></td><td>Várias respostas diferentes medidas no mesmo indivíduo.</td></tr><tr><td>Teste de permutação dentro de participantes</td><td>Amostra pequena, com interesse nas médias.</td></tr><tr><td><a href="gee.html">GEE</a></td><td>Interesse no efeito médio populacional, com respostas não normais.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que o delineamento é completo e que cada participante passou por todas as condições.</li><li>Faça o gráfico de perfis: ele revela participantes atípicos e inversões de ordem.</li><li>Ajuste o modelo com o termo de erro correto.</li><li>Verifique a esfericidade e escolha a correção.</li><li>Reporte F, os graus de liberdade corrigidos, o valor-p, ε e o tamanho de efeito.</li><li>Faça as comparações pareadas com ajuste.</li><li>Considere o modelo misto se houver dados faltantes ou covariáveis.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>GREENHOUSE, Samuel W.; GEISSER, Seymour. On methods in the analysis of profile data. <em>Psychometrika</em>, v. 24, n. 2, p. 95-112, 1959.</li><li>HUYNH, Huynh; FELDT, Leonard S. Estimation of the Box correction for degrees of freedom from sample data in randomized block and split-plot designs. <em>Journal of Educational Statistics</em>, v. 1, n. 1, p. 69-82, 1976.</li><li>MAUCHLY, John W. Significance test for sphericity of a normal n-variate distribution. <em>The Annals of Mathematical Statistics</em>, v. 11, n. 2, p. 204-209, 1940.</li><li>BOX, George E. P. Some theorems on quadratic forms applied in the study of analysis of variance problems, II: effects of inequality of variance and of correlation between errors in the two-way classification. <em>The Annals of Mathematical Statistics</em>, v. 25, n. 3, p. 484-498, 1954.</li><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>KUTNER, Michael H. et al. <em>Applied linear statistical models.</em> 5. ed. Boston: McGraw-Hill Irwin, 2005.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>OLEJNIK, Stephen; ALGINA, James. Generalized eta and omega squared statistics: measures of effect size for some common research designs. <em>Psychological Methods</em>, v. 8, n. 4, p. 434-447, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>aov</code> com <code>Error()</code> e <code>pairwise.t.test</code>, pacote <code>stats</code>.)</li><li>LAWRENCE, Michael A. <em>ez: easy analysis and visualization of factorial experiments.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=ez" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=ez</a>. (Função <code>ezANOVA</code>.)</li><li>KASSAMBARA, Alboukadel. <em>rstatix: pipe-friendly framework for basic statistical tests.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rstatix" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rstatix</a>. (Função <code>anova_test</code>.)</li><li>LENTH, Russell V. <em>emmeans: estimated marginal means, aka least-squares means.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=emmeans" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=emmeans</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Participantes independentes entre si, delineamento completo, resíduos aproximadamente normais e esfericidade (ou correção de Greenhouse–Geisser).</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>ez, rstatix, emmeans</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="aovwelch.html"><span>← ANTERIOR</span>ANOVA de Welch</a><a href="aovfatorial.html"><span>PRÓXIMO →</span>ANOVA fatorial</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

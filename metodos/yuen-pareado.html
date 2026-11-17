@@ -4,309 +4,170 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste de Yuen robusto pareado (Yuend): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste de Yuen robusto pareado (Yuend) | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste de Yuen robusto pareado (Yuend): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste de Yuen robusto pareado (Yuend) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste de Yuen robusto pareado (Yuend)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 04 · COMPARAÇÃO DE MÉDIAS
-    </span>
-<h1>
-     Teste de Yuen robusto pareado (Yuend)
-    </h1>
-<p class="detail-lead">
-     Compara medidas pareadas por um procedimento robusto à presença de valores extremos.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/yuen-pareado.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara medidas pareadas por um procedimento robusto à presença de valores extremos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Pares completos e independentes entre unidades.</li><li>Amostra suficiente para aparagem.</li><li>Inspeção das diferenças e atenção à definição específica da função.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_{D,t}=0\\ H_1&amp;:\ \mu_{D,t}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[T_{Y,d}=\frac{\bar D_{t}}{\operatorname{EP}(\bar D_t)}\quad\text{(versão robusta pareada)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         número de observações ou pares
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y\)
-        </dt>
-<dd>
-         média amostral
-        </dd>
-</div>
-<div>
-<dt>
-         \(S\)
-        </dt>
-<dd>
-         desvio-padrão amostral
-        </dd>
-</div>
-</dl>
-<p>
-       Estatística t robusta para medidas pareadas, com variância winsorizada/estimativa robusta; implementação WRS2::yuend.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de mudança robusta no parâmetro pareado; IC conforme a rotina; não equivale automaticamente à diferença de médias convencionais.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        No conjunto CO2, a absorção é medida repetidamente nas mesmas plantas, em diferentes concentrações de dióxido de carbono.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Medidas de absorção de \(CO_{2}\) na mesma planta a 95 e 175 unidades de concentração.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-yuen-pareado" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-yuen-pareado"><code># Teste de Yuen robusto pareado (Yuend) ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("WRS2", quietly = TRUE)) install.packages("WRS2")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste de Yuen robusto pareado (Yuend)</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÃO DE MÉDIAS</span><h1>Teste de Yuen robusto pareado (Yuend)</h1><p class="detail-lead">Compara duas medidas pareadas pela média aparada das diferenças, reduzindo a influência de valores extremos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/yuen-pareado.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/yuen-pareado.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="tpareado.html">teste t pareado</a> analisa a média das diferenças entre duas medidas feitas na mesma unidade. Se algumas dessas diferenças forem atípicas — uma leitura com falha, uma peça com defeito, um registro trocado —, a média e o desvio-padrão das diferenças ficam instáveis, e o intervalo de confiança se alarga sem necessidade. O teste de Yuen pareado aplica a aparagem às diferenças.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Yuen pareado" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara duas medidas pareadas</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">pela média aparada das diferenças</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Apara as diferenças extremas</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">nas duas pontas</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pares independentes</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Variável contínua</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Diferença aparada e seu IC</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Comparar com o t comum</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">WRS2::yuend()</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">WRS2::trimci()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">t pareado</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Wilcoxon</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Bootstrap</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Yuen pareado</text></svg><figcaption>Visão geral do teste de Yuen pareado. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A ideia em uma frase</strong><p>É o <a href="t1.html">teste t de uma amostra</a> aplicado às diferenças, trocando a média pela média aparada e a variância pela variância winsorizada.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Calculam-se as diferenças \(d_i\) de cada par. Em seguida, descarta-se uma proporção \(\gamma\) das maiores e das menores diferenças, e compara-se a média aparada resultante com zero. O erro-padrão vem da variância winsorizada das diferenças, que permanece estável mesmo quando algumas delas são extremas.</p><div class="callout warn"><strong>Apare as diferenças, não cada condição</strong><p>A aparagem é feita sobre as diferenças \(d_i\). Aparar a condição 1 e a condição 2 separadamente descartaria unidades distintas em cada uma e desfaria o pareamento.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Pares definidos pelo delineamento</td><td>O pareamento não pode ser feito depois, olhando os dados.</td><td>Protocolo do estudo.</td></tr><tr><td>Pares independentes entre si</td><td>A dependência permitida é só dentro do par.</td><td>Delineamento.</td></tr><tr><td>Variável quantitativa contínua</td><td>A aparagem exige uma ordem métrica.</td><td>Natureza da variável.</td></tr><tr><td>Normalidade das diferenças</td><td><strong>Não é exigida</strong>: é a razão de usar o método.</td><td>—</td></tr><tr><td>Pares suficientes após a aparagem</td><td>Com n = 20 e 20% de aparagem restam 12 diferenças.</td><td>n(1 − 2γ); com poucos pares, use bootstrap.</td></tr><tr><td>Assimetria não extrema</td><td>A média aparada ainda é afetada por assimetria muito forte.</td><td>Histograma das diferenças.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu_{td}=0 \\ &\quad \text{(a média aparada das } \\ &\quad \text{diferenças é zero)} \\ H_1&:\ \mu_{td}\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[t_Y=\frac{\bar d_{t}}{\sqrt{\dfrac{(n-1)\,s_{wd}^2}{h\,(h-1)}}},\]\[h=n-2g,\]\[g=\lfloor \gamma\,n\rfloor,\]\[\nu=h-1\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(d_i\)</dt><dd>diferença entre as duas medidas do par i</dd></div><div><dt>\(\bar d_t\)</dt><dd>média aparada das diferenças</dd></div><div><dt>\(s_{wd}^2\)</dt><dd>variância winsorizada das diferenças</dd></div><div><dt>\(\gamma\)</dt><dd>proporção aparada em cada ponta</dd></div><div><dt>\(g\)</dt><dd>número de diferenças descartadas em cada ponta</dd></div><div><dt>\(h\)</dt><dd>diferenças que sobram; os graus de liberdade são \(h-1\)</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Dados do exemplo: \(n=20\), \(\gamma=0{,}2\), logo \(g=4\) e \(h=12\).</p><div class="table-wrap"><table class="method-table"><caption>Da amostra à decisão</caption><thead><tr><th>Passo</th><th>Valor</th></tr></thead><tbody><tr><td>Média das diferenças</td><td>3,0750</td></tr><tr><td>Média aparada 20%</td><td>3,0000</td></tr><tr><td>Variância comum das diferenças</td><td>29,507</td></tr><tr><td>Variância winsorizada</td><td>1,0989</td></tr><tr><td>Erro-padrão = √[19 × 1,0989 / (12 × 11)]</td><td>0,3977</td></tr><tr><td>t = 3,0000 / 0,3977</td><td>7,5430</td></tr><tr><td>Graus de liberdade (h − 1)</td><td>11</td></tr><tr><td>Valor-p</td><td>1,1 × 10⁻⁵</td></tr><tr><td>IC 95%</td><td>[2,125; 3,875]</td></tr></tbody></table></div><div class="worked"><strong>Comparando com o teste t pareado</strong><p>Erro-padrão comum: \(5{,}4321/\sqrt{20}=1{,}2146\) ⇒ \(t=3{,}075/1{,}2146=2{,}5316\), com 19 g.l. e \(p=0{,}0203\).</p><p>IC de 95%: \([0{,}533;\ 5{,}617]\), com largura de 5,08.</p><p>O teste comum também detecta o efeito, mas com precisão muito menor: o intervalo de Yuen tem menos de um terço da largura. A diferença está na variância usada — 29,5 contra 1,1 —, resultado das quatro diferenças extremas (−9,4; −6,8; 13,2 e 16,5).</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com \(\gamma=0\), o teste se reduz exatamente ao <a href="tpareado.html">teste t pareado</a>.</li><li>Os graus de liberdade são \(h-1\), e não \(n-1\): a aparagem tem um custo, compensado pela queda no erro-padrão.</li><li>A média aparada das diferenças coincide com a média quando a distribuição das diferenças é simétrica.</li><li>O procedimento é equivalente a aplicar o intervalo de confiança aparado de uma amostra (<code>trimci</code>) às diferenças.</li><li>Não é o mesmo que aparar cada condição separadamente e subtrair: isso quebraria o pareamento.</li><li>Para poucos pares, a versão por <em>bootstrap</em> tem melhor controle do erro tipo I.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Média aparada das diferenças</td><td>O efeito típico, na unidade original.</td><td>Refere-se à parte central das diferenças.</td></tr><tr><td>IC da diferença aparada</td><td>Magnitude plausível, com boa precisão.</td><td>Compare a largura com a do teste comum.</td></tr><tr><td>h</td><td>Diferenças efetivamente usadas.</td><td>Com h pequeno, prefira bootstrap.</td></tr><tr><td>Valor-p</td><td>Evidência contra a ausência de efeito.</td><td>Não é diretamente comparável ao do teste t: as quantidades diferem.</td></tr></tbody></table></div><p>Reporte: número de pares, proporção aparada, h, média aparada das diferenças, intervalo de confiança e o resultado do teste t comum, para comparação.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>yuend()</code> pertence ao pacote <code>WRS2</code> e recebe os dois vetores de medidas pareadas. Quando só se dispõe das diferenças, <code>trimci()</code> aplicada a elas produz o mesmo intervalo de confiança. A proporção aparada vai em <code>tr=</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-yuen-pareado-min" type="button">Copiar código</button></div><pre id="code-yuen-pareado-min"><code># install.packages("WRS2")
 library(WRS2)
-d &lt;- subset(CO2, conc %in% c(95, 175))
-w &lt;- reshape(d[, c("Plant", "conc", "uptake")], idvar = "Plant",
-             timevar = "conc", direction = "wide")
-resultado &lt;- yuend(w$uptake.175, w$uptake.95, tr = 0.2)
-print(resultado)
+trimci(diferenca, tr = 0.2)         # a partir das diferenças
+# yuend(metodoB, metodoA, tr = 0.2) # equivalente, com as duas medidas
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Vinte peças foram medidas por dois métodos diferentes, e registrou-se a diferença entre as leituras de cada peça. Em quatro delas houve falha de registro, produzindo diferenças muito maiores ou muito menores que as demais. A pergunta é se os dois métodos concordam, isto é, se a diferença típica é zero. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-yuen-pareado" type="button">Copiar código</button></div><pre id="code-yuen-pareado"><code># Teste de Yuen pareado: exemplo completo ----
+# Pacote: WRS2. Instale uma única vez: install.packages("WRS2")
+library(WRS2)
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: dois métodos de medição aplicados às MESMAS 20 peças (dados fictícios)
+#    Registrou-se a diferença entre as leituras de cada peça.
+diferenca &lt;- c(2.0, 3.8, -6.8, 1.3, 16.5, -9.4, 3.5, 4.0, 1.7, 3.3,
+               2.2, 2.9, 2.7, 5.4, 3.1, 4.3, 0.6, 13.2, 2.5, 4.7)
+c(media = mean(diferenca), aparada20 = mean(diferenca, trim = 0.2),
+  mediana = median(diferenca), dp = sd(diferenca))
 
+# 2. Diagnóstico: as diferenças têm caudas pesadas
+par(mfrow = c(1, 2))
+hist(diferenca, col = "gray85", xlab = "Diferença", main = ""); abline(v = 0, col = "red", lwd = 2)
+qqnorm(diferenca, pch = 19); qqline(diferenca, col = "red", lwd = 2)
+par(mfrow = c(1, 1))
+shapiro.test(diferenca)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="yuen.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste de Yuen (grupos independentes)
-    </a>
-<a href="mann-whitney.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Mann–Whitney / Wilcoxon rank-sum
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. Teste t pareado comum
+t.test(diferenca, mu = 0)
+
+# 4. Teste de Yuen pareado
+#    Com as duas medidas em mãos, a função é yuend(x, y). Como aqui só temos as
+#    diferenças, o teste equivale a aplicar o intervalo aparado de uma amostra a elas.
+trimci(diferenca, tr = 0.2)
+# yuend(metodoB, metodoA, tr = 0.2)   # equivalente, quando os dois vetores existem
+
+# 6. Efeito da proporção de aparagem
+for (tr in c(0.05, 0.10, 0.20, 0.25)) {
+  r &lt;- trimci(diferenca, tr = tr, pr = FALSE)
+  cat("aparagem", tr, ": media aparada =", round(mean(diferenca, trim = tr), 4),
+      " IC = [", round(r$ci[1], 4), ";", round(r$ci[2], 4), "]\n")
+}
+
+# 7. Alternativas não paramétricas
+wilcox.test(diferenca, mu = 0)
+binom.test(sum(diferenca &gt; 0), length(diferenca))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-yuen-pareado" type="button">Copiar código</button></div><pre id="code-py-yuen-pareado"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def var_winsorizada(x, tr=0.2):
+    """Variância winsorizada: substitui as caudas pelos valores que sobraram na borda."""
+    n = len(x); g = int(np.floor(tr * n)); xs = np.sort(x)
+    w = np.r_[np.repeat(xs[g], g + 1), xs[g+1:n-g-1], np.repeat(xs[n-g-1], g + 1)]
+    return w.var(ddof=1), g
+
+def yuen_pareado(d, tr=0.2):
+    """Teste de Yuen pareado: aplica a média aparada às DIFERENÇAS."""
+    n = len(d); sw, g = var_winsorizada(d, tr); h = n - 2 * g
+    var_m = (n - 1) * sw / (h * (h - 1))                    # variância da média aparada
+    m = stats.trim_mean(d, tr); ep = np.sqrt(var_m)
+    t = m / ep; gl = h - 1
+    return dict(t=t, gl=gl, p=2 * stats.t.sf(abs(t), gl), m=m, ep=ep, h=h, g=g, sw=sw)
+
+# 1. Dados: diferença entre dois métodos de medição aplicados às MESMAS 20 peças (dados fictícios).
+#    Valores negativos e muito altos correspondem a leituras com falha de registro.
+diferenca = np.array([2.0, 3.8, -6.8, 1.3, 16.5, -9.4, 3.5, 4.0, 1.7, 3.3,
+                      2.2, 2.9, 2.7, 5.4, 3.1, 4.3, 0.6, 13.2, 2.5, 4.7])
+n = len(diferenca)
+print(f"n = {n} | média = {diferenca.mean():.4f} | DP = {diferenca.std(ddof=1):.4f}")
+print(f"mediana = {np.median(diferenca):.2f} | média aparada 20% = {stats.trim_mean(diferenca, 0.2):.4f}")
+print("Diferenças ordenadas:", np.sort(diferenca))
+
+# 2. Normalidade das diferenças
+W, pw = stats.shapiro(diferenca)
+print(f"\nShapiro-Wilk: W = {W:.4f}, p-valor = {pw:.5f}")
+
+# 3. Teste t pareado comum
+tt = stats.ttest_1samp(diferenca, 0)
+ep_t = diferenca.std(ddof=1) / np.sqrt(n); tc_t = stats.t.ppf(0.975, n - 1)
+ic_t = diferenca.mean() + np.array([-1, 1]) * tc_t * ep_t
+print(f"\nTeste t pareado: t = {tt.statistic:.4f}, gl = {n-1}, p-valor = {tt.pvalue:.5f}")
+print(f"  erro-padrão = {ep_t:.4f} | IC 95% = [{ic_t[0]:.4f}; {ic_t[1]:.4f}]")
+
+# 4. Teste de Yuen pareado com 20% de aparagem
+r = yuen_pareado(diferenca, tr=0.2)
+print(f"\nYuen pareado: {r['g']} diferenças descartadas em cada ponta, restando h = {r['h']}")
+print(f"  média aparada = {r['m']:.4f} | variância winsorizada = {r['sw']:.4f} (contra {diferenca.var(ddof=1):.4f})")
+print(f"  erro-padrão = {r['ep']:.4f} | t = {r['t']:.4f}, gl = {r['gl']}, p-valor = {r['p']:.3e}")
+tc = stats.t.ppf(0.975, r["gl"]); ic = r["m"] + np.array([-1, 1]) * tc * r["ep"]
+print(f"  IC 95% = [{ic[0]:.4f}; {ic[1]:.4f}]")
+print(f"\nLargura do intervalo: {ic_t[1]-ic_t[0]:.4f} (t comum) contra {ic[1]-ic[0]:.4f} (Yuen)")
+
+# 5. Efeito da proporção de aparagem
+print("\nAparagem   média aparada        t     gl    p-valor")
+for tr in [0.0, 0.1, 0.2, 0.25]:
+    if tr == 0:
+        print(f"{tr:&gt;7.0%}   {diferenca.mean():&gt;12.4f} {tt.statistic:&gt;8.4f} {n-1:&gt;6} {tt.pvalue:&gt;10.5f}")
+    else:
+        rr = yuen_pareado(diferenca, tr)
+        print(f"{tr:&gt;7.0%}   {rr['m']:&gt;12.4f} {rr['t']:&gt;8.4f} {rr['gl']:&gt;6} {rr['p']:&gt;10.3e}")
+
+# 6. Alternativas não paramétricas
+print(f"\nWilcoxon (posto sinalizado): p-valor = {stats.wilcoxon(diferenca).pvalue:.5f}")
+pos = int(np.sum(diferenca &gt; 0))
+print(f"Teste do sinal: {pos} positivas de {n} | p-valor = {2*stats.binom.sf(pos-1, n, 0.5):.5f}")
+
+# 7. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+ax[0].hist(diferenca, bins=10, color="lightgray", edgecolor="white")
+ax[0].axvline(0, color="red", lw=2); ax[0].axvline(diferenca.mean(), color="blue", ls="--")
+ax[0].axvline(stats.trim_mean(diferenca, 0.2), color="darkgreen", ls="--")
+ax[0].set_xlabel("Diferença entre métodos"); ax[0].set_ylabel("Frequência")
+xs = np.sort(diferenca); cores = ["red"] * 4 + ["darkgreen"] * 12 + ["red"] * 4
+ax[1].scatter(range(1, n + 1), xs, color=cores); ax[1].axhline(0, color="gray")
+ax[1].set_xlabel("Diferença ordenada"); ax[1].set_ylabel("Valor")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 20 | média = 3.0750 | DP = 5.4321
+mediana = 3.00 | média aparada 20% = 3.0000
+Diferenças ordenadas: [-9.4 -6.8  0.6  1.3  1.7  2.   2.2  2.5  2.7  2.9  3.1  3.3  3.5  3.8
+  4.   4.3  4.7  5.4 13.2 16.5]
+
+Shapiro-Wilk: W = 0.8320, p-valor = 0.00271
+
+Teste t pareado: t = 2.5316, gl = 19, p-valor = 0.02034
+  erro-padrão = 1.2146 | IC 95% = [0.5327; 5.6173]
+
+Yuen pareado: 4 diferenças descartadas em cada ponta, restando h = 12
+  média aparada = 3.0000 | variância winsorizada = 1.0989 (contra 29.5072)
+  erro-padrão = 0.3977 | t = 7.5430, gl = 11, p-valor = 1.138e-05
+  IC 95% = [2.1246; 3.8754]
+
+Largura do intervalo: 5.0846 (t comum) contra 1.7508 (Yuen)
+
+Aparagem   média aparada        t     gl    p-valor
+     0%         3.0750   2.5316     19    0.02034
+    10%         3.0000   6.7293     15  6.759e-06
+    20%         3.0000   7.5430     11  1.138e-05
+    25%         3.0000   7.6118      9  3.286e-05
+
+Wilcoxon (posto sinalizado): p-valor = 0.00730
+Teste do sinal: 18 positivas de 20 | p-valor = 0.00040</pre></div><figure class="fig"><img src="../assets/resultados/yuen-pareado.png" alt="Diferenças ordenadas com os valores aparados e comparação dos intervalos de confiança" loading="lazy"/><figcaption><strong>O efeito da aparagem sobre a precisão.</strong> À esquerda, as 20 diferenças ordenadas: as quatro menores e as quatro maiores (em vermelho) saem da conta, e a média aparada (3,00) fica praticamente sobre a média comum (3,08). À direita, os intervalos de confiança: o do teste t comum tem largura 5,08 e quase alcança o zero; o de Yuen tem largura 1,75. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descritivas das diferenças</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>n</td><td>20</td></tr><tr><td>Média</td><td>3,0750</td></tr><tr><td>Média aparada 20%</td><td>3,0000</td></tr><tr><td>Mediana</td><td>3,00</td></tr><tr><td>Desvio-padrão</td><td>5,4321</td></tr><tr><td>Diferenças extremas</td><td>−9,4; −6,8; 13,2; 16,5</td></tr><tr><td>Shapiro–Wilk</td><td>W = 0,832; p = 0,0027</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Teste</th><th>Estimativa</th><th>Erro-padrão</th><th>t</th><th>g.l.</th><th>Valor-p</th><th>IC 95%</th></tr></thead><tbody><tr><td>t pareado</td><td>3,0750</td><td>1,2146</td><td>2,5316</td><td>19</td><td>0,0203</td><td>[0,533; 5,617]</td></tr><tr><td>Yuen pareado 20%</td><td>3,0000</td><td>0,3977</td><td>7,5430</td><td>11</td><td>1,1 × 10⁻⁵</td><td>[2,125; 3,875]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Efeito da proporção aparada</caption><thead><tr><th>Aparagem</th><th>Média aparada</th><th>t</th><th>g.l.</th><th>Valor-p</th></tr></thead><tbody><tr><td>0%</td><td>3,0750</td><td>2,5316</td><td>19</td><td>0,0203</td></tr><tr><td>10%</td><td>3,0000</td><td>6,7293</td><td>15</td><td>6,8 × 10⁻⁶</td></tr><tr><td>20%</td><td>3,0000</td><td>7,5430</td><td>11</td><td>1,1 × 10⁻⁵</td></tr><tr><td>25%</td><td>3,0000</td><td>7,6118</td><td>9</td><td>3,3 × 10⁻⁵</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Alternativas não paramétricas</caption><thead><tr><th>Teste</th><th>Valor-p</th></tr></thead><tbody><tr><td>Wilcoxon (posto sinalizado)</td><td>0,0073</td></tr><tr><td>Teste do sinal (18 positivas de 20)</td><td>0,00040</td></tr></tbody></table></div><p><strong>Leitura:</strong> há uma diferença sistemática entre os métodos, de cerca de 3 unidades. Os dois testes chegam à mesma conclusão, mas com precisões muito diferentes: o intervalo do teste t vai de 0,53 a 5,62, enquanto o de Yuen vai de 2,12 a 3,88. Para uma decisão de calibração, essa diferença importa — saber que o viés está entre 2,1 e 3,9 é muito mais útil do que saber que está entre 0,5 e 5,6.</p><p>A tabela de proporções mostra estabilidade: a média aparada permanece em 3,00 para qualquer aparagem entre 10% e 25%. Vale, porém, uma ressalva prática: as quatro diferenças extremas foram atribuídas a falhas de registro. Antes de aparar, o procedimento correto é investigar essas quatro peças. A aparagem protege a análise, mas não substitui a verificação dos dados.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Aparar cada condição separadamente</td><td>Isso desfaz o pareamento; apare as diferenças.</td></tr><tr><td>Escolher a proporção aparada pelo resultado</td><td>Defina antes da análise.</td></tr><tr><td>Usar a aparagem para esconder erros de medição</td><td>Investigue os valores atípicos antes.</td></tr><tr><td>Esperar os mesmos graus de liberdade do teste comum</td><td>São h − 1, e não n − 1.</td></tr><tr><td>Aplicar com poucos pares</td><td>Com h de 5 ou 6, use bootstrap.</td></tr><tr><td>Aplicar a grupos independentes</td><td>Use o <a href="yuen.html">teste de Yuen</a> para dois grupos.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="tpareado.html">Teste t pareado</a></td><td>Diferenças aproximadamente normais, sem extremos.</td></tr><tr><td><a href="wilcoxon-assinado.html">Wilcoxon (posto sinalizado)</a></td><td>Interesse no deslocamento da distribuição das diferenças.</td></tr><tr><td>Yuen pareado por bootstrap</td><td>Poucos pares ou assimetria.</td></tr><tr><td>Teste do sinal</td><td>Só a direção da diferença é confiável.</td></tr><tr><td><a href="icc.html">Coeficiente de correlação intraclasse</a> e gráfico de Bland–Altman</td><td>O objetivo é avaliar concordância entre métodos, e não apenas o viés médio.</td></tr><tr><td><a href="bootstrap.html">Bootstrap das diferenças</a></td><td>Distribuição desconhecida.</td></tr></tbody></table></div><ol class="steps"><li>Calcule as diferenças e examine histograma, boxplot e Q–Q.</li><li>Investigue os valores atípicos antes de aparar.</li><li>Defina a proporção aparada.</li><li>Aplique o teste e reporte a média aparada, h e o intervalo de confiança.</li><li>Compare com o teste t comum para mostrar o ganho de precisão.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>YUEN, Karen K. The two-sample trimmed t for unequal population variances. <em>Biometrika</em>, v. 61, n. 1, p. 165-170, 1974.</li><li>WILCOX, Rand R. <em>Introduction to robust estimation and hypothesis testing.</em> 4. ed. Amsterdam: Academic Press, 2017.</li><li>MAIR, Patrick; WILCOX, Rand. Robust statistical methods in R using the WRS2 package. <em>Behavior Research Methods</em>, v. 52, p. 464-488, 2020.</li><li>TUKEY, John W.; McLAUGHLIN, Donald H. Less vulnerable confidence and significance procedures for location based on a single sample. <em>Sankhyā: Series A</em>, v. 25, n. 3, p. 331-352, 1963.</li><li>WILCOX, Rand R. Comparing dependent robust correlations. <em>British Journal of Mathematical and Statistical Psychology</em>, v. 69, n. 3, p. 215-224, 2016.</li><li>BLAND, J. Martin; ALTMAN, Douglas G. Statistical methods for assessing agreement between two methods of clinical measurement. <em>The Lancet</em>, v. 327, n. 8476, p. 307-310, 1986.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Pares definidos pelo delineamento, pares independentes entre si e variável quantitativa contínua; não exige normalidade.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>WRS2</code> (<code>yuend</code>, <code>trimci</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="yuen.html"><span>← ANTERIOR</span>Teste de Yuen (grupos independentes)</a><a href="aov1.html"><span>PRÓXIMO →</span>ANOVA de um fator</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

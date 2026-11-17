@@ -4,305 +4,249 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste Q de Cochran: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste Q de Cochran | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste Q de Cochran: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste Q de Cochran | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste Q de Cochran
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 07 · DADOS CATEGÓRICOS
-    </span>
-<h1>
-     Teste Q de Cochran
-    </h1>
-<p class="detail-lead">
-     Verifica se proporções de respostas binárias diferem entre três ou mais condições repetidas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/cochran-q.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se proporções de respostas binárias diferem entre três ou mais condições repetidas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Medições binárias completas por unidade.</li><li>independência entre unidades.</li><li>condições comparáveis.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ p_1=\cdots=p_k\\ H_1&amp;:\ \exists\,i\neq j:p_i\neq p_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[Q=\frac{(k-1)\left[k\sum_j C_j^2-T^2\right]}{kT-\sum_i R_i^2}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(O\)
-        </dt>
-<dd>
-         frequência observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(E\)
-        </dt>
-<dd>
-         frequência esperada sob a hipótese nula
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         tamanho da amostra
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : mudança global entre condições; comparações pareadas posteriores precisam ajuste para multiplicidade.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        No conjunto CO2, a absorção é medida repetidamente nas mesmas plantas, em diferentes concentrações de dióxido de carbono.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Indicar absorção de \(CO_{2}\) acima de 20 em sete concentrações, repetidas por planta.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-cochran-q" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-cochran-q"><code># Teste Q de Cochran ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste Q de Cochran</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · DADOS CATEGÓRICOS</span><h1>Teste Q de Cochran</h1><p class="detail-lead">Extensão do teste de McNemar para três ou mais medidas binárias feitas nas mesmas unidades, em delineamento de blocos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/cochran-q.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/cochran-q.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O teste Q de Cochran é a extensão do <a href="mcnemar.html">teste de McNemar</a> para três ou mais medidas binárias feitas nas mesmas unidades. É o análogo do <a href="friedman.html">teste de Friedman</a> para resposta dicotômica, e responde a uma pergunta de delineamento em blocos: <em>as taxas de sucesso dos tratamentos são iguais, depois de descontadas as diferenças entre as unidades?</em></p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste Q de Cochran" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara k proporções</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">nas mesmas unidades</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Delineamento</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Blocos completos</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">resposta binária</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Só blocos mistos</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">carregam informação</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A conta</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Q ~ χ² com k − 1 gl</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">DescTools::CochranQTest()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pós-teste</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">McNemar par a par</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">com ajuste</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste Q de Cochran</text></svg><figcaption>Visão geral do teste Q de Cochran. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A intuição em uma frase</strong><p>Se um analista concluiu a tarefa nas quatro versões da interface, ou em nenhuma, ele nada diz sobre qual versão é melhor. No exemplo desta ficha, 8 dos 18 analistas estão nessa situação, e refazer a conta apenas com os 10 restantes devolve <strong>exatamente o mesmo Q</strong>. A informação está nos blocos de resposta mista.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Os dados formam uma matriz de zeros e uns com \(n\) blocos nas linhas e \(k\) tratamentos nas colunas. A hipótese nula é que a probabilidade de sucesso é a mesma nos \(k\) tratamentos, permitindo que cada bloco tenha o seu próprio nível. A estatística compara as somas das colunas entre si, usando as somas das linhas para calibrar o quanto de variação é atribuível aos blocos.</p><figure class="fig"><img src="../assets/resultados/cochran-q-didatica.png" alt="A matriz de zeros e uns com os blocos mistos destacados e o efeito deles sobre a estatística" loading="lazy"/><figcaption><strong>Por que só os blocos mistos contam.</strong> À esquerda, a matriz 18 × 4 do exemplo: cada linha é um analista, cada coluna uma versão da interface, as células escuras são sucessos. As oito linhas esmaecidas são uniformes — tudo sucesso ou tudo falha — e não entram na estatística. À direita, a distribuição de Q sob a hipótese nula obtida por permutação dentro de cada bloco, comparada à densidade qui-quadrado com 3 graus de liberdade; o valor observado, 15,375, aparece na cauda. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta binária</td><td>O teste é construído para zeros e uns.</td><td>Natureza da variável; para resposta ordinal ou contínua, <a href="friedman.html">Friedman</a>.</td></tr><tr><td>Blocos completos</td><td>Cada bloco recebe todos os k tratamentos.</td><td>Tabela de contagens; dados faltantes exigem outro modelo.</td></tr><tr><td>Blocos independentes entre si</td><td>A dependência permitida é só dentro do bloco.</td><td>Delineamento.</td></tr><tr><td>Ordem de aplicação casualizada</td><td>Evita confundir tratamento com ordem.</td><td>Protocolo; se a ordem importa, inclua-a no modelo.</td></tr><tr><td>Número suficiente de blocos mistos</td><td>A aproximação qui-quadrado é assintótica.</td><td>Conte-os; com poucos, use permutação.</td></tr><tr><td>Ausência de interação bloco × tratamento</td><td>Q testa um efeito médio de tratamento.</td><td>Gráfico de perfis; se os perfis se cruzarem muito, interprete com cautela.</td></tr></tbody></table></div><div class="callout "><strong>Quantos blocos mistos são suficientes?</strong><p>Não há regra consagrada. Uma referência prática razoável é exigir que o número de blocos mistos seja ao menos cinco vezes o número de tratamentos, e que nenhuma coluna tenha 0% ou 100% de sucesso. No exemplo desta ficha há 10 blocos mistos para 4 tratamentos, o que é pouco — e por isso o valor-p por permutação (0,00096) e o da aproximação (0,00152) diferem por um fator de 1,6, ainda que ambos levem à mesma conclusão.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \pi_1=\pi_2=\dots=\pi_k \\ &\quad \text{(as }k\text{ taxas de sucesso são } \\ &\quad \text{iguais)} \\ H_1&:\ \pi_j\neq\pi_{j^{\prime}}\ \\ &\quad \text{para ao menos um par}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[Q=\frac{(k-1)\left(k\sum_{j=1}^{k}G_j^{2}-N^{2}\right)}{k\,N-\sum_{i=1}^{n}L_i^{2}}\ \dot\sim\ \chi^{2}_{k-1}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de tratamentos</dd></div><div><dt>\(n\)</dt><dd>número de blocos</dd></div><div><dt>\(G_j\)</dt><dd>total de sucessos no tratamento \(j\) (soma da coluna)</dd></div><div><dt>\(L_i\)</dt><dd>total de sucessos no bloco \(i\) (soma da linha)</dd></div><div><dt>\(N=\sum_j G_j=\sum_i L_i\)</dt><dd>número total de sucessos</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>18 analistas × 4 versões de uma interface (dados fictícios)</caption><thead><tr><th>Versão</th><th>Sucessos (Gⱼ)</th><th>Taxa</th></tr></thead><tbody><tr><td>Versão A</td><td>9</td><td>50,0%</td></tr><tr><td>Versão B</td><td>14</td><td>77,8%</td></tr><tr><td>Versão C</td><td>17</td><td>94,4%</td></tr><tr><td>Versão D</td><td>10</td><td>55,6%</td></tr><tr><td><strong>Total</strong></td><td><strong>N = 50</strong></td><td>—</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>Os totais por analista são \(L_i\): 3, 4, 2, 4, 1, 4, 2, 4, 1, 4, 3, 4, 1, 3, 3, 4, 0, 3. Daí \(\sum L_i^2 = 168\) e \(\sum G_j^2 = 9^2+14^2+17^2+10^2 = 666\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{(4-1)\left(4\times666-50^{2}\right)}{4\times50-168} \\ &= \frac{3\,(2\,664-2\,500)}{200-168} \\ &= \frac{3\times164}{32} = \frac{492}{32} \\ &= 15{,}375.\end{aligned}\]</div><p>Com \(k-1=3\) graus de liberdade, \(p=1{,}523\times10^{-3}\): as quatro versões não têm a mesma taxa de conclusão.</p><p>Dos 18 analistas, 8 têm resposta uniforme (um teve 0 sucessos e sete tiveram 4). Refazendo toda a conta com os 10 restantes, Q = 15,375 — o mesmo número, até a quarta decimal.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com \(k=2\), \(Q\) é exatamente o <a href="mcnemar.html">McNemar</a> sem correção de continuidade: no exemplo, \[\begin{aligned}Q &= (b-c)^2/(b+c) \\ &= (0-5)^2/5 = 5{,}000\end{aligned}\] para as versões A e B.</li><li>Com resposta binária, a estatística de <a href="friedman.html">Friedman</a> calculada sobre os postos dentro de cada bloco <strong>reduz-se algebricamente a Q</strong>. No exemplo os dois devolvem 15,3750 e o mesmo valor-p; não é coincidência, é identidade.</li><li>Blocos uniformes não alteram a estatística: eles contribuem com o mesmo valor ao numerador e ao denominador.</li><li>É invariante a permutações das linhas e distingue os tratamentos apenas pelos totais das colunas, dados os totais das linhas.</li><li>É assintoticamente qui-quadrado; com poucos blocos mistos, a permutação dentro de bloco dá o valor-p exato.</li><li>Pode ser obtido como teste de escore em uma <a href="logistica.html">regressão logística condicional</a> com um estrato por bloco.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Cochran Q</td><td>A estatística, com k − 1 graus de liberdade.</td><td>Assintótica.</td></tr><tr><td>p-value</td><td>Evidência de que ao menos uma taxa difere.</td><td>Não diz qual.</td></tr><tr><td>Taxas por coluna</td><td>O tamanho das diferenças.</td><td>Reporte-as sempre.</td></tr><tr><td>Blocos mistos</td><td>Tamanho efetivo da amostra.</td><td>É ele que determina o poder.</td></tr><tr><td>Pós-teste</td><td>Quais pares diferem.</td><td>Exige ajuste para multiplicidade.</td></tr><tr><td>W de Kendall</td><td>Concordância entre os blocos.</td><td>Pergunta diferente da do teste.</td></tr></tbody></table></div><div class="callout try"><strong>Depois de um Q significativo</strong><p>O teste global diz que as taxas não são todas iguais; não diz quais diferem. O procedimento usual é aplicar McNemar a cada par, com ajuste de Bonferroni ou Holm. No exemplo, dos seis pares apenas o par <strong>versão C − versão A</strong> sobrevive ao ajuste (p ajustado = 0,047), e <strong>versão D − versão C</strong> fica na fronteira (Holm = 0,078). O motivo é o número pequeno de discordâncias em cada par: o teste exato de McNemar com b + c = 8 não consegue produzir valor-p menor que 2⁻⁷ = 0,0078, de modo que a multiplicidade esgota rapidamente o orçamento de erro.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>DescTools::CochranQTest()</code>, que aceita a matriz de zeros e uns diretamente ou uma fórmula no formato longo. O pacote <code>rcompanion</code> oferece <code>pairwiseMcnemar()</code> para o pós-teste. O W de Kendall sai de <code>DescTools::KendallW()</code>. Como a identidade com Friedman é exata para dados binários, <code>friedman.test()</code> devolve o mesmo resultado e serve como verificação.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-cochran-q-min" type="button">Copiar código</button></div><pre id="code-cochran-q-min"><code>library(DescTools)
+CochranQTest(dados)        # dados: matriz n x k de 0 e 1
+friedman.test(dados)       # devolve o mesmo Q, por identidade
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 18 analistas executaram a mesma tarefa em quatro versões de uma interface, registrando-se apenas se concluíram ou não dentro do tempo estipulado. Cada analista passou pelas quatro versões, em ordem casualizada — é um delineamento em blocos completos com resposta binária.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-cochran-q" type="button">Copiar código</button></div><pre id="code-cochran-q"><code># Teste Q de Cochran: exemplo completo ----
+# Pacotes: DescTools (teste e comparações), rcompanion (alternativa)
+# install.packages(c("DescTools", "rcompanion"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("DescTools", quietly = TRUE)) install.packages("DescTools")
+# Dados fictícios: 18 analistas executaram a MESMA tarefa em quatro versões de
+# uma interface, e registrou-se se concluíram (1) ou não (0) dentro do tempo.
+dados &lt;- matrix(c(
+  1,1,1,0, 1,1,1,1, 0,1,1,0, 1,1,1,1, 0,0,1,0, 1,1,1,1,
+  0,1,1,0, 1,1,1,1, 0,0,1,0, 1,1,1,1, 0,1,1,1, 1,1,1,1,
+  0,0,1,0, 1,1,1,0, 0,1,1,1, 1,1,1,1, 0,0,0,0, 0,1,1,1),
+  ncol = 4, byrow = TRUE,
+  dimnames = list(paste0("analista", 1:18),
+                  c("versão A", "versão B", "versão C", "versão D")))
+dados
+colSums(dados)                  # sucessos por versão
+colMeans(dados)                 # taxas
+rowSums(dados)                  # sucessos por analista
+table(rowSums(dados))           # quantos blocos são "mistos"
+
+# O teste
 library(DescTools)
-w &lt;- reshape(CO2[, c("Plant", "conc", "uptake")],
-             idvar = "Plant", timevar = "conc", direction = "wide")
-X &lt;- 1L * (as.matrix(w[, -1]) &gt; 20)
-print(CochranQTest(X))
+CochranQTest(dados)
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# A conta, à mão
+k  &lt;- ncol(dados); Gj &lt;- colSums(dados); Li &lt;- rowSums(dados); N &lt;- sum(dados)
+Q  &lt;- (k - 1) * (k * sum(Gj^2) - N^2) / (k * N - sum(Li^2))
+Q
+pchisq(Q, df = k - 1, lower.tail = FALSE)
 
+# Blocos uniformes não contribuem: refaça só com os mistos
+mistos &lt;- dados[rowSums(dados) &gt; 0 &amp; rowSums(dados) &lt; k, ]
+Gm &lt;- colSums(mistos); Lm &lt;- rowSums(mistos); Nm &lt;- sum(mistos)
+(k - 1) * (k * sum(Gm^2) - Nm^2) / (k * Nm - sum(Lm^2))   # idêntico
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="mcnemar.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste de McNemar
-    </a>
-<a href="loglinear.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Análise log-linear
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Verificação: com duas colunas, Q é o McNemar sem correção
+duas &lt;- dados[, c("versão A", "versão B")]
+CochranQTest(duas)
+mcnemar.test(table(duas[,1], duas[,2]), correct = FALSE)
+
+# Comparações pareadas pós-teste (McNemar exato + ajuste)
+pares &lt;- combn(colnames(dados), 2)
+pv &lt;- apply(pares, 2, function(p) {
+  b &lt;- sum(dados[, p[1]] == 1 &amp; dados[, p[2]] == 0)
+  c_ &lt;- sum(dados[, p[1]] == 0 &amp; dados[, p[2]] == 1)
+  binom.test(b, b + c_, p = 0.5)$p.value
+})
+data.frame(par = apply(pares, 2, paste, collapse = " - "),
+           bruto = round(pv, 5),
+           bonferroni = round(p.adjust(pv, "bonferroni"), 5),
+           holm = round(p.adjust(pv, "holm"), 5))
+
+# Concordância entre os analistas (W de Kendall)
+DescTools::KendallW(dados, correct = TRUE, test = TRUE)
+
+# O mesmo teste pela via do Friedman: com resposta binária, coincide
+friedman.test(dados)
+
+# Formato longo, se precisar
+longo &lt;- data.frame(
+  analista = factor(rep(rownames(dados), times = 4)),
+  versao   = factor(rep(colnames(dados), each = 18)),
+  sucesso  = as.vector(dados))
+library(rcompanion)
+# pairwiseMcnemar(sucesso ~ versao | analista, data = longo, method = "holm")
+
+# Gráficos
+par(mfrow = c(1, 2))
+barplot(colMeans(dados) * 100, col = "steelblue", ylim = c(0, 100),
+        ylab = "Taxa de conclusão (%)", main = "Por versão")
+matplot(t(dados), type = "l", lty = 1, col = rgb(0, 0, 0, 0.3),
+        xaxt = "n", ylab = "Sucesso", main = "Perfis dos analistas")
+axis(1, at = 1:4, labels = colnames(dados))
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-cochran-q" type="button">Copiar código</button></div><pre id="code-py-cochran-q"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados fictícios: 18 analistas executaram a MESMA tarefa em quatro versões de
+# uma interface, e registrou-se se concluíram (1) ou não (0) dentro do tempo.
+# Cada analista passou pelas quatro versões: é um delineamento em blocos com
+# resposta binária.
+dados = np.array([
+ [1,1,1,0],[1,1,1,1],[0,1,1,0],[1,1,1,1],[0,0,1,0],[1,1,1,1],
+ [0,1,1,0],[1,1,1,1],[0,0,1,0],[1,1,1,1],[0,1,1,1],[1,1,1,1],
+ [0,0,1,0],[1,1,1,0],[0,1,1,1],[1,1,1,1],[0,0,0,0],[0,1,1,1]])
+versoes = ["versão A", "versão B", "versão C", "versão D"]
+n, k = dados.shape
+print(f"{n} analistas x {k} versões da interface")
+print("versão      sucessos   taxa")
+for j, v in enumerate(versoes):
+    print(f"{v:&lt;12}{int(dados[:,j].sum()):8d}   {100*dados[:,j].mean():5.1f}%")
+Li = dados.sum(axis=1)
+print(f"\nSucessos por analista: {Li}")
+print(f"Analistas com 0 ou {k} sucessos (não contribuem): "
+      f"{int(np.sum((Li==0)|(Li==k)))} de {n}")
+
+# 1. A estatística Q de Cochran
+Gj = dados.sum(axis=0)                       # sucessos por tratamento
+N = dados.sum()
+Q = (k - 1) * (k * np.sum(Gj**2) - N**2) / (k * N - np.sum(Li**2))
+p = stats.chi2.sf(Q, k - 1)
+print(f"\nG_j (sucessos por versão) = {Gj}   soma = {N}")
+print(f"soma de G_j² = {int(np.sum(Gj**2))} | soma de L_i² = {int(np.sum(Li**2))}")
+print(f"\nQ = {k-1} x ({k} x {int(np.sum(Gj**2))} - {int(N)}²) / ({k} x {int(N)} - {int(np.sum(Li**2))})")
+print(f"Q = {Q:.4f} | gl = {k-1} | p-valor = {p:.3e}")
+
+# 2. Só os blocos com resposta mista contribuem
+mistos = dados[(Li &gt; 0) &amp; (Li &lt; k)]
+Gm = mistos.sum(axis=0); Lm = mistos.sum(axis=1); Nm = mistos.sum(); nm = len(mistos)
+Qm = (k-1)*(k*np.sum(Gm**2) - Nm**2)/(k*Nm - np.sum(Lm**2))
+print(f"\nRefazendo a conta apenas com os {nm} analistas de resposta mista:")
+print(f"Q = {Qm:.4f}, idêntico. Blocos todos-sucesso ou todos-falha não informam.")
+
+# 3. Com k = 2, Q é o McNemar sem correção
+print("\nVerificação: com apenas duas versões (A e B), Q deve ser o McNemar sem correção.")
+d2 = dados[:, :2]
+L2 = d2.sum(axis=1); G2 = d2.sum(axis=0); N2 = d2.sum()
+Q2 = 1 * (2*np.sum(G2**2) - N2**2)/(2*N2 - np.sum(L2**2))
+b = int(np.sum((d2[:,0]==1) &amp; (d2[:,1]==0))); c = int(np.sum((d2[:,0]==0) &amp; (d2[:,1]==1)))
+print(f"  Q = {Q2:.4f} | McNemar sem correção = (b-c)²/(b+c) = ({b}-{c})²/{b+c} "
+      f"= {(b-c)**2/(b+c):.4f}")
+
+# 4. Comparações múltiplas: McNemar par a par com ajuste
+print(f"\nComparações pareadas (McNemar exato, ajuste de Bonferroni para {k*(k-1)//2} testes)")
+pares = list(itertools.combinations(range(k), 2))
+brutos = []
+for i, j in pares:
+    bi = int(np.sum((dados[:,i]==1) &amp; (dados[:,j]==0)))
+    ci = int(np.sum((dados[:,i]==0) &amp; (dados[:,j]==1)))
+    pv = 1.0 if bi+ci == 0 else min(1.0, 2*stats.binom.cdf(min(bi,ci), bi+ci, 0.5))
+    brutos.append((f"{versoes[j]} - {versoes[i]}", bi, ci, pv))
+m = len(pares)
+ordem = sorted(range(m), key=lambda t: brutos[t][3])
+holm = np.empty(m); ac = 0.0
+for pos, idx in enumerate(ordem):
+    ac = max(ac, (m - pos)*brutos[idx][3]); holm[idx] = min(1.0, ac)
+print(f"{'par':&lt;26}{'b':&gt;4}{'c':&gt;4}{'p bruto':&gt;11}{'Bonferroni':&gt;12}{'Holm':&gt;10}")
+for idx in ordem:
+    nm_, bi, ci, pv = brutos[idx]
+    print(f"{nm_:&lt;26}{bi:4d}{ci:4d}{pv:11.5f}{min(1,m*pv):12.5f}"
+          f"{'*' if min(1,m*pv)&lt;0.05 else ' '}{holm[idx]:9.5f}{'*' if holm[idx]&lt;0.05 else ' '}")
+
+# 5. Tamanho de efeito
+print(f"\nW de Kendall (concordância entre analistas) = {Q/(n*(k-1)):.4f}")
+print(f"Amplitude das taxas de sucesso = {100*(Gj.max()-Gj.min())/n:.1f} pontos percentuais")
+
+# 6. Versão exata por permutação, para amostras pequenas
+print("\nValor-p exato por permutação (os rótulos das versões são embaralhados")
+print("DENTRO de cada analista, que é o que a hipótese nula autoriza):")
+rng = np.random.default_rng(2026)
+B = 100000
+cont = 0
+for _ in range(B):
+    perm = np.array([linha[rng.permutation(k)] for linha in dados])
+    Gp = perm.sum(axis=0); Lp = perm.sum(axis=1); Np = perm.sum()
+    den = k*Np - np.sum(Lp**2)
+    if den == 0: continue
+    Qp = (k-1)*(k*np.sum(Gp**2) - Np**2)/den
+    if Qp &gt;= Q - 1e-9: cont += 1
+print(f"  p por permutação ({B} reamostragens) = {(1+cont)/(B+1):.6f}")
+print(f"  p pela aproximação qui-quadrado      = {p:.6f}")
+
+# 7. O Q de Cochran é o teste de Friedman aplicado a dados binários
+Qf, pf = stats.friedmanchisquare(*[dados[:, j] for j in range(k)])
+print(f"\nTeste de Friedman sobre os mesmos dados: Q = {Qf:.4f}, p = {pf:.3e}")
+print("Os dois coincidem EXATAMENTE, e isso não é coincidência: com resposta")
+print("binária, a estatística de Friedman calculada sobre os postos dentro de cada")
+print("bloco reduz-se algebricamente ao Q de Cochran. O Q é a forma direta de")
+print("escrever o mesmo teste, dispensando o cálculo dos postos.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">18 analistas x 4 versões da interface
+versão      sucessos   taxa
+versão A           9    50.0%
+versão B          14    77.8%
+versão C          17    94.4%
+versão D          10    55.6%
+
+Sucessos por analista: [3 4 2 4 1 4 2 4 1 4 3 4 1 3 3 4 0 3]
+Analistas com 0 ou 4 sucessos (não contribuem): 8 de 18
+
+G_j (sucessos por versão) = [ 9 14 17 10]   soma = 50
+soma de G_j² = 666 | soma de L_i² = 168
+
+Q = 3 x (4 x 666 - 50²) / (4 x 50 - 168)
+Q = 15.3750 | gl = 3 | p-valor = 1.523e-03
+
+Refazendo a conta apenas com os 10 analistas de resposta mista:
+Q = 15.3750, idêntico. Blocos todos-sucesso ou todos-falha não informam.
+
+Verificação: com apenas duas versões (A e B), Q deve ser o McNemar sem correção.
+  Q = 5.0000 | McNemar sem correção = (b-c)²/(b+c) = (0-5)²/5 = 5.0000
+
+Comparações pareadas (McNemar exato, ajuste de Bonferroni para 6 testes)
+par                          b   c    p bruto  Bonferroni      Holm
+versão C - versão A          0   8    0.00781     0.04688*  0.04688*
+versão D - versão C          7   0    0.01562     0.09375   0.07812 
+versão B - versão A          0   5    0.06250     0.37500   0.25000 
+versão D - versão B          4   0    0.12500     0.75000   0.37500 
+versão C - versão B          0   3    0.25000     1.00000   0.50000 
+versão D - versão A          2   3    1.00000     1.00000   1.00000 
+
+W de Kendall (concordância entre analistas) = 0.2847
+Amplitude das taxas de sucesso = 44.4 pontos percentuais
+
+Valor-p exato por permutação (os rótulos das versões são embaralhados
+DENTRO de cada analista, que é o que a hipótese nula autoriza):
+  p por permutação (100000 reamostragens) = 0.000960
+  p pela aproximação qui-quadrado      = 0.001523
+
+Teste de Friedman sobre os mesmos dados: Q = 15.3750, p = 1.523e-03
+Os dois coincidem EXATAMENTE, e isso não é coincidência: com resposta
+binária, a estatística de Friedman calculada sobre os postos dentro de cada
+bloco reduz-se algebricamente ao Q de Cochran. O Q é a forma direta de
+escrever o mesmo teste, dispensando o cálculo dos postos.</pre></div><figure class="fig"><img src="../assets/resultados/cochran-q.png" alt="Taxas de conclusão por versão, perfis individuais e as comparações pareadas" loading="lazy"/><figcaption><strong>O exemplo em três vistas.</strong> À esquerda, as taxas de conclusão das quatro versões, de 50,0% a 94,4%. No centro, os perfis dos 18 analistas: as linhas sobrepostas mostram que a versão C é a que quase todos conseguem, e que a ordem das demais varia de analista para analista. À direita, os seis valores-p das comparações pareadas, brutos e após o ajuste de Holm, com a linha de 5%. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultado do teste</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Taxas observadas</td><td>A 50,0% · B 77,8% · C 94,4% · D 55,6%</td><td>Amplitude de 44,4 pontos.</td></tr><tr><td>Σ Gⱼ² / Σ Lᵢ²</td><td>666 / 168</td><td>—</td></tr><tr><td><strong>Q de Cochran</strong></td><td><strong>15,3750; gl = 3; p = 1,523 × 10⁻³</strong></td><td>As taxas não são todas iguais.</td></tr><tr><td>Blocos mistos</td><td>10 de 18</td><td>O tamanho efetivo da amostra.</td></tr><tr><td>Q só com os mistos</td><td>15,3750</td><td>Idêntico, como previsto.</td></tr><tr><td>Valor-p por permutação</td><td>0,000960 (100 000 reamostragens)</td><td>Mais fiel que a aproximação aqui.</td></tr><tr><td>Friedman sobre os mesmos dados</td><td>Q = 15,3750; p = 1,523 × 10⁻³</td><td>Coincide por identidade algébrica.</td></tr><tr><td>Verificação com k = 2 (A e B)</td><td>Q = 5,000 = McNemar sem correção</td><td>—</td></tr><tr><td>W de Kendall</td><td>0,2847</td><td>Concordância fraca entre os analistas.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparações pareadas (McNemar exato)</caption><thead><tr><th>Par</th><th>b</th><th>c</th><th>p bruto</th><th>Bonferroni</th><th>Holm</th></tr></thead><tbody><tr><td>C − A</td><td>0</td><td>8</td><td>0,00781</td><td><strong>0,04688</strong></td><td><strong>0,04688</strong></td></tr><tr><td>D − C</td><td>7</td><td>0</td><td>0,01562</td><td>0,09375</td><td>0,07812</td></tr><tr><td>B − A</td><td>0</td><td>5</td><td>0,06250</td><td>0,37500</td><td>0,25000</td></tr><tr><td>D − B</td><td>4</td><td>0</td><td>0,12500</td><td>0,75000</td><td>0,37500</td></tr><tr><td>C − B</td><td>0</td><td>3</td><td>0,25000</td><td>1,00000</td><td>0,50000</td></tr><tr><td>D − A</td><td>2</td><td>3</td><td>1,00000</td><td>1,00000</td><td>1,00000</td></tr></tbody></table></div><p><strong>Leitura:</strong> as quatro versões da interface não produzem a mesma taxa de conclusão (Q = 15,375; gl = 3; p = 0,0015). A versão C é claramente a melhor: 17 dos 18 analistas concluíram a tarefa nela, contra 9 na versão A. No pós-teste, apenas o contraste entre C e A sobrevive ao ajuste para seis comparações, e o contraste entre C e D fica à beira do corte.</p><p>Dois pontos técnicos merecem registro. Primeiro, a permutação dentro de bloco devolve p = 0,00096, cerca de 1,6 vez menor que a aproximação qui-quadrado: com apenas 10 blocos mistos, a aproximação é conservadora, e vale reportar o valor por permutação. Segundo, o teste de Friedman aplicado aos mesmos dados devolve o mesmo Q até a quarta decimal. Isso é uma identidade algébrica para resposta binária, não um acaso numérico: os postos dentro de um bloco com apenas dois valores possíveis são uma função dos próprios zeros e uns, e a álgebra de Friedman colapsa na de Cochran.</p><p>O W de Kendall de 0,285 diz algo diferente e complementar: os analistas não ordenam as versões de maneira muito parecida. Há um efeito médio claro de tratamento e, ao mesmo tempo, bastante variação individual — o que se vê nos perfis cruzados do gráfico central.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Aplicar a grupos independentes</td><td>Para grupos independentes, use o <a href="qui-independencia.html">qui-quadrado de independência</a>.</td></tr><tr><td>Descartar os blocos uniformes dos dados</td><td>Não é preciso: eles não alteram a estatística. Mas conte-os para avaliar o poder.</td></tr><tr><td>Reportar n em vez do número de blocos mistos</td><td>O poder depende destes últimos.</td></tr><tr><td>Parar no teste global</td><td>Um Q significativo não diz qual par difere.</td></tr><tr><td>Fazer o pós-teste sem ajuste</td><td>Com k = 4 são seis comparações.</td></tr><tr><td>Usar a aproximação com poucos blocos mistos</td><td>Prefira permutação dentro de bloco.</td></tr><tr><td>Interpretar Q como medida de concordância</td><td>Para concordância, use o W de Kendall ou o kappa.</td></tr><tr><td>Usar com resposta ordinal ou contínua</td><td>Nesse caso, <a href="friedman.html">Friedman</a> ou <a href="aovrepetida.html">ANOVA de medidas repetidas</a>.</td></tr><tr><td>Ignorar blocos incompletos</td><td>Com dados faltantes, use modelo misto ou <a href="gee.html">GEE</a>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="mcnemar.html">Teste de McNemar</a></td><td>Apenas duas medidas: é o caso k = 2 do Q.</td></tr><tr><td>Permutação dentro de bloco</td><td>Poucos blocos mistos; dá o valor-p exato.</td></tr><tr><td><a href="friedman.html">Teste de Friedman</a></td><td>Resposta ordinal ou contínua em blocos; com resposta binária, é o próprio Q.</td></tr><tr><td><a href="aovrepetida.html">ANOVA de medidas repetidas</a></td><td>Resposta aproximadamente normal em medidas repetidas.</td></tr><tr><td>Modelo linear generalizado misto</td><td>Blocos incompletos, covariáveis, ou mais de um fator.</td></tr><tr><td><a href="gee.html">GEE</a></td><td>Interesse na média populacional, com estrutura de correlação de trabalho.</td></tr><tr><td><a href="logistica.html">Regressão logística condicional</a></td><td>Um estrato por bloco; permite covariáveis.</td></tr><tr><td>W de Kendall ou kappa de Fleiss</td><td>Quando a pergunta é sobre concordância entre as unidades.</td></tr></tbody></table></div><ol class="steps"><li>Confirme blocos completos e resposta binária.</li><li>Monte a matriz n × k de zeros e uns.</li><li>Conte os blocos mistos: eles são o tamanho efetivo da amostra.</li><li>Calcule Q e o valor-p; com poucos blocos mistos, acrescente a permutação.</li><li>Se Q for significativo, aplique McNemar par a par com ajuste de Holm.</li><li>Reporte as taxas por tratamento, Q, graus de liberdade, valor-p e o pós-teste.</li><li>Se a concordância entre blocos interessar, calcule o W de Kendall.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>COCHRAN, William G. The comparison of percentages in matched samples. <em>Biometrika</em>, v. 37, n. 3-4, p. 256-266, 1950.</li><li>TATE, Merle W.; BROWN, Sara M. Note on the Cochran Q test. <em>Journal of the American Statistical Association</em>, v. 65, n. 329, p. 155-160, 1970.</li><li>PATIL, Kashinath D. Cochran’s Q test: exact distribution. <em>Journal of the American Statistical Association</em>, v. 70, n. 349, p. 186-189, 1975.</li><li>KENDALL, Maurice G.; BABINGTON SMITH, B. The problem of m rankings. <em>The Annals of Mathematical Statistics</em>, v. 10, n. 3, p. 275-287, 1939.</li><li>SHESKIN, David J. <em>Handbook of parametric and nonparametric statistical procedures.</em> 5. ed. Boca Raton: CRC Press, 2011.</li><li>HOLLANDER, Myles; WOLFE, Douglas A.; CHICKEN, Eric. <em>Nonparametric statistical methods.</em> 3. ed. Hoboken: Wiley, 2014.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>friedman.test</code>, pacote <code>stats</code>.)</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>. (Funções <code>CochranQTest</code> e <code>KendallW</code>.)</li><li>MANGIAFICO, Salvatore S. <em>rcompanion: functions to support extension education program evaluation.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rcompanion" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rcompanion</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Blocos completos, resposta binária, blocos independentes entre si e número suficiente de blocos com resposta mista.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>DescTools, rcompanion</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="mcnemar.html"><span>← ANTERIOR</span>Teste de McNemar</a><a href="loglinear.html"><span>PRÓXIMO →</span>Análise log-linear</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

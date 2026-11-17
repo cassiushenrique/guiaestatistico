@@ -4,309 +4,282 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Qui-quadrado de independência: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Qui-quadrado de independência | Estatística e Ciência de Dados
-  </title>
+<meta content="Qui-quadrado de independência: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Qui-quadrado de independência | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Qui-quadrado de independência
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 07 · DADOS CATEGÓRICOS
-    </span>
-<h1>
-     Qui-quadrado de independência
-    </h1>
-<p class="detail-lead">
-     Investiga se duas características categóricas estão associadas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/qui-independencia.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Investiga se duas características categóricas estão associadas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes.</li><li>Categorias exclusivas.</li><li>Esperados adequados, preferivelmente todos para aproximação usual.</li><li>Verifique a origem amostral.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ P(A=i,B=j)=P(A=i)P(B=j)\\ H_1&amp;:\ \text{as variáveis não são independentes}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[X^2=\sum_{i=1}^r\sum_{j=1}^c\frac{(O_{ij}-E_{ij})^2}{E_{ij}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(O_{ij}\)
-        </dt>
-<dd>
-         frequência observada na célula i,j
-        </dd>
-</div>
-<div>
-<dt>
-         \(E_{ij}\)
-        </dt>
-<dd>
-         frequência esperada sob independência: total da linha × total da coluna / total geral
-        </dd>
-</div>
-<div>
-<dt>
-         \(r,c\)
-        </dt>
-<dd>
-         números de linhas e colunas da tabela
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere associação, não causalidade. Examine resíduos padronizados e tamanho de efeito (V de Cramér).
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Associação entre número de cilindros e tipo de transmissão em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-qui-independencia" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-qui-independencia"><code># Qui-quadrado de independência ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Qui-quadrado de independência</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · DADOS CATEGÓRICOS</span><h1>Qui-quadrado de independência</h1><p class="detail-lead">Testa se duas variáveis categóricas são independentes, comparando as frequências observadas com as que as margens da tabela preveem.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/qui-independencia.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/qui-independencia.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Duas variáveis categóricas, uma tabela de contingência, uma pergunta: <em>elas são independentes?</em> O teste qui-quadrado de independência responde com a mesma conta do <a href="qui-aderencia.html">teste de aderência</a> — a diferença está em como as frequências esperadas são construídas. Esta ficha usa um exemplo em que a resposta correta depende inteiramente de <strong>qual</strong> tabela se analisa.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Qui-quadrado de independência" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Testa associação entre duas</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">variáveis categóricas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Esperados</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">linha × coluna</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">dividido pelo total</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Esperados de pelo menos 5</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">na maioria das células</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Medidas</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">V de Cramér</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Razão de chances</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">chisq.test(tabela)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">mantelhaen.test()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Uma terceira variável pode</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">inverter a conclusão</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Qui-quadrado de independência</text></svg><figcaption>Visão geral do teste qui-quadrado de independência. Fonte: o autor.</figcaption></figure><div class="callout try"><strong>O resultado desta ficha</strong><p>Na tabela agregada, a associação entre sexo e admissão é fortíssima: \(X^2=92{,}21\) com \(p=7{,}8\times10^{-22}\), e os homens são admitidos a 44,5% contra 30,4% das mulheres. Analisando departamento por departamento, a associação desaparece — e o único departamento significativo favorece as mulheres. É o paradoxo de Simpson, no seu exemplo mais conhecido.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Sob independência, a probabilidade conjunta é o produto das marginais. Traduzindo para frequências: a célula \((i,j)\) deveria conter \(n_{i\cdot}n_{\cdot j}/n\) observações. O teste compara as frequências observadas com essas, exatamente como o teste de aderência — a única novidade é que os valores esperados são calculados a partir das próprias margens da tabela, o que custa graus de liberdade.</p><figure class="fig"><img src="../assets/resultados/qui-independencia-didatica.png" alt="A tabela agregada e as taxas por departamento" loading="lazy"/><figcaption><strong>A mesma pergunta, duas respostas.</strong> À esquerda, a tabela agregada representada por blocos cuja largura é proporcional ao número de candidatos: a diferença entre 44,5% e 30,4% de admissão é visível e o teste a confirma com folga. À direita, as taxas dentro de cada um dos seis departamentos: em quatro deles a taxa das mulheres é igual ou maior, e o único departamento com diferença significativa, o A, favorece as mulheres por larga margem. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Por que a agregação engana</strong><p>Os departamentos diferem muito em seletividade: A e B admitem mais de 63% dos candidatos, enquanto F admite 6,4%. E as candidaturas não se distribuem igualmente: os departamentos fáceis receberam 4% e 12% de candidatas, e os difíceis, cerca de 65%. A correlação entre a taxa de admissão do departamento e a proporção de candidatas é de −0,786. Ao somar tudo, a tabela agregada mede sobretudo <em>onde</em> cada grupo se candidatou, e não como foi tratado.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Cada unidade contribui para uma única célula.</td><td>Delineamento; para dados pareados use <a href="mcnemar.html">McNemar</a>.</td></tr><tr><td>Cada unidade em exatamente uma célula</td><td>A tabela tem de ser uma partição.</td><td>Definição das categorias.</td></tr><tr><td>Frequências esperadas suficientemente grandes</td><td>A aproximação é assintótica.</td><td>Nenhuma abaixo de 1, no máximo 20% abaixo de 5; o R avisa. Se falhar, use <a href="fisher.html">Fisher</a>.</td></tr><tr><td>Contagens, não proporções</td><td>A conta precisa dos valores absolutos.</td><td>Use as frequências brutas.</td></tr><tr><td>Ausência de variáveis de confundimento relevantes</td><td>Uma terceira variável pode inverter a associação.</td><td>Estratifique e compare; teste de Breslow–Day.</td></tr><tr><td>Amostragem adequada</td><td>O teste vale para amostragem multinomial, de produto de multinomiais ou de Poisson.</td><td>Desenho do estudo.</td></tr></tbody></table></div><div class="callout "><strong>O pressuposto que não aparece nas listas</strong><p>Nenhum teste de independência protege contra confundimento. A tabela agregada de Berkeley passa em todos os pressupostos técnicos — 4 526 observações, frequências esperadas acima de 700 — e ainda assim leva à conclusão oposta à correta. A proteção vem do desenho do estudo e do conhecimento do assunto, não da estatística.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \pi_{ij}=\pi_{i\cdot}\,\pi_{\cdot j} \\ &\quad \text{para todo }(i,j)\ \text{(as } \\ &\quad \text{variáveis são independentes)} \\ H_1&:\ \pi_{ij}\neq\pi_{i\cdot}\,\pi_{\cdot j}\ \\ &\quad \text{para ao menos um par}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[E_{ij}=\frac{n_{i\cdot}\,n_{\cdot j}}{n},\]\[\begin{aligned}X^{2} &= \sum_{i=1}^{r}\sum_{j=1}^{c}\frac{\left(O_{ij}-E_{ij}\right)^{2}}{E_{ij}}\ \\ &\dot\sim \ \chi^{2}_{(r-1)(c-1)}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[V=\sqrt{\frac{X^{2}}{n\,\min(r-1,\,c-1)}},\]\[\text{RC}=\frac{O_{11}O_{22}}{O_{12}O_{21}},\]\[\widehat{\text{EP}}\!\left(\ln\text{RC}\right)=\sqrt{\sum_{i,j}\frac{1}{O_{ij}}}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(r,\ c\)</dt><dd>números de linhas e de colunas</dd></div><div><dt>\(n_{i\cdot},\ n_{\cdot j}\)</dt><dd>totais marginais da linha i e da coluna j</dd></div><div><dt>\(E_{ij}\)</dt><dd>frequência esperada sob independência</dd></div><div><dt>\(V\)</dt><dd>V de Cramér: 0,1 pequeno; 0,3 médio; 0,5 grande</dd></div><div><dt>\(\text{RC}\)</dt><dd>razão de chances, definida apenas em tabelas 2×2</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Tabela agregada</caption><thead><tr><th></th><th>Admitidos</th><th>Rejeitados</th><th>Total</th><th>Taxa</th></tr></thead><tbody><tr><td>Homens</td><td>1 198</td><td>1 493</td><td>2 691</td><td>44,52%</td></tr><tr><td>Mulheres</td><td>557</td><td>1 278</td><td>1 835</td><td>30,35%</td></tr><tr><td><strong>Total</strong></td><td><strong>1 755</strong></td><td><strong>2 771</strong></td><td><strong>4 526</strong></td><td><strong>38,78%</strong></td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>A frequência esperada de homens admitidos é \(2\,691\times1\,755/4\,526=1\,043{,}46\). As quatro esperadas são 1 043,46, 1 647,54, 711,54 e 1 123,46.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}X^{2} &= \frac{(1198-1043{,}46)^2}{1043{,}46}+\cdots \\ &\quad +\frac{(1278-1123{,}46)^2}{1123{,}46} \\ &= 92{,}205.\end{aligned}\]</div><p>Com \(\text{gl}=(2-1)(2-1)=1\), \(p=7{,}8\times10^{-22}\). Com a correção de continuidade de Yates, \(X^2=91{,}610\) e \(p=1{,}1\times10^{-21}\): nenhuma diferença prática.</p><p>Os resíduos padronizados são \(+4{,}78\), \(-3{,}81\), \(-5{,}79\) e \(+4{,}61\): há mais homens admitidos e mais mulheres rejeitadas do que a independência preveria.</p><p>A razão de chances é \((1198\times1278)/(1493\times557)=1{,}841\), com IC de 95% de \([1{,}625;\ 2{,}086]\). O V de Cramér é 0,143 — associação pequena, apesar do valor-p minúsculo, porque \(n\) é grande.</p></div><div class="worked"><strong>A mesma conta, por departamento</strong><div class="table-wrap"><table class="method-table"><caption>Seis tabelas 2×2</caption><thead><tr><th>Dep.</th><th>H adm.</th><th>H rej.</th><th>M adm.</th><th>M rej.</th><th>Taxa H</th><th>Taxa M</th><th>RC</th><th>X²</th><th>p</th></tr></thead><tbody><tr><td>A</td><td>512</td><td>313</td><td>89</td><td>19</td><td>62,06%</td><td>82,41%</td><td>0,349</td><td>17,248</td><td>&lt; 0,0001</td></tr><tr><td>B</td><td>353</td><td>207</td><td>17</td><td>8</td><td>63,04%</td><td>68,00%</td><td>0,803</td><td>0,254</td><td>0,6145</td></tr><tr><td>C</td><td>120</td><td>205</td><td>202</td><td>391</td><td>36,92%</td><td>34,06%</td><td>1,133</td><td>0,754</td><td>0,3854</td></tr><tr><td>D</td><td>138</td><td>279</td><td>131</td><td>244</td><td>33,09%</td><td>34,93%</td><td>0,921</td><td>0,298</td><td>0,5852</td></tr><tr><td>E</td><td>53</td><td>138</td><td>94</td><td>299</td><td>27,75%</td><td>23,92%</td><td>1,222</td><td>1,001</td><td>0,3171</td></tr><tr><td>F</td><td>22</td><td>351</td><td>24</td><td>317</td><td>5,90%</td><td>7,04%</td><td>0,828</td><td>0,384</td><td>0,5354</td></tr></tbody></table></div><p>A razão de chances de Mantel–Haenszel, que combina os seis estratos, é 0,9047 — contra 1,841 na tabela agregada. A estatística de Mantel–Haenszel vale 1,427 com 1 grau de liberdade e \(p=0{,}232\): controlando o departamento, não há evidência de associação.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Graus de liberdade \((r-1)(c-1)\): as margens são tomadas como dadas.</li><li>Em tabelas 2×2, \(X^2=z^2\) do teste de duas proporções, e \(\sqrt{X^2/n}=|\phi|\), o coeficiente de correlação entre as duas variáveis binárias.</li><li>A correção de Yates torna o teste mais conservador em tabelas 2×2; é o padrão do R e hoje muitos autores a consideram desnecessária.</li><li>A razão de verossimilhanças \(G^2\) é assintoticamente equivalente e é a estatística natural dos modelos log-lineares.</li><li>O teste detecta <em>qualquer</em> desvio de independência, sem informar a sua forma; os resíduos é que descrevem o padrão.</li><li>Com \(n\) grande, desvios minúsculos tornam-se significativos: reporte sempre uma medida de associação.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>X-squared e df</td><td>A estatística e os graus de liberdade.</td><td>gl = (r−1)(c−1).</td></tr><tr><td>p-value</td><td>Evidência contra a independência.</td><td>Não mede a força da associação.</td></tr><tr><td>expected</td><td>Frequências sob independência.</td><td>Confira se nenhuma é pequena demais.</td></tr><tr><td>stdres</td><td>Resíduos padronizados ajustados.</td><td>Acima de 2 em módulo indica a célula responsável.</td></tr><tr><td>V de Cramér</td><td>Força da associação, entre 0 e 1.</td><td>Com n grande, pode ser pequeno e o p minúsculo.</td></tr><tr><td>Razão de chances</td><td>Magnitude em tabelas 2×2.</td><td>Apresente com intervalo de confiança.</td></tr><tr><td>Mantel–Haenszel</td><td>Associação comum, controlando um estrato.</td><td>Compare com a da tabela agregada.</td></tr></tbody></table></div><ol class="steps"><li>Verifique as frequências esperadas.</li><li>Leia o valor-p e, ao lado dele, uma medida de associação.</li><li>Examine os resíduos padronizados para descrever o padrão.</li><li><strong>Pergunte se existe uma terceira variável relevante</strong> e, se existir, estratifique.</li><li>Compare a associação agregada com a de Mantel–Haenszel.</li><li>Reporte X², gl, p, a medida de associação e, quando houver, a análise estratificada.</li></ol></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>chisq.test()</code> está no pacote <code>stats</code> e aceita uma matriz ou uma tabela: em tabelas 2×2 aplica a correção de Yates por padrão, desligada com <code>correct = FALSE</code>. <code>mantelhaen.test()</code>, do mesmo pacote, faz a análise estratificada e devolve a razão de chances comum. <code>DescTools</code> fornece <code>CramerV</code>, <code>OddsRatio</code>, <code>RelRisk</code> e <code>BreslowDayTest</code>; <code>vcd</code> traz os gráficos de mosaico, que mostram os resíduos por cor. Para tabelas com frequências pequenas, <code>fisher.test()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-qui-independencia-min" type="button">Copiar código</button></div><pre id="code-qui-independencia-min"><code>chisq.test(agregada, correct = FALSE)
+mantelhaen.test(UCBAdmissions)
+vcd::mosaic(agregada, shade = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>UCBAdmissions</code> registra as 4 526 candidaturas à pós-graduação dos seis maiores departamentos da Universidade da Califórnia em Berkeley no outono de 1973, cruzando sexo, situação (admitido ou rejeitado) e departamento. Os dados foram publicados por Bickel, Hammel e O’Connell na <em>Science</em> em 1975, num artigo que se tornou a referência padrão sobre o paradoxo de Simpson.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-qui-independencia" type="button">Copiar código</button></div><pre id="code-qui-independencia"><code># Qui-quadrado de independência: exemplo completo ----
+# Pacotes: stats (base), vcd (gráficos e medidas), DescTools
+# install.packages(c("vcd", "DescTools"))
 
-# Ajuste e resultados ----
-tab &lt;- table(cilindros = mtcars$cyl, transmissao = mtcars$am)
-resultado &lt;- chisq.test(tab)
-print(tab); print(resultado)
-print(resultado$expected)
-print(round(resultado$stdres, 2))
+# 1. Dados: UCBAdmissions, admissões à pós-graduação em Berkeley (1973)
+data(UCBAdmissions)
+dimnames(UCBAdmissions)
+agregada &lt;- margin.table(UCBAdmissions, c(2, 1))   # sexo x situação
+agregada
+prop.table(agregada, 1)                            # taxas por sexo
 
-# Visualização e diagnóstico ----
-mosaicplot(tab, color = TRUE, main = "Cilindros e transmissão")
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">Pearson Chi-squared test
-X-squared = 8.74073, df = 2, p-value = 0.0126466
-Tabela:
-am    0  1
-cyl       
-4     3  8
-6     4  3
-8    12  2</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Qui-quadrado de independência" class="result-figure" loading="lazy" src="../assets/resultados/qui-independencia.png"/><p>O valor-p de 0.01265 permite avaliar evidências de associação entre número de cilindros e tipo de transmissão; é necessário inspecionar as frequências esperadas para decidir se a aproximação qui-quadrado é adequada.</p></div>
-<h3>Resultados e interpretação</h3>
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="qui-aderencia.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Qui-quadrado de aderência
-    </a>
-<a href="fisher.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste exato de Fisher
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 2. O teste na tabela agregada
+chisq.test(agregada)                     # com correção de Yates (padrão em 2x2)
+chisq.test(agregada, correct = FALSE)    # sem correção
+
+teste &lt;- chisq.test(agregada, correct = FALSE)
+teste$expected                           # frequências esperadas
+round(teste$residuals, 3)                # resíduos de Pearson
+round(teste$stdres, 3)                   # resíduos padronizados ajustados
+
+# 3. Medidas de associação
+library(DescTools)
+CramerV(agregada, conf.level = 0.95)
+Phi(agregada)
+OddsRatio(agregada, conf.level = 0.95)
+RelRisk(agregada, conf.level = 0.95)
+fisher.test(agregada)                    # exato, para comparar
+
+# 4. A MESMA pergunta, dentro de cada departamento
+apply(UCBAdmissions, 3, function(t) {
+  tt &lt;- t(t)                             # linhas = sexo
+  c(taxa_H = tt[1,1]/sum(tt[1,]), taxa_M = tt[2,1]/sum(tt[2,]),
+    RC = tt[1,1]*tt[2,2]/(tt[1,2]*tt[2,1]),
+    p = chisq.test(tt, correct = FALSE)$p.value)
+})
+
+# 5. A associação comum, controlando o departamento
+mantelhaen.test(UCBAdmissions)           # estatística e RC de Mantel-Haenszel
+# teste de homogeneidade das razões de chances (Breslow-Day)
+library(DescTools)
+BreslowDayTest(UCBAdmissions)
+
+# 6. A explicação: taxa de admissão do departamento x proporção de candidatas
+taxa  &lt;- apply(UCBAdmissions, 3, function(t) sum(t["Admitted",]) / sum(t))
+pmulh &lt;- apply(UCBAdmissions, 3, function(t) sum(t[, "Female"]) / sum(t))
+cbind(taxa_admissao = round(100*taxa, 2), perc_mulheres = round(100*pmulh, 2))
+cor(taxa, pmulh)
+
+# 7. Modelo log-linear, que generaliza o teste
+longo &lt;- as.data.frame(UCBAdmissions)
+mod_ind &lt;- glm(Freq ~ Gender + Admit, data = longo, family = poisson)       # independência
+mod_sat &lt;- glm(Freq ~ Gender * Admit, data = longo, family = poisson)       # saturado
+anova(mod_ind, mod_sat, test = "Chisq")        # equivale ao teste de independência
+mod_dep &lt;- glm(Freq ~ Dept * Gender + Dept * Admit, data = longo, family = poisson)
+mod_tudo &lt;- glm(Freq ~ Dept * Gender + Dept * Admit + Gender * Admit, data = longo, family = poisson)
+anova(mod_dep, mod_tudo, test = "Chisq")       # associação sexo-admissão, dado o depto
+
+# 8. Gráficos
+library(vcd)
+mosaic(agregada, shade = TRUE, legend = TRUE)
+mosaic(~ Gender + Admit | Dept, data = UCBAdmissions, shade = TRUE)
+assoc(agregada, shade = TRUE)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-qui-independencia" type="button">Copiar código</button></div><pre id="code-py-qui-independencia"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# Dados: UCBAdmissions (R). Admissões à pós-graduação da Universidade da Califórnia
+# em Berkeley, outono de 1973, nos seis maiores departamentos.
+# Fonte: Bickel, Hammel e O'Connell (1975), Science 187:398-404.
+dep = ["A", "B", "C", "D", "E", "F"]
+# tabela[d] = [[homens admitidos, homens rejeitados], [mulheres admitidas, mulheres rejeitadas]]
+tabela = {"A": [[512, 313], [ 89,  19]], "B": [[353, 207], [ 17,   8]],
+          "C": [[120, 205], [202, 391]], "D": [[138, 279], [131, 244]],
+          "E": [[ 53, 138], [ 94, 299]], "F": [[ 22, 351], [ 24, 317]]}
+T = sum(np.array(tabela[d], float) for d in dep)
+sexo = ["homens", "mulheres"]; sit = ["admitidos", "rejeitados"]
+
+print("Tabela agregada dos seis departamentos")
+print(f"{'':&lt;10}{'admitidos':&gt;11}{'rejeitados':&gt;12}{'total':&gt;9}{'taxa':&gt;9}")
+for i in range(2):
+    print(f"{sexo[i]:&lt;10}{int(T[i,0]):11d}{int(T[i,1]):12d}{int(T[i].sum()):9d}"
+          f"{100*T[i,0]/T[i].sum():8.2f}%")
+print(f"{'total':&lt;10}{int(T[:,0].sum()):11d}{int(T[:,1].sum()):12d}{int(T.sum()):9d}"
+      f"{100*T[:,0].sum()/T.sum():8.2f}%")
+
+# 1. O teste
+qui, p, gl, esp = stats.chi2_contingency(T, correction=False)
+quiy, py, _, _ = stats.chi2_contingency(T, correction=True)
+print("\nFrequências esperadas sob independência (linha x coluna / total)")
+for i in range(2):
+    print(f"{sexo[i]:&lt;10}" + "".join(f"{esp[i,j]:11.2f}" for j in range(2)))
+print(f"\nqui-quadrado sem correção = {qui:.4f} | gl = {gl} | p-valor = {p:.3e}")
+print(f"qui-quadrado com correção de Yates = {quiy:.4f} | p-valor = {py:.3e}")
+print(f"(o R aplica Yates por padrão em tabelas 2x2; use correct = FALSE para desligar)")
+print(f"Menor frequência esperada = {esp.min():.2f}")
+
+print("\nContribuição de cada célula e resíduos padronizados")
+print(f"{'célula':&lt;24}{'O':&gt;7}{'E':&gt;10}{'(O-E)²/E':&gt;11}{'resíduo':&gt;10}")
+for i in range(2):
+    for j in range(2):
+        r = (T[i,j]-esp[i,j])/np.sqrt(esp[i,j])
+        print(f"{sexo[i]+' '+sit[j]:&lt;24}{int(T[i,j]):7d}{esp[i,j]:10.2f}"
+              f"{(T[i,j]-esp[i,j])**2/esp[i,j]:11.4f}{r:10.3f}")
+
+# 2. Medidas de associação
+n = T.sum()
+V = np.sqrt(qui / (n * (min(T.shape) - 1)))
+orr = T[0,0]*T[1,1] / (T[0,1]*T[1,0])
+ep_lor = np.sqrt(sum(1/T[i,j] for i in range(2) for j in range(2)))
+print(f"\nV de Cramér = {V:.4f}  (0,1 pequeno; 0,3 médio; 0,5 grande)")
+print(f"phi = {np.sqrt(qui/n):.4f} (em tabelas 2x2 coincide com V)")
+print(f"Razão de chances = {orr:.4f} | IC 95% = "
+      f"[{np.exp(np.log(orr)-1.96*ep_lor):.4f}; {np.exp(np.log(orr)+1.96*ep_lor):.4f}]")
+print(f"Diferença de proporções = {100*(T[0,0]/T[0].sum() - T[1,0]/T[1].sum()):.2f} pontos percentuais")
+print(f"Risco relativo = {(T[0,0]/T[0].sum())/(T[1,0]/T[1].sum()):.4f}")
+print("\nTeste exato de Fisher, para comparação:")
+od, pf = stats.fisher_exact(T.astype(int))
+print(f"  razão de chances condicional = {od:.4f} | p-valor = {pf:.3e}")
+print("Com n = 4526 o exato e a aproximação coincidem; o exato é para amostras pequenas.")
+
+# 3. A mesma análise, departamento por departamento
+print("\n" + "=" * 70)
+print("A MESMA pergunta, dentro de cada departamento")
+print(f"{'dep':&lt;5}{'H adm.':&gt;8}{'H rej.':&gt;8}{'M adm.':&gt;8}{'M rej.':&gt;8}"
+      f"{'taxa H':&gt;9}{'taxa M':&gt;9}{'RC':&gt;8}{'qui²':&gt;9}{'p':&gt;9}")
+ors = []
+for d in dep:
+    t = np.array(tabela[d], float)
+    q, pp, g, e = stats.chi2_contingency(t, correction=False)
+    o = t[0,0]*t[1,1]/(t[0,1]*t[1,0]); ors.append(o)
+    print(f"{d:&lt;5}{int(t[0,0]):8d}{int(t[0,1]):8d}{int(t[1,0]):8d}{int(t[1,1]):8d}"
+          f"{100*t[0,0]/t[0].sum():8.2f}%{100*t[1,0]/t[1].sum():8.2f}%{o:8.3f}{q:9.3f}{pp:9.4f}")
+print("\nSó o departamento A é significativo - e a FAVOR das mulheres (RC = 0,349:")
+print("a chance de admissão de um homem é 0,35 vez a de uma mulher).")
+
+# 4. Mantel-Haenszel: a associação comum, controlando o departamento
+num = sum(np.array(tabela[d],float)[0,0]*np.array(tabela[d],float)[1,1]/np.array(tabela[d],float).sum() for d in dep)
+den = sum(np.array(tabela[d],float)[0,1]*np.array(tabela[d],float)[1,0]/np.array(tabela[d],float).sum() for d in dep)
+print(f"\nRazão de chances de Mantel-Haenszel = {num/den:.4f}")
+print(f"contra {orr:.4f} na tabela agregada. O sinal da associação se INVERTE.")
+# estatística de Mantel-Haenszel
+a = np.array([np.array(tabela[d],float)[0,0] for d in dep])
+Ea = np.array([np.array(tabela[d],float)[0].sum()*np.array(tabela[d],float)[:,0].sum()/np.array(tabela[d],float).sum() for d in dep])
+Va = np.array([np.prod([np.array(tabela[d],float)[0].sum(), np.array(tabela[d],float)[1].sum(),
+                        np.array(tabela[d],float)[:,0].sum(), np.array(tabela[d],float)[:,1].sum()]) /
+               (np.array(tabela[d],float).sum()**2*(np.array(tabela[d],float).sum()-1)) for d in dep])
+mh = (abs(a.sum()-Ea.sum())-0.5)**2/Va.sum()
+print(f"Estatística de Mantel-Haenszel = {mh:.4f} | gl = 1 | p-valor = {stats.chi2.sf(mh,1):.4f}")
+print("Controlando o departamento, não há evidência de associação entre sexo e admissão.")
+
+# 5. Por que a agregação engana
+print("\n" + "=" * 70)
+print("A explicação do paradoxo: as mulheres se candidataram aos departamentos")
+print("mais concorridos.")
+print(f"{'dep':&lt;5}{'taxa global de admissão':&gt;26}{'% de candidatas mulheres':&gt;27}")
+for d in dep:
+    t = np.array(tabela[d], float)
+    print(f"{d:&lt;5}{100*(t[0,0]+t[1,0])/t.sum():25.2f}%{100*t[1].sum()/t.sum():26.2f}%")
+taxa = np.array([(np.array(tabela[d],float)[0,0]+np.array(tabela[d],float)[1,0])/np.array(tabela[d],float).sum() for d in dep])
+pmul = np.array([np.array(tabela[d],float)[1].sum()/np.array(tabela[d],float).sum() for d in dep])
+print(f"\nCorrelação entre a taxa de admissão do departamento e a proporção de")
+print(f"candidatas mulheres: r = {np.corrcoef(taxa, pmul)[0,1]:.4f}")
+print("Os departamentos fáceis (A e B, com mais de 63% de admissão) receberam")
+print("4% e 12% de candidatas; os difíceis (C e E, com 25% a 35%), cerca de 65%.")
+
+print("\nO que aconteceria se as mulheres tivessem a MESMA distribuição de candidaturas")
+print("que os homens, mantendo as taxas de admissão observadas em cada departamento:")
+nh = np.array([np.array(tabela[d],float)[0].sum() for d in dep])
+tm = np.array([np.array(tabela[d],float)[1,0]/np.array(tabela[d],float)[1].sum() for d in dep])
+nm_total = T[1].sum()
+esperadas = (nh/nh.sum()*nm_total*tm).sum()
+print(f"  mulheres admitidas: {esperadas:.1f} de {nm_total:.0f} = {100*esperadas/nm_total:.2f}%")
+print(f"  contra os {100*T[1,0]/T[1].sum():.2f}% observados e os {100*T[0,0]/T[0].sum():.2f}% dos homens.")
+print("A diferença agregada não só desaparece como se inverte: padronizada pela")
+print("distribuição de candidaturas dos homens, a taxa feminina passa a ser a maior.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Tabela agregada dos seis departamentos
+            admitidos  rejeitados    total     taxa
+homens           1198        1493     2691   44.52%
+mulheres          557        1278     1835   30.35%
+total            1755        2771     4526   38.78%
+
+Frequências esperadas sob independência (linha x coluna / total)
+homens        1043.46    1647.54
+mulheres       711.54    1123.46
+
+qui-quadrado sem correção = 92.2053 | gl = 1 | p-valor = 7.814e-22
+qui-quadrado com correção de Yates = 91.6096 | p-valor = 1.056e-21
+(o R aplica Yates por padrão em tabelas 2x2; use correct = FALSE para desligar)
+Menor frequência esperada = 711.54
+
+Contribuição de cada célula e resíduos padronizados
+célula                        O         E   (O-E)²/E   resíduo
+homens admitidos           1198   1043.46    22.8875     4.784
+homens rejeitados          1493   1647.54    14.4957    -3.807
+mulheres admitidos          557    711.54    33.5642    -5.793
+mulheres rejeitados        1278   1123.46    21.2578     4.611
+
+V de Cramér = 0.1427  (0,1 pequeno; 0,3 médio; 0,5 grande)
+phi = 0.1427 (em tabelas 2x2 coincide com V)
+Razão de chances = 1.8411 | IC 95% = [1.6244; 2.0867]
+Diferença de proporções = 14.16 pontos percentuais
+Risco relativo = 1.4666
+
+Teste exato de Fisher, para comparação:
+  razão de chances condicional = 1.8411 | p-valor = 4.836e-22
+Com n = 4526 o exato e a aproximação coincidem; o exato é para amostras pequenas.
+
+======================================================================
+A MESMA pergunta, dentro de cada departamento
+dep    H adm.  H rej.  M adm.  M rej.   taxa H   taxa M      RC     qui²        p
+A         512     313      89      19   62.06%   82.41%   0.349   17.248   0.0000
+B         353     207      17       8   63.04%   68.00%   0.803    0.254   0.6145
+C         120     205     202     391   36.92%   34.06%   1.133    0.754   0.3854
+D         138     279     131     244   33.09%   34.93%   0.921    0.298   0.5852
+E          53     138      94     299   27.75%   23.92%   1.222    1.001   0.3171
+F          22     351      24     317    5.90%    7.04%   0.828    0.384   0.5354
+
+Só o departamento A é significativo - e a FAVOR das mulheres (RC = 0,349:
+a chance de admissão de um homem é 0,35 vez a de uma mulher).
+
+Razão de chances de Mantel-Haenszel = 0.9047
+contra 1.8411 na tabela agregada. O sinal da associação se INVERTE.
+Estatística de Mantel-Haenszel = 1.4269 | gl = 1 | p-valor = 0.2323
+Controlando o departamento, não há evidência de associação entre sexo e admissão.
+
+======================================================================
+A explicação do paradoxo: as mulheres se candidataram aos departamentos
+mais concorridos.
+dep     taxa global de admissão   % de candidatas mulheres
+A                        64.42%                     11.58%
+B                        63.25%                      4.27%
+C                        35.08%                     64.60%
+D                        33.96%                     47.35%
+E                        25.17%                     67.29%
+F                         6.44%                     47.76%
+
+Correlação entre a taxa de admissão do departamento e a proporção de
+candidatas mulheres: r = -0.7858
+Os departamentos fáceis (A e B, com mais de 63% de admissão) receberam
+4% e 12% de candidatas; os difíceis (C e E, com 25% a 35%), cerca de 65%.
+
+O que aconteceria se as mulheres tivessem a MESMA distribuição de candidaturas
+que os homens, mantendo as taxas de admissão observadas em cada departamento:
+  mulheres admitidas: 947.1 de 1835 = 51.62%
+  contra os 30.35% observados e os 44.52% dos homens.
+A diferença agregada não só desaparece como se inverte: padronizada pela
+distribuição de candidaturas dos homens, a taxa feminina passa a ser a maior.</pre></div><figure class="fig"><img src="../assets/resultados/qui-independencia.png" alt="Razões de chances por departamento e a causa do paradoxo" loading="lazy"/><figcaption><strong>A anatomia do fenômeno.</strong> À esquerda, a razão de chances de cada departamento com o seu intervalo de confiança, comparada à da tabela agregada (losango) e à de Mantel–Haenszel (quadrado). Os seis departamentos têm razões próximas de 1, o agregado aponta claramente para a direita e o ajustado volta para o centro. À direita, a causa: quanto maior a proporção de candidatas num departamento, menor a sua taxa global de admissão (r = −0,786). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados na tabela agregada</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>X² sem correção</td><td>92,205; gl = 1; p = 7,8 × 10⁻²²</td><td>Associação fortíssima.</td></tr><tr><td>X² com correção de Yates</td><td>91,610; p = 1,1 × 10⁻²¹</td><td>Praticamente idêntico.</td></tr><tr><td>Menor frequência esperada</td><td>711,54</td><td>Muito acima de 5.</td></tr><tr><td>Taxa de admissão</td><td>44,52% (homens) contra 30,35% (mulheres)</td><td>Diferença de 14,17 pontos.</td></tr><tr><td>Razão de chances</td><td>1,8411; IC 95% [1,625; 2,086]</td><td>Favorece os homens.</td></tr><tr><td>Risco relativo</td><td>1,4669</td><td>—</td></tr><tr><td>V de Cramér</td><td>0,1427</td><td>Associação <strong>pequena</strong>, apesar do p.</td></tr><tr><td>Resíduos padronizados</td><td>+4,78 / −3,81 / −5,79 / +4,61</td><td>Padrão coerente.</td></tr><tr><td>Teste exato de Fisher</td><td>RC = 1,8408; p = 7,0 × 10⁻²²</td><td>Coincide com a aproximação.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados controlando o departamento</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>RC de Mantel–Haenszel</td><td>0,9047</td><td><strong>O sinal se inverte.</strong></td></tr><tr><td>Estatística de Mantel–Haenszel</td><td>1,4269; gl = 1; p = 0,2323</td><td>Sem evidência de associação.</td></tr><tr><td>Departamentos significativos</td><td>apenas o A</td><td>RC = 0,349, favorecendo as mulheres.</td></tr><tr><td>Departamentos com taxa feminina maior</td><td>A, B, D e F</td><td>Quatro dos seis.</td></tr><tr><td>Correlação entre seletividade e proporção de candidatas</td><td>r = −0,786</td><td>A causa do paradoxo.</td></tr><tr><td>Taxa feminina padronizada</td><td>51,62%</td><td>Contra 44,52% dos homens.</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela agregada mostra uma diferença grande e altamente significativa a favor dos homens. A análise estratificada mostra que ela não existe. Os seis departamentos têm razões de chances entre 0,35 e 1,22, cinco dos quais com intervalos que contêm 1; o único significativo, o departamento A, favorece as mulheres de forma acentuada — a chance de admissão de um homem ali é 0,35 vez a de uma mulher.</p><p>A explicação está na terceira variável. Os departamentos A e B admitiam mais de 63% dos candidatos e receberam, respectivamente, 11,6% e 4,3% de candidatas. Os departamentos C e E admitiam entre 25% e 35% e receberam cerca de 65% de candidatas. As mulheres se candidataram, em proporção muito maior, aos programas mais concorridos. A tabela agregada mede essa escolha de programa, não o tratamento recebido em cada um.</p><p>A padronização torna o ponto concreto: se as mulheres tivessem se distribuído entre os departamentos como os homens se distribuíram, mantendo as taxas de admissão femininas observadas em cada um, a taxa global feminina seria de 51,62% — acima dos 44,52% dos homens. A diferença agregada não apenas desaparece: ela se inverte.</p><h3>O que isso ensina sobre o teste</h3><p>O teste qui-quadrado fez exatamente o que deveria fazer. Ele respondeu, com precisão, à pergunta "nesta tabela, sexo e admissão são independentes?" — e a resposta é não. O erro não está no teste; está em tomar a resposta dessa pergunta como resposta de outra, "houve discriminação por sexo no processo de admissão?".</p><p>Nenhum pressuposto técnico foi violado: a amostra tem 4 526 observações e as frequências esperadas passam de 700. O problema é de <em>identificação</em>, não de aproximação assintótica, e por isso nenhuma verificação estatística o detectaria. O que o detecta é a pergunta "existe alguma variável que afeta tanto a exposição quanto o desfecho?" — e essa pergunta vem do conhecimento do assunto.</p><p>O mesmo fenômeno aparece em escala contínua na ficha da <a href="mancova.html">MANCOVA</a>, em que a correlação entre produtividade e proteína é positiva no conjunto e negativa dentro de cada estrato. O remédio é o mesmo nos dois casos: estratificar, ou incluir a variável de confundimento no modelo.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Interpretar associação como causa</td><td>O teste mede associação na tabela analisada, nada mais.</td></tr><tr><td>Analisar só a tabela agregada</td><td>Pergunte sempre se há uma terceira variável relevante.</td></tr><tr><td>Reportar só o valor-p</td><td>Com n grande, qualquer desvio é significativo; informe V de Cramér ou a razão de chances.</td></tr><tr><td>Aplicar a proporções ou percentagens</td><td>O teste precisa das contagens.</td></tr><tr><td>Usar com dados pareados</td><td>Para o mesmo indivíduo medido duas vezes, <a href="mcnemar.html">McNemar</a>.</td></tr><tr><td>Ignorar o aviso de esperados pequenos</td><td>Use <a href="fisher.html">Fisher</a> ou agrupe categorias.</td></tr><tr><td>Fazer muitos testes 2×2 numa tabela grande sem ajuste</td><td>Use resíduos padronizados ou ajuste os valores-p.</td></tr><tr><td>Calcular a razão de chances em tabelas maiores que 2×2</td><td>Ela só é definida em 2×2; use o V de Cramér.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="fisher.html">Teste exato de Fisher</a></td><td>Frequências esperadas pequenas; tabelas 2×2.</td></tr><tr><td><a href="mcnemar.html">Teste de McNemar</a></td><td>Dados pareados.</td></tr><tr><td>Mantel–Haenszel</td><td>Tabelas 2×2 estratificadas por uma terceira variável.</td></tr><tr><td>Teste de Breslow–Day</td><td>Para verificar se as razões de chances são homogêneas entre os estratos.</td></tr><tr><td>Razão de verossimilhanças G²</td><td>Equivalente; natural em modelos log-lineares.</td></tr><tr><td>Modelo log-linear</td><td>Três ou mais variáveis categóricas, com estrutura a modelar.</td></tr><tr><td><a href="logistica.html">Regressão logística</a></td><td>Uma resposta binária com vários preditores, inclusive contínuos.</td></tr><tr><td>Teste de tendência de Cochran–Armitage</td><td>Uma das variáveis é ordinal.</td></tr></tbody></table></div><ol class="steps"><li>Monte a tabela de contingência com as contagens.</li><li>Confira as frequências esperadas.</li><li>Aplique o teste e reporte X², gl e valor-p.</li><li>Calcule uma medida de associação e, em 2×2, a razão de chances com intervalo.</li><li>Examine os resíduos padronizados.</li><li>Identifique possíveis variáveis de confundimento e estratifique.</li><li>Compare a associação agregada com a estratificada antes de concluir.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>PEARSON, Karl. On the criterion that a given system of deviations from the probable in the case of a correlated system of variables is such that it can be reasonably supposed to have arisen from random sampling. <em>Philosophical Magazine, Series 5</em>, v. 50, n. 302, p. 157-175, 1900.</li><li>YATES, Frank. Contingency tables involving small numbers and the chi-square test. <em>Supplement to the Journal of the Royal Statistical Society</em>, v. 1, n. 2, p. 217-235, 1934.</li><li>SIMPSON, Edward H. The interpretation of interaction in contingency tables. <em>Journal of the Royal Statistical Society, Series B</em>, v. 13, n. 2, p. 238-241, 1951.</li><li>BICKEL, Peter J.; HAMMEL, Eugene A.; O’CONNELL, J. William. Sex bias in graduate admissions: data from Berkeley. <em>Science</em>, v. 187, n. 4175, p. 398-404, 1975. (Fonte dos dados <code>UCBAdmissions</code>.)</li><li>MANTEL, Nathan; HAENSZEL, William. Statistical aspects of the analysis of data from retrospective studies of disease. <em>Journal of the National Cancer Institute</em>, v. 22, n. 4, p. 719-748, 1959.</li><li>BRESLOW, Norman E.; DAY, Nicholas E. <em>Statistical methods in cancer research, volume I: the analysis of case-control studies.</em> Lyon: IARC, 1980.</li><li>CRAMÉR, Harald. <em>Mathematical methods of statistics.</em> Princeton: Princeton University Press, 1946.</li><li>PEARL, Judea. <em>Causality: models, reasoning, and inference.</em> 2. ed. Cambridge: Cambridge University Press, 2009.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>AGRESTI, Alan. <em>An introduction to categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2019.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>chisq.test</code>, <code>mantelhaen.test</code> e <code>fisher.test</code>, pacote <code>stats</code>.)</li><li>MEYER, David; ZEILEIS, Achim; HORNIK, Kurt. The strucplot framework: visualizing multi-way contingency tables with vcd. <em>Journal of Statistical Software</em>, v. 17, n. 3, p. 1-48, 2006. (Pacote <code>vcd</code>.)</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, cada unidade em uma única célula, frequências esperadas suficientemente grandes e ausência de variáveis de confundimento relevantes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, vcd, DescTools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="qui-aderencia.html"><span>← ANTERIOR</span>Qui-quadrado de aderência</a><a href="fisher.html"><span>PRÓXIMO →</span>Teste exato de Fisher</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

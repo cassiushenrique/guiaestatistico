@@ -4,353 +4,179 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Mann–Whitney / Wilcoxon rank-sum: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Mann–Whitney / Wilcoxon rank-sum | Estatística e Ciência de Dados
-  </title>
+<meta content="Mann–Whitney / Wilcoxon rank-sum: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Mann–Whitney / Wilcoxon rank-sum | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Mann–Whitney / Wilcoxon rank-sum
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 11 · NÃO PARAMÉTRICOS
-    </span>
-<h1>
-     Mann–Whitney / Wilcoxon rank-sum
-    </h1>
-<p class="detail-lead">
-     Verifica se duas populações independentes apresentam distribuições diferentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/mann-whitney.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se duas populações independentes apresentam distribuições diferentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes.</li><li>Variável ordinal/quantitativa.</li><li>Para interpretação como diferença de medianas, distribuições com formato semelhante.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ F_X=F_Y\\ H_1&amp;:\ F_X\neq F_Y\end{aligned}\right.\]
-      </div>
-<h3>
-       Alternativas bilateral e unilaterais
-      </h3>
-<div class="tail-cases">
-<p>
-<strong>
-         Bilateral:
-        </strong>
-        \(\theta_{XY}\neq 0{,}5\). Detecta desvios em qualquer direção.
-       </p>
-<p>
-<strong>
-         Unilateral à direita:
-        </strong>
-        \(\theta_{XY}&gt;0{,}5\). Investiga aumento ou associação positiva.
-       </p>
-<p>
-<strong>
-         Unilateral à esquerda:
-        </strong>
-        \(\theta_{XY}&lt;0{,}5\). Investiga redução ou associação negativa.
-       </p>
-<p>
-        A direção deve ser escolhida antes de observar os resultados. Para o teste t e os testes de associação, use
-        <code>
-         alternative = "two.sided"
-        </code>
-        ,
-        <code>
-         "greater"
-        </code>
-        ou
-        <code>
-         "less"
-        </code>
-        . Em testes com grupos ou pares, a interpretação da direção depende da ordem dos grupos ou da subtração.
-       </p>
-</div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[U=\sum_{i=1}^{n_1}\sum_{j=1}^{n_2}\left[\mathbf 1(X_i&gt;Y_j)+\tfrac12\mathbf 1(X_i=Y_j)\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         tamanho amostral
-        </dd>
-</div>
-<div>
-<dt>
-         \(R_i\)
-        </dt>
-<dd>
-         posto da observação ou soma dos postos, conforme definido na fórmula
-        </dd>
-</div>
-<div>
-<dt>
-         \(k\)
-        </dt>
-<dd>
-         número de grupos ou condições
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de diferença distribucional; não conclua automaticamente que medianas diferem.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-<p>
-       Em um teste unilateral, a rejeição só sustenta a direção previamente definida. Um resultado de sinal contrário não autoriza inverter a hipótese após examinar os dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparação de consumo entre tipos de transmissão de veículos (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-mann-whitney" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-mann-whitney"><code># Mann–Whitney / Wilcoxon rank-sum ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Mann–Whitney / Wilcoxon rank-sum</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · NÃO PARAMÉTRICOS</span><h1>Mann–Whitney / Wilcoxon rank-sum</h1><p class="detail-lead">Verifica se duas populações independentes apresentam distribuições diferentes, comparando os postos das observações.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/mann-whitney.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/mann-whitney.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Tempos de atendimento, custos, concentrações: muitas variáveis são assimétricas, com uma cauda longa à direita e ocasionais valores muito altos. Nesses casos a média deixa de representar o comportamento típico, e o <a href="t2.html">teste t</a> perde poder. O teste de Mann–Whitney troca os valores por <strong>postos</strong> e pergunta se um grupo tende a produzir valores maiores que o outro.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Mann–Whitney" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara duas amostras</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">independentes por postos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Estatística U</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pares em que um grupo</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">supera o outro</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Variável ao menos ordinal</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">P(B &gt; A)</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Hodges–Lehmann</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">wilcox.test(y ~ grupo)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Teste t de Welch</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Yuen</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Bootstrap</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Mann–Whitney</text></svg><figcaption>Visão geral do teste de Mann–Whitney. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Dois nomes, um teste</strong><p>Wilcoxon (1945) propôs a soma de postos; Mann e Whitney (1947) chegaram ao mesmo procedimento pela contagem de pares. As estatísticas \(W\) e \(U\) diferem por uma constante e dão sempre o mesmo valor-p. O R usa o nome <em>Wilcoxon rank sum test</em>.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Juntam-se as duas amostras, ordenam-se todos os valores e atribui-se a cada um o seu posto. Se os dois grupos vierem da mesma distribuição, os postos altos e baixos devem se distribuir de forma parecida entre eles. A estatística \(U\) conta, entre todos os \(n_1\times n_2\) pares formados por uma observação de cada grupo, em quantos o valor do primeiro grupo é maior.</p><figure class="fig"><img src="../assets/resultados/mann-whitney-didatica.png" alt="Conversão de valores em postos e efeito de um valor extremo" loading="lazy"/><figcaption><strong>Como o método enxerga os dados.</strong> À esquerda, cinco observações de cada grupo viram postos de 1 a 10. À direita, duas amostras assimétricas: um único valor extremo no grupo B puxa a média de 5,8 para longe da mediana de 4,4, mas em postos ele é apenas “o maior”, e nada mais. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>O que exatamente está sendo testado</strong><p>A hipótese nula geral é que as duas distribuições são iguais. Para interpretar o resultado como diferença de <strong>medianas</strong> ou como <strong>deslocamento</strong>, é preciso supor adicionalmente que as duas distribuições têm a mesma forma e a mesma dispersão. Sem essa suposição, a leitura correta é em termos de probabilidade de superioridade.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Amostras independentes</td><td>Pressuposto central.</td><td>Delineamento; para dados pareados, use o <a href="wilcoxon-assinado.html">Wilcoxon de postos sinalizados</a>.</td></tr><tr><td>Variável ao menos ordinal</td><td>É preciso poder ordenar.</td><td>Natureza da variável.</td></tr><tr><td>Normalidade</td><td><strong>Não é exigida</strong>.</td><td>—</td></tr><tr><td>Mesma forma e dispersão nos dois grupos</td><td>Só é necessária para ler o resultado como diferença de medianas.</td><td>Boxplots e histogramas; compare as dispersões.</td></tr><tr><td>Poucos empates</td><td>Muitos empates exigem a correção da variância e tornam o valor-p aproximado.</td><td><code>table(x)</code>; o R avisa quando não pode calcular o valor exato.</td></tr><tr><td>Amostras não muito pequenas</td><td>Com n muito pequeno, nenhum valor-p alcança 0,05.</td><td>Com n₁ = n₂ = 4, o menor valor-p bilateral possível é 0,029.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ F_1(x)=F_2(x)\ \text{para todo }x \\ &\quad \text{(as distribuições são iguais)} \\ H_1&:\ F_1(x)\neq F_2(x)\ \text{para algum }x\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[U_1=R_1-\frac{n_1(n_1+1)}{2},\]\[U_1+U_2=n_1n_2,\]\[E(U)=\frac{n_1n_2}{2}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\operatorname{Var}(U) &= \frac{n_1n_2}{12}\left[(N+1)-\frac{\sum_{j}\left(t_j^3-t_j\right)}{N(N-1)}\right],\end{aligned}\]\[z=\frac{U-E(U)\pm0{,}5}{\sqrt{\operatorname{Var}(U)}}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(R_1\)</dt><dd>soma dos postos do grupo 1, calculados sobre as duas amostras juntas</dd></div><div><dt>\(n_1,\ n_2\)</dt><dd>tamanhos das amostras; \(N=n_1+n_2\)</dd></div><div><dt>\(U_1\)</dt><dd>número de pares em que uma observação do grupo 1 supera uma do grupo 2</dd></div><div><dt>\(t_j\)</dt><dd>tamanho do j-ésimo grupo de valores empatados</dd></div><div><dt>\(z\)</dt><dd>estatística padronizada, com correção de continuidade de 0,5</dd></div><div><dt>\(F_1,\ F_2\)</dt><dd>funções de distribuição das duas populações</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Grupo A: 3, 5, 6, 8, 9. Grupo B: 4, 7, 10, 11, 12. Ordenando os dez valores, os postos de A são 1, 3, 4, 6 e 7.</p><div class="worked"><strong>Cálculo</strong><p>\(R_1=1+3+4+6+7=21\) e \(R_2=55-21=34\).</p><p>\(U_1=21-\dfrac{5\times6}{2}=21-15=6\) e \(U_2=34-15=19\); de fato \(U_1+U_2=25=n_1n_2\).</p><p>Conferindo pela contagem direta: entre os 25 pares, A supera B em 6 deles (5>4; 6>4; 8>4; 8>7; 9>4; 9>7).</p><p>Probabilidade de superioridade de B: \(19/25=0{,}76\).</p></div><h3>Valor-p e estimativa pontual</h3><ul class="checklist"><li>Sem empates e com amostras pequenas, o R calcula o valor-p <strong>exato</strong> pela distribuição de permutação.</li><li>Com empates ou amostras maiores (acima de 50 por grupo), usa-se a aproximação normal com correção de continuidade e de empates.</li><li>A estimativa pontual associada é o <strong>deslocamento de Hodges–Lehmann</strong>: a mediana de todas as \(n_1\times n_2\) diferenças entre pares.</li><li>O intervalo de confiança correspondente sai da inversão do teste (<code>conf.int = TRUE</code>).</li><li>A probabilidade de superioridade \(P(X_2&gt;X_1)=U_2/(n_1n_2)\) é o tamanho de efeito mais direto.</li><li>O delta de Cliff é \(2P-1\) e varia de \(-1\) a \(1\).</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Valor-p</td><td>Evidência de que as distribuições diferem.</td><td>Não identifica em quê diferem.</td></tr><tr><td>Probabilidade de superioridade</td><td>Chance de uma observação de um grupo superar uma do outro.</td><td>É a leitura mais segura e mais intuitiva.</td></tr><tr><td>Hodges–Lehmann</td><td>Deslocamento típico entre os grupos.</td><td>Só é uma “diferença de medianas” se as formas forem parecidas.</td></tr><tr><td>Delta de Cliff</td><td>Efeito de −1 a 1.</td><td>0,15 pequeno; 0,33 médio; 0,47 grande (referências usuais).</td></tr><tr><td>Diferença entre as medianas</td><td>Descrição simples.</td><td>Pode diferir do Hodges–Lehmann.</td></tr></tbody></table></div><p>Reporte: n de cada grupo, medianas, U (ou W), valor-p, a probabilidade de superioridade e, quando fizer sentido, o deslocamento de Hodges–Lehmann com intervalo.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>wilcox.test()</code> pertence ao pacote <code>stats</code>, já instalado com o R, e executa o teste de Mann–Whitney quando recebe duas amostras independentes. Use <code>conf.int = TRUE</code> para obter a estimativa de Hodges–Lehmann e seu intervalo. O R devolve \(W\), que é o \(U\) da primeira amostra. Com empates, aparece o aviso de que o valor-p exato não pôde ser calculado.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-mann-whitney-min" type="button">Copiar código</button></div><pre id="code-mann-whitney-min"><code>wilcox.test(tempo ~ equipe, data = dados)
+wilcox.test(tempo ~ equipe, data = dados, conf.int = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Duas equipes de manutenção tiveram registrado o tempo até a conclusão de 16 reparos cada. Os tempos são assimétricos, como é típico desse tipo de dado, e um dos reparos da equipe B levou 60 horas, muito acima dos demais. A pergunta é se as equipes diferem no tempo típico de atendimento. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-mann-whitney" type="button">Copiar código</button></div><pre id="code-mann-whitney"><code># Mann-Whitney / Wilcoxon rank-sum: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R).
 
-# Ajuste e resultados ----
-resultado &lt;- wilcox.test(mpg ~ am, data = mtcars,
-                       exact = FALSE, conf.int = TRUE, conf.level = 0.95)
-print(resultado)
-boxplot(mpg ~ am, data = mtcars)
+# 1. Dados: tempo até o reparo (h) de duas equipes de manutenção (dados fictícios)
+equipeA &lt;- c(1.6, 4.1, 2.8, 3.4, 5.2, 2.2, 2.4, 3.0, 1.2, 3.2, 1.8, 4.5, 3.7, 2.6, 2.0, 6.6)
+equipeB &lt;- c(60.0, 2.6, 2.0, 7.4, 4.5, 3.0, 4.2, 8.5, 6.7, 4.9, 3.9, 3.3, 3.6, 6.1, 5.6, 5.2)
+dados &lt;- data.frame(tempo = c(equipeA, equipeB),
+                    equipe = factor(rep(c("A", "B"), each = 16)))
+rbind(media = tapply(dados$tempo, dados$equipe, mean),
+      mediana = tapply(dados$tempo, dados$equipe, median),
+      dp = tapply(dados$tempo, dados$equipe, sd))
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
+# 2. Por que não usar o teste t: assimetria forte e um valor extremo
+par(mfrow = c(1, 2))
+boxplot(tempo ~ equipe, data = dados, col = "gray85", ylab = "Tempo até o reparo (h)")
+qqnorm(equipeB, pch = 19); qqline(equipeB, col = "red")
+par(mfrow = c(1, 1))
+tapply(dados$tempo, dados$equipe, function(v) shapiro.test(v)$p.value)
+t.test(tempo ~ equipe, data = dados)        # Welch: não detecta
 
+# 3. Teste de Mann-Whitney (o R chama de Wilcoxon rank sum)
+wilcox.test(tempo ~ equipe, data = dados)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# Ordem dos grupos: transmissão automática (0), manual (1)
-# H1: tendencia de valores maiores no primeiro grupo
-print(wilcox.test(mpg ~ am, data = mtcars, exact = FALSE, alternative = "greater"))
-# H1: tendencia de valores menores no primeiro grupo
-print(wilcox.test(mpg ~ am, data = mtcars, exact = FALSE, alternative = "less"))
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 4. Com estimativa de Hodges-Lehmann e intervalo de confiança
+wilcox.test(tempo ~ equipe, data = dados, conf.int = TRUE)
 
+# 5. Cálculo manual: postos, somas e U
+postos &lt;- rank(dados$tempo)
+R1 &lt;- sum(postos[dados$equipe == "A"]); R2 &lt;- sum(postos[dados$equipe == "B"])
+n1 &lt;- 16; n2 &lt;- 16
+c(R1 = R1, R2 = R2, total = R1 + R2, esperado = (n1 + n2) * (n1 + n2 + 1) / 2,
+  U1 = R1 - n1 * (n1 + 1) / 2, U2 = R2 - n2 * (n2 + 1) / 2)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="yuen-pareado.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste de Yuen robusto pareado (Yuend)
-    </a>
-<a href="wilcoxon-assinado.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Wilcoxon signed-rank (pareado)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 6. Tamanho do efeito: probabilidade de superioridade e delta de Cliff
+U2 &lt;- R2 - n2 * (n2 + 1) / 2
+c(prob_superioridade = U2 / (n1 * n2), delta_de_Cliff = 2 * U2 / (n1 * n2) - 1)
+
+# 7. O efeito do valor extremo e da transformação
+semext &lt;- equipeB[equipeB &lt; 50]
+c(t_sem_extremo = t.test(equipeA, semext)$p.value,
+  MW_sem_extremo = wilcox.test(equipeA, semext)$p.value,
+  t_com_log = t.test(log(equipeA), log(equipeB))$p.value)
+
+# 8. Gráfico dos postos
+plot(postos, as.numeric(dados$equipe), pch = 19, yaxt = "n",
+     xlab = "Posto", ylab = "", ylim = c(0.5, 2.5))
+axis(2, at = 1:2, labels = c("equipe A", "equipe B"))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-mann-whitney" type="button">Copiar código</button></div><pre id="code-py-mann-whitney"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Dados: tempo até o reparo (horas) registrado por duas equipes de manutenção (dados fictícios).
+# A distribuição é assimétrica à direita, como é comum em tempos de atendimento.
+equipeA = np.array([1.6, 4.1, 2.8, 3.4, 5.2, 2.2, 2.4, 3.0, 1.2, 3.2, 1.8, 4.5, 3.7, 2.6, 2.0, 6.6])
+equipeB = np.array([60.0, 2.6, 2.0, 7.4, 4.5, 3.0, 4.2, 8.5, 6.7, 4.9, 3.9, 3.3, 3.6, 6.1, 5.6, 5.2])
+n1, n2 = len(equipeA), len(equipeB)
+for nome, g in [("equipe A", equipeA), ("equipe B", equipeB)]:
+    print(f"{nome}: n = {len(g)} | média = {g.mean():.3f} | mediana = {np.median(g):.2f} "
+          f"| DP = {g.std(ddof=1):.3f} | máximo = {g.max()}")
+
+# 1. Por que não usar o teste t aqui
+for nome, g in [("equipe A", equipeA), ("equipe B", equipeB)]:
+    print(f"Shapiro-Wilk ({nome}): p-valor = {stats.shapiro(g).pvalue:.6f}")
+tw = stats.ttest_ind(equipeA, equipeB, equal_var=False)
+print(f"Teste t de Welch: t = {tw.statistic:.4f}, p-valor = {tw.pvalue:.4f}  (não detecta diferença)")
+
+# 2. Postos: a base do método
+todos = np.concatenate([equipeA, equipeB])
+postos = stats.rankdata(todos)
+R1 = postos[:n1].sum(); R2 = postos[n1:].sum()
+print(f"\nSoma dos postos: equipe A = {R1:.1f} | equipe B = {R2:.1f} | total = {R1 + R2:.1f} = N(N+1)/2 = {(n1+n2)*(n1+n2+1)/2:.1f}")
+print("Maior tempo da equipe B (60,0 h) recebe o posto", int(postos[n1]), "- e não mais que isso: é só o maior.")
+
+# 3. Estatística U
+U1 = R1 - n1 * (n1 + 1) / 2
+U2 = R2 - n2 * (n2 + 1) / 2
+print(f"\nU1 = {R1:.1f} - {n1}x{n1+1}/2 = {U1:.1f} | U2 = {U2:.1f} | U1 + U2 = {U1+U2:.1f} = n1 x n2 = {n1*n2}")
+
+# 4. Teste (o scipy devolve U da primeira amostra)
+res = stats.mannwhitneyu(equipeA, equipeB, alternative="two-sided")
+print(f"\nMann-Whitney: U = {res.statistic:.1f}, p-valor = {res.pvalue:.5f}")
+
+# 5. Aproximação normal, com correção de continuidade e de empates
+N = n1 + n2
+mu_U = n1 * n2 / 2
+emp = np.unique(todos, return_counts=True)[1]
+correcao = np.sum(emp**3 - emp)
+var_U = n1 * n2 / 12 * ((N + 1) - correcao / (N * (N - 1)))
+z = (U1 - mu_U + 0.5) / np.sqrt(var_U) if U1 &lt; mu_U else (U1 - mu_U - 0.5) / np.sqrt(var_U)
+print(f"Aproximação normal: E(U) = {mu_U:.1f} | Var(U) = {var_U:.4f} | z = {z:.4f} | p-valor = {2*stats.norm.cdf(-abs(z)):.5f}")
+print(f"Empates: {int(np.sum(emp &gt; 1))} valores repetidos")
+
+# 6. Tamanho do efeito: probabilidade de superioridade e delta de Cliff
+PS = U2 / (n1 * n2)          # P(uma observação de B ser maior que uma de A)
+print(f"\nProbabilidade de superioridade P(B &gt; A) = {PS:.4f}")
+print(f"Delta de Cliff = 2 x {PS:.4f} - 1 = {2*PS - 1:.4f}")
+print(f"r = z / raiz(N) = {abs(z)/np.sqrt(N):.4f}")
+
+# 7. Estimativa de Hodges-Lehmann: mediana das diferenças entre todos os pares
+difs = np.array([b - a for b in equipeB for a in equipeA])
+print(f"\nDeslocamento de Hodges-Lehmann (mediana das {len(difs)} diferenças) = {np.median(difs):.3f} h")
+print(f"Diferença entre as medianas = {np.median(equipeB) - np.median(equipeA):.3f} h")
+
+# 8. O efeito do valor extremo
+semext = equipeB[equipeB &lt; 50]
+print(f"\nSem a observação de 60 h (n = {len(semext)}):")
+print(f"  teste t de Welch: p-valor = {stats.ttest_ind(equipeA, semext, equal_var=False).pvalue:.5f}")
+print(f"  Mann-Whitney:     p-valor = {stats.mannwhitneyu(equipeA, semext).pvalue:.5f}")
+print(f"Com log dos tempos, teste t de Welch: p-valor = {stats.ttest_ind(np.log(equipeA), np.log(equipeB), equal_var=False).pvalue:.5f}")
+
+# 9. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+ax[0].boxplot([equipeA, equipeB]); ax[0].set_xticks([1, 2]); ax[0].set_xticklabels(["equipe A", "equipe B"])
+for j, g in enumerate([equipeA, equipeB], 1): ax[0].scatter(np.full(len(g), j), g, alpha=0.6)
+ax[0].set_ylabel("Tempo até o reparo (h)")
+ax[1].scatter(postos[:n1], np.full(n1, 1), alpha=0.7); ax[1].scatter(postos[n1:], np.full(n2, 2), alpha=0.7)
+ax[1].set_yticks([1, 2]); ax[1].set_yticklabels(["equipe A", "equipe B"]); ax[1].set_xlabel("Posto")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">equipe A: n = 16 | média = 3.144 | mediana = 2.90 | DP = 1.425 | máximo = 6.6
+equipe B: n = 16 | média = 8.219 | mediana = 4.70 | DP = 13.922 | máximo = 60.0
+Shapiro-Wilk (equipe A): p-valor = 0.389049
+Shapiro-Wilk (equipe B): p-valor = 0.000000
+Teste t de Welch: t = -1.4505, p-valor = 0.1671  (não detecta diferença)
+
+Soma dos postos: equipe A = 191.5 | equipe B = 336.5 | total = 528.0 = N(N+1)/2 = 528.0
+Maior tempo da equipe B (60,0 h) recebe o posto 32 - e não mais que isso: é só o maior.
+
+U1 = 191.5 - 16x17/2 = 55.5 | U2 = 200.5 | U1 + U2 = 256.0 = n1 x n2 = 256
+
+Mann-Whitney: U = 55.5, p-valor = 0.00663
+Aproximação normal: E(U) = 128.0 | Var(U) = 703.3548 | z = -2.7148 | p-valor = 0.00663
+Empates: 5 valores repetidos
+
+Probabilidade de superioridade P(B &gt; A) = 0.7832
+Delta de Cliff = 2 x 0.7832 - 1 = 0.5664
+r = z / raiz(N) = 0.4799
+
+Deslocamento de Hodges-Lehmann (mediana das 256 diferenças) = 1.750 h
+Diferença entre as medianas = 1.800 h
+
+Sem a observação de 60 h (n = 15):
+  teste t de Welch: p-valor = 0.01106
+  Mann-Whitney:     p-valor = 0.01137
+Com log dos tempos, teste t de Welch: p-valor = 0.01183</pre></div><figure class="fig"><img src="../assets/resultados/mann-whitney.png" alt="Tempos na escala original e os mesmos dados em postos" loading="lazy"/><figcaption><strong>O valor extremo e o que acontece com ele.</strong> À esquerda, a escala original: o reparo de 60 h comprime todo o resto do gráfico e leva a média da equipe B para 8,2 h, quando sua mediana é 4,7 h. À direita, os mesmos dados em postos: aquele reparo vira simplesmente o posto 32, e fica claro que os tempos da equipe B se concentram nos postos altos. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descritivas</caption><thead><tr><th>Equipe</th><th>n</th><th>Média</th><th>Mediana</th><th>Desvio-padrão</th><th>Máximo</th></tr></thead><tbody><tr><td>A</td><td>16</td><td>3,144 h</td><td>2,90 h</td><td>1,425</td><td>6,6 h</td></tr><tr><td>B</td><td>16</td><td>8,219 h</td><td>4,70 h</td><td>13,922</td><td>60,0 h</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Teste</th><th>Estatística</th><th>Valor-p</th><th>Decisão (5%)</th></tr></thead><tbody><tr><td>Shapiro–Wilk (equipe A)</td><td>p = 0,389</td><td>—</td><td>Normalidade plausível</td></tr><tr><td>Shapiro–Wilk (equipe B)</td><td>p &lt; 0,000001</td><td>—</td><td>Normalidade rejeitada</td></tr><tr><td>Teste t de Welch</td><td>t = −1,4505</td><td>0,1671</td><td>Não rejeita</td></tr><tr><td>Mann–Whitney</td><td>U = 55,5</td><td>0,00663</td><td>Rejeita</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Detalhes do cálculo e do efeito</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Soma dos postos (A / B)</td><td>191,5 / 336,5 (total 528 = N(N+1)/2)</td></tr><tr><td>U₁ / U₂</td><td>55,5 / 200,5 (soma = 256 = n₁n₂)</td></tr><tr><td>z com correção de continuidade e de empates</td><td>−2,7148</td></tr><tr><td>Probabilidade de superioridade P(B &gt; A)</td><td>0,783</td></tr><tr><td>Delta de Cliff</td><td>0,566</td></tr><tr><td>Hodges–Lehmann</td><td>1,750 h</td></tr><tr><td>Diferença entre as medianas</td><td>1,800 h</td></tr></tbody></table></div><p><strong>Leitura:</strong> há evidência clara de que a equipe B leva mais tempo. Escolhido um reparo de cada equipe ao acaso, a probabilidade de o da equipe B ser mais demorado é de 78%. O deslocamento típico é de aproximadamente 1,75 hora.</p><p>O contraste com o teste t é o ponto central do exemplo. O teste de Welch não detecta nada (p = 0,167), porque o reparo de 60 h eleva o desvio-padrão da equipe B para 13,9 h — quase quatro vezes a diferença entre as médias. O teste de Mann–Whitney não se altera por isso: aquele valor contribui com o posto 32, o mesmo que contribuiria se fosse 9 h.</p><div class="table-wrap"><table class="method-table"><caption>Verificando o papel do valor extremo</caption><thead><tr><th>Análise</th><th>Valor-p</th></tr></thead><tbody><tr><td>Teste t de Welch, com todos os dados</td><td>0,1671</td></tr><tr><td>Teste t de Welch, sem o reparo de 60 h</td><td>0,0111</td></tr><tr><td>Mann–Whitney, sem o reparo de 60 h</td><td>0,0114</td></tr><tr><td>Teste t de Welch sobre o logaritmo dos tempos</td><td>0,0118</td></tr></tbody></table></div><p>Removido o valor extremo, o teste t concorda com o Mann–Whitney; e o mesmo acontece ao trabalhar com o logaritmo dos tempos, que é a transformação natural para variáveis desse tipo. As três rotas levam à mesma conclusão — o que reforça que o problema estava na escala e no valor extremo, e não na existência da diferença.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Dizer que o teste compara medianas sem verificar as formas</td><td>Só vale se as distribuições tiverem forma e dispersão semelhantes.</td></tr><tr><td>Chamar de “teste t não paramétrico”</td><td>Ele não compara médias; compara distribuições.</td></tr><tr><td>Usar em dados pareados</td><td>Use o <a href="wilcoxon-assinado.html">Wilcoxon de postos sinalizados</a>.</td></tr><tr><td>Aplicar a três ou mais grupos, dois a dois</td><td>Use <a href="kruskal.html">Kruskal–Wallis</a> e depois comparações múltiplas.</td></tr><tr><td>Ignorar o aviso de empates</td><td>O valor-p passa a ser aproximado.</td></tr><tr><td>Escolher entre t e Mann–Whitney pelo teste de normalidade</td><td>Decida pelo tipo de dado e pela pergunta, antes de ver os resultados.</td></tr><tr><td>Reportar só o valor-p</td><td>Inclua a probabilidade de superioridade ou o Hodges–Lehmann.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="twelch.html">Teste t de Welch</a></td><td>Interesse na diferença de médias e dados sem assimetria extrema.</td></tr><tr><td><a href="yuen.html">Teste de Yuen</a></td><td>Caudas pesadas, com interesse na parte central.</td></tr><tr><td>Transformação (log) seguida de teste t</td><td>A assimetria é multiplicativa e a escala transformada faz sentido.</td></tr><tr><td>Teste de Brunner–Munzel</td><td>As dispersões diferem muito entre os grupos.</td></tr><tr><td><a href="bootstrap.html">Bootstrap</a></td><td>Qualquer estatística, com distribuição desconhecida.</td></tr><tr><td><a href="kruskal.html">Kruskal–Wallis</a></td><td>Três ou mais grupos.</td></tr><tr><td><a href="logrank.html">Teste log-rank</a></td><td>A variável é tempo até um evento, com censura.</td></tr></tbody></table></div><ol class="steps"><li>Examine boxplots e histogramas dos dois grupos.</li><li>Verifique se as formas são parecidas; isso define como interpretar.</li><li>Aplique o teste e observe avisos de empates.</li><li>Reporte o tamanho de efeito, não só o valor-p.</li><li>Se houver valores extremos, investigue-os e compare rotas alternativas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>WILCOXON, Frank. Individual comparisons by ranking methods. <em>Biometrics Bulletin</em>, v. 1, n. 6, p. 80-83, 1945.</li><li>MANN, Henry B.; WHITNEY, Donald R. On a test of whether one of two random variables is stochastically larger than the other. <em>The Annals of Mathematical Statistics</em>, v. 18, n. 1, p. 50-60, 1947.</li><li>HODGES JR., Joseph L.; LEHMANN, Erich L. Estimates of location based on rank tests. <em>The Annals of Mathematical Statistics</em>, v. 34, n. 2, p. 598-611, 1963.</li><li>HOLLANDER, Myles; WOLFE, Douglas A.; CHICKEN, Eric. <em>Nonparametric statistical methods.</em> 3. ed. Hoboken: Wiley, 2014.</li><li>CONOVER, William J. <em>Practical nonparametric statistics.</em> 3. ed. New York: Wiley, 1999.</li><li>DIVINE, George W. et al. The Wilcoxon-Mann-Whitney procedure fails as a test of medians. <em>The American Statistician</em>, v. 72, n. 3, p. 278-286, 2018.</li><li>BRUNNER, Edgar; MUNZEL, Ullrich. The nonparametric Behrens-Fisher problem: asymptotic theory and a small-sample approximation. <em>Biometrical Journal</em>, v. 42, n. 1, p. 17-25, 2000.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>wilcox.test</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Duas amostras independentes de uma variável ao menos ordinal; não exige normalidade.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="gehan.html"><span>← ANTERIOR</span>Teste generalizado de Wilcoxon–Gehan</a><a href="wilcoxon-assinado.html"><span>PRÓXIMO →</span>Wilcoxon signed-rank (pareado)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

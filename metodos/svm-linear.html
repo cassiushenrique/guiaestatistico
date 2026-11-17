@@ -4,308 +4,335 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Máquinas de vetores de suporte lineares: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Máquinas de vetores de suporte lineares | Estatística e Ciência de Dados
-  </title>
+<meta content="Máquinas de vetores de suporte lineares: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Máquinas de vetores de suporte lineares | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Máquinas de vetores de suporte lineares
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 17 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Máquinas de vetores de suporte lineares
-    </h1>
-<p class="detail-lead">
-     Separa classes por uma fronteira linear que busca boa capacidade de generalização.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/svm-linear.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Separa classes por uma fronteira linear que busca boa capacidade de generalização.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Padronização, variável resposta categórica, seleção de custo C por CV e kernel linear adequado.</li><li>Lidar com classes desbalanceadas.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\min_{\mathbf w,b,\boldsymbol\xi}\frac12\|\mathbf w\|^2+C\sum_i\xi_i\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da nova unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(Y\)
-        </dt>
-<dd>
-         classe de resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(K\)
-        </dt>
-<dd>
-         número de vizinhos ou classes, conforme a definição do método
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       C controla compromisso entre margem e erros. Critério preditivo é desempenho validado, não \(p&lt;0{,}05\) .
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar transmissão de veículos a partir de massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-svm-linear" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-svm-linear"><code># Máquinas de vetores de suporte lineares ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Máquinas de vetores de suporte lineares</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · CLASSIFICADORES</span><h1>Máquinas de vetores de suporte lineares</h1><p class="detail-lead">O hiperplano de margem máxima, com violações pagas a um custo C — definido apenas pelos pontos na margem ou do lado errado.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/svm-linear.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/svm-linear.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a SVM linear</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A máquina de vetores de suporte (SVM) linear procura, entre todos os hiperplanos que separam as duas classes, o que deixa a maior <strong>margem</strong> — a maior faixa vazia entre as classes. Quando as classes não são separáveis, como quase sempre, ela admite violações da margem, cada uma com um custo proporcional ao quanto viola. O resultado depende só dos pontos que ficam na margem ou do lado errado: os <strong>vetores de suporte</strong>.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: SVM linear" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O objetivo</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Maior margem</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">entre as classes</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A perda</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">Hinge: max(0, 1 − yf)</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O parâmetro</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">C: custo de</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">violar a margem</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A solução</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Depende só dos</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">vetores de suporte</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A escala</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Padronizar é</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">obrigatório</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que falta</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Probabilidades</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">(Platt)</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">SVM linear</text></svg><figcaption>Visão geral da SVM linear. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Uma regressão logística com outra perda</strong><p>Escrita como minimização, a SVM linear é "perda hinge + penalidade ridge"; a regressão logística penalizada é "perda logística + penalidade ridge". As duas perdas são parecidas para pontos mal classificados e diferem nos bem classificados: a logística continua a puxá-los, a hinge os ignora a partir de uma distância. Por isso as duas fronteiras costumam ser parecidas, como mostra esta ficha.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a SVM linear</h2><p>A fronteira é o hiperplano \(f(x)=w^\top x+b=0\); classifica-se pelo sinal de \(f(x)\). Com os rótulos codificados como \(y=\pm1\), um ponto está corretamente classificado e fora da margem quando \(y\,f(x)\ge 1\). A largura da margem é \(2/\lVert w\rVert\): maximizar a margem é minimizar \(\lVert w\rVert\).</p><figure class="fig"><img src="../assets/resultados/svm-linear-didatica.png" alt="Hiperplano, margens e vetores de suporte para dois valores de C, no plano altitude por pH" loading="lazy"/><figcaption><strong>O efeito de C em duas variáveis.</strong> Linha cheia: a fronteira; tracejadas: as margens, onde \(y\,f(x)=\pm1\); círculos: os vetores de suporte. Com C = 0,01 (esquerda), violar a margem é barato: a margem é larga e 390 dos 600 lotes são vetores de suporte. Com C = 1 (direita), a margem estreita e o número de vetores de suporte cai para 294. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A perda de cada lote segundo sua posição</caption><thead><tr><th>Posição</th><th>\(y\,f(x)\)</th><th>Perda hinge</th><th>É vetor de suporte?</th></tr></thead><tbody><tr><td>Do lado certo, fora da margem</td><td>> 1</td><td>0</td><td>Não</td></tr><tr><td>Sobre a margem</td><td>= 1</td><td>0</td><td>Sim</td></tr><tr><td>Do lado certo, dentro da margem</td><td>entre 0 e 1</td><td>\(1-yf\)</td><td>Sim</td></tr><tr><td>Do lado errado</td><td>≤ 0</td><td>\(1-yf\ge1\)</td><td>Sim</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>A margem é medida em distância euclidiana.</td><td><code>scale = TRUE</code> (padrão no e1071).</td></tr><tr><td>Fronteira aproximadamente linear</td><td>É o que o modelo representa.</td><td>Compare com o núcleo radial.</td></tr><tr><td>C escolhido por validação</td><td>Controla o compromisso viés-variância.</td><td><code>tune()</code>.</td></tr><tr><td>Probabilidades</td><td>A SVM não as produz.</td><td>Platt (<code>probability = TRUE</code>).</td></tr><tr><td>Classes desequilibradas</td><td>A margem pode favorecer a maioria.</td><td><code>class.weights</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\min_{w,\,b,\,\xi}\ \  \frac12\lVert w\rVert^2+C\sum_{i=1}^{n}\xi_i\]\[\begin{aligned}&\text{sujeito a}\quad y_i\left(w^\top x_i+b\right) \\ &\ge 1-\xi_i,\end{aligned}\]\[\xi_i\ge0\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(w,\ b\)</dt><dd>vetor normal ao hiperplano e intercepto</dd></div><div><dt>\(\xi_i\)</dt><dd>folga: quanto o ponto \(i\) viola a margem</dd></div><div><dt>\(C\)</dt><dd>custo de cada unidade de violação</dd></div><div><dt>\(y_i\in\{-1,+1\}\)</dt><dd>o rótulo</dd></div></dl><p>O problema equivale a minimizar a perda hinge com penalidade ridge:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\min_{w,\,b}\ \sum_{i=1}^{n}\max\left[0,\ 1-y_i\left(w^\top x_i+b\right)\right] \\ &\quad +\lambda\lVert w\rVert^2,\end{aligned}\]\[\lambda=\frac{1}{2C}\]</div><p>A solução tem a forma \(w=\sum_i\alpha_iy_ix_i\), com \(\alpha_i&gt;0\) apenas para os vetores de suporte: os demais pontos poderiam ser retirados sem mudar nada.</p><h3>Exemplo numérico: três lotes, com altitude e pH padronizados e C = 1</h3><p>O ajuste dá \(w=(1{,}2245;\ 0{,}0793)\) e \(b=-0{,}6364\).</p><div class="table-wrap"><table class="method-table"><caption>A função de decisão e a perda</caption><thead><tr><th>Lote</th><th>z altitude</th><th>z pH</th><th>f(x)</th><th>Classe</th><th>y·f</th><th>Perda hinge</th></tr></thead><tbody><tr><td>11</td><td>1,153</td><td>−1,424</td><td>0,662</td><td>+1</td><td>0,662</td><td>0,338</td></tr><tr><td>26</td><td>−1,300</td><td>0,086</td><td>−2,221</td><td>−1</td><td>2,221</td><td>0,000</td></tr><tr><td>41</td><td>−1,034</td><td>−1,818</td><td>−2,047</td><td>−1</td><td>2,047</td><td>0,000</td></tr></tbody></table></div><div class="worked"><strong>A conta do lote 11</strong><p>\[\begin{aligned}f &= 1{,}225\times1{,}153 \\ &\quad +0{,}079\times(-1{,}424) \\ &\quad -0{,}636 \\ &= 0{,}662.\end{aligned}\] O lote é fino (\(y=+1\)) e está do lado certo, mas dentro da margem: \(y f=0{,}662&lt;1\), perda \(1-0{,}662=0{,}338\). Os lotes 26 e 41 estão do lado certo e longe da margem: perda zero, e não influenciam o ajuste.</p><p>Nos 600 lotes: 307 estão fora da margem com perda zero, 161 dentro da margem do lado certo e 132 do lado errado. O ajuste declarou 294 vetores de suporte — exatamente os 293 lotes com perda positiva mais um sobre a margem.</p></div><h3>Propriedades</h3><ul class="checklist"><li>A solução depende só dos vetores de suporte.</li><li>Problema convexo: solução única, sem mínimos locais.</li><li>C grande: margem estreita, menos violações, mais variância.</li><li>A perda hinge não estima probabilidades.</li><li>Com o núcleo linear, equivale a uma logística penalizada com outra perda.</li><li>A versão com núcleos não lineares está na ficha <a href="svm-rbf.html">SVM com núcleo radial</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Pesos w (padronizados)</td><td>Direção da fronteira.</td><td>Não são efeitos em log-odds.</td></tr><tr><td>Número de vetores de suporte</td><td>Quantos pontos definem a fronteira.</td><td>Muitos: classes muito sobrepostas.</td></tr><tr><td>Valor de decisão f(x)</td><td>Distância com sinal à fronteira.</td><td>Não é probabilidade.</td></tr><tr><td>Probabilidade de Platt</td><td>Logística ajustada sobre f(x).</td><td>Ajustada por validação interna.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>svm()</code>, do pacote <code>e1071</code> (interface para a biblioteca LIBSVM), com <code>kernel = "linear"</code> e <code>cost</code> = C. As variáveis são padronizadas por padrão (<code>scale = TRUE</code>). <code>tune()</code> escolhe C por validação cruzada; <code>probability = TRUE</code> ajusta o modelo de Platt para as probabilidades. Para dados grandes, <code>LiblineaR</code> é muito mais rápido. Em Python, <code>sklearn.svm.SVC(kernel="linear")</code> ou <code>LinearSVC</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-svm-linear-min" type="button">Copiar código</button></div><pre id="code-svm-linear-min"><code>library(e1071)
+aj &lt;- tune(svm, fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+           kernel = "linear", ranges = list(cost = 10^(-3:2)))
+summary(aj)
+aj$best.model
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-svm-linear" type="button">Copiar código</button></div><pre id="code-svm-linear"><code># Máquinas de vetores de suporte lineares: exemplo completo ----
+# Pacote: e1071 (interface para a biblioteca LIBSVM)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("e1071", quietly = TRUE)) install.packages("e1071")
 library(e1071)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(am))
-i &lt;- sample.int(nrow(d), 22)
-ajuste &lt;- svm(classe ~ wt + hp, data = d[i, ],
-              kernel = "linear", cost = 1, scale = TRUE)
-pred &lt;- predict(ajuste, newdata = d[-i, ])
-print(table(real = d$classe[-i], previsto = pred))
+vars &lt;- c("alt", "temp", "chuva", "somb", "nfol", "ph")
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. Em duas dimensões, para ver a margem
+m2 &lt;- svm(fino_f ~ alt + ph, data = cafe, kernel = "linear", cost = 1, scale = TRUE)
+m2$tot.nSV                                  # número de vetores de suporte
+plot(m2, data = cafe, formula = ph ~ alt)   # região de decisão e vetores de suporte
+# coeficientes na escala padronizada: w = soma(alfa_i y_i x_i)
+w &lt;- t(m2$coefs) %*% m2$SV; b &lt;- -m2$rho
+w; b; 2 / sqrt(sum(w^2))                     # margem
 
+# ---- 2. Seis variáveis: escolher C (cost) por validação cruzada
+set.seed(1)
+aj &lt;- tune(svm, fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+           kernel = "linear", ranges = list(cost = c(0.001, 0.01, 0.1, 1, 10, 100)),
+           tunecontrol = tune.control(cross = 10))
+summary(aj)                                 # erro de cada C
+plot(aj)
+melhor &lt;- aj$best.model
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="naive-bayes.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Naive Bayes
-    </a>
-<a href="svm-rbf.html">
-<span>
-      PRÓXIMO →
-     </span>
-     SVM com kernel radial (RBF)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Comparação com a regressão logística
+g &lt;- glm(fino ~ alt + temp + chuva + somb + nfol + ph,
+         data = transform(cafe, alt = scale(alt), temp = scale(temp), chuva = scale(chuva),
+                          somb = scale(somb), nfol = scale(nfol), ph = scale(ph)),
+         family = binomial)
+cbind(svm = as.vector(t(melhor$coefs) %*% melhor$SV), logistica = coef(g)[-1])
+
+# ---- 4. Probabilidades pelo método de Platt
+mp &lt;- svm(fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+          kernel = "linear", cost = aj$best.parameters$cost, probability = TRUE)
+p &lt;- attr(predict(mp, cafe, probability = TRUE), "probabilities")[, "fino"]
+
+# ---- 5. Uma variável nova faz o que a fronteira linear não faz: o degrau
+cafe$acima &lt;- as.numeric(cafe$alt &gt;= 1050)
+set.seed(1)
+summary(tune(svm, fino_f ~ alt + temp + chuva + somb + nfol + ph + acima, data = cafe,
+             kernel = "linear", ranges = list(cost = aj$best.parameters$cost),
+             tunecontrol = tune.control(cross = 10)))$best.performance
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-svm-linear" type="button">Copiar código</button></div><pre id="code-py-svm-linear"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.svm import SVC, LinearSVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+y=FINO; ys=2*y-1                        # a SVM usa rótulos -1 e +1
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (+1) ou não (-1). Erro de Bayes = %s.'%c(ERRO_BAYES))
+Z,mu,sd=padroniza(X)
+
+print('\n'+'='*70)
+print('PRIMEIRO, EM DUAS DIMENSÕES: altitude e pH, padronizadas')
+Z2=Z[:,[0,5]]
+print()
+print('%10s %12s %12s %12s %10s %12s'%('C','w_alt','w_pH','b','n. vet. sup.','margem 2/|w|'))
+for C in [0.01,0.1,1,10,100]:
+    m=SVC(kernel='linear',C=C).fit(Z2,ys); w=m.coef_[0]; b=m.intercept_[0]
+    print('%10s %12s %12s %12s %10d %12s'%(c(C,2),c(w[0]),c(w[1]),c(b),m.n_support_.sum(),c(2/np.linalg.norm(w))))
+print()
+print('C pequeno: margem LARGA, muitos lotes dentro dela (muitos vetores de')
+print('suporte). C grande: margem estreita, a fronteira segue os lotes difíceis.')
+
+print('\n'+'='*70)
+print('A FUNÇÃO DE DECISÃO PARA UM LOTE, e a perda hinge')
+m=SVC(kernel='linear',C=1).fit(Z2,ys); w=m.coef_[0]; b=m.intercept_[0]
+for i in [10,25,40]:
+    f=float(Z2[i]@w+b); marg=ys[i]*f
+    print('  lote %d: z_alt = %s, z_pH = %s, f(x) = %s*%s + %s*%s + (%s) = %s'%(i+1,c(Z2[i,0],3),c(Z2[i,1],3),c(w[0],3),c(Z2[i,0],3),c(w[1],3),c(Z2[i,1],3),c(b,3),c(f,3)))
+    print('           classe real %+d, y*f = %s, perda hinge max(0, 1 - y*f) = %s'%(ys[i],c(marg,3),c(max(0,1-marg),3)))
+fx=Z2@w+b; mg=ys*fx
+print()
+print('  lotes com y*f &gt; 1 (fora da margem, perda zero):     %d'%np.sum(mg&gt;1+1e-6))
+print('  lotes com 0 &lt; y*f &lt;= 1 (dentro da margem, certos):  %d'%np.sum((mg&gt;0)&amp;(mg&lt;=1+1e-6)))
+print('  lotes com y*f &lt;= 0 (do lado errado):               %d'%np.sum(mg&lt;=0))
+print('  vetores de suporte declarados pelo ajuste:          %d'%m.n_support_.sum())
+print('Só os vetores de suporte determinam a fronteira: os %d lotes de perda'%np.sum(mg&gt;1+1e-6))
+print('zero poderiam ser removidos sem mudar nada.')
+
+print('\n'+'='*70)
+print('COM AS SEIS VARIÁVEIS: escolhendo C por validação cruzada')
+print()
+print('%10s %16s %14s'%('C','erro 10-fold','vet. suporte'))
+best=(1,None)
+for C in [0.001,0.01,0.1,1,10,100]:
+    f=lambda C=C: make_pipeline(StandardScaler(),SVC(kernel='linear',C=C))
+    er,_=cv_clf(f,X,y,10,0,5); nsv=f().fit(X,y)[-1].n_support_.sum()
+    print('%10s %16s %14d'%(c(C,3),c(er),nsv))
+    if er&lt;best[0]: best=(er,C)
+Cb=best[1]
+m=make_pipeline(StandardScaler(),SVC(kernel='linear',C=Cb)).fit(X,y)
+print()
+print('Coeficientes (C = %s), na escala padronizada:'%c(Cb,3))
+lg=make_pipeline(StandardScaler(),LogisticRegression(C=1e4,max_iter=3000)).fit(X,y)
+wl=lg[-1].coef_[0]; ws=m[-1].coef_[0]
+print('%-14s %12s %14s %18s'%('variável','SVM','logística','razão SVM/log.'))
+for j,k in enumerate(NOMES): print('%-14s %12s %14s %18s'%(ROT[k],c(ws[j]),c(wl[j]),c(ws[j]/wl[j],3)))
+cos=float(ws@wl/np.linalg.norm(ws)/np.linalg.norm(wl))
+print('Cosseno do ângulo entre as duas direções = %s.'%c(cos))
+print('A altitude domina as duas. Mas a temperatura troca de sinal: ela tem')
+print('correlação %s com a altitude, e a SVM com C pequeno (regularização'%c(np.corrcoef(X[:,0],X[:,1])[0,1],3))
+print('forte) reparte o efeito entre as duas, como faria a regressão ridge;')
+print('a logística quase sem penalidade não reparte.')
+
+print('\n'+'='*70)
+print('SEM PADRONIZAR')
+er1,_=cv_clf(lambda: SVC(kernel='linear',C=Cb,max_iter=200000),X,y,10,0,1)
+er2,_=cv_clf(lambda: make_pipeline(StandardScaler(),SVC(kernel='linear',C=Cb)),X,y,10,0,1)
+print('  erro 10-fold sem padronizar = %s | padronizado = %s'%(c(er1),c(er2)))
+
+print('\n'+'='*70)
+print('PROBABILIDADES: a SVM não as dá. Platt ajusta uma logística ao f(x).')
+er,ll,br=cv_clf(lambda: make_pipeline(StandardScaler(),SVC(kernel='linear',C=Cb,probability=True,random_state=0)),X,y,10,0,3,prob=True)
+er2,ll2,br2=cv_clf(lambda: make_pipeline(StandardScaler(),LogisticRegression(C=1e4,max_iter=3000)),X,y,10,0,3,prob=True)
+print()
+print('%-30s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+print('%-30s %10s %10s %10s'%('SVM linear + Platt',c(er),c(ll),c(br)))
+print('%-30s %10s %10s %10s'%('regressão logística',c(er2),c(ll2),c(br2)))
+print('%-30s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+
+print('\n'+'='*70)
+print('UMA FRONTEIRA LINEAR NÃO VÊ O DEGRAU COMO DEGRAU')
+print('Mas pode-se dar a ela uma variável nova: o indicador "altitude &gt;= 1050".')
+Xd=np.column_stack([X,(X[:,0]&gt;=1050).astype(float)])
+Xi=np.column_stack([Xd,(X[:,1]&gt;20.5)*X[:,3],(X[:,1]&lt;=20.5)*X[:,3]])
+for nm,A in [('seis variáveis originais',X),('+ indicador do degrau',Xd),('+ degrau + sombra por clima',Xi)]:
+    er,_=cv_clf(lambda: make_pipeline(StandardScaler(),SVC(kernel='linear',C=Cb)),A,y,10,0,5)
+    print('  %-32s erro 10-fold = %s'%(nm,c(er)))
+print('A SVM linear é exatamente tão boa quanto as variáveis que recebe.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (+1) ou não (-1). Erro de Bayes = 0,1596.
+
+======================================================================
+PRIMEIRO, EM DUAS DIMENSÕES: altitude e pH, padronizadas
+
+         C        w_alt         w_pH            b n. vet. sup. margem 2/|w|
+      0,01       0,9210       0,0429      -0,5065        390       2,1692
+      0,10       1,1775       0,0892      -0,6295        307       1,6937
+      1,00       1,2245       0,0793      -0,6364        294       1,6299
+     10,00       1,2252       0,0795      -0,6365        294       1,6290
+    100,00       1,2267       0,0804      -0,6385        293       1,6268
+
+C pequeno: margem LARGA, muitos lotes dentro dela (muitos vetores de
+suporte). C grande: margem estreita, a fronteira segue os lotes difíceis.
+
+======================================================================
+A FUNÇÃO DE DECISÃO PARA UM LOTE, e a perda hinge
+  lote 11: z_alt = 1,153, z_pH = -1,424, f(x) = 1,225*1,153 + 0,079*-1,424 + (-0,636) = 0,662
+           classe real +1, y*f = 0,662, perda hinge max(0, 1 - y*f) = 0,338
+  lote 26: z_alt = -1,300, z_pH = 0,086, f(x) = 1,225*-1,300 + 0,079*0,086 + (-0,636) = -2,221
+           classe real -1, y*f = 2,221, perda hinge max(0, 1 - y*f) = 0,000
+  lote 41: z_alt = -1,034, z_pH = -1,818, f(x) = 1,225*-1,034 + 0,079*-1,818 + (-0,636) = -2,047
+           classe real -1, y*f = 2,047, perda hinge max(0, 1 - y*f) = 0,000
+
+  lotes com y*f &gt; 1 (fora da margem, perda zero):     307
+  lotes com 0 &lt; y*f &lt;= 1 (dentro da margem, certos):  161
+  lotes com y*f &lt;= 0 (do lado errado):               132
+  vetores de suporte declarados pelo ajuste:          294
+Só os vetores de suporte determinam a fronteira: os 307 lotes de perda
+zero poderiam ser removidos sem mudar nada.
+
+======================================================================
+COM AS SEIS VARIÁVEIS: escolhendo C por validação cruzada
+
+         C     erro 10-fold   vet. suporte
+     0,001           0,3400            410
+     0,010           0,2193            370
+     0,100           0,2310            305
+     1,000           0,2333            292
+    10,000           0,2333            291
+   100,000           0,2330            290
+
+Coeficientes (C = 0,010), na escala padronizada:
+variável                SVM      logística     razão SVM/log.
+Altitude             0,7392         1,9080              0,387
+Temperatura         -0,2501         0,2486             -1,006
+Chuva               -0,0624        -0,1879              0,332
+Sombreamento        -0,0900        -0,0307              2,928
+N foliar             0,1249         0,2661              0,469
+pH                   0,0716         0,0999              0,717
+Cosseno do ângulo entre as duas direções = 0,8963.
+A altitude domina as duas. Mas a temperatura troca de sinal: ela tem
+correlação -0,822 com a altitude, e a SVM com C pequeno (regularização
+forte) reparte o efeito entre as duas, como faria a regressão ridge;
+a logística quase sem penalidade não reparte.
+
+======================================================================
+SEM PADRONIZAR
+  erro 10-fold sem padronizar = 0,2350 | padronizado = 0,2183
+
+======================================================================
+PROBABILIDADES: a SVM não as dá. Platt ajusta uma logística ao f(x).
+
+modelo                               erro   log-loss      Brier
+SVM linear + Platt                 0,2178     0,4547     0,1470
+regressão logística                0,2300     0,4472     0,1469
+erro de Bayes                      0,1596
+
+======================================================================
+UMA FRONTEIRA LINEAR NÃO VÊ O DEGRAU COMO DEGRAU
+Mas pode-se dar a ela uma variável nova: o indicador "altitude &gt;= 1050".
+  seis variáveis originais         erro 10-fold = 0,2193
+  + indicador do degrau            erro 10-fold = 0,2050
+  + degrau + sombra por clima      erro 10-fold = 0,2053
+A SVM linear é exatamente tão boa quanto as variáveis que recebe.</pre></div><figure class="fig"><img src="../assets/resultados/svm-linear.png" alt="Erro validado e número de vetores de suporte em função de C, e coeficientes da SVM contra os da logística" loading="lazy"/><figcaption><strong>A aplicação em duas vistas.</strong> À esquerda, o erro validado (vermelho) e o número de vetores de suporte (azul) em função de C: com C = 0,001 a SVM prevê sempre "não fino"; o mínimo está em C = 0,01. À direita, os coeficientes da SVM e da regressão logística, na escala padronizada. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Em duas dimensões (altitude e pH padronizados)</caption><thead><tr><th>C</th><th>w altitude</th><th>w pH</th><th>b</th><th>Vetores de suporte</th><th>Margem 2/|w|</th></tr></thead><tbody><tr><td>0,01</td><td>0,9210</td><td>0,0429</td><td>−0,5065</td><td>390</td><td>2,1692</td></tr><tr><td>0,10</td><td>1,1775</td><td>0,0892</td><td>−0,6295</td><td>307</td><td>1,6937</td></tr><tr><td>1,00</td><td>1,2245</td><td>0,0793</td><td>−0,6364</td><td>294</td><td>1,6299</td></tr><tr><td>100,00</td><td>1,2267</td><td>0,0804</td><td>−0,6385</td><td>293</td><td>1,6268</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Com as seis variáveis: escolha de C</caption><thead><tr><th>C</th><th>Erro 10-fold</th><th>Vetores de suporte</th></tr></thead><tbody><tr><td>0,001</td><td>0,3400</td><td>410</td></tr><tr><td><strong>0,010</strong></td><td><strong>0,2193</strong></td><td><strong>370</strong></td></tr><tr><td>0,100</td><td>0,2310</td><td>305</td></tr><tr><td>1,000</td><td>0,2333</td><td>292</td></tr><tr><td>100,000</td><td>0,2330</td><td>290</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Coeficientes padronizados: SVM (C = 0,01) e logística</caption><thead><tr><th>Variável</th><th>SVM</th><th>Logística</th><th>Razão</th></tr></thead><tbody><tr><td>Altitude</td><td>0,7392</td><td>1,9080</td><td>0,387</td></tr><tr><td>Temperatura</td><td>−0,2501</td><td>0,2486</td><td>−1,006</td></tr><tr><td>Chuva</td><td>−0,0624</td><td>−0,1879</td><td>0,332</td></tr><tr><td>Sombreamento</td><td>−0,0900</td><td>−0,0307</td><td>2,928</td></tr><tr><td>N foliar</td><td>0,1249</td><td>0,2661</td><td>0,469</td></tr><tr><td>pH</td><td>0,0716</td><td>0,0999</td><td>0,717</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Probabilidades (10 dobras × 3)</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>SVM linear + Platt</td><td>0,2178</td><td>0,4547</td><td>0,1470</td></tr><tr><td>Regressão logística</td><td>0,2300</td><td>0,4472</td><td>0,1469</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A SVM linear é tão boa quanto as variáveis que recebe</caption><thead><tr><th>Variáveis</th><th>Erro 10-fold</th></tr></thead><tbody><tr><td>As seis originais</td><td>0,2193</td></tr><tr><td>+ indicador "altitude ≥ 1.050"</td><td>0,2050</td></tr><tr><td>+ indicador + sombra separada por clima</td><td>0,2053</td></tr></tbody></table></div><p><strong>Leitura:</strong> com C = 0,001 a penalidade domina, \(w\) é praticamente zero, e a SVM prevê "não fino" para todos (erro 0,3400 = prevalência). Com C = 0,01, o erro cai para 0,2193; daí em diante a margem estreita e o erro sobe ligeiramente. A SVM linear fica no nível da logística — o esperado, já que as duas têm fronteira linear.</p><p><strong>As direções das duas fronteiras</strong> formam um ângulo de cosseno 0,8963: parecidas, não iguais. A diferença maior está na temperatura, que troca de sinal (−0,2501 na SVM, +0,2486 na logística). Com altitude e temperatura correlacionadas em −0,822, a SVM com C pequeno (regularização forte) reparte o efeito entre as duas, como faria a <a href="ridge.html">regressão ridge</a>; a logística, quase sem penalidade, põe quase tudo na altitude.</p><p><strong>A última tabela é a lição prática.</strong> A fronteira linear não representa o degrau em 1.050 m. Dando à SVM uma variável indicadora do degrau, o erro cai de 0,2193 para 0,2050 — ainda acima da árvore de três folhas (0,1920), mas perto dela. Acrescentar a interação sombra × clima não ajudou mais (0,2053). Um modelo linear é tão bom quanto a representação das variáveis; a ficha seguinte mostra como os núcleos constroem essa representação automaticamente.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Não padronizar</td><td>A margem é euclidiana; padronize.</td></tr><tr><td>Usar C padrão sem validar</td><td>Escolha C com <code>tune()</code>.</td></tr><tr><td>Tratar f(x) como probabilidade</td><td>Use Platt ou outro calibrador.</td></tr><tr><td>Interpretar w como efeitos em log-odds</td><td>São direções de uma fronteira de margem máxima.</td></tr><tr><td>Esquecer o desequilíbrio das classes</td><td><code>class.weights</code> ou limiar.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="logistica.html">Regressão logística</a></td><td>Quando se quer probabilidades e inferência.</td></tr><tr><td><a href="svm-rbf.html">SVM com núcleo radial</a></td><td>Fronteiras curvas.</td></tr><tr><td><a href="lda.html">LDA</a></td><td>Classes normais com covariância comum.</td></tr><tr><td>Logística penalizada (<code>glmnet</code>)</td><td>Muitas variáveis, com seleção.</td></tr><tr><td>LiblineaR</td><td>Milhões de observações ou variáveis (texto).</td></tr></tbody></table></div><ol class="steps"><li>Padronize as variáveis.</li><li>Escolha C por validação cruzada.</li><li>Compare com a logística.</li><li>Se as probabilidades importam, use Platt ou a logística.</li><li>Se o erro estaciona, experimente variáveis derivadas ou um núcleo não linear.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>CORTES, Corinna; VAPNIK, Vladimir. Support-vector networks. <em>Machine Learning</em>, v. 20, n. 3, p. 273-297, 1995.</li><li>VAPNIK, Vladimir N. <em>The nature of statistical learning theory.</em> 2. ed. New York: Springer, 2000.</li><li>BOSER, Bernhard E.; GUYON, Isabelle M.; VAPNIK, Vladimir N. A training algorithm for optimal margin classifiers. In: ANNUAL WORKSHOP ON COMPUTATIONAL LEARNING THEORY, 5., 1992, Pittsburgh. <em>Proceedings</em> [...]. New York: ACM, 1992. p. 144-152.</li><li>PLATT, John C. Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. In: SMOLA, A. et al. (ed.). <em>Advances in large margin classifiers.</em> Cambridge: MIT Press, 1999. p. 61-74.</li><li>HSU, Chih-Wei; CHANG, Chih-Chung; LIN, Chih-Jen. <em>A practical guide to support vector classification.</em> Taipei: National Taiwan University, 2003. Disponível em: <a href="https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf" target="_blank" rel="noopener noreferrer">https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf</a>.</li><li>CHANG, Chih-Chung; LIN, Chih-Jen. LIBSVM: a library for support vector machines. <em>ACM Transactions on Intelligent Systems and Technology</em>, v. 2, n. 3, art. 27, 2011.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>MEYER, David et al. <em>e1071: misc functions of the Department of Statistics, Probability Theory Group, TU Wien.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=e1071" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=e1071</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, fronteira aproximadamente linear, C escolhido por validação e probabilidades obtidas à parte (Platt).</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>e1071</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="naive-bayes.html"><span>← ANTERIOR</span>Naive Bayes</a><a href="svm-rbf.html"><span>PRÓXIMO →</span>SVM com kernel radial (RBF)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

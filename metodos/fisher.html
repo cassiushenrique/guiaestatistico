@@ -4,366 +4,329 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste exato de Fisher: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste exato de Fisher | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste exato de Fisher: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste exato de Fisher | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste exato de Fisher
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 07 · DADOS CATEGÓRICOS
-    </span>
-<h1>
-     Teste exato de Fisher
-    </h1>
-<p class="detail-lead">
-     Verifica a associação entre duas variáveis binárias, inclusive com amostras pequenas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/fisher.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica a associação entre duas variáveis binárias, inclusive com amostras pequenas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Dados categóricos independentes.</li><li>Margens fixadas pelo desenho ou condicionamento matemático.</li><li>Evita a aproximação.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \theta=1\\ H_1&amp;:\ \theta\neq1\end{aligned}\right.\]
-      </div>
-<h3>
-       Alternativas bilateral e unilaterais
-      </h3>
-<div class="tail-cases">
-<p>
-<strong>
-         Bilateral:
-        </strong>
-        \(\theta\neq 1\). Detecta desvios em qualquer direção.
-       </p>
-<p>
-<strong>
-         Unilateral à direita:
-        </strong>
-        \(\theta&gt;1\). Investiga aumento ou associação positiva.
-       </p>
-<p>
-<strong>
-         Unilateral à esquerda:
-        </strong>
-        \(\theta&lt;1\). Investiga redução ou associação negativa.
-       </p>
-<p>
-        A direção deve ser escolhida antes de observar os resultados. Para o teste t e os testes de associação, use
-        <code>
-         alternative = "two.sided"
-        </code>
-        ,
-        <code>
-         "greater"
-        </code>
-        ou
-        <code>
-         "less"
-        </code>
-        . Em testes com grupos ou pares, a interpretação da direção depende da ordem dos grupos ou da subtração.
-       </p>
-</div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\Pr(A=a\mid\text{margens})=\frac{\binom{a+b}{a}\binom{c+d}{c}}{\binom{n}{a+c}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(a,b,c,d\)
-        </dt>
-<dd>
-         frequências observadas nas quatro células da tabela 2×2
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         total de observações
-        </dd>
-</div>
-<div>
-<dt>
-         \(\binom{m}{j}\)
-        </dt>
-<dd>
-         coeficiente binomial que conta subconjuntos de tamanho j em m elementos
-        </dd>
-</div>
-</dl>
-<p>
-       Probabilidade hipergeométrica condicional das tabelas; p exato bilateral segundo definição do teste.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de associação; \(IC_{95\%}\) do odds ratio condicional.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-<p>
-       Em um teste unilateral, a rejeição só sustenta a direção previamente definida. Um resultado de sinal contrário não autoriza inverter a hipótese após examinar os dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Associação entre configuração de motor (vs) e transmissão (am) em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-fisher" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-fisher"><code># Teste exato de Fisher ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste exato de Fisher</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · DADOS CATEGÓRICOS</span><h1>Teste exato de Fisher</h1><p class="detail-lead">Calcula o valor-p por enumeração de todas as tabelas com as mesmas margens, dispensando a aproximação qui-quadrado.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/fisher.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/fisher.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="qui-independencia.html">qui-quadrado de independência</a> depende de uma aproximação que exige frequências esperadas razoavelmente grandes. Quando a tabela tem poucas observações, essa aproximação deixa de valer — e o teste exato de Fisher a dispensa: ele calcula a probabilidade de cada tabela possível e soma as que são tão ou mais extremas que a observada.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste exato de Fisher" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Valor-p calculado por</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">enumeração, sem aproximação</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Margens fixas; cada tabela</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">tem probabilidade conhecida</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Distribuição</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Hipergeométrica</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">(não central, sob H₁)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando usar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Frequências esperadas</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">pequenas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">fisher.test(tabela)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">É conservador: gasta</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">menos que os 5%</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste exato de Fisher</text></svg><figcaption>Visão geral do teste exato de Fisher. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A origem do teste</strong><p>Fisher conta, em <em>The Design of Experiments</em> (1935), o caso de uma senhora que afirmava distinguir, pelo sabor, se o leite fora posto antes ou depois do chá. Ele descreve o experimento que resolveria a questão — oito xícaras, quatro de cada tipo, com a senhora sabendo que são quatro de cada — e, ao analisá-lo, inventa o teste. O delineamento foi escolhido de modo que <strong>só o acerto completo</strong> fosse significativo: 1/70 = 0,0143.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Mantidas fixas as margens da tabela — os totais de linha e de coluna —, uma tabela \(2\times2\) fica completamente determinada por uma única célula. Sob a hipótese de independência, o valor dessa célula segue uma distribuição <strong>hipergeométrica</strong>, exatamente como o número de bolas de uma cor numa amostra sem reposição. O valor-p é a soma das probabilidades de todas as tabelas tão ou menos prováveis que a observada.</p><figure class="fig"><img src="../assets/resultados/fisher-didatica.png" alt="A distribuição do número de acertos na prova do chá e as tabelas possíveis do exemplo dos fungicidas" loading="lazy"/><figcaption><strong>De onde vem o valor-p.</strong> À esquerda, as 70 maneiras de escolher 4 xícaras entre 8: só uma delas acerta as quatro, e é essa única possibilidade que dá o valor-p de 1/70. À direita, as onze tabelas compatíveis com as margens do exemplo dos fungicidas, cada uma com a sua probabilidade; as vermelhas são as tão ou menos prováveis que a observada, e a soma delas, 0,01228, é o valor-p bilateral. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>O que "exato" quer dizer</strong><p>Significa que o valor-p é calculado sem aproximação assintótica: a distribuição de referência é a verdadeira, não uma qui-quadrado que dela se aproxima. Não significa que o teste seja mais preciso em todos os sentidos — como se verá, ele é <em>conservador</em>, e essa é uma consequência direta de ser exato num espaço discreto.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Cada unidade contribui para uma única célula.</td><td>Delineamento; para dados pareados, <a href="mcnemar.html">McNemar</a>.</td></tr><tr><td>Categorias exclusivas e exaustivas</td><td>A tabela tem de ser uma partição.</td><td>Definição das categorias.</td></tr><tr><td>Frequências esperadas pequenas</td><td><strong>Não é um problema</strong>: é justamente o caso de uso.</td><td>—</td></tr><tr><td>Margens fixas (condicionamento)</td><td>É o que torna a distribuição hipergeométrica exata.</td><td>Ver o quadro abaixo.</td></tr><tr><td>Contagens, não proporções</td><td>A enumeração precisa dos valores absolutos.</td><td>Use as frequências brutas.</td></tr></tbody></table></div><div class="callout "><strong>O condicionamento nas margens</strong><p>A crítica mais antiga ao teste é esta: na maioria dos estudos as margens <em>não</em> são fixas por delineamento. No exemplo do chá elas são — a senhora sabia que havia quatro de cada. Num ensaio clínico, o número de curados não é fixado de antemão. Condicionar nelas mesmo assim é o que garante a exatidão, ao preço do conservadorismo. Barnard propôs em 1945 um teste incondicional, mais poderoso, mas computacionalmente pesado e pouco usado. O debate entre Fisher e Barnard atravessou décadas e nunca foi encerrado.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \theta=1\\ &\quad\text{(razão de chances igual a 1:}\\ &\quad\text{as variáveis são independentes)}\\ H_1&:\ \theta\neq1\\ &\quad\text{(ou }\theta&gt;1\text{, ou }\theta&lt;1\text{,}\\ &\quad\text{conforme a pergunta)}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[P(X=a)=\frac{\dbinom{n_{1\cdot}}{a}\dbinom{n_{2\cdot}}{m_{1}-a}}{\dbinom{N}{m_{1}}},\]\[\begin{aligned}\max(0,\ m_1-n_{2\cdot}) &\leq a \\ &\leq \min(n_{1\cdot},\ m_1)\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}p_{\text{bilateral}} &= \sum_{a:\,P(X=a)\,\leq\,P(X=a_{\text{obs}})}P(X = a)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(a\)</dt><dd>contagem da célula (1,1), a única livre quando as margens estão fixas</dd></div><div><dt>\(n_{1\cdot},\ n_{2\cdot}\)</dt><dd>totais das linhas</dd></div><div><dt>\(m_1\)</dt><dd>total da primeira coluna</dd></div><div><dt>\(N\)</dt><dd>total geral</dd></div><div><dt>\(\theta\)</dt><dd>razão de chances populacional</dd></div><div><dt>\(a_{\text{obs}}\)</dt><dd>valor observado da célula (1,1)</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>23 lotes de sementes, dois fungicidas</caption><thead><tr><th></th><th>Com doença</th><th>Sem doença</th><th>Total</th><th>Taxa</th></tr></thead><tbody><tr><td>Fungicida A</td><td>2</td><td>10</td><td>12</td><td>16,7%</td></tr><tr><td>Fungicida B</td><td>8</td><td>3</td><td>11</td><td>72,7%</td></tr><tr><td><strong>Total</strong></td><td><strong>10</strong></td><td><strong>13</strong></td><td><strong>23</strong></td><td><strong>43,5%</strong></td></tr></tbody></table></div><div class="worked"><strong>As onze tabelas possíveis</strong><p>Com margens 12 e 11 nas linhas e 10 e 13 nas colunas, a célula (1,1) pode valer de 0 a 10. Cada valor determina a tabela inteira:</p><div class="table-wrap"><table class="method-table"><caption>Probabilidades hipergeométricas</caption><thead><tr><th>a</th><th>0</th><th>1</th><th><strong>2</strong></th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr></thead><tbody><tr><td>P(X = a)</td><td>0,0000096</td><td>0,0005769</td><td><strong>0,0095187</strong></td><td>0,0634579</td><td>0,1998923</td><td>0,3198277</td><td>0,2665231</td><td>0,1142242</td><td>0,0237967</td><td>0,0021153</td><td>0,0000577</td></tr></tbody></table></div><p>A observada é \(a=2\), com probabilidade 0,0095187. As tabelas com probabilidade menor ou igual a essa são \(a\in\{0,1,2,9,10\}\), e a soma das suas probabilidades é</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}p &= 0{,}0000096+0{,}0005769 \\ &\quad +0{,}0095187 \\ &\quad +0{,}0021153 \\ &\quad +0{,}0000577 \\ &= 0{,}012278.\end{aligned}\]</div><p>O qui-quadrado sem correção daria 0,00675 e com a correção de Yates, 0,02213. A menor frequência esperada é 4,78, abaixo do limite habitual — é exatamente a situação em que o exato é preferível.</p></div><h3>Duas razões de chances</h3><p>O produto cruzado \((2\times3)/(10\times8)=0{,}075\) é a razão de chances <em>amostral</em>. O R, em <code>fisher.test()</code>, devolve outra coisa: a estimativa <em>condicional</em> de máxima verossimilhança, que maximiza a verossimilhança da hipergeométrica não central e vale 0,0868 neste exemplo. Ela é a estimativa coerente com o teste; o intervalo de confiança, [0,0058; 0,7444], vem da mesma construção.</p><h3>Propriedades</h3><ul class="checklist"><li>O valor-p é exato no sentido de não depender de aproximação assintótica.</li><li>É <strong>conservador</strong>: a taxa de erro real fica abaixo de \(\alpha\), por causa da discretude.</li><li>A versão unilateral tem interpretação direta; a bilateral definida por "probabilidade menor ou igual" é a convenção do R e do scipy, mas há outras.</li><li>Estende-se a tabelas \(r\times c\) por enumeração, com custo computacional crescente.</li><li>A correção <em>mid-p</em> conta metade da probabilidade da tabela observada e recupera boa parte do poder perdido.</li><li>Com amostras grandes, converge para o <a href="qui-independencia.html">qui-quadrado</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>p-value</td><td>Probabilidade exata, sob margens fixas.</td><td>Conservador: o nível real é menor que o nominal.</td></tr><tr><td>odds ratio</td><td>Estimativa condicional de máxima verossimilhança.</td><td>Não é o produto cruzado.</td></tr><tr><td>conf.int</td><td>Intervalo condicional.</td><td>Pode ser muito largo com contagens pequenas.</td></tr><tr><td>alternative</td><td>Unilateral ou bilateral.</td><td>Decida antes de ver os dados.</td></tr><tr><td>mid-p</td><td>Versão menos conservadora.</td><td>Não é um valor-p exato no sentido estrito.</td></tr></tbody></table></div><p>Reporte: a tabela completa com as contagens, o valor-p, a razão de chances com intervalo, e o fato de o teste ser exato. Se a amostra for pequena, informe também que o teste é conservador.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>fisher.test()</code> está no pacote <code>stats</code>, já instalado com o R, e aceita tabelas \(2\times2\) e maiores. O argumento <code>alternative</code> permite a versão unilateral; <code>workspace</code> aumenta a memória para tabelas grandes, e <code>simulate.p.value = TRUE</code> é a alternativa quando a enumeração fica pesada. O pacote <code>exact2x2</code> traz a correção mid-p e variantes do teste bilateral. <code>dhyper()</code>, também do <code>stats</code>, permite reproduzir a enumeração à mão.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-fisher-min" type="button">Copiar código</button></div><pre id="code-fisher-min"><code>fisher.test(tab)                     # bilateral
+fisher.test(tab, alternative = "less")
+exact2x2::fisher.exact(tab, midp = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A ficha percorre quatro situações. A primeira é a prova do chá de Fisher, o experimento que deu origem ao teste. A segunda é um exemplo fictício de 23 lotes de sementes tratados com dois fungicidas, em que a menor frequência esperada fica abaixo de 5. A terceira é uma simulação que mede o conservadorismo. A quarta estende o teste a uma tabela 3 × 3.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-fisher" type="button">Copiar código</button></div><pre id="code-fisher"><code># Teste exato de Fisher: exemplo completo ----
+# Pacotes: stats (base). Opcionais: exact2x2 (mid-p e variantes), DescTools
+# install.packages(c("exact2x2", "DescTools"))
 
-# Ajuste e resultados ----
-tab &lt;- table(mtcars$vs, mtcars$am)
-resultado &lt;- fisher.test(tab, conf.level = 0.95)
-print(tab); print(resultado)
+# PARTE 1 - a prova do chá (Fisher, 1935)
+cha &lt;- matrix(c(4, 0, 0, 4), nrow = 2,
+              dimnames = list("verdade" = c("leite 1º", "chá 1º"),
+                              "declarou" = c("leite 1º", "chá 1º")))
+cha
+fisher.test(cha, alternative = "greater")     # unilateral: p = 1/70 = 0,0143
+fisher.test(cha)                               # bilateral
+choose(4, 4) * choose(4, 0) / choose(8, 4)     # a conta, à mão
 
-# Visualização e diagnóstico ----
-mosaicplot(tab, main = "Configuração do motor × transmissão", xlab = "Configuração do motor", ylab = "Transmissão", color = TRUE)
+# a distribuição completa do número de acertos
+data.frame(acertos = 0:4,
+           combinacoes = choose(4, 0:4) * choose(4, 4:0),
+           prob = dhyper(0:4, 4, 4, 4))
+fisher.test(matrix(c(3, 1, 1, 3), 2), alternative = "greater")$p.value   # 3 acertos: 0,243
 
+# PARTE 2 - contagens pequenas: 23 lotes de sementes, dois fungicidas (dados fictícios)
+tab &lt;- matrix(c(2, 8, 10, 3), nrow = 2,
+              dimnames = list(fungicida = c("A", "B"),
+                              doenca = c("com", "sem")))
+tab
+prop.table(tab, 1)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# H1: odds ratio &gt; 1 (na orientação da tabela tab)
-print(fisher.test(tab, alternative = "greater"))
-# H1: odds ratio &lt; 1
-print(fisher.test(tab, alternative = "less"))
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">Fisher Exact Test for Count Data
-Odds ratio (amostral) = 2.00000
-p-value = 0.472697
-Tabela:
-am   0  1
-vs       
-0   12  6
-1    7  7</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Teste exato de Fisher" class="result-figure" loading="lazy" src="../assets/resultados/fisher.png"/><p>O teste exato fornece valor-p = 0.4727. A interpretação considera a associação entre configuração do motor e transmissão; a razão de chances calculada por scipy é amostral e pode diferir do estimador condicional apresentado por fisher.test() no R.</p></div>
-<h3>Resultados e interpretação</h3>
-<p class="observed-result">
-<strong>
-        Resultado para estes dados:
-       </strong>
-       o teste exato bilateral fornece valor-p ≈ 0,4727. Não se rejeita a hipótese de independência entre configuração do motor e tipo de transmissão ao nível de 5%.
-      </p>
+chisq.test(tab)                 # o R avisa: aproximação pode ser incorreta
+chisq.test(tab)$expected        # a menor esperada é 4,78
+chisq.test(tab, correct = FALSE)
+fisher.test(tab)                # o teste exato
 
+# De onde vem o valor-p: as margens são FIXAS e só há 11 tabelas possíveis
+n1 &lt;- sum(tab[1, ]); n2 &lt;- sum(tab[2, ]); m1 &lt;- sum(tab[, 1]); N &lt;- sum(tab)
+a &lt;- max(0, m1 - n2):min(n1, m1)
+prob &lt;- dhyper(a, n1, n2, m1)
+obs  &lt;- dhyper(tab[1, 1], n1, n2, m1)
+data.frame(a, prob, inclui = prob &lt;= obs * (1 + 1e-7))
+sum(prob[prob &lt;= obs * (1 + 1e-7)])            # = o valor-p bilateral
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="qui-independencia.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Qui-quadrado de independência
-    </a>
-<a href="mcnemar.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste de McNemar
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Razão de chances: a condicional (que o R devolve) e a amostral
+fisher.test(tab)$estimate                      # condicional, por máxima verossimilhança
+tab[1,1]*tab[2,2] / (tab[1,2]*tab[2,1])        # amostral
+fisher.test(tab)$conf.int
+
+# PARTE 3 - mid-p, menos conservador
+library(exact2x2)
+fisher.exact(tab, midp = TRUE)
+# ou, à mão: p_exato - 0,5 * P(tabela observada)
+
+# PARTE 4 - tabelas maiores que 2x2
+tab3 &lt;- matrix(c(8, 4, 1, 3, 6, 4, 1, 2, 7), nrow = 3, byrow = TRUE,
+               dimnames = list(cultivar = c("A", "B", "C"),
+                               nota = c("baixa", "média", "alta")))
+tab3
+fisher.test(tab3)                               # enumeração exata
+chisq.test(tab3)                                # aproximação, com aviso
+chisq.test(tab3, simulate.p.value = TRUE, B = 200000)
+# para tabelas grandes, fisher.test pode exigir mais memória:
+# fisher.test(tab3, workspace = 2e8)  ou  fisher.test(tab3, simulate.p.value = TRUE)
+
+# Gráfico
+par(mfrow = c(1, 2))
+barplot(dhyper(0:4, 4, 4, 4), names.arg = 0:4, col = c("firebrick", rep("gray85", 3), "firebrick"),
+        xlab = "Acertos", ylab = "Probabilidade", main = "Prova do chá")
+barplot(prob, names.arg = a, col = ifelse(prob &lt;= obs*(1+1e-7), "firebrick", "gray85"),
+        xlab = "Lotes com doença no fungicida A", ylab = "Probabilidade", main = "Fungicidas")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-fisher" type="button">Copiar código</button></div><pre id="code-py-fisher"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+from math import comb
+import itertools
+
+# ===================================================================
+# PARTE 1 - o experimento que deu origem ao teste: a prova do chá
+# Fisher (1935) descreve uma senhora que afirmava distinguir, pelo sabor,
+# se o leite fora posto antes ou depois do chá. Oito xícaras, quatro de
+# cada tipo, e ela sabia que eram quatro de cada.
+print("A prova do chá (Fisher, 1935): 8 xícaras, 4 com leite primeiro")
+print("A senhora acertou as 4. Qual a chance disso, se ela estivesse adivinhando?")
+print(f"  C(4,4) x C(4,0) / C(8,4) = {comb(4,4)*comb(4,0)}/{comb(8,4)} = {1/comb(8,4):.6f}")
+print("\nDistribuição completa do número de acertos entre as 4 declaradas:")
+print(" acertos   combinações   probabilidade")
+for a in range(5):
+    print(f"    {a}        {comb(4,a)*comb(4,4-a):4d}         {stats.hypergeom.pmf(a,8,4,4):.6f}")
+print(f"  soma = {sum(stats.hypergeom.pmf(a,8,4,4) for a in range(5)):.6f}")
+cha = np.array([[4, 0], [0, 4]])
+print(f"\nscipy, unilateral: {stats.fisher_exact(cha, alternative='greater')[1]:.6f}")
+print(f"scipy, bilateral:  {stats.fisher_exact(cha)[1]:.6f}")
+print("Com 3 acertos o valor-p unilateral seria "
+      f"{stats.fisher_exact(np.array([[3,1],[1,3]]), alternative='greater')[1]:.6f}: não bastaria.")
+print("O delineamento foi desenhado para que SÓ o acerto completo fosse significativo.")
+
+# ===================================================================
+# PARTE 2 - onde o teste é necessário: contagens pequenas
+# Dados fictícios: 23 lotes de sementes tratadas com dois fungicidas,
+# registrando se houve ou não emergência de plântulas doentes.
+tab = np.array([[2, 10], [8, 3]])      # linhas: fungicida A, B; colunas: com, sem
+print("\n" + "=" * 70)
+print("Dados fictícios: 23 lotes de sementes, dois fungicidas")
+print(f"{'':&lt;14}{'com doença':&gt;12}{'sem doença':&gt;12}{'total':&gt;8}{'taxa':&gt;9}")
+rot = ["fungicida A", "fungicida B"]
+for i in range(2):
+    print(f"{rot[i]:&lt;14}{tab[i,0]:12d}{tab[i,1]:12d}{tab[i].sum():8d}{100*tab[i,0]/tab[i].sum():8.1f}%")
+print(f"{'total':&lt;14}{tab[:,0].sum():12d}{tab[:,1].sum():12d}{tab.sum():8d}")
+
+qui, p_qui, gl, esp = stats.chi2_contingency(tab, correction=False)
+quiy, p_quiy, _, _ = stats.chi2_contingency(tab, correction=True)
+print(f"\nFrequências esperadas:\n{np.round(esp,3)}")
+print(f"Menor esperada = {esp.min():.3f}  (abaixo de 5: a aproximação fica duvidosa)")
+print(f"qui-quadrado sem correção = {qui:.4f}, p = {p_qui:.5f}")
+print(f"qui-quadrado com Yates    = {quiy:.4f}, p = {p_quiy:.5f}")
+od, pf = stats.fisher_exact(tab)
+print(f"Fisher exato, bilateral: razão de chances condicional = {od:.4f}, p = {pf:.5f}")
+print(f"Fisher exato, unilateral (menos doença com A): p = "
+      f"{stats.fisher_exact(tab, alternative='less')[1]:.5f}")
+
+# 2b. De onde vem o valor-p exato: enumerar as tabelas com as MESMAS margens
+print("\nAs margens são fixas: linhas 12 e 11, colunas 10 e 13.")
+print("Só há 11 tabelas possíveis, indexadas pela célula (1,1):")
+n1, n2 = tab[0].sum(), tab[1].sum(); m1 = tab[:, 0].sum(); N = tab.sum()
+obs_p = stats.hypergeom.pmf(tab[0,0], N, n1, m1)
+print(f"{'a':&gt;3}{'tabela':&gt;22}{'probabilidade':&gt;15}{'&lt;= observada?':&gt;15}")
+soma = 0.0
+for a in range(max(0, m1-n2), min(n1, m1)+1):
+    pr = stats.hypergeom.pmf(a, N, n1, m1)
+    inc = pr &lt;= obs_p * (1 + 1e-7)
+    if inc: soma += pr
+    print(f"{a:3d}   [{a:2d} {n1-a:2d} | {m1-a:2d} {N-n1-m1+a:2d}]   {pr:13.8f}   {'sim' if inc else 'não':&gt;10}")
+print(f"Soma das probabilidades &lt;= a observada ({obs_p:.8f}) = {soma:.6f} = valor-p bilateral")
+
+# 2c. Razão de chances: a amostral e a condicional de máxima verossimilhança
+or_amostral = tab[0,0]*tab[1,1]/(tab[0,1]*tab[1,0])
+res = stats.contingency.odds_ratio(tab)          # condicional, por máxima verossimilhança
+ic = res.confidence_interval(0.95)
+print(f"\nRazão de chances amostral = {or_amostral:.6f}   (a que fisher_exact devolve)")
+print(f"Razão de chances condicional = {res.statistic:.6f}   (a que fisher.test do R devolve)")
+print(f"IC 95% condicional = [{ic.low:.4f}; {ic.high:.4f}]")
+print("As duas NÃO são a mesma coisa. A condicional maximiza a verossimilhança da")
+print("hipergeométrica não central, que é a distribuição sobre a qual o teste é")
+print("construído; a amostral é o produto cruzado simples. Com contagens pequenas")
+print("a diferença é visível, e o R reporta a condicional.")
+se = np.sqrt(sum(1/tab[i,j] for i in range(2) for j in range(2)))
+print(f"IC 95% de Wald sobre a amostral, para comparação = "
+      f"[{np.exp(np.log(or_amostral)-1.96*se):.4f}; {np.exp(np.log(or_amostral)+1.96*se):.4f}]")
+
+# ===================================================================
+# PARTE 3 - o preço do exato: conservadorismo
+print("\n" + "=" * 70)
+print("O teste exato é CONSERVADOR: a taxa de erro real fica abaixo do nominal.")
+print("Simulação: duas proporções iguais a 0,3, com n = 15 por grupo.")
+rng = np.random.default_rng(2026)
+M = 20000
+n_g = 15; p0 = 0.3
+rej_f = rej_q = rej_y = rej_mid = 0
+for _ in range(M):
+    x = rng.binomial(n_g, p0); y = rng.binomial(n_g, p0)
+    t = np.array([[x, n_g-x], [y, n_g-y]])
+    if t.sum(axis=0).min() == 0 or t.sum(axis=1).min() == 0:
+        continue
+    pf_ = stats.fisher_exact(t)[1]
+    if pf_ &lt; 0.05: rej_f += 1
+    # mid-p: metade da probabilidade da tabela observada
+    N_ = t.sum(); n1_ = t[0].sum(); m1_ = t[:,0].sum()
+    po = stats.hypergeom.pmf(t[0,0], N_, n1_, m1_)
+    s = sum(stats.hypergeom.pmf(a, N_, n1_, m1_)
+            for a in range(max(0,m1_-t[1].sum()), min(n1_,m1_)+1)
+            if stats.hypergeom.pmf(a, N_, n1_, m1_) &lt; po*(1-1e-9))
+    if s + 0.5*sum(stats.hypergeom.pmf(a, N_, n1_, m1_)
+                   for a in range(max(0,m1_-t[1].sum()), min(n1_,m1_)+1)
+                   if abs(stats.hypergeom.pmf(a, N_, n1_, m1_) - po) &lt; po*1e-9) &lt; 0.05:
+        rej_mid += 1
+    try:
+        if stats.chi2_contingency(t, correction=False)[1] &lt; 0.05: rej_q += 1
+        if stats.chi2_contingency(t, correction=True)[1] &lt; 0.05: rej_y += 1
+    except ValueError:
+        pass
+print(f"  Fisher exato:            {100*rej_f/M:5.2f}%")
+print(f"  Fisher com mid-p:        {100*rej_mid/M:5.2f}%")
+print(f"  qui-quadrado com Yates:  {100*rej_y/M:5.2f}%")
+print(f"  qui-quadrado sem Yates:  {100*rej_q/M:5.2f}%")
+print("  (o nominal é 5%; o exato e o Yates ficam bem abaixo, o sem correção fica perto)")
+print("\nO conservadorismo vem da discretude: com margens fixas há poucos valores-p")
+print("possíveis, e raramente algum cai exatamente em 0,05. A correção mid-p recupera")
+print("parte da folga contando metade da probabilidade da tabela observada.")
+
+# ===================================================================
+# PARTE 4 - tabelas maiores que 2x2
+print("\n" + "=" * 70)
+print("Fisher também vale para tabelas r x c. Dados fictícios: 3 cultivares x 3 notas")
+tab3 = np.array([[8, 3, 1], [4, 6, 2], [1, 4, 7]])
+print(tab3)
+q3, p3, g3, e3 = stats.chi2_contingency(tab3)
+print(f"qui-quadrado = {q3:.4f}, gl = {g3}, p = {p3:.5f} | menor esperada = {e3.min():.3f}")
+# valor-p exato por enumeração via simulação de tabelas com margens fixas
+rng = np.random.default_rng(7)
+B = 200000
+lin = tab3.sum(axis=1); col = tab3.sum(axis=0); n3 = tab3.sum()
+def qui_est(t):
+    e = np.outer(t.sum(1), t.sum(0))/t.sum()
+    return ((t-e)**2/e).sum()
+obs3 = qui_est(tab3)
+cont = 0
+for _ in range(B):
+    # tabela aleatória com as mesmas margens (algoritmo de permutação)
+    linhas = np.repeat(np.arange(3), lin)
+    colunas = rng.permutation(np.repeat(np.arange(3), col))
+    t = np.zeros((3,3))
+    np.add.at(t, (linhas, colunas), 1)
+    if qui_est(t) &gt;= obs3 - 1e-9: cont += 1
+print(f"valor-p por permutação ({B} tabelas) = {(1+cont)/(B+1):.6f}")
+print("No R: fisher.test(tab3) faz a enumeração exata;")
+print("      chisq.test(tab3, simulate.p.value = TRUE) usa reamostragem.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">A prova do chá (Fisher, 1935): 8 xícaras, 4 com leite primeiro
+A senhora acertou as 4. Qual a chance disso, se ela estivesse adivinhando?
+  C(4,4) x C(4,0) / C(8,4) = 1/70 = 0.014286
+
+Distribuição completa do número de acertos entre as 4 declaradas:
+ acertos   combinações   probabilidade
+    0           1         0.014286
+    1          16         0.228571
+    2          36         0.514286
+    3          16         0.228571
+    4           1         0.014286
+  soma = 1.000000
+
+scipy, unilateral: 0.014286
+scipy, bilateral:  0.028571
+Com 3 acertos o valor-p unilateral seria 0.242857: não bastaria.
+O delineamento foi desenhado para que SÓ o acerto completo fosse significativo.
+
+======================================================================
+Dados fictícios: 23 lotes de sementes, dois fungicidas
+                com doença  sem doença   total     taxa
+fungicida A              2          10      12    16.7%
+fungicida B              8           3      11    72.7%
+total                   10          13      23
+
+Frequências esperadas:
+[[5.217 6.783]
+ [4.783 6.217]]
+Menor esperada = 4.783  (abaixo de 5: a aproximação fica duvidosa)
+qui-quadrado sem correção = 7.3396, p = 0.00675
+qui-quadrado com Yates    = 5.2356, p = 0.02213
+Fisher exato, bilateral: razão de chances condicional = 0.0750, p = 0.01228
+Fisher exato, unilateral (menos doença com A): p = 0.01011
+
+As margens são fixas: linhas 12 e 11, colunas 10 e 13.
+Só há 11 tabelas possíveis, indexadas pela célula (1,1):
+  a                tabela  probabilidade  &lt;= observada?
+  0   [ 0 12 | 10  1]      0.00000961          sim
+  1   [ 1 11 |  9  2]      0.00057689          sim
+  2   [ 2 10 |  8  3]      0.00951868          sim
+  3   [ 3  9 |  7  4]      0.06345788          não
+  4   [ 4  8 |  6  5]      0.19989231          não
+  5   [ 5  7 |  5  6]      0.31982770          não
+  6   [ 6  6 |  4  7]      0.26652309          não
+  7   [ 7  5 |  3  8]      0.11422418          não
+  8   [ 8  4 |  2  9]      0.02379670          não
+  9   [ 9  3 |  1 10]      0.00211526          sim
+ 10   [10  2 |  0 11]      0.00005769          sim
+Soma das probabilidades &lt;= a observada (0.00951868) = 0.012278 = valor-p bilateral
+
+Razão de chances amostral = 0.075000   (a que fisher_exact devolve)
+Razão de chances condicional = 0.086757   (a que fisher.test do R devolve)
+IC 95% condicional = [0.0058; 0.7444]
+As duas NÃO são a mesma coisa. A condicional maximiza a verossimilhança da
+hipergeométrica não central, que é a distribuição sobre a qual o teste é
+construído; a amostral é o produto cruzado simples. Com contagens pequenas
+a diferença é visível, e o R reporta a condicional.
+IC 95% de Wald sobre a amostral, para comparação = [0.0100; 0.5633]
+
+======================================================================
+O teste exato é CONSERVADOR: a taxa de erro real fica abaixo do nominal.
+Simulação: duas proporções iguais a 0,3, com n = 15 por grupo.
+  Fisher exato:             1.74%
+  Fisher com mid-p:         3.86%
+  qui-quadrado com Yates:   1.58%
+  qui-quadrado sem Yates:   5.26%
+  (o nominal é 5%; o exato e o Yates ficam bem abaixo, o sem correção fica perto)
+
+O conservadorismo vem da discretude: com margens fixas há poucos valores-p
+possíveis, e raramente algum cai exatamente em 0,05. A correção mid-p recupera
+parte da folga contando metade da probabilidade da tabela observada.
+
+======================================================================
+Fisher também vale para tabelas r x c. Dados fictícios: 3 cultivares x 3 notas
+[[8 3 1]
+ [4 6 2]
+ [1 4 7]]
+qui-quadrado = 12.9692, gl = 4, p = 0.01143 | menor esperada = 3.333
+valor-p por permutação (200000 tabelas) = 0.011310
+No R: fisher.test(tab3) faz a enumeração exata;
+      chisq.test(tab3, simulate.p.value = TRUE) usa reamostragem.</pre></div><figure class="fig"><img src="../assets/resultados/fisher.png" alt="Taxa de rejeição simulada e número de valores-p possíveis" loading="lazy"/><figcaption><strong>O conservadorismo e a sua causa.</strong> À esquerda, 20.000 experimentos com duas proporções iguais e n = 15 por grupo: o teste exato rejeita em 1,74% das vezes e o qui-quadrado com Yates em 1,58%, contra os 5% nominais; a correção mid-p recupera parte do poder (3,86%) e o qui-quadrado sem correção fica em 5,26%. À direita, a causa: com margens fixas, o número de valores-p distintos que podem ocorrer é pequeno, e raramente algum deles cai exatamente em 0,05. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Prova do chá</caption><thead><tr><th>Acertos</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th></tr></thead><tbody><tr><td>Combinações</td><td>1</td><td>16</td><td>36</td><td>16</td><td>1</td></tr><tr><td>Probabilidade</td><td>0,014286</td><td>0,228571</td><td>0,514286</td><td>0,228571</td><td>0,014286</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os quatro exemplos</caption><thead><tr><th>Situação</th><th>Resultado</th><th>Leitura</th></tr></thead><tbody><tr><td>Prova do chá, 4 acertos (unilateral)</td><td>p = 0,014286</td><td>Significativo; é o único resultado que seria.</td></tr><tr><td>Prova do chá, 3 acertos (unilateral)</td><td>p = 0,242857</td><td>Não bastaria.</td></tr><tr><td>Fungicidas, qui-quadrado sem correção</td><td>χ² = 7,340; p = 0,00675</td><td>Esperada mínima de 4,78: duvidoso.</td></tr><tr><td>Fungicidas, qui-quadrado com Yates</td><td>χ² = 5,236; p = 0,02213</td><td>—</td></tr><tr><td><strong>Fungicidas, Fisher bilateral</strong></td><td><strong>p = 0,012278</strong></td><td>A resposta exata.</td></tr><tr><td>Fungicidas, Fisher unilateral</td><td>p = 0,010112</td><td>Hipótese de que A protege mais.</td></tr><tr><td>Razão de chances condicional</td><td>0,0868; IC [0,0058; 0,7444]</td><td>O que o R devolve.</td></tr><tr><td>Razão de chances amostral</td><td>0,0750</td><td>O produto cruzado.</td></tr><tr><td>Tabela 3 × 3, qui-quadrado</td><td>χ² = 12,969; gl = 4; p = 0,01143</td><td>Esperada mínima de 3,33.</td></tr><tr><td>Tabela 3 × 3, por permutação</td><td>p = 0,011310</td><td>Confirma a aproximação.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Simulação: taxa de rejeição com proporções iguais (n = 15 por grupo)</caption><thead><tr><th>Procedimento</th><th>Taxa</th><th>Leitura</th></tr></thead><tbody><tr><td>Fisher exato</td><td>1,74%</td><td>Muito conservador.</td></tr><tr><td>Fisher com mid-p</td><td>3,86%</td><td>Recupera poder.</td></tr><tr><td>Qui-quadrado com Yates</td><td>1,58%</td><td>Tão conservador quanto o exato.</td></tr><tr><td>Qui-quadrado sem correção</td><td>5,26%</td><td>O mais fiel ao nível declarado.</td></tr></tbody></table></div><p><strong>Leitura:</strong> o fungicida A resultou em menos lotes doentes — 2 em 12, contra 8 em 11 — e a diferença é significativa pelo teste exato (p = 0,0123). Com 23 lotes e uma frequência esperada mínima de 4,78, o teste exato é a escolha correta: o qui-quadrado sem correção devolveria um valor-p otimista demais (0,0068) e a correção de Yates, um pessimista demais (0,0221).</p><p>A simulação revela um resultado que costuma surpreender: o teste exato de Fisher, com amostras pequenas, rejeita em apenas 1,74% das vezes quando deveria rejeitar em 5%. Isso não é um defeito de implementação — é consequência de o espaço de resultados ser discreto. Com margens fixas, só um punhado de valores-p é possível, e o teste só pode rejeitar quando um deles cai abaixo de 0,05. Entre dois valores possíveis não há nada, e a folga se perde.</p><p>Daí o paradoxo prático: em amostras pequenas, o teste "exato" é o mais conservador dos disponíveis, e o qui-quadrado <em>sem</em> correção é o que mais se aproxima do nível declarado. Isso não autoriza abandonar o exato — quando o interesse é garantir que a taxa de erro não ultrapasse 5%, ele é o instrumento adequado. Mas convém saber que, ao usá-lo, a chance de detectar um efeito real é menor do que o nível nominal sugere. A correção mid-p é o meio-termo usual.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Supor que "exato" significa "mais poderoso"</td><td>Ele é exato e conservador ao mesmo tempo.</td></tr><tr><td>Usar com dados pareados</td><td>Para o mesmo indivíduo medido duas vezes, <a href="mcnemar.html">McNemar</a>.</td></tr><tr><td>Reportar o produto cruzado como se fosse a saída do R</td><td>O R devolve a razão de chances condicional.</td></tr><tr><td>Decidir a direção (unilateral) depois de ver os dados</td><td>A escolha é anterior à análise.</td></tr><tr><td>Aplicar a tabelas grandes sem aumentar o <code>workspace</code></td><td>Ou use <code>simulate.p.value = TRUE</code>.</td></tr><tr><td>Achar que o exato dispensa a independência das observações</td><td>Ele dispensa a aproximação, não os pressupostos de delineamento.</td></tr><tr><td>Usar sempre o exato, mesmo com amostras grandes</td><td>Com n grande ele coincide com o qui-quadrado e custa mais.</td></tr><tr><td>Interpretar o IC condicional como se fosse de Wald</td><td>São construções diferentes.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="qui-independencia.html">Qui-quadrado de independência</a></td><td>Frequências esperadas grandes; é mais poderoso.</td></tr><tr><td>Fisher com mid-p</td><td>Quando o conservadorismo do exato for excessivo.</td></tr><tr><td>Teste de Barnard</td><td>Margens não fixas por delineamento; mais poderoso, mais pesado.</td></tr><tr><td>Teste de Boschloo</td><td>Uniformemente mais poderoso que o de Fisher; disponível em <code>exact2x2</code>.</td></tr><tr><td><a href="mcnemar.html">McNemar</a></td><td>Dados pareados.</td></tr><tr><td>Qui-quadrado com valor-p simulado</td><td>Tabelas r × c com contagens pequenas.</td></tr><tr><td><a href="logistica.html">Regressão logística exata</a></td><td>Vários preditores com amostra pequena; <code>elrm</code> ou <code>logistf</code>.</td></tr><tr><td>Mantel–Haenszel exato</td><td>Tabelas 2 × 2 estratificadas com contagens pequenas.</td></tr></tbody></table></div><ol class="steps"><li>Monte a tabela com as contagens.</li><li>Calcule as frequências esperadas: se alguma ficar abaixo de 5, considere o exato.</li><li>Decida antes se o teste é unilateral ou bilateral.</li><li>Aplique <code>fisher.test()</code> e reporte o valor-p e a razão de chances com intervalo.</li><li>Se o conservadorismo preocupar, informe também o mid-p.</li><li>Com amostras grandes, prefira o qui-quadrado, que é mais poderoso.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FISHER, Ronald A. <em>The design of experiments.</em> Edinburgh: Oliver and Boyd, 1935.</li><li>FISHER, Ronald A. The logic of inductive inference. <em>Journal of the Royal Statistical Society</em>, v. 98, n. 1, p. 39-82, 1935.</li><li>BARNARD, G. A. A new test for 2×2 tables. <em>Nature</em>, v. 156, p. 177, 1945.</li><li>BOSCHLOO, R. D. Raised conditional level of significance for the 2×2 table when testing the equality of two probabilities. <em>Statistica Neerlandica</em>, v. 24, n. 1, p. 1-9, 1970.</li><li>LANCASTER, H. O. Significance tests in discrete distributions. <em>Journal of the American Statistical Association</em>, v. 56, n. 294, p. 223-234, 1961. (Origem da correção mid-p.)</li><li>YATES, Frank. Tests of significance for 2×2 contingency tables. <em>Journal of the Royal Statistical Society, Series A</em>, v. 147, n. 3, p. 426-463, 1984.</li><li>UPTON, Graham J. G. A comparison of alternative tests for the 2×2 comparative trial. <em>Journal of the Royal Statistical Society, Series A</em>, v. 145, n. 1, p. 86-105, 1982.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>AGRESTI, Alan. <em>An introduction to categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2019.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>fisher.test</code> e <code>dhyper</code>, pacote <code>stats</code>.)</li><li>FAY, Michael P. Confidence intervals that match Fisher’s exact or Blaker’s exact tests. <em>Biostatistics</em>, v. 11, n. 2, p. 373-374, 2010. (Pacote <code>exact2x2</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, categorias exclusivas e exaustivas e contagens absolutas; não exige frequências esperadas grandes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, exact2x2, DescTools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="qui-independencia.html"><span>← ANTERIOR</span>Qui-quadrado de independência</a><a href="mcnemar.html"><span>PRÓXIMO →</span>Teste de McNemar</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,311 +4,368 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Bagging (bootstrap aggregation): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Bagging (bootstrap aggregation) | Estatística e Ciência de Dados
-  </title>
+<meta content="Bagging (bootstrap aggregation): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Bagging (bootstrap aggregation) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Bagging (bootstrap aggregation)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Bagging (bootstrap aggregation)
-    </h1>
-<p class="detail-lead">
-     Melhora a estabilidade das previsões combinando resultados de muitas árvores.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/bagging.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Melhora a estabilidade das previsões combinando resultados de muitas árvores.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Dados adequados ao reamostramento, árvores suficientemente diversificadas, validação out-of-bag (OOB) ou externa.</li><li>Não há normalidade requerida.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat f_{\mathrm{bag}}(\mathbf x)=\frac1B\sum_{b=1}^B\widehat f^{*(b)}(\mathbf x)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Média das predições (regressão) ou votação (classificação) em árvores bootstrap; erro OOB estima desempenho.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor erro OOB/external indica maior utilidade; não interprete a contribuição das variáveis apenas por p-valores.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição de consumo em veículos com wt, hp e disp (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-bagging" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-bagging"><code># Bagging (bootstrap aggregation) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Bagging (bootstrap aggregation)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Bagging (bootstrap aggregation)</h1><p class="detail-lead">Ajusta uma árvore em cada reamostra bootstrap e tira a média — a variância de uma árvore se cancela, o viés baixo permanece.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/bagging.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/bagging.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o bagging</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="cart-reg.html">ficha das árvores</a> terminou com um diagnóstico: a árvore acerta a estrutura grossa, mas é <strong>instável</strong> — reamostrar os dados muda os cortes inferiores e o número de folhas. Bagging (de <em>bootstrap aggregating</em>, Breiman, 1996) transforma essa fraqueza em matéria-prima: ajusta uma árvore em cada uma de muitas reamostras bootstrap e tira a <strong>média</strong> das predições. A instabilidade, que era ruído em uma árvore, se cancela na média.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Bagging" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A receita</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">B reamostras,</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">B árvores, média</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Por que funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">A média reduz</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">a variância</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O limite</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">A correlação</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">entre as árvores</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O bônus</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Erro fora da</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">sacola (OOB)</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando ajuda</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Procedimentos</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">instáveis</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando não</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos estáveis</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">ou com viés</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Bagging</text></svg><figcaption>Visão geral do bagging. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Uma ideia geral, não só de árvores</strong><p>Bagging pode ser aplicado a qualquer procedimento de ajuste. A ficha mostra que ele reduz em 46,9% o erro de uma árvore sem poda e em 0,0% o de uma regressão linear. A diferença não está no bagging, mas no procedimento: só se ganha com a média quando há <em>variância</em> para reduzir.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o bagging</h2><p>Com um conjunto de treino de tamanho \(n\), sorteiam-se \(B\) reamostras de tamanho \(n\) com reposição. Em cada reamostra ajusta-se o mesmo procedimento — tipicamente uma árvore profunda, sem poda, de viés baixo e variância alta. A predição final é a média das \(B\) predições (regressão) ou a média das probabilidades, ou o voto da maioria (classificação).</p><figure class="fig"><img src="../assets/resultados/bagging-didatica.png" alt="Predições de árvores individuais e sua média em função da altitude, e a variância de uma média de variáveis correlacionadas" loading="lazy"/><figcaption><strong>O mecanismo e o seu limite.</strong> À esquerda, seis árvores ajustadas em reamostras diferentes (cinza) oscilam muito; a média de 60 (vermelho) é bem mais estável e segue a verdade (tracejado). À direita, a variância da média de B árvores, em unidades da variância de uma árvore, para quatro correlações entre árvores: a curva desce, mas nunca abaixo de ρ. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O que o bagging muda</caption><thead><tr><th>Aspecto</th><th>Uma árvore</th><th>Bagging de B árvores</th></tr></thead><tbody><tr><td>Viés</td><td>O da árvore</td><td>Aproximadamente o mesmo</td></tr><tr><td>Variância</td><td>Alta</td><td>Reduzida, até o limite ρσ²</td></tr><tr><td>Legibilidade</td><td>Uma árvore desenhável</td><td>Perdida: são B árvores</td></tr><tr><td>Validação</td><td>Exige validação cruzada</td><td>O erro OOB vem de graça</td></tr><tr><td>Custo</td><td>Um ajuste</td><td>B ajustes (paralelizáveis)</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>A reamostragem bootstrap supõe isso.</td><td>Desenho; com grupos, reamostre grupos.</td></tr><tr><td><strong>Procedimento-base instável</strong></td><td>Sem variância, não há o que reduzir.</td><td>Compare o erro com e sem bagging.</td></tr><tr><td>Viés baixo do procedimento-base</td><td>A média não remove viés.</td><td>Use árvores profundas, não podadas.</td></tr><tr><td>B suficiente</td><td>Pouco B deixa variância de Monte Carlo.</td><td>Curva do erro OOB em função de B.</td></tr><tr><td>Erro OOB com n razoável</td><td>Cada observação fica fora de ~37% das árvores.</td><td>Compare com um teste independente.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat f_{\text{bag}}(x)=\frac{1}{B}\sum_{b=1}^{B}\hat f^{*b}(x)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\hat f^{*b}\)</dt><dd>o modelo ajustado na \(b\)-ésima reamostra bootstrap</dd></div><div><dt>\(B\)</dt><dd>número de reamostras (de árvores)</dd></div></dl><h3>Por que funciona: a variância de uma média</h3><p>Se cada árvore tem variância \(\sigma^2\) (sobre a variação dos dados de treino) e duas árvores quaisquer, ajustadas ao mesmo treino, têm correlação \(\rho\), então</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\operatorname{Var}\left[\hat f_{\text{bag}}(x)\right]=\rho\,\sigma^2+\frac{1-\rho}{B}\,\sigma^2\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\sigma^2\)</dt><dd>variância da predição de uma árvore</dd></div><div><dt>\(\rho\)</dt><dd>correlação entre as predições de duas árvores do mesmo treino</dd></div></dl><p>O segundo termo vai a zero com \(B\); o primeiro não depende de \(B\). Aumentar o número de árvores nunca piora o bagging, mas o ganho satura em \(\rho\sigma^2\).</p><h3>Exemplo numérico, com a verdade conhecida</h3><p>Como o processo gerador é conhecido, sortearam-se 30 conjuntos de treino novos (mesmos lotes, novo erro) e 50 árvores em cada, para medir \(\sigma^2\) e \(\rho\) diretamente: \(\sigma^2=3{,}0926\), covariância entre árvores do mesmo treino 0,3515, logo \(\rho=0{,}3515/3{,}0926=0{,}1137\).</p><div class="table-wrap"><table class="method-table"><caption>A variância prevista da média</caption><thead><tr><th>B</th><th>ρσ² + (1 − ρ)σ²/B</th><th>Limite ρσ²</th></tr></thead><tbody><tr><td>1</td><td>3,0926</td><td>0,3515</td></tr><tr><td>5</td><td>0,8997</td><td>0,3515</td></tr><tr><td>25</td><td>0,4611</td><td>0,3515</td></tr><tr><td>100</td><td>0,3789</td><td>0,3515</td></tr><tr><td>500</td><td>0,3570</td><td>0,3515</td></tr></tbody></table></div><div class="worked"><strong>O que esses números dizem</strong><p>Com 25 árvores, a variância da predição já caiu de 3,0926 para 0,4611 — 85% da redução possível. De 100 para 500 árvores, cai de 0,3789 para 0,3570. O valor de \(\rho\) aqui é baixo (0,11) porque só o erro aleatório varia entre os treinos simulados; em dados reais, em que as próprias preditoras mudam de amostra para amostra, \(\rho\) é tipicamente maior. Reduzir \(\rho\) é exatamente o que a <a href="randomforest.html">random forest</a> faz.</p></div><h3>O erro fora da sacola</h3><p>Uma reamostra de tamanho \(n\) deixa de fora cada observação com probabilidade \((1-1/n)^n\to e^{-1}\approx 0{,}368\). Prevendo cada observação só com as árvores que não a viram, obtém-se uma estimativa do erro de teste sem separar dados: o <strong>erro OOB</strong> (<em>out-of-bag</em>). Nos dados, cada lote ficou fora de 36,68% das árvores, e o EQM OOB foi 3,2418, contra 3,3883 num teste independente.</p><h3>Propriedades</h3><ul class="checklist"><li>Reduz variância; não reduz viés.</li><li>Nunca piora com mais árvores (em esperança).</li><li>O ganho depende da instabilidade do procedimento-base.</li><li>O erro OOB é aproximadamente o de uma validação cruzada.</li><li>Perde a interpretabilidade da árvore única.</li><li>Paralelizável: as árvores são independentes.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>EQM ou erro OOB</td><td>Estimativa do erro de teste.</td><td>Precisa de B grande.</td></tr><tr><td>% de variância explicada (randomForest)</td><td>1 − EQM OOB / variância.</td><td>É OOB, não de treino.</td></tr><tr><td>Curva do erro em função de B</td><td>Se B basta.</td><td>Deve estabilizar, não subir.</td></tr><tr><td>Importância das variáveis</td><td>Ver a ficha random forest.</td><td>Mesmos cuidados.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O bagging de árvores é a floresta aleatória com <code>mtry</code> igual ao número de preditoras: <code>randomForest(nota ~ ., data = cafe, mtry = 6, ntree = 500)</code>, do pacote <code>randomForest</code>, ou <code>ranger(…, mtry = 6)</code>, mais rápido. O objeto traz o erro OOB e o gráfico do erro em função do número de árvores. Para bagging de outros procedimentos, o pacote <code>ipred</code> (<code>bagging()</code>) ou um laço com <code>sample(…, replace = TRUE)</code>. Em Python, <code>sklearn.ensemble.BaggingRegressor</code> e <code>BaggingClassifier</code>, com <code>oob_score=True</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-bagging-min" type="button">Copiar código</button></div><pre id="code-bagging-min"><code>library(randomForest)
+set.seed(1)
+bag &lt;- randomForest(nota ~ alt + temp + chuva + somb + nfol + ph,
+                    data = cafe, mtry = 6, ntree = 500)
+bag          # EQM fora da sacola
+plot(bag)    # erro em função do número de árvores
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-bagging" type="button">Copiar código</button></div><pre id="code-bagging"><code># Bagging (bootstrap aggregation): exemplo completo ----
+# Pacotes: rpart (incluído no R) e randomForest
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("randomForest", quietly = TRUE)) install.packages("randomForest")
+library(rpart)
+f &lt;- nota ~ alt + temp + chuva + somb + nfol + ph
+
+# ---- 1. Bagging à mão: B árvores profundas, cada uma numa reamostra
+set.seed(7)
+i_te &lt;- sample(nrow(cafe), 200); treino &lt;- cafe[-i_te, ]; teste &lt;- cafe[i_te, ]
+B &lt;- 500
+P &lt;- sapply(1:B, function(b) {
+  i &lt;- sample(nrow(treino), replace = TRUE)
+  a &lt;- rpart(f, data = treino[i, ], control = rpart.control(cp = 0, minsplit = 2, minbucket = 1, xval = 0))
+  predict(a, teste)
+})
+eqm &lt;- function(o, p) mean((o - p)^2)
+c(uma_arvore = mean(apply(P, 2, function(p) eqm(teste$nota, p))),
+  bagging    = eqm(teste$nota, rowMeans(P)))
+# EQM do bagging em função de B
+plot(sapply(1:B, function(b) eqm(teste$nota, rowMeans(P[, 1:b, drop = FALSE]))),
+     type = "l", log = "x", xlab = "B", ylab = "EQM no teste")
+
+# ---- 2. O mesmo com randomForest: bagging é a floresta com mtry = p
 library(randomForest)
-set.seed(2026)
-ajuste &lt;- randomForest(mpg ~ wt + hp + disp,
-                       data = mtcars, mtry = 3, ntree = 400,
-                       importance = TRUE)
-print(ajuste)
-print(importance(ajuste))
+set.seed(1)
+bag &lt;- randomForest(f, data = cafe, mtry = 6, ntree = 500, importance = TRUE)
+bag                     # traz o EQM fora da sacola (OOB) e o % de variância explicada
+plot(bag)               # EQM OOB em função do número de árvores
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 3. Bagging só ajuda procedimentos instáveis
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(cafe)))
+cv &lt;- function(ajusta) {
+  e &lt;- numeric(nrow(cafe))
+  for (j in 1:10) { tr &lt;- cafe[d != j, ]; te &lt;- cafe[d == j, ]; e[d == j] &lt;- te$nota - ajusta(tr, te) }
+  mean(e^2)
+}
+bag_de &lt;- function(ajuste, B = 200) function(tr, te)
+  rowMeans(sapply(1:B, function(b) ajuste(tr[sample(nrow(tr), replace = TRUE), ], te)))
+lin &lt;- function(tr, te) predict(lm(f, data = tr), te)
+arv &lt;- function(tr, te) predict(rpart(f, data = tr, control = rpart.control(cp = 0, minsplit = 2, xval = 0)), te)
+c(linear = cv(lin), linear_bag = cv(bag_de(lin)),
+  arvore = cv(arv), arvore_bag = cv(bag_de(arv)))
 
+# ---- 4. Classificação: média das probabilidades das árvores
+set.seed(1)
+bag_c &lt;- randomForest(fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+                      mtry = 6, ntree = 500)
+bag_c$err.rate[500, "OOB"]   # erro fora da sacola
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-bagging" type="button">Copiar código</button></div><pre id="code-py-bagging"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="cart-class.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Árvore de classificação (CART)
-    </a>
-<a href="randomforest.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Random forests
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import BaggingRegressor
+
+y=NOTA
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: a nota. Piso irredutível sigma² = %s.'%c(EQM_PISO))
+
+print('\n'+'='*70)
+print('BAGGING À MÃO: B árvores, cada uma numa reamostra bootstrap')
+print('Separamos 200 lotes de TESTE, que nenhuma árvore vê.')
+rg=np.random.default_rng(7)
+idx=rg.permutation(NC); te,tr=idx[:200],idx[200:]
+Xtr,ytr,Xte,yte=X[tr],y[tr],X[te],y[te]; n=len(tr)
+B=500
+P=np.empty((B,len(te))); OOB=np.zeros(n); NOOB=np.zeros(n)
+for b in range(B):
+    i=rg.integers(0,n,n)
+    m=DecisionTreeRegressor(random_state=b).fit(Xtr[i],ytr[i])   # árvore PROFUNDA, sem poda
+    P[b]=m.predict(Xte)
+    fora=np.setdiff1d(np.arange(n),i)
+    OOB[fora]+=m.predict(Xtr[fora]); NOOB[fora]+=1
+print()
+print('%8s %18s %18s'%('B','EQM no teste','EQM do bagging'))
+print('%8s %18s %18s'%('','(uma árvore)','(média de B)'))
+for b in [1,2,5,10,25,50,100,200,500]:
+    print('%8d %18s %18s'%(b,c(eqm(yte,P[b-1])),c(eqm(yte,P[:b].mean(0)))))
+print()
+print('Uma árvore isolada, sem poda: EQM médio no teste = %s'%c(float(np.mean([eqm(yte,P[b]) for b in range(B)]))))
+print('Bagging com 500 árvores:                          = %s'%c(eqm(yte,P.mean(0))))
+pod=DecisionTreeRegressor(ccp_alpha=0.0443,random_state=0).fit(Xtr,ytr)
+print('Uma árvore PODADA (ficha de árvores):             = %s'%c(eqm(yte,pod.predict(Xte))))
+print('Função verdadeira:                                = %s'%c(eqm(yte,MU[te])))
+
+print('\n'+'='*70)
+print('POR QUE FUNCIONA: a decomposição da variância de uma média')
+print('Se cada árvore tem variância s² e duas árvores quaisquer têm correlação rho,')
+print('  Var(média de B árvores) = rho*s² + (1-rho)*s²/B')
+print('Aqui rho é a correlação entre duas árvores ajustadas ao MESMO conjunto')
+print('de treino, considerando a variação de um conjunto de treino para outro.')
+print('Como o processo gerador é conhecido, sorteamos 30 conjuntos de treino')
+print('novos (mesmos lotes, novo erro aleatório) e 50 árvores em cada um.')
+R,Bb=30,50; Q=np.empty((R,Bb,len(te)))
+for r in range(R):
+    yr=MU[tr]+rg.normal(0,SIGN,n)
+    for b in range(Bb):
+        i=rg.integers(0,n,n); Q[r,b]=DecisionTreeRegressor(random_state=b).fit(Xtr[i],yr[i]).predict(Xte)
+s2=float(np.mean(Q.reshape(R*Bb,-1).var(0,ddof=1)))          # variância de UMA árvore
+cov=float(np.mean(Q.mean(1).var(0,ddof=1)-Q.var(1,ddof=1).mean(0)/Bb))  # covariância entre duas do mesmo treino
+rho=cov/s2
+print()
+print('  variância de uma árvore, média nos pontos de teste   s² = %s'%c(s2))
+print('  covariância entre duas árvores do mesmo treino          = %s'%c(cov))
+print('  correlação média entre duas árvores                 rho = %s'%c(rho))
+print()
+print('%8s %22s %22s'%('B','variância prevista','rho*s² (o limite)'))
+for b in [1,5,25,100,500]:
+    print('%8d %22s %22s'%(b,c(rho*s2+(1-rho)*s2/b),c(rho*s2)))
+print()
+print('Aumentar B elimina a segunda parcela, mas NUNCA a primeira. As árvores')
+print('são correlacionadas porque veem quase os mesmos dados e escolhem quase')
+print('os mesmos cortes. É essa correlação que a random forest vai atacar.')
+
+print('\n'+'='*70)
+print('O ERRO FORA DA SACOLA (out-of-bag, OOB)')
+print('Cada reamostra deixa de fora, em média, (1-1/n)^n ~ e^-1 = 36,8% dos lotes.')
+ok=NOOB&gt;0
+print('  fração média de árvores em que um lote ficou fora: %s'%c(float(np.mean(NOOB/B))))
+print('  EQM OOB (no treino, sem usar o teste)            = %s'%c(eqm(ytr[ok],OOB[ok]/NOOB[ok])))
+print('  EQM no teste independente                        = %s'%c(eqm(yte,P.mean(0))))
+print('O OOB é uma estimativa honesta de graça: dispensa a validação cruzada.')
+
+print('\n'+'='*70)
+print('BAGGING SÓ AJUDA PROCEDIMENTOS INSTÁVEIS')
+print('Mesmo experimento, 10 dobras x 3 repetições, B = 200:')
+print()
+print('%-30s %14s %14s %12s'%('procedimento','sozinho','com bagging','ganho'))
+for nm,f in [('árvore sem poda',lambda: DecisionTreeRegressor(random_state=0)),
+             ('árvore podada',lambda: DecisionTreeRegressor(ccp_alpha=0.0443,random_state=0)),
+             ('árvore de profundidade 2',lambda: DecisionTreeRegressor(max_depth=2,random_state=0)),
+             ('regressão linear',LinearRegression)]:
+    a,_=cv_reg(f,X,y,10,0,3)
+    b,_=cv_reg(lambda f=f: BaggingRegressor(f(),n_estimators=200,random_state=0,n_jobs=1),X,y,10,0,3)
+    print('%-30s %14s %14s %11s%%'%(nm,c(a),c(b),c(100*(a-b)/a,1)))
+print()
+print('A regressão linear é estável: reamostrar quase não muda a reta, e a')
+print('média de retas quase iguais é a mesma reta. A árvore de profundidade 2')
+print('tem pouco a ganhar: seu erro é VIÉS, e a média não remove viés.')
+
+print('\n'+'='*70)
+print('CLASSIFICAÇÃO: voto da maioria ou média das probabilidades')
+yc=FINO
+d=dobras(NC,10,0); voto=np.empty(NC); prob=np.empty(NC); um=np.empty(NC)
+for j in range(10):
+    trj,tej=d!=j,d==j; n2=trj.sum(); Xa,ya=X[trj],yc[trj]
+    V=[];Q=[]
+    for b in range(200):
+        i=rg.integers(0,n2,n2); m=DecisionTreeClassifier(random_state=b).fit(Xa[i],ya[i])
+        V.append(m.predict(X[tej])); Q.append(m.predict_proba(X[tej])[:,-1])
+        if b==0: um[tej]=V[0]
+    voto[tej]=(np.mean(V,0)&gt;=.5); prob[tej]=np.mean(Q,0)
+print()
+print('  uma árvore sem poda: erro 10-fold      = %s'%c(acur(yc,um)*-1+1))
+print('  bagging, voto da maioria (B = 200)     = %s'%c(1-acur(yc,voto)))
+print('  bagging, média das probabilidades      = %s'%c(1-acur(yc,(prob&gt;=.5).astype(int))))
+print('  erro de Bayes                          = %s'%c(ERRO_BAYES))
+q=np.clip(prob,1e-6,1-1e-6)
+print('  log-loss da média das probabilidades   = %s'%c(float(-np.mean(yc*np.log(q)+(1-yc)*np.log(1-q)))))
+print('  Brier                                  = %s'%c(float(np.mean((prob-yc)**2))))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: a nota. Piso irredutível sigma² = 2,4025.
+
+======================================================================
+BAGGING À MÃO: B árvores, cada uma numa reamostra bootstrap
+Separamos 200 lotes de TESTE, que nenhuma árvore vê.
+
+       B       EQM no teste     EQM do bagging
+               (uma árvore)       (média de B)
+       1             6,5844             6,5844
+       2             5,3799             4,5887
+       5             6,1049             3,7856
+      10             6,3226             3,5730
+      25             5,8697             3,4392
+      50             5,9468             3,4828
+     100             6,1060             3,4121
+     200             6,1059             3,4095
+     500             7,6420             3,3883
+
+Uma árvore isolada, sem poda: EQM médio no teste = 6,4264
+Bagging com 500 árvores:                          = 3,3883
+Uma árvore PODADA (ficha de árvores):             = 4,1375
+Função verdadeira:                                = 2,6315
+
+======================================================================
+POR QUE FUNCIONA: a decomposição da variância de uma média
+Se cada árvore tem variância s² e duas árvores quaisquer têm correlação rho,
+  Var(média de B árvores) = rho*s² + (1-rho)*s²/B
+Aqui rho é a correlação entre duas árvores ajustadas ao MESMO conjunto
+de treino, considerando a variação de um conjunto de treino para outro.
+Como o processo gerador é conhecido, sorteamos 30 conjuntos de treino
+novos (mesmos lotes, novo erro aleatório) e 50 árvores em cada um.
+
+  variância de uma árvore, média nos pontos de teste   s² = 3,0926
+  covariância entre duas árvores do mesmo treino          = 0,3515
+  correlação média entre duas árvores                 rho = 0,1137
+
+       B     variância prevista      rho*s² (o limite)
+       1                 3,0926                 0,3515
+       5                 0,8997                 0,3515
+      25                 0,4611                 0,3515
+     100                 0,3789                 0,3515
+     500                 0,3570                 0,3515
+
+Aumentar B elimina a segunda parcela, mas NUNCA a primeira. As árvores
+são correlacionadas porque veem quase os mesmos dados e escolhem quase
+os mesmos cortes. É essa correlação que a random forest vai atacar.
+
+======================================================================
+O ERRO FORA DA SACOLA (out-of-bag, OOB)
+Cada reamostra deixa de fora, em média, (1-1/n)^n ~ e^-1 = 36,8% dos lotes.
+  fração média de árvores em que um lote ficou fora: 0,3668
+  EQM OOB (no treino, sem usar o teste)            = 3,2418
+  EQM no teste independente                        = 3,3883
+O OOB é uma estimativa honesta de graça: dispensa a validação cruzada.
+
+======================================================================
+BAGGING SÓ AJUDA PROCEDIMENTOS INSTÁVEIS
+Mesmo experimento, 10 dobras x 3 repetições, B = 200:
+
+procedimento                          sozinho    com bagging        ganho
+árvore sem poda                        5,8495         3,1053        46,9%
+árvore podada                          3,6933         3,0775        16,7%
+árvore de profundidade 2               4,0357         3,8590         4,4%
+regressão linear                       5,2218         5,2207         0,0%
+
+A regressão linear é estável: reamostrar quase não muda a reta, e a
+média de retas quase iguais é a mesma reta. A árvore de profundidade 2
+tem pouco a ganhar: seu erro é VIÉS, e a média não remove viés.
+
+======================================================================
+CLASSIFICAÇÃO: voto da maioria ou média das probabilidades
+
+  uma árvore sem poda: erro 10-fold      = 0,2350
+  bagging, voto da maioria (B = 200)     = 0,1833
+  bagging, média das probabilidades      = 0,1833
+  erro de Bayes                          = 0,1596
+  log-loss da média das probabilidades   = 0,4513
+  Brier                                  = 0,1315</pre></div><figure class="fig"><img src="../assets/resultados/bagging.png" alt="EQM no teste em função de B, ganho do bagging por procedimento e erro OOB contra teste" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro no teste da B-ésima árvore sozinha (cinza, sempre alto e errático) e do bagging das B primeiras (vermelho), que cai rápido e estabiliza. No centro, o erro validado de quatro procedimentos sozinhos e com bagging, com o ganho percentual. À direita, o erro fora da sacola, calculado só com o treino, contra o erro num teste independente. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>EQM no teste (200 lotes) em função de B</caption><thead><tr><th>B</th><th>A B-ésima árvore sozinha</th><th>Bagging das B primeiras</th></tr></thead><tbody><tr><td>1</td><td>6,5844</td><td>6,5844</td></tr><tr><td>2</td><td>5,3799</td><td>4,5887</td></tr><tr><td>5</td><td>6,1049</td><td>3,7856</td></tr><tr><td>10</td><td>6,3226</td><td>3,5730</td></tr><tr><td>25</td><td>5,8697</td><td>3,4392</td></tr><tr><td>100</td><td>6,1060</td><td>3,4121</td></tr><tr><td>500</td><td>7,6420</td><td><strong>3,3883</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Referências no mesmo teste</caption><thead><tr><th>Modelo</th><th>EQM no teste</th></tr></thead><tbody><tr><td>Uma árvore sem poda (média de 500)</td><td>6,4264</td></tr><tr><td>Uma árvore podada</td><td>4,1375</td></tr><tr><td><strong>Bagging de 500 árvores sem poda</strong></td><td><strong>3,3883</strong></td></tr><tr><td><em>Função verdadeira</em></td><td><em>2,6315</em></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Bagging só ajuda procedimentos instáveis (10 dobras × 3, B = 200)</caption><thead><tr><th>Procedimento</th><th>Sozinho</th><th>Com bagging</th><th>Ganho</th></tr></thead><tbody><tr><td>Árvore sem poda</td><td>5,8495</td><td>3,1053</td><td>46,9%</td></tr><tr><td>Árvore podada</td><td>3,6933</td><td>3,0775</td><td>16,7%</td></tr><tr><td>Árvore de profundidade 2</td><td>4,0357</td><td>3,8590</td><td>4,4%</td></tr><tr><td>Regressão linear</td><td>5,2218</td><td>5,2207</td><td>0,0%</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Classificação (fino ou não), 10 dobras, B = 200</caption><thead><tr><th>Regra</th><th>Erro</th></tr></thead><tbody><tr><td>Uma árvore sem poda</td><td>0,2350</td></tr><tr><td>Bagging, voto da maioria</td><td>0,1833</td></tr><tr><td>Bagging, média das probabilidades</td><td>0,1833</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a média de árvores sem poda (3,3883) é melhor que a melhor árvore podada (4,1375). A poda reduzia a variância cortando a árvore e, com isso, aumentava o viés; o bagging reduz a variância <em>sem</em> cortar, mantendo o viés baixo das árvores profundas. É por isso que no bagging se usam árvores sem poda.</p><p><strong>A tabela dos quatro procedimentos é a lição central.</strong> A árvore sem poda, a mais instável, ganha 46,9%. A podada, já mais estável, 16,7%. A de profundidade 2, quase sem variância e com muito viés, ganha 4,4% — a média de árvores rasas continua rasa. A regressão linear não ganha nada: reamostrar quase não muda a reta, e a média de retas quase iguais é a mesma reta. Na classificação, o bagging leva o erro de 0,2350 a 0,1833, e o log-loss da média das probabilidades fica em 0,4513 — muito melhor que o de uma árvore de folhas puras.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Fazer bagging de árvores podadas</td><td>Use árvores profundas: a média cuida da variância.</td></tr><tr><td>Esperar ganho com modelos estáveis</td><td>Linear, logística: o ganho é nulo.</td></tr><tr><td>Usar B pequeno</td><td>Olhe a curva do erro OOB.</td></tr><tr><td>Achar que mais árvores sobreajustam</td><td>Não sobreajustam; o erro estabiliza.</td></tr><tr><td>Reportar o erro de treino</td><td>Use o OOB ou um teste.</td></tr><tr><td>Reamostrar observações dependentes individualmente</td><td>Reamostre grupos.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="randomforest.html">Random forest</a></td><td>Quase sempre: reduz a correlação entre as árvores e costuma ganhar do bagging.</td></tr><tr><td><a href="boosting.html">Boosting</a></td><td>Quando o problema é viés, não variância.</td></tr><tr><td><a href="bart.html">BART</a></td><td>Comitê de árvores com incerteza bayesiana.</td></tr><tr><td><a href="cart-reg.html">Uma árvore podada</a></td><td>Quando a legibilidade é essencial.</td></tr><tr><td>Subagging (subamostras sem reposição)</td><td>Dados grandes; efeito parecido, mais barato.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste a árvore única como referência.</li><li>Ajuste o bagging com árvores sem poda e B = 500.</li><li>Confira a curva do erro OOB.</li><li>Compare com uma random forest (mtry menor).</li><li>Valide em dados independentes, se houver.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>BREIMAN, Leo. Bagging predictors. <em>Machine Learning</em>, v. 24, n. 2, p. 123-140, 1996.</li><li>EFRON, Bradley; TIBSHIRANI, Robert J. <em>An introduction to the bootstrap.</em> New York: Chapman &amp; Hall, 1993.</li><li>BÜHLMANN, Peter; YU, Bin. Analyzing bagging. <em>The Annals of Statistics</em>, v. 30, n. 4, p. 927-961, 2002.</li><li>FRIEDMAN, Jerome H.; HALL, Peter. On bagging and nonlinear estimation. <em>Journal of Statistical Planning and Inference</em>, v. 137, n. 3, p. 669-683, 2007.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>LIAW, Andy; WIENER, Matthew. Classification and regression by randomForest. <em>R News</em>, v. 2, n. 3, p. 18-22, 2002.</li><li>THERNEAU, Terry; ATKINSON, Beth. <em>rpart: recursive partitioning and regression trees.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rpart" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rpart</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, procedimento-base instável e de viés baixo (árvores sem poda) e número de árvores suficiente.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>randomForest; rpart (incluído no R)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="cart-class.html"><span>← ANTERIOR</span>Árvore de classificação (CART)</a><a href="randomforest.html"><span>PRÓXIMO →</span>Random forests</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

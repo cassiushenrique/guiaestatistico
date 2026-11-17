@@ -4,329 +4,357 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Rede neural multicamadas (MLP): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Rede neural multicamadas (MLP) | Estatística e Ciência de Dados
-  </title>
+<meta content="Rede neural multicamadas (MLP): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Rede neural multicamadas (MLP) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Rede neural multicamadas (MLP)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 18 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Rede neural multicamadas (MLP)
-    </h1>
-<p class="detail-lead">
-     Aprende relações complexas entre variáveis para prever valores ou categorias.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/mlp.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Aprende relações complexas entre variáveis para prever valores ou categorias.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Pré-processamento aprendido no treino, definição de arquitetura, regularização, múltiplas inicializações e validação.</li><li>Forte sensibilidade a n pequeno.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbf h=\phi(\mathbf W_1\mathbf x+\mathbf b_1),\quad\widehat y=g(\mathbf W_2\mathbf h+\mathbf b_2)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de entradas
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf W\)
-        </dt>
-<dd>
-         matriz de pesos ajustáveis
-        </dd>
-</div>
-<div>
-<dt>
-         \(\phi\)
-        </dt>
-<dd>
-         função de ativação
-        </dd>
-</div>
-<div>
-<dt>
-         \(\widehat y\)
-        </dt>
-<dd>
-         saída predita pela rede
-        </dd>
-</div>
-</dl>
-<p>
-       Minimiza erro quadrático ou entropia cruzada por retropropagação, com regularização; RMSE/AUC externamente.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor erro validado indica melhor predição; pesos internos não devem ser interpretados como efeitos independentes simples.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição da autonomia por massa, potência e cilindrada (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-mlp" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-mlp"><code># Rede neural multicamadas (MLP) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Rede neural multicamadas (MLP)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REDES NEURAIS</span><h1>Rede neural multicamadas (MLP)</h1><p class="detail-lead">Uma camada oculta de neurônios não lineares entre a entrada e a saída — a rede constrói as próprias variáveis, ao preço de um problema não convexo.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/mlp.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/mlp.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o MLP</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="rede-uma-camada.html">rede sem camada oculta</a> é a regressão logística: fronteira linear. Acrescentando entre a entrada e a saída uma <strong>camada oculta</strong> de neurônios com ativação não linear, a rede passa a construir as suas próprias variáveis — combinações não lineares das originais — e a saída é uma logística nessas variáveis novas. Com neurônios suficientes, uma única camada oculta aproxima qualquer função contínua (Hornik, Stinchcombe e White, 1989).</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: MLP" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A estrutura</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Entrada → oculta</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">→ saída</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ativação</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">tanh, logística,</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">ReLU</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O treino</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Retropropagação:</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">regra da cadeia</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A regularização</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Decaimento de pesos</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">e tamanho H</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">Mínimos locais</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ganho</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Interações e</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">não linearidade</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">MLP</text></svg><figcaption>Visão geral do perceptron multicamadas. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O que muda em relação à logística</strong><p>O problema deixa de ser convexo. Pontos de partida diferentes levam a soluções diferentes, e a ficha mostra que, sem regularização, o erro validado varia de 22% a 28% só pela semente. Com decaimento de pesos forte, as dez sementes chegam praticamente à mesma rede.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o MLP</h2><p>Com \(H\) neurônios ocultos, cada neurônio \(k\) calcula \(h_k=\tanh(b_k+w_k^\top z)\), e a saída é \(q=\sigma(c+v^\top h)\). Os pesos das duas camadas são ajustados juntos, minimizando a entropia cruzada com decaimento de pesos. O gradiente em relação aos pesos da camada oculta é calculado pela <strong>retropropagação</strong>: a regra da cadeia aplicada de trás para a frente.</p><figure class="fig"><img src="../assets/resultados/mlp-didatica.png" alt="Diagrama de uma rede com seis entradas, quatro neurônios ocultos e uma saída, e as funções de ativação" loading="lazy"/><figcaption><strong>A arquitetura e as ativações.</strong> À esquerda, a rede usada na ficha com H = 4: cada neurônio oculto recebe todas as entradas, e a saída recebe todos os neurônios ocultos. À direita, três ativações: a tangente hiperbólica (usada aqui), a ReLU (padrão em redes profundas) e a logística. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Número de parâmetros</caption><thead><tr><th>Arquitetura</th><th>Parâmetros</th></tr></thead><tbody><tr><td>Sem camada oculta (logística)</td><td>6 + 1 = 7</td></tr><tr><td>H = 4</td><td>6 × 4 + 4 + 4 + 1 = 33</td></tr><tr><td>H = 16</td><td>6 × 16 + 16 + 16 + 1 = 129</td></tr><tr><td>Duas camadas, 16 e 8</td><td>112 + 136 + 9 = 257</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Validação e perda supõem isso.</td><td>Desenho.</td></tr><tr><td><strong>Entradas padronizadas</strong></td><td>Ativações saturam com valores grandes.</td><td><code>scale()</code>.</td></tr><tr><td><strong>H e decaimento escolhidos por validação</strong></td><td>Controlam a flexibilidade.</td><td>Grade com validação cruzada.</td></tr><tr><td>Vários pontos de partida</td><td>Mínimos locais.</td><td>Repita com sementes; tire a média.</td></tr><tr><td>n suficiente</td><td>Muitos parâmetros.</td><td>Compare com modelos mais simples.</td></tr><tr><td>Convergência</td><td><code>maxit</code> pequeno para cedo.</td><td><code>$convergence</code> no nnet.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[h=\tanh\left(W_1z+b_1\right),\]\[q=\sigma\left(v^\top h+c\right),\]\[\begin{aligned}L &= -\frac1n\sum_i\bigl[y_i\log q_i \\ &\quad +(1-y_i)\log(1-q_i)\bigr] \\ &\quad +\frac{\lambda}{2}\bigl(\lVert W_1\rVert^2+\lVert v\rVert^2\bigr)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(W_1\)</dt><dd>matriz \(H\times p\) dos pesos da camada oculta</dd></div><div><dt>\(h\)</dt><dd>vetor das \(H\) ativações ocultas</dd></div><div><dt>\(v,\ c\)</dt><dd>pesos e viés da saída</dd></div><div><dt>\(\lambda\)</dt><dd>decaimento de pesos</dd></div></dl><h3>A retropropagação</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\delta=q-y,\]\[\frac{\partial L}{\partial v}=\delta\,h,\]\[\delta^{(1)}=\delta\,v\odot\left(1-h^2\right),\]\[\frac{\partial L}{\partial W_1}=\delta^{(1)}z^\top\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\delta\)</dt><dd>erro na saída</dd></div><div><dt>\(\delta^{(1)}\)</dt><dd>erro propagado para a camada oculta</dd></div><div><dt>\(1-h^2\)</dt><dd>derivada da tangente hiperbólica</dd></div><div><dt>\(\odot\)</dt><dd>produto elemento a elemento</dd></div></dl><h3>Exemplo numérico: um lote, uma rede com H = 3</h3><p>Lote 11 (fino, \(y=1\)), pesos iniciais sorteados:</p><div class="table-wrap"><table class="method-table"><caption>Propagação para a frente</caption><thead><tr><th>Quantidade</th><th>Neurônio 1</th><th>Neurônio 2</th><th>Neurônio 3</th></tr></thead><tbody><tr><td>Entrada oculta a₁</td><td>−0,6860</td><td>1,1136</td><td>−0,1479</td></tr><tr><td>Ativação h = tanh(a₁)</td><td>−0,5954</td><td>0,8053</td><td>−0,1469</td></tr><tr><td>∂L/∂v = δ·h</td><td>0,2524</td><td>−0,3414</td><td>0,0623</td></tr><tr><td>δ oculto = δ·v·(1 − h²)</td><td>−0,0563</td><td>−0,0777</td><td>0,0267</td></tr></tbody></table></div><div class="worked"><strong>A conta, de trás para a frente</strong><p>A saída é \(a_2=0{,}3067\), \(q=\sigma(0{,}3067)=0{,}5761\) e a perda \(-\log0{,}5761=0{,}5515\). O erro de saída é \(\delta=q-y=-0{,}4239\): a rede subestimou a probabilidade de um lote fino. Esse erro é distribuído para trás: cada neurônio oculto recebe \(\delta\) vezes o peso que o liga à saída, vezes a derivada da sua ativação. O gradiente do peso que liga a altitude ao primeiro neurônio é \(\delta^{(1)}_1\times z_{\text{altitude}}=-0{,}0649\) — e a diferença finita, calculada perturbando esse peso em \(10^{-6}\), dá o mesmo −0,0649. É assim que se verifica uma implementação de retropropagação.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Aproximador universal com uma camada oculta suficientemente larga.</li><li>Problema não convexo: mínimos locais e dependência do ponto de partida.</li><li>O decaimento de pesos é o principal controle de complexidade em redes pequenas.</li><li>Com decaimento suficiente, H importa pouco.</li><li>Interações e não linearidades surgem sem especificação.</li><li>Os pesos não têm interpretação individual.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Erro validado na grade H × decaimento</td><td>A complexidade adequada.</td><td>Repita a validação; é ruidosa.</td></tr><tr><td>Valor da perda final (<code>$value</code>)</td><td>Qualidade do ajuste no treino.</td><td>Perda baixa ≠ boa generalização.</td></tr><tr><td>Variação entre sementes</td><td>Instabilidade da otimização.</td><td>Tire a média de várias redes.</td></tr><tr><td>Pesos</td><td>Pouco: não são efeitos.</td><td>Use dependência parcial.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>nnet()</code>, do pacote <code>nnet</code> (Venables e Ripley), ajusta redes com <strong>uma</strong> camada oculta de neurônios logísticos: <code>size</code> = H, <code>decay</code> = decaimento, <code>linout = TRUE</code> para regressão, <code>maxit</code> = número máximo de iterações (otimização BFGS). O <code>caret</code> faz a busca de <code>size</code> e <code>decay</code> (<code>method = "nnet"</code>) e a média de várias redes (<code>method = "avNNet"</code>). Para redes com várias camadas, <code>keras3</code> ou <code>torch</code>. Em Python, <code>sklearn.neural_network.MLPClassifier</code> e <code>MLPRegressor</code> (<code>hidden_layer_sizes</code>, <code>alpha</code> = decaimento).</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-mlp-min" type="button">Copiar código</button></div><pre id="code-mlp-min"><code>library(nnet)
+Z &lt;- data.frame(scale(cafe[, c("alt","temp","chuva","somb","nfol","ph")]), fino_f = cafe$fino_f)
+set.seed(1)
+m &lt;- nnet(fino_f ~ ., data = Z, size = 4, decay = 1, maxit = 2000)
+predict(m, Z, type = "raw")[1:5]
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-mlp" type="button">Copiar código</button></div><pre id="code-mlp"><code># Rede neural multicamadas (MLP): exemplo completo ----
+# Pacote: nnet (incluído no R). Para redes maiores, keras3 ou torch.
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("nnet", quietly = TRUE)) install.packages("nnet")
 library(nnet)
-set.seed(2026)
-d &lt;- mtcars[, c("mpg", "wt", "hp", "disp")]
-d[] &lt;- lapply(d, function(v) as.numeric(scale(v)))
-i &lt;- sample.int(nrow(d), 22)
-ajuste &lt;- nnet(mpg ~ wt + hp + disp, data = d[i, ],
-              size = 3, linout = TRUE, decay = 0.01,
-              maxit = 800, trace = FALSE)
-pred &lt;- as.numeric(predict(ajuste, d[-i, ]))
-print(sqrt(mean((d$mpg[-i] - pred)^2)))
+vars &lt;- c("alt", "temp", "chuva", "somb", "nfol", "ph")
+Z &lt;- data.frame(scale(cafe[, vars]), fino_f = cafe$fino_f)
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. Uma camada oculta com H neurônios logísticos
+set.seed(1)
+m &lt;- nnet(fino_f ~ ., data = Z, size = 4, decay = 1, maxit = 2000)
+summary(m)                         # todos os pesos: 6x4 + 4 (camada oculta) + 4 + 1 (saída)
 
+# ---- 2. Escolher H (size) e o decaimento (decay) por validação cruzada
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(Z)))
+grade &lt;- expand.grid(size = c(1, 2, 4, 8, 16), decay = c(0.0001, 0.01, 0.1, 1, 3))
+grade$erro &lt;- apply(grade, 1, function(g) {
+  pr &lt;- character(nrow(Z))
+  for (j in 1:10) {
+    mj &lt;- nnet(fino_f ~ ., data = Z[d != j, ], size = g["size"], decay = g["decay"],
+               maxit = 2000, trace = FALSE)
+    pr[d == j] &lt;- as.character(predict(mj, Z[d == j, ], type = "class")) }
+  mean(pr != Z$fino_f) })
+grade[order(grade$erro), ][1:5, ]
+# (o caret faz o mesmo com train(method = "nnet", tuneGrid = ...))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Para avaliação externa estrita, ajuste os parâmetros de padronização exclusivamente no treino (o código é uma demonstração compacta de arquitetura).
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="rede-uma-camada.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Rede sem camada oculta (classificador logístico)
-    </a>
-<a href="cnn.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Redes neurais convolucionais (CNN)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Mínimos locais: o mesmo modelo, dez pontos de partida
+perdas &lt;- sapply(1:10, function(s) { set.seed(s)
+  nnet(fino_f ~ ., data = Z, size = 16, decay = 0.0001, maxit = 3000, trace = FALSE)$value })
+perdas
+# Média das probabilidades de várias redes (avNNet, do caret, faz isso)
+p_media &lt;- rowMeans(sapply(1:5, function(s) { set.seed(s)
+  predict(nnet(fino_f ~ ., data = Z, size = 16, decay = 3, maxit = 3000, trace = FALSE), Z) }))
+
+# ---- 4. Regressão da nota (saída linear) e a interação sombra x temperatura
+Zr &lt;- data.frame(scale(cafe[, vars]), nota = cafe$nota)
+set.seed(1)
+mr &lt;- nnet(nota ~ ., data = Zr, size = 8, decay = 1, linout = TRUE, maxit = 5000)
+efeito &lt;- function(T) {
+  base &lt;- cafe[, vars]; base$temp &lt;- T
+  a &lt;- base; a$somb &lt;- 10; b &lt;- base; b$somb &lt;- 60
+  sc &lt;- function(x) scale(x, attr(scale(cafe[, vars]), "scaled:center"),
+                             attr(scale(cafe[, vars]), "scaled:scale"))
+  mean(predict(mr, sc(b)) - predict(mr, sc(a))) }
+c(frio = efeito(18.5), quente = efeito(22.5))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-mlp" type="button">Copiar código</button></div><pre id="code-py-mlp"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.neural_network import MLPClassifier, MLPRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+y=FINO
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (1) ou não (0). Erro de Bayes = %s.'%c(ERRO_BAYES))
+Z,mu,sd=padroniza(X); n,p=Z.shape
+sig=lambda t: 1/(1+np.exp(-t))
+
+print('\n'+'='*70)
+print('UMA CAMADA OCULTA, À MÃO: propagação e retropropagação')
+print('  h = tanh(W1 z + b1)   (H neurônios ocultos)')
+print('  q = sigma(w2 . h + b2)')
+rg=np.random.default_rng(0); H=3
+W1=rg.normal(0,0.5,(H,p)); b1=np.zeros(H); w2=rg.normal(0,0.5,H); b2=0.0
+i=10; z=Z[i]; yi=y[i]
+a1=W1@z+b1; h=np.tanh(a1); a2=w2@h+b2; q=sig(a2); L=-(yi*np.log(q)+(1-yi)*np.log(1-q))
+print()
+print('Lote %d (classe %d), rede com H = 3 e pesos iniciais sorteados:'%(i+1,yi))
+print('  entradas ocultas a1 = '+', '.join(c(v) for v in a1))
+print('  ativações h = tanh(a1) = '+', '.join(c(v) for v in h))
+print('  a2 = %s ; q = sigma(a2) = %s ; perda = %s'%(c(a2),c(q),c(L)))
+d2=q-yi; gw2=d2*h; gb2=d2
+d1=d2*w2*(1-h**2); gW1=np.outer(d1,z)
+print()
+print('Retropropagação (regra da cadeia, de trás para a frente):')
+print('  delta da saída  = q - y = %s'%c(d2))
+print('  dL/dw2 = delta * h = '+', '.join(c(v) for v in gw2))
+print('  delta oculto = delta * w2 * (1 - h²) = '+', '.join(c(v) for v in d1))
+print('  dL/dW1[1, altitude] = delta_oculto_1 * z_altitude = %s'%c(gW1[0,0]))
+def perda(W1_):
+    hh=np.tanh(W1_@z+b1); qq=sig(w2@hh+b2); return -(yi*np.log(qq)+(1-yi)*np.log(1-qq))
+e=1e-6; Wp=W1.copy(); Wp[0,0]+=e; Wm=W1.copy(); Wm[0,0]-=e
+print('  conferência por diferença finita:          %s'%c((perda(Wp)-perda(Wm))/(2*e)))
+
+print('\n'+'='*70)
+print('QUANTOS NEURÔNIOS, QUANTO DECAIMENTO (alpha): erro 10-fold')
+print('lbfgs, tanh, 3 repetições da validação; cada ajuste parte de pesos novos.')
+Hs=[1,2,4,8,16]; As=[0.0001,0.01,0.1,1.0,3.0]
+E=np.zeros((len(Hs),len(As)))
+for a,H_ in enumerate(Hs):
+    for b,al in enumerate(As):
+        E[a,b],_=cv_clf(lambda H_=H_,al=al: make_pipeline(StandardScaler(),MLPClassifier((H_,),activation='tanh',solver='lbfgs',alpha=al,max_iter=3000,random_state=1)),X,y,10,0,3)
+print()
+print('%8s'%'H \\ alfa'+''.join('%10s'%c(al,4) for al in As))
+for a,H_ in enumerate(Hs): print('%8d'%H_+''.join('%10s'%c(E[a,b]) for b in range(len(As))))
+a,b=np.unravel_index(np.argmin(E),E.shape); Hb,Ab=Hs[a],As[b]
+print('  melhor: H = %d, alfa = %s, erro = %s'%(Hb,c(Ab,4),c(E[a,b])))
+print('Sem decaimento, mais neurônios = mais sobreajuste. Com decaimento, o')
+print('número de neurônios importa pouco: a penalidade controla a flexibilidade.')
+
+print('\n'+'='*70)
+print('MÍNIMOS LOCAIS: o mesmo modelo, 10 pontos de partida')
+print()
+print('%8s %16s %16s'%('semente','perda no treino','erro 10-fold'))
+r_=[]
+for s_ in range(10):
+    m=make_pipeline(StandardScaler(),MLPClassifier((16,),activation='tanh',solver='lbfgs',alpha=0.0001,max_iter=3000,random_state=s_)).fit(X,y)
+    q=np.clip(m.predict_proba(X)[:,1],1e-12,1-1e-12)
+    er,_=cv_clf(lambda s_=s_: make_pipeline(StandardScaler(),MLPClassifier((16,),activation='tanh',solver='lbfgs',alpha=0.0001,max_iter=3000,random_state=s_)),X,y,10,0,1)
+    r_.append(er); print('%8d %16s %16s'%(s_,c(float(-np.mean(y*np.log(q)+(1-y)*np.log(1-q)))),c(er)))
+print('  amplitude do erro entre sementes: %s a %s'%(c(min(r_)),c(max(r_))))
+class Media:
+    def __init__(s,k,H_,al): s.k,s.H,s.al=k,H_,al
+    def fit(s,A,b):
+        s.ms=[make_pipeline(StandardScaler(),MLPClassifier((s.H,),activation='tanh',solver='lbfgs',alpha=s.al,max_iter=3000,random_state=r)).fit(A,b) for r in range(s.k)]; return s
+    def predict_proba(s,A): return np.mean([m.predict_proba(A) for m in s.ms],0)
+    def predict(s,A): return (s.predict_proba(A)[:,1]&gt;=.5).astype(int)
+print()
+print('Média das probabilidades de 5 redes com pontos de partida diferentes:')
+print()
+print('%-34s %10s %10s %10s'%('','erro','log-loss','Brier'))
+for H_,al in [(16,0.0001),(Hb,Ab)]:
+    e1=cv_clf(lambda: make_pipeline(StandardScaler(),MLPClassifier((H_,),activation='tanh',solver='lbfgs',alpha=al,max_iter=3000,random_state=1)),X,y,10,0,3,prob=True)
+    e5=cv_clf(lambda: Media(5,H_,al),X,y,10,0,3,prob=True)
+    print('%-34s %10s %10s %10s'%('H = %d, alfa = %s: uma rede'%(H_,c(al,4)),*[c(v) for v in e1]))
+    print('%-34s %10s %10s %10s'%('H = %d, alfa = %s: média de 5'%(H_,c(al,4)),*[c(v) for v in e5]))
+print('%-34s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+print('Sem penalidade, cada semente cai num mínimo diferente e a média ajuda')
+print('muito. Com penalidade forte, as sementes chegam praticamente à mesma')
+print('solução, e a média não tem o que corrigir.')
+
+print('\n'+'='*70)
+print('A INTERAÇÃO, agora representável')
+print('Efeito na nota de passar a sombra de 10% a 60% (MLP de regressão):')
+mr=make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=(8,),activation='tanh',solver='lbfgs',alpha=1.0,max_iter=5000,random_state=0)).fit(X,NOTA)
+print()
+print('%-22s %12s %12s'%('','MLP','verdade'))
+for T in [18.5,22.5]:
+    A=X.copy(); A[:,1]=T; A[:,3]=10; Bm=A.copy(); Bm[:,3]=60
+    print('%-22s %12s %12s'%('temperatura %s C'%c(T,1),c(float((mr.predict(Bm)-mr.predict(A)).mean()),3),c(float((verdade(Bm)-verdade(A)).mean()),3)))
+
+print('\n'+'='*70)
+print('REGRESSÃO DA NOTA: o MLP contra o piso')
+print()
+print('%-26s %14s'%('modelo','EQM 10-fold'))
+for nm,f in [('MLP H = 4, alfa = 1',lambda: make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=(4,),activation='tanh',solver='lbfgs',alpha=1.0,max_iter=5000,random_state=0))),
+             ('MLP H = 8, alfa = 1',lambda: make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=(8,),activation='tanh',solver='lbfgs',alpha=1.0,max_iter=5000,random_state=0))),
+             ('MLP H = 8, alfa = 10',lambda: make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=(8,),activation='tanh',solver='lbfgs',alpha=10.0,max_iter=5000,random_state=0))),
+             ('MLP H = (16, 8), alfa = 3',lambda: make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=(16,8),activation='tanh',solver='lbfgs',alpha=3.0,max_iter=5000,random_state=0)))]:
+    v,_=cv_reg(f,X,NOTA,10,0,3); print('%-26s %14s'%(nm,c(v)))
+print('%-26s %14s'%('piso (sigma²)',c(EQM_PISO)))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (1) ou não (0). Erro de Bayes = 0,1596.
+
+======================================================================
+UMA CAMADA OCULTA, À MÃO: propagação e retropropagação
+  h = tanh(W1 z + b1)   (H neurônios ocultos)
+  q = sigma(w2 . h + b2)
+
+Lote 11 (classe 1), rede com H = 3 e pesos iniciais sorteados:
+  entradas ocultas a1 = -0,6860, 1,1136, -0,1479
+  ativações h = tanh(a1) = -0,5954, 0,8053, -0,1469
+  a2 = 0,3067 ; q = sigma(a2) = 0,5761 ; perda = 0,5515
+
+Retropropagação (regra da cadeia, de trás para a frente):
+  delta da saída  = q - y = -0,4239
+  dL/dw2 = delta * h = 0,2524, -0,3414, 0,0623
+  delta oculto = delta * w2 * (1 - h²) = -0,0563, -0,0777, 0,0267
+  dL/dW1[1, altitude] = delta_oculto_1 * z_altitude = -0,0649
+  conferência por diferença finita:          -0,0649
+
+======================================================================
+QUANTOS NEURÔNIOS, QUANTO DECAIMENTO (alpha): erro 10-fold
+lbfgs, tanh, 3 repetições da validação; cada ajuste parte de pesos novos.
+
+H \ alfa    0,0001    0,0100    0,1000    1,0000    3,0000
+       1    0,2278    0,2300    0,2228    0,2222    0,2294
+       2    0,2094    0,2094    0,2072    0,2022    0,2122
+       4    0,2167    0,2194    0,2139    0,1961    0,1967
+       8    0,2367    0,2367    0,2156    0,2039    0,1967
+      16    0,2622    0,2567    0,2544    0,2156    0,1928
+  melhor: H = 16, alfa = 3,0000, erro = 0,1928
+Sem decaimento, mais neurônios = mais sobreajuste. Com decaimento, o
+número de neurônios importa pouco: a penalidade controla a flexibilidade.
+
+======================================================================
+MÍNIMOS LOCAIS: o mesmo modelo, 10 pontos de partida
+
+ semente  perda no treino     erro 10-fold
+       0           0,0581           0,2783
+       1           0,0167           0,2400
+       2           0,0830           0,2583
+       3           0,0662           0,2417
+       4           0,0851           0,2783
+       5           0,0476           0,2833
+       6           0,0806           0,2567
+       7           0,1174           0,2200
+       8           0,0835           0,2367
+       9           0,0255           0,2650
+  amplitude do erro entre sementes: 0,2200 a 0,2833
+
+Média das probabilidades de 5 redes com pontos de partida diferentes:
+
+                                         erro   log-loss      Brier
+H = 16, alfa = 0,0001: uma rede        0,2622     2,8200     0,2493
+H = 16, alfa = 0,0001: média de 5      0,2167     0,7404     0,1595
+H = 16, alfa = 3,0000: uma rede        0,1928     0,4014     0,1303
+H = 16, alfa = 3,0000: média de 5      0,1928     0,4014     0,1303
+erro de Bayes                          0,1596
+Sem penalidade, cada semente cai num mínimo diferente e a média ajuda
+muito. Com penalidade forte, as sementes chegam praticamente à mesma
+solução, e a média não tem o que corrigir.
+
+======================================================================
+A INTERAÇÃO, agora representável
+Efeito na nota de passar a sombra de 10% a 60% (MLP de regressão):
+
+                                MLP      verdade
+temperatura 18,5 C           -0,733       -1,500
+temperatura 22,5 C            1,043        2,600
+
+======================================================================
+REGRESSÃO DA NOTA: o MLP contra o piso
+
+modelo                        EQM 10-fold
+MLP H = 4, alfa = 1                4,4376
+MLP H = 8, alfa = 1                4,0544
+MLP H = 8, alfa = 10               4,3268
+MLP H = (16, 8), alfa = 3          4,3108
+piso (sigma²)                      2,4025</pre></div><figure class="fig"><img src="../assets/resultados/mlp.png" alt="Erro validado na grade de neurônios e decaimento, perda e erro de dez pontos de partida, e o efeito da sombra em dois climas" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro validado em cada combinação de H e α: sem decaimento, mais neurônios pioram; com α de 1 a 3, o tamanho importa pouco. No centro, dez redes idênticas a não ser pela semente (H = 16, α ≈ 0): perdas de treino diferentes e erros validados de 22% a 28%. À direita, a camada oculta representa a interação: o efeito da sombra muda de sinal com o clima. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Erro 10-fold na grade (3 repetições)</caption><thead><tr><th>H \ α</th><th>0,0001</th><th>0,01</th><th>0,1</th><th>1</th><th>3</th></tr></thead><tbody><tr><td>1</td><td>0,2278</td><td>0,2300</td><td>0,2228</td><td>0,2222</td><td>0,2294</td></tr><tr><td>2</td><td>0,2094</td><td>0,2094</td><td>0,2072</td><td>0,2022</td><td>0,2122</td></tr><tr><td>4</td><td>0,2167</td><td>0,2194</td><td>0,2139</td><td>0,1961</td><td>0,1967</td></tr><tr><td>8</td><td>0,2367</td><td>0,2367</td><td>0,2156</td><td>0,2039</td><td>0,1967</td></tr><tr><td>16</td><td>0,2622</td><td>0,2567</td><td>0,2544</td><td>0,2156</td><td><strong>0,1928</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Mínimos locais: H = 16, α = 0,0001, dez sementes</caption><thead><tr><th>Semente</th><th>Perda no treino</th><th>Erro 10-fold</th></tr></thead><tbody><tr><td>0</td><td>0,0581</td><td>0,2783</td></tr><tr><td>1</td><td>0,0167</td><td>0,2400</td></tr><tr><td>3</td><td>0,0662</td><td>0,2417</td></tr><tr><td>5</td><td>0,0476</td><td>0,2833</td></tr><tr><td>7</td><td>0,1174</td><td>0,2200</td></tr><tr><td>9</td><td>0,0255</td><td>0,2650</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Média das probabilidades de 5 redes</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>H = 16, α = 0,0001: uma rede</td><td>0,2622</td><td>2,8200</td><td>0,2493</td></tr><tr><td>H = 16, α = 0,0001: média de 5</td><td>0,2167</td><td>0,7404</td><td>0,1595</td></tr><tr><td>H = 16, α = 3: uma rede</td><td>0,1928</td><td>0,4014</td><td>0,1303</td></tr><tr><td>H = 16, α = 3: média de 5</td><td>0,1928</td><td>0,4014</td><td>0,1303</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Efeito na nota de passar a sombra de 10% a 60%</caption><thead><tr><th>Clima</th><th>MLP (H = 8, α = 1)</th><th>Verdade</th></tr></thead><tbody><tr><td>18,5 °C</td><td>−0,733</td><td>−1,500</td></tr><tr><td>22,5 °C</td><td>1,043</td><td>2,600</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Regressão da nota</caption><thead><tr><th>Modelo</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>H = 4, α = 1</td><td>4,4376</td></tr><tr><td><strong>H = 8, α = 1</strong></td><td><strong>4,0544</strong></td></tr><tr><td>H = 8, α = 10</td><td>4,3268</td></tr><tr><td>Duas camadas (16, 8), α = 3</td><td>4,3108</td></tr><tr><td><em>Piso σ²</em></td><td><em>2,4025</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a melhor rede (H = 16, α = 3) erra 19,28%, contra 23,17% da rede sem camada oculta (a logística): a camada oculta ganhou quatro pontos. Fica no nível da SVM radial (19,33%) e da random forest (19,11%), todos a cerca de três pontos do erro de Bayes.</p><p><strong>A grade mostra dois regimes.</strong> Com α = 0,0001 (sem regularização na prática), o erro <em>piora</em> com o número de neurônios: 0,2094 com H = 2, 0,2622 com H = 16. Com α = 3, melhora ou fica estável: 0,1928 com H = 16. É a lição prática das redes pequenas: escolha uma rede grande e controle-a pelo decaimento, em vez de procurar o tamanho exato.</p><p><strong>Mínimos locais:</strong> as dez redes sem regularização chegaram a perdas de treino entre 0,0167 e 0,1174 — todas muito abaixo das 0,4359 da logística, isto é, todas decoraram boa parte do treino — e a erros validados entre 22,00% e 28,33%. A semente é uma fonte de variação tão grande quanto a escolha de H. A média de cinco redes reduz o erro de 0,2622 para 0,2167 e o log-loss de 2,8200 para 0,7404. Com α = 3, as cinco redes chegam à mesma solução: média e rede única coincidem até a quarta casa.</p><p><strong>A interação:</strong> a rede estima que a sombra reduz a nota em 0,733 ponto no clima fresco e a aumenta em 1,043 no quente. A verdade é −1,500 e +2,600: sinais certos, magnitudes atenuadas pela regularização. Na regressão, o MLP (4,0544) empata com o modelo aditivo de splines (4,0420) e fica atrás dos comitês de árvores (cerca de 3,0): com 600 observações e um processo com um degrau, árvores levam vantagem.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Não padronizar</td><td>Ativações saturam; o treino trava.</td></tr><tr><td>Ajustar uma rede só</td><td>Repita sementes; tire a média.</td></tr><tr><td>Escolher H sem decaimento</td><td>Use rede grande + decaimento.</td></tr><tr><td>Parar no <code>maxit</code> padrão (100) do nnet</td><td>Aumente e verifique a convergência.</td></tr><tr><td>Comparar pelo erro de treino</td><td>A rede decora; valide.</td></tr><tr><td>Interpretar pesos</td><td>Use dependência parcial ou importância por permutação.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="randomforest.html">Random forest</a> e <a href="boosting.html">boosting</a></td><td>Dados tabulares de tamanho moderado: em geral iguais ou melhores, com menos ajuste.</td></tr><tr><td><a href="svm-rbf.html">SVM radial</a></td><td>Fronteiras curvas, n moderado; problema convexo.</td></tr><tr><td><a href="gam.html">GAM</a></td><td>Efeitos suaves interpretáveis.</td></tr><tr><td><a href="cnn.html">CNN</a></td><td>Imagens e sinais com estrutura espacial.</td></tr><tr><td><a href="rnn.html">RNN</a></td><td>Sequências.</td></tr><tr><td>Redes profundas (keras3, torch)</td><td>Muitos dados, entradas não tabulares.</td></tr></tbody></table></div><ol class="steps"><li>Padronize as entradas.</li><li>Fixe uma rede relativamente grande (H = 10 a 20).</li><li>Escolha o decaimento por validação cruzada.</li><li>Repita com várias sementes e tire a média.</li><li>Compare com floresta e SVM.</li><li>Interprete por dependência parcial, não pelos pesos.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>RUMELHART, David E.; HINTON, Geoffrey E.; WILLIAMS, Ronald J. Learning representations by back-propagating errors. <em>Nature</em>, v. 323, p. 533-536, 1986.</li><li>HORNIK, Kurt; STINCHCOMBE, Maxwell; WHITE, Halbert. Multilayer feedforward networks are universal approximators. <em>Neural Networks</em>, v. 2, n. 5, p. 359-366, 1989.</li><li>CYBENKO, George. Approximation by superpositions of a sigmoidal function. <em>Mathematics of Control, Signals and Systems</em>, v. 2, n. 4, p. 303-314, 1989.</li><li>RIPLEY, Brian D. <em>Pattern recognition and neural networks.</em> Cambridge: Cambridge University Press, 1996.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacotes <code>MASS</code>, <code>nnet</code> e <code>class</code>.)</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>GOODFELLOW, Ian; BENGIO, Yoshua; COURVILLE, Aaron. <em>Deep learning.</em> Cambridge: MIT Press, 2016. Disponível em: <a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener noreferrer">https://www.deeplearningbook.org/</a>.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Entradas padronizadas, tamanho e decaimento escolhidos por validação, vários pontos de partida e convergência verificada.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>nnet (incluído no R); caret (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="rede-uma-camada.html"><span>← ANTERIOR</span>Rede sem camada oculta (classificador logístico)</a><a href="cnn.html"><span>PRÓXIMO →</span>Redes neurais convolucionais (CNN)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

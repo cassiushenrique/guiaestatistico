@@ -4,302 +4,275 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANOVA fatorial: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANOVA fatorial | Estatística e Ciência de Dados
-  </title>
+<meta content="ANOVA fatorial: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANOVA fatorial | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANOVA fatorial
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANOVA fatorial
-    </h1>
-<p class="detail-lead">
-     Avalia efeitos de diferentes fatores e se a influência de um depende dos níveis de outro.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/aovfatorial.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia efeitos de diferentes fatores e se a influência de um depende dos níveis de outro.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência, normalidade aproximada dos erros, homogeneidade das variâncias por célula, ausência de confundimento.</li><li>Em delineamentos desbalanceados, especificar somas de quadrados.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ (\alpha\gamma)_{ij}=0\quad\forall i,j\\H_1&amp;:\ \exists i,j:(\alpha\gamma)_{ij}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[F_A=\frac{QM_A}{QM_E},\quad F_B=\frac{QM_B}{QM_E},\quad F_{AB}=\frac{QM_{AB}}{QM_E}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu\)
-        </dt>
-<dd>
-         média ou efeito médio
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         estatística de razão de variâncias baseada nos quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) na interação: efeitos variam por nível do outro fator; priorize efeitos simples e IC em vez de interpretar médias marginais isoladamente.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em warpbreaks, tension e wool representam dois fatores de fabricação.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Verificar se as médias de quebras dependem da tensão, do tipo de lã e da interação entre esses fatores.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-aovfatorial" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-aovfatorial"><code># ANOVA fatorial ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANOVA fatorial</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANOVA fatorial</h1><p class="detail-lead">Estuda dois ou mais fatores no mesmo experimento e, sobretudo, se o efeito de um depende do nível do outro.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/aovfatorial.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/aovfatorial.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a ANOVA fatorial</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Dois fatores podem ser estudados em dois experimentos separados — ou num só, combinando todos os níveis de um com todos os níveis do outro. A segunda opção é mais econômica e responde a uma pergunta que a primeira não alcança: <em>o efeito de um fator depende do nível do outro?</em> Essa pergunta é a da interação, e é quase sempre a mais interessante das três.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: ANOVA fatorial" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Dois ou mais fatores</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">cruzados num só experimento</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Três testes</text><text x="208" y="204.0" text-anchor="end" font-size="10.8" fill="#3d5042">Fator A</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">Fator B</text><text x="208" y="234.0" text-anchor="end" font-size="10.8" fill="#3d5042">Interação A:B</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interação</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">O efeito de A muda</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">conforme o nível de B</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Se houver interação</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Leia efeitos simples,</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">não efeitos principais</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">aov(y ~ A * B)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">emmeans(.., ~A | B)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Desbalanceamento muda</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">a soma de quadrados</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">ANOVA fatorial</text></svg><figcaption>Visão geral da ANOVA fatorial. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Economia de experimentação</strong><p>Um fatorial 2 × 3 com 9 repetições usa 54 unidades e estima os dois efeitos principais com a mesma precisão que dois experimentos separados de 54 unidades cada — além de entregar a interação de graça. Essa eficiência é a razão pela qual o delineamento fatorial substituiu, na prática experimental, o hábito de variar um fator de cada vez.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a ANOVA fatorial</h2><p>Com dois fatores, a variação total se reparte em quatro parcelas: o efeito principal de A (quanto as médias dos níveis de A diferem entre si, ignorando B), o efeito principal de B, a <strong>interação</strong> A:B e o resíduo. A interação mede o que as médias das células têm de diferente do que a simples soma dos dois efeitos principais previria.</p><figure class="fig"><img src="../assets/resultados/aovfatorial-didatica.png" alt="Quatro gráficos de interação: nenhum efeito, efeitos principais, interação ordinal e disordinal" loading="lazy"/><figcaption><strong>Como ler um gráfico de interação.</strong> Em cada painel, o eixo horizontal traz os três níveis do fator A e cada linha corresponde a um nível do fator B. Linhas <strong>paralelas</strong> significam ausência de interação: o efeito de A é o mesmo seja qual for o nível de B. Na interação <em>ordinal</em>, a ordem dos níveis de B se mantém, mas a intensidade do efeito de A muda. Na <em>disordinal</em>, as linhas se cruzam: o nível de B que é melhor em A₁ passa a ser pior em A₃, e falar em “efeito principal de B” deixa de fazer sentido. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>A regra de ouro</strong><p>Havendo interação significativa, os efeitos principais perdem o interesse — e podem ser enganosos. A média de um fator ao longo dos níveis do outro descreve uma situação que não ocorre em lugar nenhum. A leitura correta passa a ser por <strong>efeitos simples</strong>: o efeito de A dentro de cada nível de B, separadamente.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Indispensável.</td><td>Delineamento; se houver medidas repetidas, veja <a href="aovmista.html">ANOVA mista</a>.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a distribuição F.</td><td><code>shapiro.test(residuals(modelo))</code>; Q-Q.</td></tr><tr><td>Variâncias homogêneas entre as <strong>células</strong></td><td>O erro é comum a todas as combinações.</td><td>Levene sobre as a × b células; tabela de variâncias.</td></tr><tr><td>Delineamento completo: todas as combinações presentes</td><td>Sem alguma célula, a interação não é estimável.</td><td><code>table(A, B)</code>.</td></tr><tr><td>Pelo menos 2 repetições por célula</td><td>Com 1, a interação se confunde com o resíduo.</td><td>Conte as observações por célula.</td></tr><tr><td>Balanceamento (desejável, não obrigatório)</td><td>Com células de tamanhos iguais, as somas de quadrados são ortogonais e a ordem dos termos não importa.</td><td><code>table(A, B)</code>; se desbalanceado, use somas de quadrados do tipo II ou III.</td></tr></tbody></table></div><div class="callout "><strong>Quando as variâncias das células diferem</strong><p>No exemplo desta ficha, a razão entre a maior e a menor variância das células é 13,7, e o teste de Levene rejeita (p = 0,023). A resposta é uma contagem, e nesses casos a variância costuma crescer com a média. A raiz quadrada é a transformação indicada: na nova escala o teste de Levene devolve p = 0,247 e a interação permanece significativa (p = 0,031). Quando uma conclusão sobrevive à mudança de escala, ela não é artefato da heterogeneidade.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>São <strong>três</strong> hipóteses nulas, testadas na mesma tabela:</p><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{A}&:\ \alpha_1=\cdots=\alpha_a=0 \\ &\text{(sem efeito principal de A)} \\ H_0^{B}&:\ \beta_1=\cdots=\beta_b=0 \\ &\text{(sem efeito principal de B)} \\ H_0^{AB}&:\ (\alpha\beta)_{ij}=0\ \ \forall\, i,j \\ &\text{(sem interação)}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[y_{ijl}=\mu+\alpha_i+\beta_j+(\alpha\beta)_{ij}+\varepsilon_{ijl},\]\[\varepsilon_{ijl}\sim N\!\left(0,\sigma^{2}\right)\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[SQ_{A}=br\sum_i\left(\bar{y}_{i\cdot\cdot}-\bar{y}\right)^{2},\]\[SQ_{B}=ar\sum_j\left(\bar{y}_{\cdot j\cdot}-\bar{y}\right)^{2},\]\[\begin{aligned}SQ_{AB} &= r\sum_i\sum_j\bigl(\bar{y}_{ij\cdot}-\bar{y}_{i\cdot\cdot} \\ &\quad -\bar{y}_{\cdot j\cdot}+\bar{y}\bigr)^{2}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(a,\ b\)</dt><dd>números de níveis dos fatores A e B</dd></div><div><dt>\(r\)</dt><dd>repetições por célula</dd></div><div><dt>\(\bar{y}_{ij\cdot}\)</dt><dd>média da célula (i, j)</dd></div><div><dt>\(\bar{y}_{i\cdot\cdot},\ \bar{y}_{\cdot j\cdot}\)</dt><dd>médias marginais de A e de B</dd></div><div><dt>\((\alpha\beta)_{ij}\)</dt><dd>termo de interação: o que a célula tem além da soma dos dois efeitos</dd></div><div><dt>\(F\)</dt><dd>em cada linha, o quadrado médio do termo dividido pelo quadrado médio do resíduo</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Dados <code>warpbreaks</code>: dois tipos de lã × três níveis de tensão, com 9 peças por célula. Médias das células (rupturas por peça):</p><div class="table-wrap"><table class="method-table"><caption>Médias das células</caption><thead><tr><th>Lã</th><th>Tensão baixa (L)</th><th>Tensão média (M)</th><th>Tensão alta (H)</th><th>Média da lã</th></tr></thead><tbody><tr><td>A</td><td>44,556</td><td>24,000</td><td>24,556</td><td>31,037</td></tr><tr><td>B</td><td>28,222</td><td>28,778</td><td>18,778</td><td>25,259</td></tr><tr><td><strong>Média da tensão</strong></td><td><strong>36,389</strong></td><td><strong>26,389</strong></td><td><strong>21,667</strong></td><td><strong>28,148</strong></td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>\[\begin{aligned}SQ_{\text{lã}} &= 3\times9\bigl[(31{,}037-28{,}148)^2 \\ &\quad +(25{,}259-28{,}148)^2\bigr] \\ &= 450{,}67,\end{aligned}\] com 1 gl.</p><p>\[\begin{aligned}SQ_{\text{tensão}} &= 2\times9\bigl[(36{,}389-28{,}148)^2 \\ &\quad +(26{,}389-28{,}148)^2 \\ &\quad +(21{,}667-28{,}148)^2\bigr] \\ &= 2\,034{,}26,\end{aligned}\] com 2 gl.</p><p>Para a célula (A, L), o termo de interação é \[\begin{aligned}&44{,}556-31{,}037-36{,}389 \\ &\quad +28{,}148 \\ &= +5{,}278:\end{aligned}\] a lã A com tensão baixa rompe 5,3 vezes mais do que a soma dos dois efeitos principais previa. Somando os quadrados das seis células e multiplicando por 9, \(SQ_{AB}=1\,002{,}78\), com \((2-1)(3-1)=2\) gl.</p><p>Por diferença, \[\begin{aligned}SQ_{\text{resíduo}} &= 9\,232{,}81-450{,}67 \\ &\quad -2\,034{,}26-1\,002{,}78 \\ &= 5\,745{,}11,\end{aligned}\] com \(54-6=48\) gl, de modo que \(QM_{\text{res}}=119{,}69\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F_{AB}=\frac{1\,002{,}78/2}{119{,}69}=4{,}189\]\[(p=0{,}021);\]\[F_{\text{tensão}}=8{,}498\]\[(p=0{,}00069);\]\[F_{\text{lã}}=3{,}765\ \ (p=0{,}058).\]</div></div><h3>Somas de quadrados: tipos I, II e III</h3><div class="table-wrap"><table class="method-table"><caption>Quando a ordem importa</caption><thead><tr><th>Tipo</th><th>O que mede</th><th>Quando usar</th></tr></thead><tbody><tr><td>I (sequencial)</td><td>Cada termo ajustado apenas pelos anteriores; depende da ordem.</td><td>Só quando há uma hierarquia natural declarada a priori. É o padrão de <code>aov()</code> e <code>anova()</code>.</td></tr><tr><td>II (parcial, hierárquica)</td><td>Cada efeito principal ajustado pelo outro, mas não pela interação.</td><td>Delineamentos desbalanceados, quando a interação não é significativa.</td></tr><tr><td>III (parcial completa)</td><td>Cada termo ajustado por todos os demais, inclusive a interação.</td><td>Delineamentos desbalanceados com interação. Exige contrastes de soma zero.</td></tr></tbody></table></div><p><strong>Em delineamentos balanceados os três tipos coincidem</strong>, e a questão não se coloca. Com células de tamanhos diferentes, eles divergem, e usar o padrão do R sem pensar leva a resultados que dependem da ordem em que os termos foram escritos na fórmula.</p></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><ol class="steps"><li><strong>Olhe primeiro a linha da interação.</strong> Ela decide como todo o resto será lido.</li><li>Se a interação <strong>não</strong> for significativa, leia os efeitos principais normalmente: cada fator tem um efeito que vale em todos os níveis do outro.</li><li>Se a interação <strong>for</strong> significativa, não interprete os efeitos principais. Passe aos efeitos simples: teste o fator A dentro de cada nível de B, com ajuste para múltiplas comparações.</li><li>Apresente sempre o gráfico de interação, com erros-padrão.</li><li>Reporte os tamanhos de efeito parciais dos três termos.</li></ol><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>F da interação</td><td>Se os efeitos dos fatores se combinam de forma aditiva.</td><td>É a primeira linha a olhar.</td></tr><tr><td>F dos efeitos principais</td><td>Diferença entre as médias marginais.</td><td>Só interpretável sem interação.</td></tr><tr><td>Médias das células</td><td>O resultado de fato observado.</td><td>É o que o gráfico de interação mostra.</td></tr><tr><td>η² parcial</td><td>Magnitude de cada termo.</td><td>Os parciais não somam 1.</td></tr><tr><td>Efeitos simples</td><td>Onde o efeito existe e onde não existe.</td><td>Ajuste pelo número de testes.</td></tr><tr><td>QM do resíduo</td><td>Ruído experimental.</td><td>Sua raiz é o desvio-padrão residual.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>aov(y ~ A * B)</code> é a forma curta de <code>aov(y ~ A + B + A:B)</code>, ambas no pacote <code>stats</code>. Para delineamentos desbalanceados, <code>car::Anova()</code> permite escolher o tipo de soma de quadrados — e, para o tipo III, é preciso antes definir <code>options(contrasts = c("contr.sum", "contr.poly"))</code>. <code>emmeans</code> fornece as médias das células, os efeitos simples (<code>~A | B</code>) e as comparações com ajuste; <code>effectsize</code> calcula η² e ω² parciais.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-aovfatorial-min" type="button">Copiar código</button></div><pre id="code-aovfatorial-min"><code>modelo &lt;- aov(breaks ~ wool * tension, data = warpbreaks)
+summary(modelo)
+emmeans::emmeans(modelo, ~tension | wool) |&gt; pairs(adjust = "tukey")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>warpbreaks</code> registra o número de rupturas do fio em 54 teares, combinando dois tipos de lã (A e B) com três níveis de tensão do fio (baixa, média e alta), em nove peças por combinação. É um fatorial 2 × 3 completo e balanceado.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-aovfatorial" type="button">Copiar código</button></div><pre id="code-aovfatorial"><code># ANOVA fatorial (dois fatores com interação): exemplo completo ----
+# Pacotes: stats (base), car (tipos de soma de quadrados), emmeans (efeitos simples)
+# install.packages(c("car", "emmeans"))
 
-# Ajuste e resultados ----
-ajuste &lt;- aov(breaks ~ wool * tension, data = warpbreaks)
-print(summary(ajuste))
-with(warpbreaks, interaction.plot(tension, wool, breaks))
+# 1. Dados: warpbreaks, rupturas do fio em teares, por tipo de lã e tensão
+data(warpbreaks)
+str(warpbreaks)
+table(warpbreaks$wool, warpbreaks$tension)         # 9 observações por célula: balanceado
+with(warpbreaks, tapply(breaks, list(wool, tension), mean))
+with(warpbreaks, tapply(breaks, list(wool, tension), sd))
 
-# Visualização e diagnóstico ----
-interaction.plot(warpbreaks$tension, warpbreaks$wool, warpbreaks$breaks, xlab = "Tensão", ylab = "Quebras médias", trace.label = "Tipo de lã")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. O gráfico de interação vem ANTES da tabela
+with(warpbreaks, interaction.plot(tension, wool, breaks,
+                                  ylab = "Média de rupturas", xlab = "Tensão",
+                                  col = c("darkgreen", "orange"), lwd = 3, pch = 19, type = "b"))
 
+# 3. O modelo completo
+modelo &lt;- aov(breaks ~ wool * tension, data = warpbreaks)   # o mesmo que wool + tension + wool:tension
+summary(modelo)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="aovrepetida.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANOVA de medidas repetidas
-    </a>
-<a href="aovmista.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANOVA mista
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Pressupostos
+par(mfrow = c(2, 2)); plot(modelo); par(mfrow = c(1, 1))
+shapiro.test(residuals(modelo))
+library(car)
+leveneTest(breaks ~ wool * tension, data = warpbreaks, center = median)
+with(warpbreaks, tapply(breaks, list(wool, tension), var))
+
+# 5. Tamanho de efeito
+library(effectsize)
+eta_squared(modelo, partial = TRUE)
+omega_squared(modelo, partial = TRUE)
+
+# 6. Interação significativa: a leitura passa a ser por EFEITOS SIMPLES
+library(emmeans)
+md &lt;- emmeans(modelo, ~tension | wool)        # efeito da tensão dentro de cada lã
+md
+pairs(md, adjust = "tukey")
+joint_tests(modelo, by = "wool")              # teste F da tensão dentro de cada lã
+
+me &lt;- emmeans(modelo, ~wool | tension)        # efeito da lã dentro de cada tensão
+pairs(me)
+
+# 7. Tukey entre as seis células
+TukeyHSD(modelo, which = "wool:tension")
+
+# 8. Se as variâncias forem heterogêneas: a escala da raiz quadrada
+modelo_raiz &lt;- aov(sqrt(breaks) ~ wool * tension, data = warpbreaks)
+summary(modelo_raiz)
+leveneTest(sqrt(breaks) ~ wool * tension, data = warpbreaks, center = median)
+
+# 9. Para delineamentos DESBALANCEADOS, declare o tipo de soma de quadrados
+options(contrasts = c("contr.sum", "contr.poly"))
+Anova(lm(breaks ~ wool * tension, data = warpbreaks), type = "III")
+options(contrasts = c("contr.treatment", "contr.poly"))   # volta ao padrão
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-aovfatorial" type="button">Copiar código</button></div><pre id="code-py-aovfatorial"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: warpbreaks (R). Número de rupturas do fio em teares, segundo o tipo de
+# lã (A, B) e o nível de tensão do fio (L = baixa, M = média, H = alta).
+# Fonte original: Tippett (1950). Delineamento 2 x 3 com 9 repetições por célula.
+celulas = {
+    ("A", "L"): [26, 30, 54, 25, 70, 52, 51, 26, 67],
+    ("A", "M"): [18, 21, 29, 17, 12, 18, 35, 30, 36],
+    ("A", "H"): [36, 21, 24, 18, 10, 43, 28, 15, 26],
+    ("B", "L"): [27, 14, 29, 19, 29, 31, 41, 20, 44],
+    ("B", "M"): [42, 26, 19, 16, 39, 28, 21, 39, 29],
+    ("B", "H"): [20, 21, 24, 17, 13, 15, 15, 16, 28],
+}
+las = ["A", "B"]
+tensoes = ["L", "M", "H"]
+a, b = len(las), len(tensoes)
+r = 9                                     # repetições por célula
+N = a * b * r
+y = {kv: np.array(v, dtype=float) for kv, v in celulas.items()}
+todos = np.concatenate([y[(i, j)] for i in las for j in tensoes])
+M = np.array([[y[(i, j)].mean() for j in tensoes] for i in las])    # médias das células
+
+print("Médias das células (número de rupturas)")
+print("lã      L       M       H     média da lã")
+for ii, i in enumerate(las):
+    print(f" {i}   {M[ii,0]:6.3f}  {M[ii,1]:6.3f}  {M[ii,2]:6.3f}     {M[ii].mean():6.3f}")
+print(f"média   {M[:,0].mean():6.3f}  {M[:,1].mean():6.3f}  {M[:,2].mean():6.3f}     {todos.mean():6.3f}")
+print("\nDesvios-padrão das células")
+for i in las:
+    print(f" {i}   " + "  ".join(f"{y[(i,j)].std(ddof=1):6.3f}" for j in tensoes))
+
+# 1. Decomposição da soma de quadrados (delineamento balanceado: as somas são ortogonais)
+mg = todos.mean()
+SQ_total = ((todos - mg)**2).sum()
+SQ_la = b * r * ((M.mean(axis=1) - mg)**2).sum()
+SQ_tensao = a * r * ((M.mean(axis=0) - mg)**2).sum()
+SQ_celulas = r * ((M - mg)**2).sum()
+SQ_inter = SQ_celulas - SQ_la - SQ_tensao
+SQ_res = SQ_total - SQ_celulas
+gl_la, gl_tensao, gl_inter, gl_res = a - 1, b - 1, (a - 1) * (b - 1), N - a * b
+QM_res = SQ_res / gl_res
+linhas = [("Lã", gl_la, SQ_la), ("Tensão", gl_tensao, SQ_tensao), ("Lã:Tensão", gl_inter, SQ_inter)]
+print(f"\nSQ total = {SQ_total:.2f} = {SQ_la:.2f} (lã) + {SQ_tensao:.2f} (tensão) "
+      f"+ {SQ_inter:.2f} (interação) + {SQ_res:.2f} (resíduo)")
+print("\nFonte          GL        SQ         QM        F     p-valor")
+for nome, gl, sq in linhas:
+    qm = sq / gl
+    Fv = qm / QM_res
+    print(f"{nome:&lt;12} {gl:3d}  {sq:8.2f}  {qm:9.3f}  {Fv:6.4f}  {stats.f.sf(Fv, gl, gl_res):.5f}")
+print(f"{'Resíduo':&lt;12} {gl_res:3d}  {SQ_res:8.2f}  {QM_res:9.3f}")
+print(f"{'Total':&lt;12} {N-1:3d}  {SQ_total:8.2f}")
+print(f"DP do resíduo = {np.sqrt(QM_res):.3f} rupturas")
+
+# 2. Tamanho de efeito
+print("\nefeito        eta² parcial   omega² parcial")
+for nome, gl, sq in linhas:
+    e2p = sq / (sq + SQ_res)
+    w2p = (sq - gl * QM_res) / (sq + (N - gl) * QM_res)
+    print(f"{nome:&lt;12}    {e2p:.4f}         {w2p:.4f}")
+
+# 3. Pressupostos
+res = np.concatenate([y[(i, j)] - M[ii, jj] for ii, i in enumerate(las) for jj, j in enumerate(tensoes)])
+print(f"\nShapiro-Wilk dos resíduos: W = {stats.shapiro(res)[0]:.4f}, p-valor = {stats.shapiro(res)[1]:.4f}")
+gs = [y[(i, j)] for i in las for j in tensoes]
+print(f"Levene nas 6 células (mediana): W = {stats.levene(*gs, center='median')[0]:.4f}, "
+      f"p-valor = {stats.levene(*gs, center='median')[1]:.4f}")
+vs = [g.var(ddof=1) for g in gs]
+print(f"Razão entre a maior e a menor variância das células = {max(vs)/min(vs):.2f}")
+print("A célula A-L tem variância muito acima das demais: a raiz quadrada estabiliza.")
+
+# 3b. O mesmo modelo na escala da raiz quadrada, remédio usual para contagens
+raiz = {kv: np.sqrt(v) for kv, v in y.items()}
+Mr = np.array([[raiz[(i, j)].mean() for j in tensoes] for i in las])
+tr = np.concatenate([raiz[(i, j)] for i in las for j in tensoes])
+mgr = tr.mean()
+SQt_r = ((tr - mgr)**2).sum()
+SQ_la_r = b * r * ((Mr.mean(axis=1) - mgr)**2).sum()
+SQ_te_r = a * r * ((Mr.mean(axis=0) - mgr)**2).sum()
+SQ_cel_r = r * ((Mr - mgr)**2).sum()
+SQ_in_r = SQ_cel_r - SQ_la_r - SQ_te_r
+QM_res_r = (SQt_r - SQ_cel_r) / gl_res
+gsr = [raiz[(i, j)] for i in las for j in tensoes]
+print(f"  Levene na escala da raiz: p-valor = {stats.levene(*gsr, center='median')[1]:.4f}")
+vr = [g.var(ddof=1) for g in gsr]
+print(f"  razão entre variâncias na escala da raiz = {max(vr)/min(vr):.2f}")
+for nome, gl, sq in [("Lã", gl_la, SQ_la_r), ("Tensão", gl_tensao, SQ_te_r), ("Lã:Tensão", gl_inter, SQ_in_r)]:
+    Fv = (sq / gl) / QM_res_r
+    print(f"  {nome:&lt;10} F({gl}; {gl_res}) = {Fv:6.4f} | p-valor = {stats.f.sf(Fv, gl, gl_res):.5f}")
+
+# 4. Como a interação se manifesta: efeitos simples da tensão dentro de cada lã
+print("\nEfeitos simples da tensão, dentro de cada lã")
+for ii, i in enumerate(las):
+    SQ_s = r * ((M[ii] - M[ii].mean())**2).sum()
+    Fv = (SQ_s / (b - 1)) / QM_res
+    print(f"  lã {i}: SQ = {SQ_s:8.3f} | F({b-1}; {gl_res}) = {Fv:7.4f} | p-valor = {stats.f.sf(Fv, b-1, gl_res):.3e}")
+print("\nEfeitos simples da lã, dentro de cada nível de tensão")
+for jj, j in enumerate(tensoes):
+    dif = M[1, jj] - M[0, jj]
+    ep = np.sqrt(2 * QM_res / r)
+    t = dif / ep
+    print(f"  tensão {j}: B - A = {dif:+7.3f} | EP = {ep:.3f} | t({gl_res}) = {t:+.4f} | "
+          f"p-valor = {2*stats.t.sf(abs(t), gl_res):.4f}")
+
+# 5. Tukey HSD nas seis células
+print("\nTukey HSD entre as seis combinações lã x tensão")
+rot = [f"{i}{j}" for i in las for j in tensoes]
+mc = np.array([y[(i, j)].mean() for i in las for j in tensoes])
+q95 = stats.studentized_range.ppf(0.95, len(rot), gl_res)
+ep = np.sqrt(QM_res / r)
+print(f"q crítico (5%, 6 médias, gl = {gl_res}) = {q95:.4f} | DMS = {q95*ep:.3f} rupturas")
+for u, v in itertools.combinations(range(len(rot)), 2):
+    dif = mc[v] - mc[u]
+    pa = stats.studentized_range.sf(abs(dif) / ep, len(rot), gl_res)
+    if pa &lt; 0.05:
+        print(f"  {rot[v]} - {rot[u]}: {dif:+7.3f} | p ajustado = {pa:.4f}  *")
+
+# 6. O modelo só com efeitos principais, para comparação
+SQ_res_ad = SQ_res + SQ_inter
+gl_res_ad = gl_res + gl_inter
+QM_res_ad = SQ_res_ad / gl_res_ad
+print("\nModelo aditivo (sem interação), para comparação")
+for nome, gl, sq in linhas[:2]:
+    Fv = (sq / gl) / QM_res_ad
+    print(f"  {nome:&lt;10} F({gl}; {gl_res_ad}) = {Fv:6.4f} | p-valor = {stats.f.sf(Fv, gl, gl_res_ad):.5f}")
+print(f"  o efeito da lã, que era p = {stats.f.sf((SQ_la/gl_la)/QM_res, gl_la, gl_res):.4f} no modelo completo,")
+print(f"  passa a p = {stats.f.sf((SQ_la/gl_la)/QM_res_ad, gl_la, gl_res_ad):.4f} quando a interação é jogada no resíduo.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Médias das células (número de rupturas)
+lã      L       M       H     média da lã
+ A   44.556  24.000  24.556     31.037
+ B   28.222  28.778  18.778     25.259
+média   36.389  26.389  21.667     28.148
+
+Desvios-padrão das células
+ A   18.098   8.660  10.273
+ B    9.859   9.431   4.893
+
+SQ total = 9232.81 = 450.67 (lã) + 2034.26 (tensão) + 1002.78 (interação) + 5745.11 (resíduo)
+
+Fonte          GL        SQ         QM        F     p-valor
+Lã             1    450.67    450.667  3.7653  0.05821
+Tensão         2   2034.26   1017.130  8.4980  0.00069
+Lã:Tensão      2   1002.78    501.389  4.1891  0.02104
+Resíduo       48   5745.11    119.690
+Total         53   9232.81
+DP do resíduo = 10.940 rupturas
+
+efeito        eta² parcial   omega² parcial
+Lã              0.0727         0.0487
+Tensão          0.2615         0.2173
+Lã:Tensão       0.1486         0.1056
+
+Shapiro-Wilk dos resíduos: W = 0.9869, p-valor = 0.8162
+Levene nas 6 células (mediana): W = 2.8910, p-valor = 0.0232
+Razão entre a maior e a menor variância das células = 13.68
+A célula A-L tem variância muito acima das demais: a raiz quadrada estabiliza.
+  Levene na escala da raiz: p-valor = 0.2468
+  razão entre variâncias na escala da raiz = 6.27
+  Lã         F(1; 48) = 3.0222 | p-valor = 0.08854
+  Tensão     F(2; 48) = 8.2752 | p-valor = 0.00082
+  Lã:Tensão  F(2; 48) = 3.7500 | p-valor = 0.03067
+
+Efeitos simples da tensão, dentro de cada lã
+  lã A: SQ = 2468.519 | F(2; 48) = 10.3121 | p-valor = 1.881e-04
+  lã B: SQ =  568.519 | F(2; 48) =  2.3750 | p-valor = 1.039e-01
+
+Efeitos simples da lã, dentro de cada nível de tensão
+  tensão L: B - A = -16.333 | EP = 5.157 | t(48) = -3.1670 | p-valor = 0.0027
+  tensão M: B - A =  +4.778 | EP = 5.157 | t(48) = +0.9264 | p-valor = 0.3589
+  tensão H: B - A =  -5.778 | EP = 5.157 | t(48) = -1.1203 | p-valor = 0.2682
+
+Tukey HSD entre as seis combinações lã x tensão
+q crítico (5%, 6 médias, gl = 48) = 4.1972 | DMS = 15.306 rupturas
+  AM - AL: -20.556 | p ajustado = 0.0030  *
+  AH - AL: -20.000 | p ajustado = 0.0041  *
+  BL - AL: -16.333 | p ajustado = 0.0302  *
+  BM - AL: -15.778 | p ajustado = 0.0398  *
+  BH - AL: -25.778 | p ajustado = 0.0001  *
+
+Modelo aditivo (sem interação), para comparação
+  Lã         F(1; 50) = 3.3393 | p-valor = 0.07361
+  Tensão     F(2; 50) = 7.5367 | p-valor = 0.00138
+  o efeito da lã, que era p = 0.0582 no modelo completo,
+  passa a p = 0.0736 quando a interação é jogada no resíduo.</pre></div><figure class="fig"><img src="../assets/resultados/aovfatorial.png" alt="Boxplots das seis células e gráfico de interação com erros-padrão" loading="lazy"/><figcaption><strong>Os dados e a interação.</strong> À esquerda, as seis células lado a lado: a combinação lã A com tensão baixa é, ao mesmo tempo, a de maior média e a de maior dispersão. À direita, o gráfico de interação com ±1 erro-padrão. As duas linhas não são paralelas: na lã A, baixar a tensão quase dobra as rupturas; na lã B, o efeito é bem menor e a ordem entre as lãs chega a se inverter na tensão média. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Tabela de ANOVA</caption><thead><tr><th>Fonte</th><th>GL</th><th>SQ</th><th>QM</th><th>F</th><th>p</th></tr></thead><tbody><tr><td>Lã</td><td>1</td><td>450,67</td><td>450,667</td><td>3,765</td><td>0,0582</td></tr><tr><td>Tensão</td><td>2</td><td>2 034,26</td><td>1 017,130</td><td>8,498</td><td>0,00069</td></tr><tr><td>Lã : Tensão</td><td>2</td><td>1 002,78</td><td>501,389</td><td>4,189</td><td>0,0210</td></tr><tr><td>Resíduo</td><td>48</td><td>5 745,11</td><td>119,690</td><td>—</td><td>—</td></tr><tr><td>Total</td><td>53</td><td>9 232,81</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Complementos</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>η² parcial (lã / tensão / interação)</td><td>0,073 / 0,262 / 0,149</td><td>A tensão é o termo dominante.</td></tr><tr><td>ω² parcial</td><td>0,049 / 0,217 / 0,106</td><td>Versões corrigidas.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,987; p = 0,816</td><td>Normalidade atendida.</td></tr><tr><td>Levene nas 6 células</td><td>W = 2,891; p = 0,0232</td><td>Variâncias heterogêneas.</td></tr><tr><td>Razão entre variâncias das células</td><td>13,68</td><td>Puxada pela célula A-L.</td></tr><tr><td>Na escala da raiz quadrada</td><td>Levene p = 0,247; interação F = 3,750; p = 0,0307</td><td>A conclusão sobrevive à transformação.</td></tr><tr><td>Efeito simples da tensão na lã A</td><td>F(2; 48) = 10,312; p = 0,00019</td><td>Forte.</td></tr><tr><td>Efeito simples da tensão na lã B</td><td>F(2; 48) = 2,375; p = 0,1039</td><td>Ausente.</td></tr><tr><td>Efeito simples da lã na tensão baixa</td><td>B − A = −16,33; t(48) = −3,167; p = 0,0027</td><td>Significativo.</td></tr><tr><td>Efeito simples da lã nas tensões média e alta</td><td>p = 0,359 e p = 0,268</td><td>Não significativo.</td></tr><tr><td>Tukey entre as 6 células</td><td>DMS = 15,31 rupturas</td><td>A célula A-L difere de todas as outras cinco.</td></tr></tbody></table></div><p><strong>Leitura:</strong> a interação é significativa (p = 0,021), e é ela que organiza a conclusão. Na lã A, a tensão importa muito: baixá-la de alta para baixa eleva as rupturas de 24,6 para 44,6 por peça. Na lã B, a tensão praticamente não importa — o efeito simples não chega perto da significância (p = 0,104). Do outro ângulo, a lã só faz diferença sob tensão baixa, onde a B rompe 16,3 vezes menos que a A; nas tensões média e alta as duas se equivalem.</p><p>Observe o que aconteceria se a interação fosse ignorada. O efeito principal da lã, no modelo completo, tem p = 0,058; jogando a interação no resíduo, passa a p = 0,074 — e, nos dois casos, a conclusão “a lã não importa” seria falsa, porque ela importa bastante, só que apenas sob tensão baixa. A média das três tensões descreve um tear que não existe. É por isso que a ordem de leitura começa pela interação.</p><p><strong>Recomendação prática:</strong> se a tensão de operação for baixa, a escolha da lã é decisiva; se for média ou alta, pode ser feita por outro critério, como custo. E a célula a evitar é uma só: lã A sob tensão baixa, a única que o teste de Tukey separa de todas as demais.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Interpretar efeitos principais com interação significativa</td><td>Passe aos efeitos simples; a média marginal descreve algo que não ocorre.</td></tr><tr><td>Rodar a tabela antes de ver o gráfico de interação</td><td>O gráfico é o que torna a tabela legível.</td></tr><tr><td>Usar <code>aov()</code> em dados desbalanceados sem pensar no tipo de SQ</td><td>Com células desiguais, a ordem dos termos altera o resultado; use tipo II ou III.</td></tr><tr><td>Pedir tipo III sem trocar os contrastes</td><td>Com <code>contr.treatment</code>, o tipo III devolve números sem sentido.</td></tr><tr><td>Ter uma só repetição por célula</td><td>A interação fica confundida com o resíduo e não pode ser testada.</td></tr><tr><td>Testar homogeneidade por fator, e não por célula</td><td>O erro é comum às a × b células.</td></tr><tr><td>Fazer todos os testes de efeitos simples sem ajuste</td><td>Ajuste pelo número de comparações.</td></tr><tr><td>Concluir ausência de interação por p &gt; 0,05</td><td>O teste de interação costuma ter pouco poder; olhe também o gráfico e o tamanho de efeito.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aov1.html">ANOVA de um fator</a></td><td>Há apenas um fator de interesse.</td></tr><tr><td><a href="ancova.html">ANCOVA</a></td><td>Um dos preditores é contínuo.</td></tr><tr><td><a href="aovmista.html">ANOVA mista</a></td><td>Um dos fatores é medido dentro da mesma unidade.</td></tr><tr><td><a href="linear-multipla.html">Regressão com variáveis indicadoras</a></td><td>Mesma análise, com previsão e covariáveis.</td></tr><tr><td><a href="glm.html">Modelo linear generalizado</a></td><td>Resposta de contagem (como aqui) ou proporção; evita a transformação.</td></tr><tr><td>Transformação da resposta</td><td>Variâncias que crescem com a média; raiz para contagens, logaritmo para escala multiplicativa.</td></tr><tr><td>ANOVA alinhada por postos (<code>ARTool</code>)</td><td>Resposta ordinal, mantendo a estrutura fatorial.</td></tr><tr><td><a href="manova.html">MANOVA</a></td><td>Várias respostas simultâneas.</td></tr></tbody></table></div><ol class="steps"><li>Confira o cruzamento dos fatores: todas as células presentes, com repetições.</li><li>Monte a tabela de médias e desvios-padrão das células.</li><li>Faça o gráfico de interação.</li><li>Ajuste o modelo completo e examine os resíduos.</li><li>Leia a linha da interação primeiro.</li><li>Se houver interação, analise os efeitos simples; se não houver, leia os efeitos principais.</li><li>Reporte os tamanhos de efeito e apresente as médias das células com erros-padrão.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FISHER, Ronald A. <em>The design of experiments.</em> Edinburgh: Oliver and Boyd, 1935.</li><li>YATES, Frank. <em>The design and analysis of factorial experiments.</em> Harpenden: Imperial Bureau of Soil Science, 1937. (Technical Communication, 35.)</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>KUTNER, Michael H. et al. <em>Applied linear statistical models.</em> 5. ed. Boston: McGraw-Hill Irwin, 2005.</li><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>OLEJNIK, Stephen; ALGINA, James. Generalized eta and omega squared statistics: measures of effect size for some common research designs. <em>Psychological Methods</em>, v. 8, n. 4, p. 434-447, 2003.</li><li>TIPPETT, L. H. C. <em>Technological applications of statistics.</em> New York: Wiley, 1950. (Fonte original dos dados <code>warpbreaks</code>.)</li><li>LANGSRUD, Øyvind. ANOVA for unbalanced data: use type II instead of type III sums of squares. <em>Statistics and Computing</em>, v. 13, n. 2, p. 163-167, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>aov</code>, <code>interaction.plot</code> e <code>TukeyHSD</code>, pacote <code>stats</code>.)</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>, função <code>Anova</code>.)</li><li>LENTH, Russell V. <em>emmeans: estimated marginal means, aka least-squares means.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=emmeans" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=emmeans</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, resíduos aproximadamente normais, variâncias homogêneas entre as células e delineamento completo com repetições.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>car, emmeans, effectsize</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="aovrepetida.html"><span>← ANTERIOR</span>ANOVA de medidas repetidas</a><a href="aovmista.html"><span>PRÓXIMO →</span>ANOVA mista</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

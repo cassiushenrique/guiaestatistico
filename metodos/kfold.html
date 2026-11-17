@@ -4,310 +4,488 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Validação cruzada k-fold: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Validação cruzada k-fold | Estatística e Ciência de Dados
-  </title>
+<meta content="Validação cruzada k-fold: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Validação cruzada k-fold | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Validação cruzada k-fold
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 13 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Validação cruzada k-fold
-    </h1>
-<p class="detail-lead">
-     Avalia o desempenho preditivo repetindo o ajuste e a validação em diferentes partes dos dados.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/kfold.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia o desempenho preditivo repetindo o ajuste e a validação em diferentes partes dos dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Folhas independentes ou adequadas a grupos/tempo.</li><li>Toda seleção, escalonamento e ajuste de hiperparâmetros ocorrer dentro de cada treino.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{CV\!\!\!-MSE}=\frac1n\sum_{i=1}^n(y_i-\widehat y_{i,-\operatorname{fold}(i)})^2\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         tamanho da amostra
-        </dd>
-</div>
-<div>
-<dt>
-         \(y_i\)
-        </dt>
-<dd>
-         resposta observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\widehat y_{i,-\operatorname{fold}(i)}\)
-        </dt>
-<dd>
-         predição obtida sem utilizar a dobra que contém a observação i no ajuste
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor RMSE_CV indica melhor desempenho estimado, não “significância a 5%”. Para comparar modelos, use desenhos emparelhados/repetidos apropriados.
-      </p>
-<p>
-       Compare as medidas obtidas em observações não usadas no treinamento. Uma estimativa baixa do erro em treino não demonstra capacidade de generalização.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Validação de regressão da autonomia de veículos em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-kfold" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-kfold"><code># Validação cruzada k-fold ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Validação cruzada k-fold</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · AVALIAÇÃO DE MODELOS</span><h1>Validação cruzada k-fold</h1><p class="detail-lead">Divide as observações em k partes e usa cada uma como teste exatamente uma vez, estimando o erro de predição com todos os dados.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/kfold.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/kfold.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a validação cruzada</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="holdout.html">separação treino-teste</a> desperdiça dados — 30% deles não participam do ajuste — e devolve um número que depende do sorteio. A validação cruzada resolve os dois problemas de uma vez: divide as observações em \(k\) partes, usa cada uma como teste exatamente uma vez, e tira a média.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Validação cruzada k-fold" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">k rodadas de treino e teste</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">cada observação testada 1 vez</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Por quê</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Usa todos os dados</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">e é muito mais estável</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A escolha de k</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">k = 5 ou 10 é a convenção</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">viés cai, custo sobe</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Repetida</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">r rodadas, média:</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">elimina o sorteio</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Seleção</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">Regra de um erro-padrão</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Aninhada</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Escolher E avaliar</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">exigem dois laços</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Validação cruzada k-fold</text></svg><figcaption>Visão geral da validação cruzada k-fold. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O ganho, em um número</strong><p>Nos dados desta ficha, uma separação 70/30 tem coeficiente de variação de <strong>17,3%</strong> entre sorteios; uma rodada de 10-fold tem <strong>1,97%</strong>. É uma redução de quase nove vezes na variabilidade devida ao sorteio — e ainda assim a validação cruzada <em>repetida</em> melhora mais.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a validação cruzada</h2><p>Sorteiam-se as \(n\) observações em \(k\) dobras de tamanho aproximadamente igual. Para cada dobra \(j\), ajusta-se o modelo com as outras \(k-1\) e prediz-se a dobra \(j\). Ao fim, cada observação foi predita exatamente uma vez, por um modelo que não a viu, e a média dos \(n\) erros é a estimativa.</p><figure class="fig"><img src="../assets/resultados/kfold-didatica.png" alt="O esquema das cinco dobras, a escolha de k e o efeito das repetições" loading="lazy"/><figcaption><strong>A mecânica e as duas decisões.</strong> À esquerda, o esquema com k = 5: cada rodada usa uma dobra como teste e as outras quatro como treino, de modo que as 120 observações são testadas uma vez e cada modelo é ajustado com 96. No centro, o efeito de k: o EQM estimado cai de 0,8372 (k = 2) para 0,7854 (k = n), porque cada modelo passa a treinar com mais dados — é a redução do viés. À direita, o efeito de repetir a validação cruzada: o desvio-padrão da estimativa cai com a raiz do número de repetições, exatamente como a linha tracejada prevê. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Duas fontes de variância, que se confundem com frequência</strong><p>Uma é o <strong>sorteio das dobras</strong>, com os dados fixos: ela cai com \(k\) e é zero na <a href="loocv.html">deixa-um-de-fora</a>, que não sorteia nada. A outra é a <strong>variabilidade entre amostras</strong> da mesma população: é essa que a afirmação clássica "a deixa-um-de-fora tem variância alta" descreve, e a ficha correspondente a examina em separado. As barras de erro desta ficha medem a primeira.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>O sorteio das dobras só é válido assim.</td><td>Delineamento; com dados agrupados, use <code>groupKFold</code>.</td></tr><tr><td><strong>Todo o pré-processamento dentro do laço</strong></td><td>Padronizar ou selecionar fora dele vaza informação.</td><td>Use <code>recipes</code> ou <code>caret</code>, que o garantem.</td></tr><tr><td><strong>Seleção de modelo dentro do laço</strong></td><td>Escolher e avaliar na mesma validação é otimista.</td><td>Validação cruzada aninhada.</td></tr><tr><td>Dobras de tamanho parecido</td><td>Dobras muito desiguais desequilibram a média.</td><td><code>sample(rep(1:k, length.out = n))</code>.</td></tr><tr><td>Estratificação com classes raras</td><td>Uma dobra pode ficar sem casos.</td><td><code>createFolds</code> estratifica por padrão.</td></tr><tr><td>Dados permutáveis</td><td>Com séries temporais, as dobras não podem ser sorteadas.</td><td>Use janelas deslizantes.</td></tr><tr><td>Custo computacional aceitável</td><td>São k ajustes por modelo comparado.</td><td>Com modelos lineares, o atalho da <a href="loocv.html">deixa-um-de-fora</a> é gratuito.</td></tr></tbody></table></div><div class="callout warn"><strong>O vazamento mais sutil: escolher antes de validar</strong><p>Selecionar as variáveis mais correlacionadas com a resposta usando o conjunto <em>inteiro</em>, e só então rodar a validação cruzada sobre o modelo escolhido, é um erro que produz estimativas espetacularmente otimistas — e aparece com frequência na literatura aplicada. A seleção é parte do procedimento de ajuste e tem de ser refeita dentro de cada dobra. O mesmo vale para a escolha de hiperparâmetros, para a imputação e para a padronização.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\widehat{\text{Err}}_{\text{VC}}=\frac{1}{n}\sum_{i=1}^{n}L\left(y_i,\ \hat f^{-\kappa(i)}(x_i)\right)\]</div><p>em que \(\kappa(i)\) é a dobra a que pertence a observação \(i\) e \(\hat f^{-j}\) é o modelo ajustado sem a dobra \(j\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\widehat{\text{EP}}=\frac{1}{\sqrt{k}}\,\operatorname{DP}\left(\widehat{\text{Err}}_1,\dots,\widehat{\text{Err}}_k\right),\]\[\widehat{\text{Err}}_j=\frac{1}{n_j}\sum_{i\in\text{dobra }j}L\left(y_i,\hat f^{-j}(x_i)\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de dobras</dd></div><div><dt>\(n_j\)</dt><dd>tamanho da dobra \(j\)</dd></div><div><dt>\(L\)</dt><dd>função de perda</dd></div><div><dt>\(\hat f^{-j}\)</dt><dd>modelo ajustado sem a dobra \(j\)</dd></div><div><dt>\(r\)</dt><dd>número de repetições da validação cruzada completa</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Validação cruzada com k = 5 (120 talhões, modelo com 7 parâmetros)</caption><thead><tr><th>Dobra</th><th>n de teste</th><th>n de treino</th><th>EQM da dobra</th></tr></thead><tbody><tr><td>1</td><td>24</td><td>96</td><td>0,7672</td></tr><tr><td>2</td><td>24</td><td>96</td><td>0,9001</td></tr><tr><td>3</td><td>24</td><td>96</td><td>0,9490</td></tr><tr><td>4</td><td>24</td><td>96</td><td>0,4102</td></tr><tr><td>5</td><td>24</td><td>96</td><td>0,9368</td></tr><tr><td><strong>Média</strong></td><td>—</td><td>—</td><td><strong>0,7927</strong></td></tr></tbody></table></div><div class="worked"><strong>A leitura</strong><p>Cada uma das 120 observações foi predita exatamente uma vez, por um modelo ajustado com as outras 96. A média dos 120 erros quadráticos é 0,7927.</p><p>Para comparar, o EQM de resubstituição — calculado nos próprios dados de ajuste — é 0,7051, cerca de 11% menor. A diferença é o otimismo que a validação cruzada corrige.</p><p>A variação entre as cinco dobras é grande: de 0,41 a 0,95. Isso não é um defeito do método, é o ruído de estimar um erro com 24 observações. O erro-padrão da estimativa, calculado entre as dobras, é 0,0194 para este modelo.</p></div><h3>A escolha de k</h3><div class="table-wrap"><table class="method-table"><caption>EQM estimado por valor de k (500 sorteios cada, exceto k = n)</caption><thead><tr><th>k</th><th>n de treino por dobra</th><th>EQM médio</th><th>DP entre sorteios</th><th>Ajustes</th></tr></thead><tbody><tr><td>2</td><td>60</td><td>0,8372</td><td>0,0707</td><td>2</td></tr><tr><td>3</td><td>80</td><td>0,8116</td><td>0,0440</td><td>3</td></tr><tr><td><strong>5</strong></td><td>96</td><td>0,7993</td><td>0,0249</td><td>5</td></tr><tr><td><strong>10</strong></td><td>108</td><td>0,7902</td><td>0,0159</td><td>10</td></tr><tr><td>20</td><td>114</td><td>0,7873</td><td>0,0094</td><td>20</td></tr><tr><td>60</td><td>118</td><td>0,7863</td><td>0,0045</td><td>60</td></tr><tr><td>120</td><td>119</td><td>0,7854</td><td>0,0000</td><td>120</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>Com \(k=n\) reduz-se à <a href="loocv.html">deixa-um-de-fora</a>; com \(k=2\), a uma separação metade a metade feita duas vezes.</li><li>É <strong>viesada para cima</strong> em relação ao erro do modelo ajustado com todas as \(n\) observações, e o viés diminui com \(k\).</li><li>A variabilidade devida ao sorteio das dobras cai com \(k\), e é eliminada pela repetição.</li><li>O custo é \(k\) ajustes por modelo avaliado; com modelos lineares há atalho exato para \(k=n\).</li><li>Os \(n\) erros não são independentes entre si: os modelos das dobras compartilham a maior parte dos dados.</li><li>Para modelos lineares, é assintoticamente equivalente ao <a href="stepwise.html">AIC</a> quando \(k=n\) (Stone, 1977).</li><li>Usar a mesma validação cruzada para selecionar e para estimar produz viés otimista; a versão aninhada o corrige.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>EQM ou RMSE médio</td><td>A estimativa do erro.</td><td>Viesada para cima; o viés cai com k.</td></tr><tr><td>DP entre as dobras</td><td>A variabilidade da estimativa.</td><td>Divida por √k para o erro-padrão.</td></tr><tr><td>EQM de cada dobra</td><td>Se alguma dobra destoa.</td><td>Dobra muito pior pode indicar heterogeneidade.</td></tr><tr><td>Comparação com a resubstituição</td><td>O otimismo do ajuste.</td><td>Diferença grande sugere sobreajuste.</td></tr><tr><td>Número de repetições</td><td>A estabilidade do resultado.</td><td>Com r = 1, ainda há variabilidade do sorteio.</td></tr><tr><td>Resultado da versão aninhada</td><td>A estimativa honesta com seleção.</td><td>É maior que a da versão simples.</td></tr></tbody></table></div><h3>A regra de um erro-padrão</h3><p>Proposta por Breiman e colaboradores no contexto de árvores, a regra diz: entre os modelos cujo erro de validação cruzada não excede o menor erro mais um erro-padrão, escolha o <strong>mais simples</strong>. A justificativa é que diferenças dentro do ruído da própria estimativa não são evidência de superioridade, e a parcimônia é um critério de desempate defensável.</p><div class="callout try"><strong>A regra aplicada a estes dados</strong><p>O menor EQM é o do modelo com N², 0,7856, com erro-padrão entre dobras de 0,0194. O limite é 0,8051, e dois modelos ficam abaixo dele: o com N² (p = 6) e o com os dois quadráticos (p = 7). A regra escolhe o primeiro. Note que o erro-padrão a usar é o calculado <em>entre as dobras</em>, e não entre repetições — este último mede apenas o ruído de Monte Carlo e é artificialmente pequeno.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Três caminhos. <code>boot::cv.glm(dados, modelo, K = 10)</code> é o mais direto para GLM, e devolve a estimativa bruta e uma versão com correção de viés. <code>caret::train()</code> com <code>trainControl(method = "cv")</code> ou <code>"repeatedcv"</code> cobre centenas de modelos com a mesma interface e garante que o pré-processamento fique dentro do laço. O ecossistema <code>tidymodels</code> (<code>rsample</code>, <code>recipes</code>, <code>tune</code>) é a alternativa moderna, com <code>nested_cv()</code> para a versão aninhada. Para dados agrupados, <code>caret::groupKFold()</code>; para séries temporais, <code>method = "timeslice"</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-kfold-min" type="button">Copiar código</button></div><pre id="code-kfold-min"><code>library(caret)
+ctrl &lt;- trainControl(method = "repeatedcv", number = 10, repeats = 20)
+train(f_completo, data = milho, method = "lm", trControl = ctrl)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 120 talhões de milho, com a produtividade em t/ha e quatro variáveis explicativas — dose de nitrogênio (kg/ha), densidade de plantio (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm). O processo gerador tem resposta quadrática ao nitrogênio e à densidade, e um erro de desvio-padrão 0,85 t/ha. O mesmo conjunto atravessa as fichas de avaliação de modelos, de modo que as estimativas de erro produzidas por cada método podem ser comparadas diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-kfold" type="button">Copiar código</button></div><pre id="code-kfold"><code># Validação cruzada k-fold: exemplo completo ----
+# Pacotes: caret, boot (cv.glm), rsample/tune (tidymodels)
+# install.packages(c("caret", "boot"))
 
-# Ajuste e resultados ----
-set.seed(2026)
-n &lt;- nrow(mtcars); k &lt;- 5
-fold &lt;- sample(rep(seq_len(k), length.out = n))
-pred &lt;- rep(NA_real_, n)
-for (j in seq_len(k)) {
-  ajuste &lt;- lm(mpg ~ wt + hp, data = mtcars[fold != j, ])
-  pred[fold == j] &lt;- predict(ajuste, mtcars[fold == j, ])
+# Dados fictícios: 120 talhões de milho. Produtividade (t/ha) em função da
+# dose de nitrogênio, densidade de plantio, matéria orgânica e precipitação.
+# O arquivo scripts/milho.csv acompanha o repositório.
+milho &lt;- read.csv("milho.csv")
+str(milho); summary(milho$y)
+colMeans(milho)
+
+# O modelo usado em todas as fichas deste grupo
+f_completo &lt;- y ~ N + I(N^2) + densidade + I(densidade^2) + mo + chuva
+
+eqm &lt;- function(obs, prev) mean((obs - prev)^2)
+n &lt;- nrow(milho)
+
+# ---- A conta, à mão, com k = 5
+set.seed(0)
+k &lt;- 5
+dobra &lt;- sample(rep(1:k, length.out = n))
+erros &lt;- numeric(n)
+for (j in 1:k) {
+  mm &lt;- lm(f_completo, data = milho[dobra != j, ])
+  erros[dobra == j] &lt;- (milho$y[dobra == j] -
+                        predict(mm, newdata = milho[dobra == j, ]))^2
 }
-print(c(RMSE_CV = sqrt(mean((mtcars$mpg - pred)^2)),
-        MAE_CV = mean(abs(mtcars$mpg - pred))))
+tapply(erros, dobra, mean)      # EQM de cada dobra
+mean(erros)                     # a estimativa
+eqm(milho$y, predict(lm(f_completo, data = milho)))   # resubstituição
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- Com o pacote boot
+library(boot)
+g &lt;- glm(f_completo, data = milho)
+cv.glm(milho, g, K = 5)$delta     # [1] bruto, [2] com correção de viés
+cv.glm(milho, g, K = 10)$delta
+cv.glm(milho, g)$delta            # K = n: deixa-um-de-fora
+
+# ---- Com o caret, que é o caminho usual
+library(caret)
+set.seed(4)
+ctrl &lt;- trainControl(method = "cv", number = 10)
+train(f_completo, data = milho, method = "lm", trControl = ctrl)
+
+# Validação cruzada REPETIDA: elimina a variabilidade do sorteio
+ctrl_r &lt;- trainControl(method = "repeatedcv", number = 10, repeats = 20)
+train(f_completo, data = milho, method = "lm", trControl = ctrl_r)
+
+# ---- A escolha de k
+for (k in c(2, 3, 5, 10, 20, 60, n)) {
+  v &lt;- replicate(if (k &lt; n) 200 else 1, {
+    d &lt;- sample(rep(1:k, length.out = n)); e &lt;- numeric(n)
+    for (j in 1:k) {
+      mm &lt;- lm(f_completo, data = milho[d != j, ])
+      e[d == j] &lt;- (milho$y[d == j] - predict(mm, newdata = milho[d == j, ]))^2
+    }
+    mean(e) })
+  cat(sprintf("k = %3d: EQM %.4f, DP entre sorteios %.4f\n", k, mean(v), sd(v)))
+}
+
+# ---- Comparando os seis modelos candidatos
+cands &lt;- list("so N"      = y ~ N,
+              "N+dens"    = y ~ N + densidade,
+              "4 lineares"= y ~ N + densidade + mo + chuva,
+              "com N2"    = y ~ N + I(N^2) + densidade + mo + chuva,
+              "com dens2" = y ~ N + densidade + I(densidade^2) + mo + chuva,
+              "ambos"     = f_completo)
+set.seed(4)
+ctrl &lt;- trainControl(method = "repeatedcv", number = 10, repeats = 20)
+res &lt;- lapply(cands, function(f) train(f, data = milho, method = "lm",
+                                       trControl = ctrl))
+sapply(res, function(m) c(RMSE = m$results$RMSE, EQM = m$results$RMSE^2,
+                          SD = m$results$RMSESD))
+
+# Regra de UM ERRO-PADRÃO: entre os modelos cujo EQM não excede
+# (menor EQM + 1 erro-padrão), escolha o mais simples.
+
+# ---- Validação cruzada ANINHADA (seleção DENTRO do laço)
+set.seed(31)
+kext &lt;- 5; dext &lt;- sample(rep(1:kext, length.out = n)); erros &lt;- numeric(n)
+for (j in 1:kext) {
+  tr &lt;- milho[dext != j, ]; te &lt;- milho[dext == j, ]
+  # laço INTERNO: escolhe o modelo usando SÓ o treino externo
+  eint &lt;- sapply(cands, function(f) {
+    gg &lt;- glm(f, data = tr); cv.glm(tr, gg, K = 5)$delta[1] })
+  melhor &lt;- cands[[which.min(eint)]]
+  mm &lt;- lm(melhor, data = tr)
+  erros[dext == j] &lt;- (te$y - predict(mm, newdata = te))^2
+}
+mean(erros)    # estimativa HONESTA, que inclui o custo da seleção
+
+# ---- Séries temporais e dados agrupados pedem outros esquemas
+# trainControl(method = "timeslice", initialWindow = 60, horizon = 12)
+# groupKFold(milho$fazenda, k = 5)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-kfold" type="button">Copiar código</button></div><pre id="code-py-kfold"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# avaliação de modelos: 120 talhões de milho, com a produtividade (t/ha)
+# e quatro variáveis: dose de nitrogênio (kg/ha), densidade de plantio
+# (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm).
+# Colunas: y, N, densidade, materia_organica, chuva
+# ===================================================================
+MILHO = np.array([
+ [7.65,40,56.3,1.86,572], [9.35,200,65.2,3.67,736], [6.8,160,71.1,2.46,372], [7.52,80,62.6,3.54,340],
+ [6.39,0,64,3.17,528], [8.54,160,58.2,2.81,433], [9.29,80,60.3,3.48,530], [6.85,120,59.8,2.58,375],
+ [8.76,120,60,3.54,532], [8,40,57.8,1.87,638], [5.86,80,64.8,2.27,620], [9.23,200,71.1,3.65,421],
+ [7.37,160,55.4,1.32,492], [8.55,200,71.8,3.13,600], [5.73,0,59.2,2.51,684], [6.3,80,59.4,2.41,434],
+ [5.66,0,46.9,2.31,443], [10.2,200,45,3.7,621], [8.84,120,67.1,1.72,488], [7.22,40,54.4,3.38,428],
+ [8.62,160,67.6,3.13,615], [8.97,160,62.4,2.5,369], [5.58,40,63.8,2.74,458], [8.52,160,71.3,3.29,607],
+ [6.97,0,61.5,2.38,463], [7.8,80,39.1,1.73,589], [8.8,120,49.8,3,410], [6.51,0,68.8,2.21,590],
+ [8.1,160,76,2.51,562], [10.13,200,61.3,2.84,666], [8.7,160,57.1,3.32,498], [9.12,120,52.3,4.07,488],
+ [9.21,200,65.8,3.04,511], [9.56,80,49.4,2.88,614], [7.59,80,53.3,3.37,453], [9,80,63,3,507],
+ [7.84,80,62.7,1.62,695], [7.23,120,60.2,2.38,590], [5.79,80,69.4,1.93,585], [7.6,80,53.3,3.29,473],
+ [10.46,120,53.7,3.69,597], [8.81,120,59.1,3.05,415], [6.29,0,62.5,2.08,386], [8.3,80,59.6,3.36,435],
+ [8.54,80,75.9,2.13,648], [6.05,0,57.8,2.98,535], [3.93,0,66.4,1.96,436], [6.95,40,57.9,1.83,488],
+ [5.84,40,64.2,1.82,561], [8.31,200,58.9,2.81,626], [7.77,200,59.2,2.34,373], [8.83,160,73.4,3.11,640],
+ [7.99,80,59.6,1.89,604], [9.28,160,74,3.14,457], [9.28,160,56.8,2.37,484], [10.55,80,58.7,3.68,564],
+ [6.44,80,69.8,3.51,494], [8.6,200,44.6,2.65,532], [9.92,80,50.3,2.88,425], [8.44,200,62.1,2.97,356],
+ [7.78,80,65.3,3.12,739], [6.18,40,66,2.61,535], [8.88,200,59.7,3.57,540], [8.22,120,51.9,2.44,566],
+ [9.58,120,67.8,1.45,640], [8.23,200,65.1,2.97,604], [4.71,0,54,2.72,427], [10.63,160,62.6,3.38,510],
+ [6.94,40,74.7,3.22,526], [8.58,80,62.9,2.89,589], [8.7,200,53.6,2.88,466], [9.05,80,59,2.89,554],
+ [5.96,40,59.4,2.34,540], [9.37,120,64.4,1.95,644], [7.89,160,68.4,2.23,285], [9,200,55.3,2.74,527],
+ [4.34,0,57.4,1.21,551], [9.67,160,69.2,2.49,581], [8.81,160,67.2,2.11,519], [7.04,80,71.6,2.74,445],
+ [6.92,40,51.6,2.23,580], [7.32,80,55.2,2.84,553], [7.51,40,69.1,2.64,444], [7.03,0,55.2,3.71,397],
+ [7.94,40,64.3,2.56,570], [7.95,80,61.6,2.63,442], [9.43,120,56.7,2.82,578], [5.06,40,72.4,1.53,656],
+ [6.3,40,61.9,2.05,539], [6.17,0,58.4,3.81,541], [8.22,80,60.8,3.16,531], [6.58,0,63.7,2.86,645],
+ [7.46,40,50.8,3.56,646], [6.37,40,55.8,2.67,528], [6.78,0,52.9,2.63,587], [8.54,160,47,2.59,524],
+ [3.94,0,68.9,1.56,475], [5.5,40,72.2,3.46,589], [6.46,80,70.4,2.67,512], [8.17,120,49.4,2.73,444],
+ [8.73,200,64.8,2.57,385], [7.1,120,66.8,2.36,609], [5.78,40,57.9,1.22,433], [8.98,200,67.8,2.91,420],
+ [9.57,160,54,4.33,496], [8.76,80,54.3,3.49,587], [8.66,80,56,2.6,365], [8.29,160,56.8,2.15,577],
+ [4.35,0,54.8,2.82,555], [4.89,0,68.8,3.06,411], [4.53,0,54.4,2.72,417], [9.05,120,58.7,3.38,504],
+ [8.82,80,57.4,2.13,694], [9.44,200,77.6,3.55,497], [9.43,120,55.6,2.91,618], [6.77,0,65.3,2.42,605],
+ [8.24,200,74.9,2.6,377], [10.17,200,53.6,3.04,520], [7.96,40,56.1,3.33,609], [5.79,0,59.6,2.85,475]])
+
+y = MILHO[:, 0]; Xv = MILHO[:, 1:]
+nomes = ["nitrogênio", "densidade", "mat. orgânica", "chuva"]
+n = len(y)
+
+def monta(X, grau_n=1, grau_d=1):
+    """Matriz de delineamento: intercepto, as quatro variáveis e termos
+       quadráticos opcionais para nitrogênio e densidade."""
+    cols = [np.ones(len(X))] + [X[:, j] for j in range(4)]
+    if grau_n &gt;= 2: cols.append(X[:, 0]**2)
+    if grau_d &gt;= 2: cols.append(X[:, 1]**2)
+    return np.column_stack(cols)
+
+def ajusta(Xd, yy):
+    return np.linalg.lstsq(Xd, yy, rcond=None)[0]
+
+def eqm(obs, prev):
+    return float(np.mean((obs - prev)**2))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="holdout.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Separação treino–teste (holdout)
-    </a>
-<a href="loocv.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Leave-one-out cross-validation (LOOCV)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def cv_k(Xd, yy, k, semente=0, repeticoes=1, por_dobra=False):
+    """Validação cruzada k-fold. Devolve o EQM de cada repetição."""
+    nn = len(yy); rng = np.random.default_rng(semente); out = []; pd_ = []
+    for _ in range(repeticoes):
+        ordem = rng.permutation(nn)
+        dobras = np.array_split(ordem, k)
+        erros = np.empty(nn); md = []
+        for d in dobras:
+            m = np.ones(nn, bool); m[d] = False
+            b = ajusta(Xd[m], yy[m])
+            erros[d] = (yy[d] - Xd[d] @ b)**2
+            md.append(erros[d].mean())
+        out.append(erros.mean()); pd_.append(md)
+    return (np.array(out), np.array(pd_)) if por_dobra else np.array(out)
+
+# ===================================================================
+# PARTE 1 - como funciona, e o que ela entrega
+# ===================================================================
+print(f"{n} talhões de milho. Modelo com as quatro variáveis e os dois")
+print("termos quadráticos (p = 7 parâmetros).")
+Xd = monta(Xv, 2, 2)
+
+rng = np.random.default_rng(0)
+ordem = rng.permutation(n); dobras = np.array_split(ordem, 5)
+print(f"\nValidação cruzada com k = 5: as {n} observações são divididas em")
+print("cinco dobras, e cada uma serve de teste uma vez.")
+print(f"\n{'dobra':&gt;7}{'n teste':&gt;10}{'n treino':&gt;11}{'EQM da dobra':&gt;15}")
+tot = np.empty(n)
+for i, d in enumerate(dobras):
+    m = np.ones(n, bool); m[d] = False
+    b = ajusta(Xd[m], y[m]); e = (y[d] - Xd[d] @ b)**2
+    tot[d] = e
+    print(f"{i+1:&gt;7}{len(d):&gt;10}{int(m.sum()):&gt;11}{e.mean():&gt;15.4f}")
+print(f"{'média':&gt;7}{'':&gt;10}{'':&gt;11}{tot.mean():&gt;15.4f}")
+print("\nTodas as 120 observações foram testadas exatamente uma vez, e cada")
+print("modelo foi ajustado com 96 delas. A média dos erros é a estimativa.")
+print(f"\nPara comparar: o EQM de RESUBSTITUIÇÃO, calculado nos próprios dados")
+b_full = ajusta(Xd, y)
+print(f"de ajuste, é {eqm(y, Xd@b_full):.4f} - cerca de "
+      f"{100*(1-eqm(y, Xd@b_full)/tot.mean()):.0f}% menor que o da validação cruzada.")
+
+# ===================================================================
+# PARTE 2 - a escolha de k
+# ===================================================================
+print("\n" + "=" * 70)
+print("Qual k usar? Cada valor é um compromisso entre viés, variância e custo.")
+print("A simulação repete cada k 500 vezes, com sorteios diferentes das dobras.")
+print(f"\n{'k':&gt;5}{'n de treino':&gt;13}{'EQM médio':&gt;12}{'DP entre':&gt;11}"
+      f"{'ajustes':&gt;10}")
+print(f"{'':&gt;5}{'por dobra':&gt;13}{'':&gt;12}{'sorteios':&gt;11}{'':&gt;10}")
+for k in [2, 3, 5, 10, 20, 60, 120]:
+    v = cv_k(Xd, y, k, semente=k, repeticoes=(500 if k &lt; 120 else 1))
+    ntr_ = n - n//k
+    dp = v.std(ddof=1) if len(v) &gt; 1 else 0.0
+    print(f"{k:&gt;5}{ntr_:&gt;13}{v.mean():&gt;12.4f}{dp:&gt;11.4f}{k:&gt;10}")
+print("\nCom k pequeno, cada modelo é ajustado com menos dados e o erro é")
+print("SUPERESTIMADO: k = 2 treina com 60 observações e devolve 0,8372 contra")
+print("0,7854 de k = 120. É o viés, e ele desaparece à medida que k cresce.")
+print("\nA coluna do DP merece cuidado, porque ela mede UMA das duas fontes de")
+print("variância, e não a que a literatura costuma discutir. Aqui os dados são")
+print("FIXOS e só o sorteio das dobras muda: essa variabilidade cai com k, e é")
+print("zero para k = n, porque a deixa-um-de-fora não tem sorteio nenhum.")
+print("A afirmação clássica de que a deixa-um-de-fora tem variância ALTA refere-se")
+print("à outra fonte - a variabilidade da estimativa entre AMOSTRAS diferentes da")
+print("mesma população -, e a ficha da deixa-um-de-fora a examina em separado.")
+print("\nA recomendação usual de k = 5 ou k = 10 é um compromisso entre viés e")
+print("custo computacional, e nestes dados os dois dão praticamente o mesmo.")
+
+# ===================================================================
+# PARTE 3 - validação cruzada REPETIDA
+# ===================================================================
+print("\n" + "=" * 70)
+print("Uma única rodada de 10-fold ainda depende do sorteio das dobras.")
+v10 = cv_k(Xd, y, 10, semente=99, repeticoes=1000)
+print(f"\n1.000 rodadas independentes de 10-fold nos mesmos dados:")
+print(f"  média {v10.mean():.4f} | DP {v10.std(ddof=1):.4f}")
+print(f"  mínimo {v10.min():.4f} | máximo {v10.max():.4f} "
+      f"| amplitude {v10.max()-v10.min():.4f}")
+print(f"  coeficiente de variação {100*v10.std(ddof=1)/v10.mean():.2f}%")
+print("\nCompare com a separação única 70/30 da ficha do holdout, cujo EQM")
+print("variou de 0,37 a 1,34 (CV de 17%). A validação cruzada reduz a")
+print("variabilidade do sorteio por um fator de oito, mas não a elimina.")
+print("\nA validação cruzada REPETIDA é a solução: rode r vezes e tire a média.")
+print(f"\n{'repetições':&gt;12}{'DP da estimativa':&gt;20}{'redução':&gt;12}")
+rng2 = np.random.default_rng(55); dps = []
+for r in [1, 3, 5, 10, 25]:
+    medias = [cv_k(Xd, y, 10, semente=int(rng2.integers(1e6)),
+                   repeticoes=r).mean() for _ in range(300)]
+    dps.append(np.std(medias, ddof=1))
+for r, d in zip([1, 3, 5, 10, 25], dps):
+    print(f"{r:&gt;12}{d:&gt;20.4f}{d/dps[0]:&gt;12.2f}")
+print("A redução segue a raiz de r, como qualquer média. Com 10 repetições, a")
+print("variabilidade do sorteio deixa de ser relevante diante do erro amostral.")
+
+# ===================================================================
+# PARTE 4 - a seleção de modelo, feita direito
+# ===================================================================
+print("\n" + "=" * 70)
+print("Comparando os seis modelos candidatos por 10-fold repetida 20 vezes")
+modelos = [("só nitrogênio", lambda X: np.column_stack([np.ones(len(X)), X[:,0]])),
+           ("N + densidade", lambda X: np.column_stack([np.ones(len(X)), X[:,0], X[:,1]])),
+           ("as quatro, linear", lambda X: monta(X, 1, 1)),
+           ("com N²", lambda X: monta(X, 2, 1)),
+           ("com densidade²", lambda X: monta(X, 1, 2)),
+           ("com os dois quadráticos", lambda X: monta(X, 2, 2))]
+print("(o erro-padrão é calculado ENTRE AS DOBRAS, que é o que a regra de um")
+print(" erro-padrão usa - e não entre as repetições)")
+print(f"\n{'modelo':&lt;26}{'p':&gt;4}{'resubstituição':&gt;16}{'EQM 10-fold':&gt;14}"
+      f"{'EP':&gt;9}")
+res = []
+for rot, f in modelos:
+    Xm = f(Xv)
+    v, pd_ = cv_k(Xm, y, 10, semente=4, repeticoes=20, por_dobra=True)
+    # erro-padrão ENTRE DOBRAS, que é o usado na regra de um erro-padrão
+    ep = pd_.mean(axis=0).std(ddof=1)/np.sqrt(10)
+    bb = ajusta(Xm, y)
+    res.append((rot, Xm.shape[1], v.mean(), ep))
+    print(f"{rot:&lt;26}{Xm.shape[1]:&gt;4}{eqm(y, Xm@bb):&gt;16.4f}{v.mean():&gt;14.4f}"
+          f"{ep:&gt;9.4f}")
+j = int(np.argmin([r[2] for r in res]))
+print(f"\nMenor EQM de validação cruzada: '{res[j][0]}' com {res[j][2]:.4f}.")
+print("Note que o EQM de resubstituição cai monotonicamente com p - ele sempre")
+print("cai - enquanto o da validação cruzada tem um mínimo. É essa diferença")
+print("que torna a validação cruzada útil para selecionar modelos.")
+
+# a regra de um erro-padrão
+lim = res[j][2] + res[j][3]
+simples = [r for r in res if r[2] &lt;= lim]
+js = min(simples, key=lambda r: r[1])
+print(f"\nRegra de UM ERRO-PADRÃO: entre os modelos cujo EQM não excede")
+print(f"{res[j][2]:.4f} + {res[j][3]:.4f} = {lim:.4f}, escolha o mais simples.")
+print(f"  modelos elegíveis: " + ", ".join(f"{r[0]} (p={r[1]})" for r in simples))
+print(f"  escolhido: '{js[0]}', com p = {js[1]}")
+print("A regra privilegia a parcimônia quando a diferença de desempenho está")
+print("dentro do ruído da própria estimativa.")
+
+# ===================================================================
+# PARTE 5 - o erro mais caro: selecionar e avaliar na MESMA validação
+# ===================================================================
+print("\n" + "=" * 70)
+print("Se a mesma validação cruzada escolhe o modelo E estima o erro, a")
+print("estimativa fica otimista. A solução é a validação cruzada ANINHADA:")
+print("um laço interno escolhe, um laço externo avalia.")
+
+def cv_simples(Xlist, yy, k=5, semente=0):
+    """Escolhe o modelo e devolve o MENOR EQM - o procedimento errado."""
+    e = [cv_k(Xm, yy, k, semente)[0] for Xm in Xlist]
+    return min(e), int(np.argmin(e))
+
+def cv_aninhada(flist, Xraw, yy, kext=5, kint=5, semente=0):
+    nn = len(yy); rng = np.random.default_rng(semente)
+    dob = np.array_split(rng.permutation(nn), kext)
+    erros = np.empty(nn)
+    for d in dob:
+        m = np.ones(nn, bool); m[d] = False
+        # laço INTERNO: escolhe o modelo usando só o treino externo
+        eint = [cv_k(f(Xraw[m]), yy[m], kint, semente+1)[0] for f in flist]
+        jbest = int(np.argmin(eint))
+        Xb = flist[jbest](Xraw)
+        b = ajusta(Xb[m], yy[m])
+        erros[d] = (yy[d] - Xb[d] @ b)**2
+    return erros.mean()
+
+flist = [f for _, f in modelos]
+rng = np.random.default_rng(31)
+a_err, b_err = [], []
+for _ in range(300):
+    s = int(rng.integers(1e6))
+    Xl = [f(Xv) for f in flist]
+    e_sel, _ = cv_simples(Xl, y, 5, s)
+    a_err.append(e_sel)
+    b_err.append(cv_aninhada(flist, Xv, y, 5, 5, s))
+a_err = np.array(a_err); b_err = np.array(b_err)
+print(f"\n300 repetições, com 5 dobras externas e 5 internas:")
+print(f"  EQM da validação cruzada SIMPLES (seleciona e avalia) = {a_err.mean():.4f}")
+print(f"  EQM da validação cruzada ANINHADA (separa as duas)    = {b_err.mean():.4f}")
+print(f"  otimismo = {b_err.mean()-a_err.mean():.4f} "
+      f"({100*(b_err.mean()/a_err.mean()-1):.1f}%)")
+print("\nO otimismo é modesto aqui porque há apenas seis candidatos e um deles")
+print("é claramente melhor. Com dezenas de modelos, ou com ajuste fino de")
+print("hiperparâmetros contínuos, ele cresce e pode dominar a estimativa.")
+print("Regra prática: toda escolha feita olhando os dados - variáveis,")
+print("transformações, hiperparâmetros - tem de estar DENTRO do laço de")
+print("validação, e não antes dele.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">120 talhões de milho. Modelo com as quatro variáveis e os dois
+termos quadráticos (p = 7 parâmetros).
+
+Validação cruzada com k = 5: as 120 observações são divididas em
+cinco dobras, e cada uma serve de teste uma vez.
+
+  dobra   n teste   n treino   EQM da dobra
+      1        24         96         0.7672
+      2        24         96         0.9001
+      3        24         96         0.9490
+      4        24         96         0.4102
+      5        24         96         0.9368
+  média                              0.7927
+
+Todas as 120 observações foram testadas exatamente uma vez, e cada
+modelo foi ajustado com 96 delas. A média dos erros é a estimativa.
+
+Para comparar: o EQM de RESUBSTITUIÇÃO, calculado nos próprios dados
+de ajuste, é 0.7051 - cerca de 11% menor que o da validação cruzada.
+
+======================================================================
+Qual k usar? Cada valor é um compromisso entre viés, variância e custo.
+A simulação repete cada k 500 vezes, com sorteios diferentes das dobras.
+
+    k  n de treino   EQM médio   DP entre   ajustes
+         por dobra               sorteios          
+    2           60      0.8372     0.0707         2
+    3           80      0.8116     0.0440         3
+    5           96      0.7993     0.0249         5
+   10          108      0.7902     0.0159        10
+   20          114      0.7873     0.0094        20
+   60          118      0.7863     0.0045        60
+  120          119      0.7854     0.0000       120
+
+Com k pequeno, cada modelo é ajustado com menos dados e o erro é
+SUPERESTIMADO: k = 2 treina com 60 observações e devolve 0,8372 contra
+0,7854 de k = 120. É o viés, e ele desaparece à medida que k cresce.
+
+A coluna do DP merece cuidado, porque ela mede UMA das duas fontes de
+variância, e não a que a literatura costuma discutir. Aqui os dados são
+FIXOS e só o sorteio das dobras muda: essa variabilidade cai com k, e é
+zero para k = n, porque a deixa-um-de-fora não tem sorteio nenhum.
+A afirmação clássica de que a deixa-um-de-fora tem variância ALTA refere-se
+à outra fonte - a variabilidade da estimativa entre AMOSTRAS diferentes da
+mesma população -, e a ficha da deixa-um-de-fora a examina em separado.
+
+A recomendação usual de k = 5 ou k = 10 é um compromisso entre viés e
+custo computacional, e nestes dados os dois dão praticamente o mesmo.
+
+======================================================================
+Uma única rodada de 10-fold ainda depende do sorteio das dobras.
+
+1.000 rodadas independentes de 10-fold nos mesmos dados:
+  média 0.7902 | DP 0.0156
+  mínimo 0.7503 | máximo 0.8574 | amplitude 0.1070
+  coeficiente de variação 1.97%
+
+Compare com a separação única 70/30 da ficha do holdout, cujo EQM
+variou de 0,37 a 1,34 (CV de 17%). A validação cruzada reduz a
+variabilidade do sorteio por um fator de oito, mas não a elimina.
+
+A validação cruzada REPETIDA é a solução: rode r vezes e tire a média.
+
+  repetições    DP da estimativa     redução
+           1              0.0148        1.00
+           3              0.0090        0.61
+           5              0.0069        0.47
+          10              0.0051        0.34
+          25              0.0029        0.20
+A redução segue a raiz de r, como qualquer média. Com 10 repetições, a
+variabilidade do sorteio deixa de ser relevante diante do erro amostral.
+
+======================================================================
+Comparando os seis modelos candidatos por 10-fold repetida 20 vezes
+(o erro-padrão é calculado ENTRE AS DOBRAS, que é o que a regra de um
+ erro-padrão usa - e não entre as repetições)
+
+modelo                       p  resubstituição   EQM 10-fold       EP
+só nitrogênio                2          1.1143        1.1512   0.0376
+N + densidade                3          1.0422        1.0959   0.0326
+as quatro, linear            5          0.8614        0.9398   0.0290
+com N²                       6          0.7089        0.7856   0.0194
+com densidade²               6          0.8559        0.9485   0.0293
+com os dois quadráticos      7          0.7051        0.7927   0.0190
+
+Menor EQM de validação cruzada: 'com N²' com 0.7856.
+Note que o EQM de resubstituição cai monotonicamente com p - ele sempre
+cai - enquanto o da validação cruzada tem um mínimo. É essa diferença
+que torna a validação cruzada útil para selecionar modelos.
+
+Regra de UM ERRO-PADRÃO: entre os modelos cujo EQM não excede
+0.7856 + 0.0194 = 0.8051, escolha o mais simples.
+  modelos elegíveis: com N² (p=6), com os dois quadráticos (p=7)
+  escolhido: 'com N²', com p = 6
+A regra privilegia a parcimônia quando a diferença de desempenho está
+dentro do ruído da própria estimativa.
+
+======================================================================
+Se a mesma validação cruzada escolhe o modelo E estima o erro, a
+estimativa fica otimista. A solução é a validação cruzada ANINHADA:
+um laço interno escolhe, um laço externo avalia.
+
+300 repetições, com 5 dobras externas e 5 internas:
+  EQM da validação cruzada SIMPLES (seleciona e avalia) = 0.7908
+  EQM da validação cruzada ANINHADA (separa as duas)    = 0.7969
+  otimismo = 0.0062 (0.8%)
+
+O otimismo é modesto aqui porque há apenas seis candidatos e um deles
+é claramente melhor. Com dezenas de modelos, ou com ajuste fino de
+hiperparâmetros contínuos, ele cresce e pode dominar a estimativa.
+Regra prática: toda escolha feita olhando os dados - variáveis,
+transformações, hiperparâmetros - tem de estar DENTRO do laço de
+validação, e não antes dele.</pre></div><figure class="fig"><img src="../assets/resultados/kfold.png" alt="Resubstituição contra validação cruzada, o esquema aninhado e a comparação dos estimadores" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, os seis modelos candidatos: o EQM de resubstituição cai monotonicamente com o número de parâmetros e o de validação cruzada tem um mínimo, no modelo com N²; a linha pontilhada marca o limite de um erro-padrão. No centro, o esquema da validação cruzada aninhada, com um laço externo que avalia e um interno que escolhe. À direita, a comparação de três estimadores em 400 execuções: o desvio-padrão cai de 0,1388 na separação 70/30 para 0,0160 no 10-fold. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Seis modelos, validação cruzada 10-fold repetida 20 vezes</caption><thead><tr><th>Modelo</th><th>p</th><th>Resubstituição</th><th>EQM 10-fold</th><th>EP entre dobras</th></tr></thead><tbody><tr><td>Só nitrogênio</td><td>2</td><td>1,1143</td><td>1,1512</td><td>0,0376</td></tr><tr><td>N + densidade</td><td>3</td><td>1,0422</td><td>1,0959</td><td>0,0326</td></tr><tr><td>As quatro, lineares</td><td>5</td><td>0,8614</td><td>0,9398</td><td>0,0290</td></tr><tr><td><strong>Com N²</strong></td><td>6</td><td>0,7089</td><td><strong>0,7856</strong></td><td>0,0194</td></tr><tr><td>Com densidade²</td><td>6</td><td>0,8559</td><td>0,9485</td><td>0,0293</td></tr><tr><td>Com os dois quadráticos</td><td>7</td><td>0,7051</td><td>0,7927</td><td>0,0190</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Validação cruzada repetida: o efeito de r</caption><thead><tr><th>Repetições</th><th>DP da estimativa</th><th>Redução</th></tr></thead><tbody><tr><td>1</td><td>0,0148</td><td>1,00</td></tr><tr><td>3</td><td>0,0090</td><td>0,61</td></tr><tr><td>5</td><td>0,0069</td><td>0,47</td></tr><tr><td>10</td><td>0,0051</td><td>0,34</td></tr><tr><td>25</td><td>0,0029</td><td>0,20</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Simples contra aninhada (300 repetições, 5 dobras externas e 5 internas)</caption><thead><tr><th>Procedimento</th><th>EQM médio</th></tr></thead><tbody><tr><td>Validação cruzada SIMPLES (seleciona e avalia)</td><td>0,7908</td></tr><tr><td><strong>Validação cruzada ANINHADA</strong> (separa as duas)</td><td><strong>0,7969</strong></td></tr><tr><td>Otimismo</td><td>+0,0062 (0,8%)</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela dos seis modelos mostra o padrão que motiva o método. O EQM de resubstituição cai de 1,1143 a 0,7051 à medida que se acrescentam parâmetros — ele sempre cai. O de validação cruzada cai até o modelo com N² e então <em>sobe</em>, ainda que pouco, quando se acrescenta o termo quadrático da densidade. A diferença entre os dois comportamentos é exatamente o que torna a validação cruzada útil para escolher modelos, e a resubstituição inútil.</p><p>Note que o modelo com densidade² tem o mesmo número de parâmetros que o modelo com N² (seis) e EQM muito pior, 0,9485 contra 0,7856. Não é a complexidade que importa, é <em>qual</em> termo se acrescenta: a resposta ao nitrogênio tem curvatura forte, e a resposta à densidade, pouca.</p><p><strong>Sobre as repetições:</strong> uma rodada única de 10-fold tem desvio-padrão de 0,0148 entre execuções — já oito vezes menor que o da separação 70/30, mas não desprezível. A redução segue a raiz do número de repetições, como qualquer média, e com 10 repetições a variabilidade do sorteio cai para um terço. Em modelos baratos de ajustar, não há razão para não repetir.</p><p><strong>Sobre a versão aninhada:</strong> o otimismo medido é de apenas 0,8% nestes dados, e vale entender por quê: há só seis candidatos, e um deles é claramente melhor que os demais. A seleção quase não "escolhe ruído". Com dezenas de modelos, com hiperparâmetros contínuos ajustados em grade fina, ou com seleção de variáveis entre muitos preditores, o otimismo cresce e pode dominar a estimativa — Varma e Simon (2006) relatam vieses de dezenas de pontos percentuais em problemas de alta dimensão. A regra prática não depende do tamanho medido aqui: toda escolha feita olhando os dados pertence ao interior do laço de validação.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Selecionar variáveis antes da validação cruzada</td><td>A seleção entra no laço.</td></tr><tr><td>Padronizar com média e DP do conjunto inteiro</td><td>O pré-processamento entra no laço.</td></tr><tr><td>Usar a mesma validação para escolher e para estimar</td><td>Use a versão aninhada.</td></tr><tr><td>Reportar o menor EQM de vários modelos como estimativa</td><td>Ele é o mínimo de valores ruidosos.</td></tr><tr><td>Calcular o erro-padrão entre repetições</td><td>Use o calculado entre as dobras.</td></tr><tr><td>Sortear dobras em séries temporais</td><td>Use janelas deslizantes.</td></tr><tr><td>Sortear observações de dados agrupados</td><td>Use <code>groupKFold</code>.</td></tr><tr><td>Não estratificar com classes raras</td><td>Uma dobra pode ficar sem casos.</td></tr><tr><td>Usar k = 2 por economia</td><td>O viés é grande; k = 5 custa pouco mais.</td></tr><tr><td>Tratar os n erros como independentes</td><td>Os modelos das dobras compartilham dados.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="loocv.html">Deixa-um-de-fora</a></td><td>n pequeno; com modelos lineares sai de graça pelo atalho.</td></tr><tr><td>Validação cruzada repetida</td><td>Sempre que o custo permitir: elimina o sorteio.</td></tr><tr><td>Validação cruzada aninhada</td><td>Quando há seleção de modelo ou hiperparâmetros.</td></tr><tr><td><a href="holdout.html">Separação treino-teste</a></td><td>n muito grande, ou quando há separação natural a respeitar.</td></tr><tr><td><a href="bootstrap.html">Bootstrap 0,632 e fora-da-bolsa</a></td><td>Quando se quer também o erro-padrão de outras estatísticas.</td></tr><tr><td>AIC, BIC e Cp de Mallows</td><td>Modelos lineares: analíticos, sem reamostragem.</td></tr><tr><td>Validação cruzada por grupo</td><td>Dados agrupados por fazenda, paciente, lote.</td></tr><tr><td>Origem deslizante (<em>rolling origin</em>)</td><td>Séries temporais.</td></tr><tr><td>Validação cruzada espacial em blocos</td><td>Dados com autocorrelação espacial.</td></tr></tbody></table></div><ol class="steps"><li>Escolha k pelo compromisso entre viés e custo: 5 ou 10 na maioria dos casos.</li><li>Repita a validação cruzada ao menos cinco vezes, se o custo permitir.</li><li>Coloque TODO o pré-processamento dentro do laço.</li><li>Se houver seleção de modelo, use a versão aninhada.</li><li>Reporte a média, o erro-padrão entre dobras e o número de repetições.</li><li>Compare com o erro de resubstituição e comente a diferença.</li><li>Aplique a regra de um erro-padrão quando houver empate dentro do ruído.</li><li>Ajuste o modelo final com TODOS os dados, usando a configuração escolhida.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>STONE, M. Cross-validatory choice and assessment of statistical predictions. <em>Journal of the Royal Statistical Society: Series B</em>, v. 36, n. 2, p. 111-147, 1974.</li><li>GEISSER, Seymour. The predictive sample reuse method with applications. <em>Journal of the American Statistical Association</em>, v. 70, n. 350, p. 320-328, 1975.</li><li>KOHAVI, Ron. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: <em>Proceedings of the 14th International Joint Conference on Artificial Intelligence.</em> San Francisco: Morgan Kaufmann, 1995. p. 1137-1143.</li><li>VARMA, Sudhir; SIMON, Richard. Bias in error estimation when using cross-validation for model selection. <em>BMC Bioinformatics</em>, v. 7, art. 91, 2006.</li><li>ARLOT, Sylvain; CELISSE, Alain. A survey of cross-validation procedures for model selection. <em>Statistics Surveys</em>, v. 4, p. 40-79, 2010.</li><li>ALLEN, David M. The relationship between variable selection and data augmentation and a method for prediction. <em>Technometrics</em>, v. 16, n. 1, p. 125-127, 1974.</li><li>BREIMAN, Leo; SPECTOR, Philip. Submodel selection and evaluation in regression: the X-random case. <em>International Statistical Review</em>, v. 60, n. 3, p. 291-319, 1992.</li><li>BENGIO, Yoshua; GRANDVALET, Yves. No unbiased estimator of the variance of k-fold cross-validation. <em>Journal of Machine Learning Research</em>, v. 5, p. 1089-1105, 2004.</li><li>CAWLEY, Gavin C.; TALBOT, Nicola L. C. On over-fitting in model selection and subsequent selection bias in performance evaluation. <em>Journal of Machine Learning Research</em>, v. 11, p. 2079-2107, 2010.</li><li>BREIMAN, Leo; FRIEDMAN, Jerome H.; OLSHEN, Richard A.; STONE, Charles J. <em>Classification and regression trees.</em> Belmont: Wadsworth, 1984. (Regra de um erro-padrão.)</li><li>ROBERTS, David R. et al. Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. <em>Ecography</em>, v. 40, n. 8, p. 913-929, 2017.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>CANTY, Angelo; RIPLEY, Brian D. <em>boot: bootstrap R (S-Plus) functions.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=boot" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=boot</a>.</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>KUHN, Max; WICKHAM, Hadley. <em>Tidymodels: a collection of packages for modeling and machine learning using tidyverse principles.</em> Disponível em: <a href="https://www.tidymodels.org" target="_blank" rel="noopener noreferrer">https://www.tidymodels.org</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, todo o pré-processamento e toda a seleção de modelo dentro do laço, dobras equilibradas e dados permutáveis.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>caret, boot, rsample</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="holdout.html"><span>← ANTERIOR</span>Separação treino–teste (holdout)</a><a href="loocv.html"><span>PRÓXIMO →</span>Leave-one-out cross-validation (LOOCV)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

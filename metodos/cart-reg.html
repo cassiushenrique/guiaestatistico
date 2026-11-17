@@ -4,310 +4,496 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Árvore de regressão (CART): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Árvore de regressão (CART) | Estatística e Ciência de Dados
-  </title>
+<meta content="Árvore de regressão (CART): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Árvore de regressão (CART) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Árvore de regressão (CART)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Árvore de regressão (CART)
-    </h1>
-<p class="detail-lead">
-     Prevê valores quantitativos por regras sucessivas de divisão dos dados.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/cart-reg.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Prevê valores quantitativos por regras sucessivas de divisão dos dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Dados treino representativos, tuning/poda com validação e prevenção de profundidade excessiva.</li><li>Sem pressupor relação linear ou normalidade.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\sum_{m=1}^{M}\sum_{i:\mathbf x_i\in R_m}(y_i-\bar y_{R_m})^2+\alpha M\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Minimiza soma de quadrados residual das folhas, com penalidade de complexidade cp; avalie RMSE externo/CV.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Interprete divisões em atributos de veículo e erro fora do treino; não use \(p&lt;0{,}05\) como critério de split CART.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição de autonomia por peso, potência e aceleração (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-cart-reg" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-cart-reg"><code># Árvore de regressão (CART) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Árvore de regressão (CART)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Árvore de regressão (CART)</h1><p class="detail-lead">Divide o espaço das preditoras em retângulos e prevê a média de cada um — descobre degraus e interações sozinha, ao preço de ser instável e grosseira nas partes suaves.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/cart-reg.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/cart-reg.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma árvore de regressão</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Uma árvore de regressão divide o espaço das preditoras em retângulos e prevê, em cada retângulo, a <strong>média</strong> da resposta dos dados que caíram nele. As divisões são escolhidas uma de cada vez, sempre a que mais reduz a soma de quadrados dos resíduos. O resultado é um conjunto de regras do tipo "se altitude > 1.050 m e temperatura ≤ 20,5 °C, então a nota prevista é 80,2" — que se lê sem nenhuma fórmula.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Árvore de regressão" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Partir o espaço</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">em retângulos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A predição</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Média da folha:</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">uma escada</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O algoritmo</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Cortes binários,</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">gulosos, recursivos</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O controle</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Crescer e podar</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">por custo-complexidade</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ponto forte</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Degraus e interações</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">sem especificá-los</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ponto fraco</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Instável e grosseira</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">em partes suaves</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Árvore de regressão</text></svg><figcaption>Visão geral da árvore de regressão. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Por que começar o grupo pelas árvores</strong><p>Os modelos das fichas anteriores — do <a href="linear-multipla.html">linear</a> ao <a href="gam.html">GAM</a> — exigem que o analista diga a <em>forma</em> do modelo: quais termos, quais interações. Uma árvore descobre a forma sozinha. Isso a torna fraca como modelo final (ela é instável e aproxima mal funções suaves), mas faz dela a peça básica de três dos métodos mais usados em predição: <a href="bagging.html">bagging</a>, <a href="randomforest.html">florestas aleatórias</a> e <a href="boosting.html">boosting</a>.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma árvore de regressão</h2><p>O algoritmo CART (<em>classification and regression trees</em>, Breiman et al., 1984) procura, entre todas as variáveis e todos os pontos de corte, a divisão binária que mais reduz a soma de quadrados; aplica a divisão; e repete o mesmo procedimento dentro de cada uma das duas partes, recursivamente. Cada parte final é uma <strong>folha</strong>, e a predição nela é a média das observações que a compõem.</p><figure class="fig"><img src="../assets/resultados/cart-reg-didatica.png" alt="Uma árvore de profundidade 3 desenhada como diagrama e como partição do plano altitude por temperatura" loading="lazy"/><figcaption><strong>A mesma árvore, em duas leituras.</strong> À esquerda, o diagrama: cada nó mostra a regra de corte, o número de lotes e a média da nota. À direita, a mesma árvore como partição do plano altitude × temperatura, com a média de cada retângulo. O primeiro corte, em 1.050,9 m, coincide com o degrau verdadeiro; os cortes seguintes em temperatura são a forma de a árvore representar que o efeito de uma variável depende de outra. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Árvore de regressão frente aos modelos das fichas anteriores</caption><thead><tr><th>Aspecto</th><th>Modelo linear / GAM</th><th>Árvore de regressão</th></tr></thead><tbody><tr><td>Forma da função</td><td>Especificada pelo analista</td><td>Descoberta pelos dados</td></tr><tr><td>Interações</td><td>Só as incluídas explicitamente</td><td>Automáticas (cortes dentro de cortes)</td></tr><tr><td>Degraus e limiares</td><td>Exigem termos especiais</td><td>Representação natural</td></tr><tr><td>Funções suaves</td><td>Representação natural</td><td>Aproximadas por escadas</td></tr><tr><td>Variáveis em escalas diferentes</td><td>Coeficientes dependem da escala</td><td>Invariante a transformações monótonas</td></tr><tr><td>Estabilidade</td><td>Alta</td><td><strong>Baixa</strong>: pequenas mudanças nos dados mudam a árvore</td></tr><tr><td>Interpretação</td><td>Coeficientes</td><td>Regras "se… então"</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>A validação cruzada que escolhe a poda supõe isso.</td><td>Desenho do estudo; com grupos, valide por grupo.</td></tr><tr><td><strong>Tamanho da árvore escolhido por validação</strong></td><td>A árvore máxima decora os dados.</td><td><code>printcp</code> e <code>plotcp</code>; regra do EP único.</td></tr><tr><td>n suficiente em cada folha</td><td>Média de poucos casos é ruidosa.</td><td><code>minbucket</code>; olhe o n das folhas.</td></tr><tr><td>Estrutura com limiares ou interações</td><td>É onde a árvore ganha dos modelos suaves.</td><td>Compare com o linear e o GAM por validação cruzada.</td></tr><tr><td>Estabilidade da estrutura</td><td>A interpretação das regras depende dela.</td><td>Refaça a árvore em reamostras bootstrap.</td></tr><tr><td>Sem extrapolação</td><td>Fora dos dados a predição é a da folha mais próxima, constante.</td><td>Confira a faixa de cada preditora.</td></tr><tr><td>Variância aproximadamente homogênea</td><td>O critério é soma de quadrados: folhas ruidosas dominam.</td><td>Resíduos por folha.</td></tr></tbody></table></div><div class="callout warn"><strong>Não há pressuposto de distribuição, mas há de desenho</strong><p>A árvore não supõe normalidade, linearidade nem aditividade: é por isso que ela é chamada de não paramétrica. Mas a escolha do tamanho da árvore usa validação cruzada, que supõe observações independentes e trocáveis. Com dados agrupados (lotes da mesma fazenda, medidas repetidas da mesma planta), a validação deve deixar <strong>grupos</strong> inteiros de fora, ou a árvore escolhida será grande demais.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>A árvore com \(M\) folhas representa a função de regressão como uma constante por região:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat f(x)=\sum_{m=1}^{M}c_m\,\mathbb{1}\left(x\in R_m\right),\]\[c_m=\bar y_{R_m}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(R_m\)</dt><dd>a \(m\)-ésima região (folha), um retângulo no espaço das preditoras</dd></div><div><dt>\(c_m\)</dt><dd>a predição na folha: a média das respostas que caem nela</dd></div><div><dt>\(\mathbb{1}(\cdot)\)</dt><dd>indicadora: vale 1 se \(x\) está na região e 0 caso contrário</dd></div><div><dt>\(M\)</dt><dd>número de folhas</dd></div></dl><h3>A escolha de cada corte</h3><p>Para a variável \(j\) e o ponto \(s\), as duas regiões candidatas são \(R_1=\{x: x_j\le s\}\) e \(R_2=\{x: x_j&gt;s\}\). Escolhe-se o par que minimiza a soma de quadrados resultante:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\min_{j,\,s}\biggl[\sum_{x_i\in R_1(j,s)}\left(y_i-\bar y_{R_1}\right)^2 \\ &\quad +\sum_{x_i\in R_2(j,s)}\left(y_i-\bar y_{R_2}\right)^2\biggr]\end{aligned}\]</div><p>Para cada variável, basta testar os pontos médios entre valores consecutivos observados; com \(n=600\) e seis variáveis, são cerca de 3.600 candidatos — uma busca exaustiva barata. É um algoritmo <strong>guloso</strong>: escolhe o melhor corte agora, sem olhar o efeito sobre os cortes futuros.</p><h3>Exemplo numérico: o primeiro corte nos dados de café</h3><div class="table-wrap"><table class="method-table"><caption>A melhor divisão de cada variável, na raiz</caption><thead><tr><th>Variável</th><th>Melhor corte</th><th>Queda da SQR</th><th>% da SQT</th></tr></thead><tbody><tr><td><strong>Altitude</strong></td><td><strong>1.050,8</strong></td><td><strong>3158,53</strong></td><td><strong>54,28%</strong></td></tr><tr><td>Temperatura</td><td>19,2</td><td>1234,15</td><td>21,21%</td></tr><tr><td>Chuva</td><td>1.597,2</td><td>113,98</td><td>1,96%</td></tr><tr><td>Sombreamento</td><td>45,2</td><td>34,80</td><td>0,60%</td></tr><tr><td>N foliar</td><td>2,8</td><td>195,60</td><td>3,36%</td></tr><tr><td>pH</td><td>4,6</td><td>207,16</td><td>3,56%</td></tr></tbody></table></div><div class="worked"><strong>Leitura do primeiro corte</strong><p>A altitude ≤ 1.050,8 m separa 295 lotes, com nota média 75,997, de 305 lotes com média 80,586. Esse único corte retira 54,28% da soma de quadrados total. O degrau verdadeiro está em 1.050 m: a árvore o localizou com erro de menos de um metro, sem que ninguém lhe dissesse que havia um degrau. A temperatura é a segunda melhor variável, mas boa parte do que ela "explica" é a própria altitude, com a qual tem correlação −0,822.</p></div><h3>A poda por custo-complexidade</h3><p>A árvore é crescida até ficar grande e depois podada. Para cada \(\alpha\ge 0\), a subárvore podada \(T_\alpha\) é a que minimiza</p><div class="math-display" role="group" aria-label="Expressão matemática">\[C_\alpha(T)=\sum_{m=1}^{|T|}\sum_{x_i\in R_m}\left(y_i-\bar y_{R_m}\right)^2+\alpha\,|T|\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(|T|\)</dt><dd>número de folhas da subárvore \(T\)</dd></div><div><dt>\(\alpha\)</dt><dd>preço de cada folha: com \(\alpha=0\) fica a árvore máxima; com \(\alpha\) grande, só a raiz</dd></div></dl><p>À medida que \(\alpha\) cresce, as subárvores ótimas formam uma sequência <strong>aninhada</strong> — é o resultado de Breiman et al. que torna a poda barata — e escolhe-se \(\alpha\) por validação cruzada. No <code>scikit-learn</code> o critério é escrito com a soma de quadrados dividida por \(n\) (parâmetro <code>ccp_alpha</code>); no <code>rpart</code>, dividida pela soma de quadrados da raiz (parâmetro <code>cp</code>). São a mesma poda em escalas diferentes: o \(\alpha=0{,}0443\) desta ficha corresponde a <code>cp</code> ≈ 0,0046 (0,0443 dividido pela variância 9,6974 da raiz).</p><h3>Propriedades</h3><ul class="checklist"><li>A predição é constante por partes: a função ajustada é uma escada.</li><li>Invariante a transformações monótonas das preditoras: usar log(altitude) daria a mesma árvore.</li><li>Interações entram por construção: um corte em sombreamento dentro de um ramo de temperatura é uma interação.</li><li>Seleciona variáveis implicitamente: as que nunca são usadas em cortes não entram no modelo.</li><li>Lida com preditoras categóricas agrupando categorias, e com valores ausentes por <em>surrogate splits</em> (no <code>rpart</code>).</li><li><strong>Alta variância</strong>: um corte diferente perto da raiz muda toda a árvore abaixo dele.</li><li>O critério guloso não garante a melhor árvore de um dado tamanho.</li><li>Tende a favorecer variáveis com muitos pontos de corte possíveis.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Primeiro corte</td><td>A variável e o limiar de maior efeito isolado.</td><td>Costuma ser estável quando o efeito é forte.</td></tr><tr><td>Cortes inferiores</td><td>Interações e efeitos menores.</td><td>Instáveis: mudam entre reamostras.</td></tr><tr><td>Média da folha</td><td>A predição para quem cai nela.</td><td>Veja o n da folha.</td></tr><tr><td>Tabela <code>cptable</code></td><td>Erro relativo e validado por tamanho.</td><td>Use <code>xerror</code>, não <code>rel error</code>.</td></tr><tr><td>Regra do EP único</td><td>A menor árvore dentro de um erro-padrão do mínimo.</td><td>Prefere simplicidade; aqui coincidiu com o mínimo.</td></tr><tr><td>Importância de variáveis (<code>variable.importance</code>)</td><td>Redução total da SQR por variável, incluindo cortes substitutos.</td><td>Mistura efeito e correlação entre preditoras.</td></tr></tbody></table></div><div class="callout warn"><strong>Ler uma regra não é ler um efeito causal</strong><p>"Lotes acima de 1.050,9 m têm nota média 80,6" é uma descrição dos dados. Não significa que subir a lavoura melhora a nota: a altitude vem junto com temperatura mais baixa, e uma árvore escolhe a variável que melhor separa os dados, não a que causa a diferença. Com altitude e temperatura correlacionadas em −0,822, outra amostra poderia ter cortado primeiro em temperatura — nestes dados, as 500 reamostras cortaram sempre em altitude, porque o degrau verdadeiro está nela.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função <code>rpart()</code>, do pacote <code>rpart</code> (que vem com o R), com <code>method = "anova"</code> para resposta contínua. O argumento <code>control = rpart.control(cp = 0, xval = 10)</code> cresce a árvore máxima e calcula o erro por validação cruzada de 10 dobras para cada nível de poda; <code>printcp()</code> mostra a tabela, <code>plotcp()</code> o gráfico, e <code>prune(arv, cp = …)</code> devolve a árvore podada. O pacote <code>rpart.plot</code> desenha a árvore com as médias e os tamanhos das folhas. Em Python, <code>sklearn.tree.DecisionTreeRegressor</code> com <code>ccp_alpha</code>, e <code>cost_complexity_pruning_path</code> para a sequência de podas.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-cart-reg-min" type="button">Copiar código</button></div><pre id="code-cart-reg-min"><code>library(rpart)
+arv &lt;- rpart(nota ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+             method = "anova", control = rpart.control(cp = 0, xval = 10))
+printcp(arv); plotcp(arv)
+poda &lt;- prune(arv, cp = arv$cptable[which.min(arv$cptable[, "xerror"]), "CP"])
+print(poda)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-cart-reg" type="button">Copiar código</button></div><pre id="code-cart-reg"><code># Árvore de regressão (CART): exemplo completo ----
+# Pacotes: rpart (incluído na instalação do R) e rpart.plot (opcional)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("rpart", quietly = TRUE)) install.packages("rpart")
 library(rpart)
-set.seed(2026)
-ajuste &lt;- rpart(mpg ~ wt + hp + qsec, data = mtcars,
-               method = "anova", control = rpart.control(cp = 0.01))
-printcp(ajuste)
-plot(ajuste); text(ajuste, use.n = TRUE, cex = 0.8)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. A referência: modelos suaves
+f &lt;- nota ~ alt + temp + chuva + somb + nfol + ph
+summary(lm(f, data = cafe))$r.squared
 
+# ---- 2. Crescer a árvore máxima (cp = 0) com validação cruzada interna
+set.seed(1)
+arv_max &lt;- rpart(f, data = cafe, method = "anova",
+                 control = rpart.control(cp = 0, minsplit = 2, minbucket = 1, xval = 10))
+printcp(arv_max)     # tabela: cp, número de cortes, erro relativo, xerror, xstd
+plotcp(arv_max)      # erro validado em função de cp (com a linha do EP único)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="gam.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Modelos aditivos generalizados (GAM)
-    </a>
-<a href="cart-class.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Árvore de classificação (CART)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Podar: o menor xerror, ou a regra do erro-padrão único
+tab &lt;- arv_max$cptable
+i_min &lt;- which.min(tab[, "xerror"])
+cp_min &lt;- tab[i_min, "CP"]
+lim &lt;- tab[i_min, "xerror"] + tab[i_min, "xstd"]
+cp_1ep &lt;- tab[min(which(tab[, "xerror"] &lt;= lim)), "CP"]
+arv &lt;- prune(arv_max, cp = cp_1ep)
+print(arv)
+# install.packages("rpart.plot")
+library(rpart.plot)
+rpart.plot(arv, type = 2, extra = 101, digits = 3)
+
+# ---- 4. A predição é uma escada: variar só a altitude
+grade &lt;- data.frame(alt = seq(600, 1500, by = 10),
+                    temp = median(cafe$temp), chuva = median(cafe$chuva),
+                    somb = median(cafe$somb), nfol = median(cafe$nfol), ph = median(cafe$ph))
+plot(grade$alt, predict(arv, grade), type = "s", lwd = 2,
+     xlab = "Altitude (m)", ylab = "Nota prevista")
+abline(v = 1050, lty = 3)
+
+# ---- 5. Instabilidade: a mesma análise em reamostras bootstrap
+set.seed(3)
+info &lt;- t(replicate(200, {
+  i &lt;- sample(nrow(cafe), replace = TRUE)
+  a &lt;- prune(rpart(f, data = cafe[i, ], control = rpart.control(cp = 0, xval = 0)), cp = cp_1ep)
+  c(var1 = as.character(a$frame$var[1]), folhas = sum(a$frame$var == "&lt;leaf&gt;"))
+}))
+table(info[, "var1"])                    # variável do primeiro corte
+summary(as.numeric(info[, "folhas"]))    # número de folhas
+
+# ---- 6. Comparação por validação cruzada de 10 dobras
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(cafe)))
+e_lin &lt;- e_arv &lt;- numeric(nrow(cafe))
+for (j in 1:10) {
+  tr &lt;- cafe[d != j, ]; te &lt;- cafe[d == j, ]
+  e_lin[d == j] &lt;- te$nota - predict(lm(f, data = tr), te)
+  a &lt;- rpart(f, data = tr, control = rpart.control(cp = 0, xval = 10))
+  t2 &lt;- a$cptable; k &lt;- which.min(t2[, "xerror"])
+  e_arv[d == j] &lt;- te$nota - predict(prune(a, cp = t2[k, "CP"]), te)
+}
+c(linear = mean(e_lin^2), arvore = mean(e_arv^2))
+# A árvore de regressão também serve para resposta de contagem ou de
+# sobrevivência: method = "poisson" e method = "exp" no rpart.
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-cart-reg" type="button">Copiar código</button></div><pre id="code-py-cart-reg"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.tree import DecisionTreeRegressor, export_text
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import SplineTransformer
+from sklearn.pipeline import make_pipeline
+from sklearn.linear_model import Ridge
+
+y=NOTA
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Dados fictícios, com processo gerador CONHECIDO. A nota tem:')
+print('  - um DEGRAU de +4,6 pontos acima de 1.050 m de altitude;')
+print('  - uma INTERAÇÃO: o sombreamento AJUDA acima de 20,5 C e ATRAPALHA abaixo;')
+print('  - partes suaves em chuva, N foliar e pH; erro de desvio-padrão 1,55.')
+print()
+print('  variância da nota = %s | sigma² = %s (o piso)'%(c(float(y.var(ddof=1))),c(EQM_PISO)))
+lin,_=cv_reg(LinearRegression,X,y,10,0,5)
+spl,_=cv_reg(lambda: make_pipeline(SplineTransformer(n_knots=6,degree=3),Ridge(alpha=1e-3)),X,y,10,0,5)
+print('  EQM validado do modelo LINEAR             = %s'%c(lin))
+print('  EQM validado do modelo ADITIVO com splines = %s'%c(spl))
+print('  EQM da função VERDADEIRA                   = %s'%c(eqm(y,MU)))
+print()
+print('O modelo aditivo suave não representa nem o degrau nem a interação.')
+
+print('\n'+'='*70)
+print('A PRIMEIRA DIVISÃO, procurada exaustivamente')
+print('Para cada variável e cada corte possível, calcula-se quanto a soma de')
+print('quadrados cai ao separar os lotes em dois grupos e prever cada um pela')
+print('sua média.')
+SQT=float(np.sum((y-y.mean())**2))
+print()
+print('%-14s %12s %16s %14s'%('variável','melhor corte','queda da SQR','% da SQT'))
+melh=[]
+for j,nm in enumerate(NOMES):
+    xs=np.sort(np.unique(X[:,j])); cortes=(xs[:-1]+xs[1:])/2
+    best=(0,None)
+    for t in cortes:
+        e=y[X[:,j]&lt;=t]; d=y[X[:,j]&gt;t]
+        if len(e)&lt;5 or len(d)&lt;5: continue
+        q=SQT-(np.sum((e-e.mean())**2)+np.sum((d-d.mean())**2))
+        if q&gt;best[0]: best=(q,t)
+    melh.append((best[0],nm,best[1]))
+    print('%-14s %12s %16s %14s'%(ROT[nm],c(best[1],1),c(best[0],2),c(100*best[0]/SQT,2)+'%'))
+melh.sort(reverse=True)
+q,nm,t=melh[0]
+e=y[X[:,NOMES.index(nm)]&lt;=t]; d=y[X[:,NOMES.index(nm)]&gt;t]
+print()
+print('A melhor divisão é %s &lt;= %s, que separa %d e %d lotes, com médias'%(ROT[nm],c(t,1),len(e),len(d)))
+print('%s e %s. O degrau verdadeiro está em 1.050 m.'%(c(e.mean(),3),c(d.mean(),3)))
+
+print('\n'+'='*70)
+print('CRESCER E PODAR: a profundidade e o custo-complexidade')
+print()
+print('%11s %8s %14s %16s'%('profundidade','folhas','EQM treino','EQM 10-fold'))
+for dp in [1,2,3,4,5,6,8,10,15,None]:
+    m=DecisionTreeRegressor(max_depth=dp,random_state=0).fit(X,y)
+    cv,_=cv_reg(lambda dp=dp: DecisionTreeRegressor(max_depth=dp,random_state=0),X,y,10,0,5)
+    print('%11s %8d %14s %16s'%(str(dp) if dp else 'sem limite',m.get_n_leaves(),c(eqm(y,m.predict(X))),c(cv)))
+print()
+print('Poda por custo-complexidade: a árvore máxima é podada minimizando')
+print('  SQR(T) + alpha * |T|,   |T| = número de folhas')
+cam=DecisionTreeRegressor(random_state=0).cost_complexity_pruning_path(X,y)
+alphas=np.unique(np.concatenate([[0],np.quantile(cam.ccp_alphas[cam.ccp_alphas&gt;0],np.linspace(0,1,40))]))
+res=[]
+d=dobras(NC,10,0)
+for a in alphas:
+    erros=[]; e=np.empty(NC)
+    for j in range(10):
+        tr,te=d!=j,d==j
+        m=DecisionTreeRegressor(ccp_alpha=a,random_state=0).fit(X[tr],y[tr])
+        erros.append(eqm(y[te],m.predict(X[te]))); e[te]=y[te]-m.predict(X[te])
+    nf=DecisionTreeRegressor(ccp_alpha=a,random_state=0).fit(X,y).get_n_leaves()
+    res.append((a,float(np.mean(e**2)),float(np.std(erros,ddof=1)/np.sqrt(10)),nf))
+res=np.array(res); jm=int(np.argmin(res[:,1]))
+lim=res[jm,1]+res[jm,2]
+j1=int(max(i for i in range(len(res)) if res[i,1]&lt;=lim))
+print()
+print('%12s %8s %14s'%('alpha','folhas','EQM 10-fold'))
+for i in sorted(set([0,5,10,15,20,25,30,jm,j1,len(res)-1])):
+    mk=' &lt;- menor EQM' if i==jm else (' &lt;- regra do EP único' if i==j1 else '')
+    print('%12s %8d %14s%s'%(c(res[i,0],4),int(res[i,3]),c(res[i,1]),mk))
+amin,a1=res[jm,0],res[j1,0]
+print()
+print('  menor EQM: alpha = %s, %d folhas, EQM %s'%(c(amin,4),int(res[jm,3]),c(res[jm,1])))
+print('  EP único : alpha = %s, %d folhas, EQM %s'%(c(a1,4),int(res[j1,3]),c(res[j1,1])))
+
+print('\n'+'='*70)
+print('A ÁRVORE PODADA (regra do EP único), por extenso')
+arv=DecisionTreeRegressor(ccp_alpha=a1,random_state=0).fit(X,y)
+print()
+print(export_text(arv,feature_names=[ROT[k] for k in NOMES],decimals=1))
+print('A árvore ENCONTROU o degrau: o primeiro corte é em altitude e o valor')
+print('está perto de 1.050 m. A interação aparece como cortes em sombreamento')
+print('DENTRO de ramos definidos por temperatura — que é exatamente a forma de')
+print('uma árvore representar "o efeito de uma variável depende de outra".')
+
+print('\n'+'='*70)
+print('A PREDIÇÃO É UMA ESCADA')
+print('Uma árvore prevê a MÉDIA DA FOLHA: a função ajustada é constante por')
+print('pedaços. Variando só a altitude, com as demais no valor mediano:')
+med=np.median(X,axis=0)
+print()
+print('%12s %16s %16s'%('altitude','árvore podada','verdade'))
+for a in [650,800,950,1040,1060,1150,1300,1450]:
+    xx=med.copy(); xx[0]=a
+    print('%12s %16s %16s'%(c(a,0),c(float(arv.predict(xx[None,:])[0]),3),c(float(verdade(xx[None,:])[0]),3)))
+print()
+print('Acima de 1.050 a verdade é uma rampa suave mais um degrau; a árvore')
+print('acerta o degrau e aproxima a rampa por degraus menores.')
+
+print('\n'+'='*70)
+print('INSTABILIDADE: a mesma análise em 500 reamostras bootstrap')
+rg=np.random.default_rng(3)
+pri=[];cortes=[];nfolhas=[]
+gx=np.tile(med,(1,1))
+for r in range(500):
+    i=rg.integers(0,NC,NC)
+    m=DecisionTreeRegressor(ccp_alpha=a1,random_state=0).fit(X[i],y[i])
+    t=m.tree_; pri.append(NOMES[t.feature[0]]); cortes.append(t.threshold[0]); nfolhas.append(m.get_n_leaves())
+pri=np.array(pri); cortes=np.array(cortes)
+print()
+for nm in NOMES:
+    q=np.mean(pri==nm)
+    if q&gt;0: print('  primeiro corte em %-12s: %5.1f%% das reamostras'%(ROT[nm],100*q))
+ca=cortes[pri=='alt']
+print('  quando é altitude, o corte vai de %s a %s (mediana %s)'%(c(ca.min(),1),c(ca.max(),1),c(np.median(ca),1)))
+print('  número de folhas: de %d a %d (mediana %d)'%(min(nfolhas),max(nfolhas),int(np.median(nfolhas))))
+print()
+print('O PRIMEIRO corte é estável, porque o degrau é forte. Mas o número de')
+print('folhas varia muito, e os cortes de baixo mudam de reamostra para')
+print('reamostra: é essa instabilidade que as fichas bagging e random forest')
+print('vão explorar.')
+
+print('\n'+'='*70)
+print('A SÍNTESE: árvore contra os modelos suaves')
+cv_arv,_=cv_reg(lambda: DecisionTreeRegressor(ccp_alpha=a1,random_state=0),X,y,10,0,5)
+cv_amin,_=cv_reg(lambda: DecisionTreeRegressor(ccp_alpha=amin,random_state=0),X,y,10,0,5)
+cv_max,_=cv_reg(lambda: DecisionTreeRegressor(random_state=0),X,y,10,0,5)
+print()
+print('%-38s %14s'%('modelo','EQM 10-fold'))
+for nm,v in [('média (modelo nulo)',float(y.var(ddof=1))),('linear nas seis',lin),('aditivo com splines',spl),
+             ('árvore sem poda',cv_max),('árvore podada, menor EQM',cv_amin),('árvore podada, EP único',cv_arv),
+             ('função VERDADEIRA (piso)',eqm(y,MU))]:
+    print('%-38s %14s'%(nm,c(v)))
+print()
+print('A árvore podada bate o linear e o aditivo suave porque o processo tem')
+print('degrau e interação, que é o que árvores representam bem. Mas fica longe')
+print('do piso: aproximar as partes SUAVES por degraus custa caro.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Dados fictícios, com processo gerador CONHECIDO. A nota tem:
+  - um DEGRAU de +4,6 pontos acima de 1.050 m de altitude;
+  - uma INTERAÇÃO: o sombreamento AJUDA acima de 20,5 C e ATRAPALHA abaixo;
+  - partes suaves em chuva, N foliar e pH; erro de desvio-padrão 1,55.
+
+  variância da nota = 9,7136 | sigma² = 2,4025 (o piso)
+  EQM validado do modelo LINEAR             = 5,2299
+  EQM validado do modelo ADITIVO com splines = 4,0420
+  EQM da função VERDADEIRA                   = 2,5695
+
+O modelo aditivo suave não representa nem o degrau nem a interação.
+
+======================================================================
+A PRIMEIRA DIVISÃO, procurada exaustivamente
+Para cada variável e cada corte possível, calcula-se quanto a soma de
+quadrados cai ao separar os lotes em dois grupos e prever cada um pela
+sua média.
+
+variável       melhor corte     queda da SQR       % da SQT
+Altitude             1050,8          3158,53         54,28%
+Temperatura            19,2          1234,15         21,21%
+Chuva                1597,2           113,98          1,96%
+Sombreamento           45,2            34,80          0,60%
+N foliar                2,8           195,60          3,36%
+pH                      4,6           207,16          3,56%
+
+A melhor divisão é Altitude &lt;= 1050,8, que separa 295 e 305 lotes, com médias
+75,997 e 80,586. O degrau verdadeiro está em 1.050 m.
+
+======================================================================
+CRESCER E PODAR: a profundidade e o custo-complexidade
+
+profundidade   folhas     EQM treino      EQM 10-fold
+          1        2         4,4332           4,4916
+          2        4         3,8257           4,0007
+          3        8         3,2060           3,7679
+          4       16         2,7321           3,5916
+          5       30         2,3139           3,6501
+          6       54         1,9256           3,8764
+          8      134         1,3723           4,3185
+         10      229         0,8513           4,8921
+         15      482         0,1529           5,7107
+ sem limite      597         0,0000           5,7852
+
+Poda por custo-complexidade: a árvore máxima é podada minimizando
+  SQR(T) + alpha * |T|,   |T| = número de folhas
+
+       alpha   folhas    EQM 10-fold
+      0,0000      597         5,9833
+      0,0000      541         5,9841
+      0,0000      471         5,9780
+      0,0002      401         5,9810
+      0,0005      330         5,9480
+      0,0016      259         5,8527
+      0,0041      180         5,6637
+      0,0443       15         3,6220 &lt;- menor EQM
+      5,2642        1         8,2112
+
+  menor EQM: alpha = 0,0443, 15 folhas, EQM 3,6220
+  EP único : alpha = 0,0443, 15 folhas, EQM 3,6220
+
+======================================================================
+A ÁRVORE PODADA (regra do EP único), por extenso
+
+|--- Altitude &lt;= 1050.9
+|   |--- Temperatura &lt;= 20.6
+|   |   |--- N foliar &lt;= 2.8
+|   |   |   |--- value: [73.9]
+|   |   |--- N foliar &gt;  2.8
+|   |   |   |--- Altitude &lt;= 885.7
+|   |   |   |   |--- value: [74.2]
+|   |   |   |--- Altitude &gt;  885.7
+|   |   |   |   |--- value: [75.9]
+|   |--- Temperatura &gt;  20.6
+|   |   |--- Sombreamento &lt;= 34.0
+|   |   |   |--- N foliar &lt;= 2.8
+|   |   |   |   |--- pH &lt;= 6.0
+|   |   |   |   |   |--- value: [75.5]
+|   |   |   |   |--- pH &gt;  6.0
+|   |   |   |   |   |--- value: [73.4]
+|   |   |   |--- N foliar &gt;  2.8
+|   |   |   |   |--- Altitude &lt;= 676.9
+|   |   |   |   |   |--- value: [75.2]
+|   |   |   |   |--- Altitude &gt;  676.9
+|   |   |   |   |   |--- value: [77.0]
+|   |   |--- Sombreamento &gt;  34.0
+|   |   |   |--- Sombreamento &lt;= 50.5
+|   |   |   |   |--- value: [77.4]
+|   |   |   |--- Sombreamento &gt;  50.5
+|   |   |   |   |--- value: [79.0]
+|--- Altitude &gt;  1050.9
+|   |--- pH &lt;= 4.7
+|   |   |--- value: [77.4]
+|   |--- pH &gt;  4.7
+|   |   |--- pH &lt;= 6.5
+|   |   |   |--- Temperatura &lt;= 20.5
+|   |   |   |   |--- Altitude &lt;= 1265.6
+|   |   |   |   |   |--- value: [80.2]
+|   |   |   |   |--- Altitude &gt;  1265.6
+|   |   |   |   |   |--- N foliar &lt;= 2.1
+|   |   |   |   |   |   |--- value: [79.1]
+|   |   |   |   |   |--- N foliar &gt;  2.1
+|   |   |   |   |   |   |--- value: [81.1]
+|   |   |   |--- Temperatura &gt;  20.5
+|   |   |   |   |--- value: [82.9]
+|   |   |--- pH &gt;  6.5
+|   |   |   |--- value: [76.4]
+
+A árvore ENCONTROU o degrau: o primeiro corte é em altitude e o valor
+está perto de 1.050 m. A interação aparece como cortes em sombreamento
+DENTRO de ramos definidos por temperatura — que é exatamente a forma de
+uma árvore representar "o efeito de uma variável depende de outra".
+
+======================================================================
+A PREDIÇÃO É UMA ESCADA
+Uma árvore prevê a MÉDIA DA FOLHA: a função ajustada é constante por
+pedaços. Variando só a altitude, com as demais no valor mediano:
+
+    altitude    árvore podada          verdade
+         650           74,222           74,915
+         800           74,222           75,195
+         950           75,949           75,615
+        1040           75,949           75,867
+        1060           80,159           80,523
+        1150           80,159           80,775
+        1300           81,140           81,195
+        1450           81,140           81,615
+
+Acima de 1.050 a verdade é uma rampa suave mais um degrau; a árvore
+acerta o degrau e aproxima a rampa por degraus menores.
+
+======================================================================
+INSTABILIDADE: a mesma análise em 500 reamostras bootstrap
+
+  primeiro corte em Altitude    : 100.0% das reamostras
+  quando é altitude, o corte vai de 1049,2 a 1058,5 (mediana 1050,9)
+  número de folhas: de 16 a 31 (mediana 23)
+
+O PRIMEIRO corte é estável, porque o degrau é forte. Mas o número de
+folhas varia muito, e os cortes de baixo mudam de reamostra para
+reamostra: é essa instabilidade que as fichas bagging e random forest
+vão explorar.
+
+======================================================================
+A SÍNTESE: árvore contra os modelos suaves
+
+modelo                                    EQM 10-fold
+média (modelo nulo)                            9,7136
+linear nas seis                                5,2299
+aditivo com splines                            4,0420
+árvore sem poda                                5,7852
+árvore podada, menor EQM                       3,6757
+árvore podada, EP único                        3,6757
+função VERDADEIRA (piso)                       2,5695
+
+A árvore podada bate o linear e o aditivo suave porque o processo tem
+degrau e interação, que é o que árvores representam bem. Mas fica longe
+do piso: aproximar as partes SUAVES por degraus custa caro.</pre></div><figure class="fig"><img src="../assets/resultados/cart-reg.png" alt="Erro de treino e validado por número de folhas, a predição em escada e a distribuição do número de folhas em reamostras" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro de treino cai sem parar à medida que a árvore cresce, enquanto o validado tem mínimo com cerca de 16 folhas e depois sobe. No centro, a árvore podada prevendo a nota em função da altitude, com as demais variáveis na mediana: o degrau verdadeiro é capturado e a rampa suave vira uma escada. À direita, o número de folhas da árvore podada em 500 reamostras bootstrap. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Profundidade, folhas e erro</caption><thead><tr><th>Profundidade</th><th>Folhas</th><th>EQM de treino</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>4,4332</td><td>4,4916</td></tr><tr><td>2</td><td>4</td><td>3,8257</td><td>4,0007</td></tr><tr><td>3</td><td>8</td><td>3,2060</td><td>3,7679</td></tr><tr><td><strong>4</strong></td><td><strong>16</strong></td><td><strong>2,7321</strong></td><td><strong>3,5916</strong></td></tr><tr><td>5</td><td>30</td><td>2,3139</td><td>3,6501</td></tr><tr><td>6</td><td>54</td><td>1,9256</td><td>3,8764</td></tr><tr><td>8</td><td>134</td><td>1,3723</td><td>4,3185</td></tr><tr><td>10</td><td>229</td><td>0,8513</td><td>4,8921</td></tr><tr><td>15</td><td>482</td><td>0,1529</td><td>5,7107</td></tr><tr><td>sem limite</td><td>597</td><td>0,0000</td><td>5,7852</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A poda por custo-complexidade</caption><thead><tr><th>α (sklearn)</th><th>Folhas</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>0,0000</td><td>597</td><td>5,9833</td></tr><tr><td>0,0005</td><td>330</td><td>5,9480</td></tr><tr><td>0,0041</td><td>180</td><td>5,6637</td></tr><tr><td><strong>0,0443</strong></td><td><strong>15</strong></td><td><strong>3,6220</strong></td></tr><tr><td>5,2642</td><td>1</td><td>8,2112</td></tr></tbody></table></div><p>A árvore podada tem 15 folhas, e nesta grade a regra do erro-padrão único escolheu o mesmo \(\alpha\) que o menor erro. O primeiro corte é altitude ≤ 1.050,9; dentro do ramo baixo e quente (temperatura acima de 20,6 °C), a árvore corta em sombreamento em 34,0% e depois em 50,5%, com folhas de 77,4 e 79,0 — é a interação verdadeira, em que a sombra ajuda no calor.</p><div class="table-wrap"><table class="method-table"><caption>A predição é uma escada (demais variáveis na mediana)</caption><thead><tr><th>Altitude (m)</th><th>Árvore podada</th><th>Verdade</th></tr></thead><tbody><tr><td>650</td><td>74,222</td><td>74,915</td></tr><tr><td>800</td><td>74,222</td><td>75,195</td></tr><tr><td>950</td><td>75,949</td><td>75,615</td></tr><tr><td>1.040</td><td>75,949</td><td>75,867</td></tr><tr><td>1.060</td><td>80,159</td><td>80,523</td></tr><tr><td>1.150</td><td>80,159</td><td>80,775</td></tr><tr><td>1.300</td><td>81,140</td><td>81,195</td></tr><tr><td>1.450</td><td>81,140</td><td>81,615</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A síntese: árvore contra os modelos suaves</caption><thead><tr><th>Modelo</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>Média (modelo nulo)</td><td>9,7136</td></tr><tr><td>Linear nas seis</td><td>5,2299</td></tr><tr><td>Árvore sem poda</td><td>5,7852</td></tr><tr><td>Aditivo com splines</td><td>4,0420</td></tr><tr><td><strong>Árvore podada</strong></td><td><strong>3,6757</strong></td></tr><tr><td><em>Função verdadeira (o piso)</em></td><td><em>2,5695</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a árvore podada bate o modelo linear em 30% e o modelo aditivo com splines em 9%, porque o processo gerador tem exatamente o que a árvore representa bem — um degrau e uma interação — e que um modelo aditivo suave não representa. Mas ela fica longe do piso: 3,6757 contra 2,5695. O que falta está visível na tabela da escada: entre os degraus, a verdade é uma rampa, e a árvore só sabe fazer patamares. As partes suaves (chuva, nitrogênio, pH) custam caro.</p><p><strong>A árvore sem poda é pior que o modelo linear</strong> (5,7852 contra 5,2299): com 597 folhas para 600 lotes, cada folha é praticamente uma observação, e a predição reproduz o ruído. O erro de treino zero é o retrato perfeito do sobreajuste.</p><p><strong>Instabilidade:</strong> nas 500 reamostras bootstrap, o primeiro corte foi sempre em altitude, entre 1.049,2 e 1.058,5 m — estável, porque o degrau é forte. Mas o número de folhas variou de 16 a 31 (mediana 23), e os cortes inferiores mudam de uma reamostra para outra. Essa variância é o defeito que as fichas <a href="bagging.html">bagging</a> e <a href="randomforest.html">random forest</a> corrigem tirando a média de muitas árvores.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a árvore máxima</td><td>Pode-se sempre e deve-se: validação cruzada.</td></tr><tr><td>Escolher o tamanho pelo erro de treino (<code>rel error</code>)</td><td>Ele só cai; use <code>xerror</code>.</td></tr><tr><td>Interpretar cortes profundos como achados</td><td>São instáveis; confira em reamostras.</td></tr><tr><td>Ler a regra como efeito causal</td><td>A árvore escolhe a melhor separadora, não a causa.</td></tr><tr><td>Concluir que uma variável "não importa" porque não aparece</td><td>Pode ter sido mascarada por uma correlacionada.</td></tr><tr><td>Extrapolar</td><td>Fora da faixa, a predição é constante.</td></tr><tr><td>Esquecer de fixar a semente</td><td>O <code>xerror</code> depende das dobras sorteadas.</td></tr><tr><td>Usar como modelo final quando a relação é suave</td><td>Um GAM ou um comitê de árvores será melhor.</td></tr><tr><td>Validar com observações dependentes misturadas</td><td>Deixe grupos inteiros de fora.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="bagging.html">Bagging</a></td><td>Quando a predição importa mais que uma árvore legível.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>O padrão para predição com árvores; robusto e com pouco ajuste.</td></tr><tr><td><a href="boosting.html">Gradient boosting</a></td><td>Quando se quer o menor erro e se aceita ajustar hiperparâmetros.</td></tr><tr><td><a href="bart.html">BART</a></td><td>Quando se quer predição com intervalos de credibilidade.</td></tr><tr><td><a href="gam.html">GAM</a></td><td>Quando as relações são suaves e aditivas.</td></tr><tr><td>Árvores de inferência condicional (<code>partykit::ctree</code>)</td><td>Quando se quer cortes escolhidos por testes, sem viés para variáveis com muitos valores.</td></tr><tr><td>Árvores com modelos nas folhas (<code>partykit::mob</code>, M5)</td><td>Quando dentro de cada grupo há uma relação linear.</td></tr><tr><td><a href="cart-class.html">Árvore de classificação</a></td><td>Quando a resposta é uma classe.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste o modelo linear e um GAM como referência.</li><li>Cresça a árvore máxima com <code>cp = 0</code> e validação cruzada.</li><li>Escolha a poda pelo menor <code>xerror</code> ou pela regra do EP único.</li><li>Desenhe a árvore e leia os primeiros cortes.</li><li>Verifique a estabilidade em reamostras bootstrap.</li><li>Compare o erro validado com o das referências.</li><li>Se a predição for o objetivo, passe a um comitê de árvores.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>BREIMAN, Leo; FRIEDMAN, Jerome H.; OLSHEN, Richard A.; STONE, Charles J. <em>Classification and regression trees.</em> Belmont: Wadsworth, 1984.</li><li>MORGAN, James N.; SONQUIST, John A. Problems in the analysis of survey data, and a proposal. <em>Journal of the American Statistical Association</em>, v. 58, n. 302, p. 415-434, 1963.</li><li>HOTHORN, Torsten; HORNIK, Kurt; ZEILEIS, Achim. Unbiased recursive partitioning: a conditional inference framework. <em>Journal of Computational and Graphical Statistics</em>, v. 15, n. 3, p. 651-674, 2006.</li><li>LOH, Wei-Yin. Fifty years of classification and regression trees. <em>International Statistical Review</em>, v. 82, n. 3, p. 329-348, 2014.</li><li>THERNEAU, Terry M.; ATKINSON, Elizabeth J. <em>An introduction to recursive partitioning using the RPART routines.</em> Rochester: Mayo Foundation, 2023. (Vinheta do pacote rpart.)</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>THERNEAU, Terry; ATKINSON, Beth. <em>rpart: recursive partitioning and regression trees.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rpart" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rpart</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, tamanho da árvore escolhido por validação cruzada, número suficiente de observações por folha e nenhuma extrapolação.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>rpart (incluído no R); rpart.plot (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="gam.html"><span>← ANTERIOR</span>Modelos aditivos generalizados (GAM)</a><a href="cart-class.html"><span>PRÓXIMO →</span>Árvore de classificação (CART)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

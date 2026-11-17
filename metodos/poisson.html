@@ -4,332 +4,201 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão de Poisson: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão de Poisson | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão de Poisson: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão de Poisson | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão de Poisson
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão de Poisson
-    </h1>
-<p class="detail-lead">
-     Investiga fatores associados à frequência de eventos, como falhas ou acidentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/poisson.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Investiga fatores associados à frequência de eventos, como falhas ou acidentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Contagens inteiras não negativas, unidades independentes, média log-linear e variância condicional compatível com a média.</li><li>Inspecione superdispersão e zeros.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\\ H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[Y_i\mid\mathbf x_i\sim\operatorname{Poisson}(\mu_i),\qquad \log\mu_i=\mathbf x_i^\top\boldsymbol\beta\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(e^{\beta_j})\approx\exp\!\left[\widehat\beta_j\pm1{,}96\operatorname{EP}(\widehat\beta_j)\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         contagem observada na unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu_i\)
-        </dt>
-<dd>
-         contagem média condicional esperada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         coeficientes
-        </dd>
-</div>
-<div>
-<dt>
-         \(\log\)
-        </dt>
-<dd>
-         logaritmo natural, função de ligação
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere mudança condicional da taxa. \(IC_{95\%}\) para \(\exp(\beta)\) excluindo 1 reforça rejeição bilateral quando construído de modo compatível.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em warpbreaks, breaks é uma contagem de quebras de fios sob diferentes condições de tensão e lã.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Explicar a contagem esperada de quebras em função das condições de fabricação e verificar possível superdispersão.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-poisson" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-poisson"><code># Regressão de Poisson ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão de Poisson</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão de Poisson</h1><p class="detail-lead">Modela contagens de eventos em função de um ou mais preditores, com efeitos multiplicativos sobre a taxa.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/poisson.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/poisson.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quantas falhas ocorreram no turno? Quantos acidentes houve no trecho? Quantas rupturas apareceram na peça? Contagens não são medidas contínuas: são inteiros, nunca negativos, e sua variabilidade costuma crescer junto com a média. A regressão de Poisson é o modelo de partida para esse tipo de resposta.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão de Poisson" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modelo para contagens</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">de eventos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Ligação log</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">média = exp(preditor linear)</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Contagens independentes</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Variância = média</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Linearidade no log</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">exp(b) = razão de taxas</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Contagens previstas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">glm(y ~ x,</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">family = poisson)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Quase-Poisson</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Binomial negativa</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos com excesso de zeros</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão de Poisson</text></svg><figcaption>Visão geral da regressão de Poisson. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>Um dos primeiros usos célebres da distribuição de Poisson foi o estudo de Ladislaus Bortkiewicz (1898) sobre o número de soldados prussianos mortos por coice de cavalo, ano a ano, em catorze corpos do exército. É o exemplo clássico de eventos raros e independentes.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[Y_i\sim\text{Poisson}(\mu_i),\]\[\ln(\mu_i)=\beta_0+\beta_1x_{i1}+\cdots+\beta_px_{ip}\]\[\Longleftrightarrow\]\[\mu_i=e^{\beta_0}\,e^{\beta_1x_{i1}}\cdots e^{\beta_px_{ip}}\]</div><p>A ligação logarítmica tem duas consequências úteis. A média prevista é sempre positiva, como convém a uma contagem. E os efeitos passam a ser <strong>multiplicativos</strong>: cada preditor multiplica a contagem esperada por um fator, em vez de somar uma quantidade fixa.</p><figure class="fig"><img src="../assets/resultados/poisson-didatica.png" alt="Distribuições de Poisson, relação média-variância e ligação logarítmica" loading="lazy"/><figcaption><strong>Três ideias por trás do modelo.</strong> À esquerda, a distribuição de Poisson para três médias: assimétrica quando a média é pequena, quase simétrica quando é grande. No centro, a igualdade entre média e variância, com os grupos do exemplo bem acima da reta. À direita, por que a ligação logarítmica: a reta pode prever contagens negativas, a curva exponencial não. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>A marca registrada da Poisson</strong><p>Na distribuição de Poisson, <strong>a variância é igual à média</strong>. Esse é o pressuposto mais frequentemente violado na prática, e verificá-lo é parte obrigatória da análise.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta é contagem (inteiro não negativo)</td><td>Definição do modelo.</td><td>Natureza da variável.</td></tr><tr><td>Observações independentes</td><td>Eventos agrupados ou em sequência violam a condição.</td><td>Delineamento; para dados agrupados, use <a href="gee.html">GEE</a> ou modelos mistos.</td></tr><tr><td>Variância igual à média (equidispersão)</td><td>Se violada, os erros-padrão ficam pequenos demais e os valores-p, otimistas.</td><td>Qui-quadrado de Pearson dividido pelos graus de liberdade (φ): valores bem acima de 1 indicam superdispersão.</td></tr><tr><td>Linearidade no log</td><td>O efeito de x é constante na escala logarítmica.</td><td>Resíduos contra o preditor; termos quadráticos ou splines.</td></tr><tr><td>Mesmo período ou mesma exposição</td><td>Contagens de janelas diferentes não são comparáveis.</td><td>Use um termo de <em>offset</em>: <code>offset(log(exposicao))</code>.</td></tr><tr><td>Sem excesso de zeros</td><td>Zeros em excesso indicam outro processo gerador.</td><td>Compare a frequência de zeros observada com a prevista.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0 \\ &\quad \text{(o preditor não altera a } \\ &\quad \text{taxa de eventos)} \\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[P(Y=y)=\frac{e^{-\mu}\mu^{y}}{y!},\]\[E(Y)=\operatorname{Var}(Y)=\mu,\]\[z=\frac{b_j}{EP(b_j)}\ \overset{\text{aprox.}}{\sim}\ \mathcal N(0,1)\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[D=2\sum_{i=1}^{n}\left[y_i\ln\!\left(\frac{y_i}{\hat\mu_i}\right)-(y_i-\hat\mu_i)\right],\]\[\hat\phi=\frac{1}{n-p}\sum_{i=1}^{n}\frac{(y_i-\hat\mu_i)^2}{\hat\mu_i}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mu\)</dt><dd>contagem média esperada</dd></div><div><dt>\(y_i\)</dt><dd>contagem observada na unidade i</dd></div><div><dt>\(\hat\mu_i\)</dt><dd>contagem prevista pelo modelo</dd></div><div><dt>\(b_j\)</dt><dd>estimativa de máxima verossimilhança</dd></div><div><dt>\(e^{b_j}\)</dt><dd>razão de taxas: fator que multiplica a contagem esperada quando \(x_j\) aumenta uma unidade</dd></div><div><dt>\(D\)</dt><dd>deviance residual; sob bom ajuste, aproximadamente \(\chi^2_{n-p}\)</dd></div><div><dt>\(\hat\phi\)</dt><dd>parâmetro de dispersão estimado; próximo de 1 sob a Poisson</dd></div><div><dt>\(n,\ p\)</dt><dd>número de observações e de parâmetros</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha, o modelo ajustado é \[\begin{aligned}\ln(\mu) &= 3{,}692-0{,}206\,(\text{lã B}) \\ &\quad -0{,}321\,(\text{tensão média}) \\ &\quad -0{,}519\,(\text{tensão alta}).\end{aligned}\]</p><div class="worked"><strong>Da equação à contagem prevista</strong><p>Lã A com tensão baixa (referência): \(\ln(\mu)=3{,}692\) ⇒ \(\mu=e^{3{,}692}=40{,}12\) rupturas.</p><p>Lã A com tensão alta: \(\ln(\mu)=3{,}692-0{,}519=3{,}174\) ⇒ \(\mu=23{,}89\).</p><p>Razão de taxas da tensão alta: \(e^{-0{,}519}=0{,}595\). De fato, \(40{,}12\times0{,}595=23{,}89\): a tensão alta reduz a contagem esperada em cerca de 40%.</p><p>Lã B com tensão alta: \(e^{3{,}692-0{,}206-0{,}519}=19{,}44\). Os efeitos se multiplicam: \(40{,}12\times0{,}814\times0{,}595=19{,}44\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>As contagens previstas são sempre positivas.</li><li>Os efeitos são multiplicativos: \(e^{b}\) é uma razão de taxas, não uma diferença.</li><li>Com <em>offset</em>, o modelo passa a descrever taxas por unidade de exposição (falhas por hora, acidentes por quilômetro).</li><li>Se \(\hat\phi\) for bem maior que 1, os coeficientes continuam consistentes, mas os erros-padrão ficam subestimados por um fator de aproximadamente \(\sqrt{\hat\phi}\).</li><li>A correção quase-Poisson mantém as estimativas e multiplica os erros-padrão por \(\sqrt{\hat\phi}\); a <a href="nb.html">binomial negativa</a> muda a distribuição e a função de variância.</li><li>A deviance serve tanto para comparar modelos encaixados quanto para avaliar o ajuste global.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente b</td><td>Variação no logaritmo da contagem esperada.</td><td>Pouco intuitivo; exponencie.</td></tr><tr><td>exp(b)</td><td>Razão de taxas: fator multiplicativo.</td><td>exp(b) = 0,6 significa redução de 40%.</td></tr><tr><td>Deviance / graus de liberdade</td><td>Qualidade do ajuste.</td><td>Bem acima de 1 indica superdispersão ou modelo mal especificado.</td></tr><tr><td>φ estimado</td><td>Grau de superdispersão.</td><td>φ = 4 significa variância quatro vezes maior que a esperada.</td></tr><tr><td>Valor-p</td><td>Evidência sobre o preditor.</td><td>Otimista se houver superdispersão não corrigida.</td></tr></tbody></table></div><p>Reporte as razões de taxas com intervalos de confiança, a deviance com os graus de liberdade e o parâmetro de dispersão.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>glm()</code> com <code>family = poisson</code> pertence ao pacote <code>stats</code>, já instalado com o R. Para contagens observadas em períodos ou tamanhos diferentes, acrescente <code>offset(log(exposicao))</code> à fórmula. <code>family = quasipoisson</code> aplica a correção de dispersão.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-poisson-min" type="button">Copiar código</button></div><pre id="code-poisson-min"><code>modelo &lt;- glm(breaks ~ wool + tension, data = warpbreaks, family = poisson)
+summary(modelo)
+exp(coef(modelo))
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>O conjunto <code>warpbreaks</code> registra o número de rupturas do fio em 54 teares, combinando dois tipos de lã (A e B) e três níveis de tensão do fio (baixa, média e alta), com nove teares por combinação. A pergunta é se o tipo de lã e a tensão afetam a quantidade de rupturas.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-poisson" type="button">Copiar código</button></div><pre id="code-poisson"><code># Regressão de Poisson: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: warpbreaks.
 
-# Ajuste e resultados ----
-ajuste &lt;- glm(breaks ~ tension + wool, data = warpbreaks,
-              family = poisson(link = "log"))
-print(summary(ajuste))
-print(exp(cbind(razao_taxas = coef(ajuste),
-                confint.default(ajuste))))
-print(sum(residuals(ajuste, type = "pearson")^2) / df.residual(ajuste))
+# 1. Dados: 54 teares; número de rupturas do fio por tipo de lã e tensão
+str(warpbreaks)
+aggregate(breaks ~ wool + tension, data = warpbreaks,
+          FUN = function(v) c(media = mean(v), variancia = var(v)))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, xlab = "Tensão", ylab = "Quebras de fios")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Ajuste do modelo com ligação logarítmica
+modelo &lt;- glm(breaks ~ wool + tension, data = warpbreaks, family = poisson)
+summary(modelo)
 
+# 3. Razões de taxas (exp dos coeficientes) e intervalos de confiança de 95%
+exp(cbind(razao_de_taxas = coef(modelo), confint(modelo)))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Para contagens com tempos de exposição diferentes, adote um termo de offset. Verifique superdispersão antes de aceitar os erros-padrão de Poisson.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="ordinal.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão logística ordinal
-    </a>
-<a href="nb.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão binomial negativa
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Testes da razão de verossimilhanças para cada termo
+anova(modelo, test = "Chisq")
+
+# 5. Diagnóstico de superdispersão
+X2 &lt;- sum(residuals(modelo, type = "pearson")^2)
+phi &lt;- X2 / df.residual(modelo)
+c(qui2_Pearson = X2, gl = df.residual(modelo), phi = phi,
+  deviance_por_gl = deviance(modelo) / df.residual(modelo))
+pchisq(deviance(modelo), df.residual(modelo), lower.tail = FALSE)
+
+# 6. Correção quase-Poisson: mesmos coeficientes, erros-padrão maiores
+modelo_qp &lt;- glm(breaks ~ wool + tension, data = warpbreaks, family = quasipoisson)
+summary(modelo_qp)
+
+# 7. Contagens previstas por combinação
+novo &lt;- expand.grid(wool = c("A", "B"), tension = c("L", "M", "H"))
+cbind(novo, previsto = round(predict(modelo, novo, type = "response"), 3))
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+boxplot(breaks ~ tension + wool, data = warpbreaks, col = "gray85", las = 2, xlab = "", ylab = "Rupturas")
+plot(fitted(modelo), residuals(modelo, type = "pearson"), pch = 19,
+     xlab = "Contagem prevista", ylab = "Resíduo de Pearson"); abline(h = 0, col = "red")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-poisson" type="button">Copiar código</button></div><pre id="code-py-poisson"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+from scipy.special import gammaln
+
+def glm_poisson(X, y, nomes, theta=None):
+    """GLM com ligação log por mínimos quadrados ponderados iterativos.
+    theta = None: família Poisson. theta numérico: binomial negativa com esse parâmetro."""
+    b = np.zeros(X.shape[1]); b[0] = np.log(y.mean())
+    for _ in range(100):
+        mu = np.exp(X @ b)
+        W = mu if theta is None else mu / (1 + mu / theta)
+        z = X @ b + (y - mu) / mu
+        b_novo = np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (W * z))
+        if np.max(np.abs(b_novo - b)) &lt; 1e-10: b = b_novo; break
+        b = b_novo
+    mu = np.exp(X @ b)
+    W = mu if theta is None else mu / (1 + mu / theta)
+    cov = np.linalg.inv(X.T @ (X * W[:, None])); ep = np.sqrt(np.diag(cov))
+    zv = b / ep; pv = 2 * stats.norm.sf(np.abs(zv)); zc = stats.norm.ppf(0.975)
+    print(f"{'Termo':&lt;14}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;8}{'p-valor':&gt;11}{'exp(b)':&gt;9}{'IC 95% de exp(b)':&gt;24}")
+    for nm, bi, ei, zi, pi in zip(nomes, b, ep, zv, pv):
+        print(f"{nm:&lt;14}{bi:&gt;11.4f}{ei:&gt;13.4f}{zi:&gt;8.3f}{pi:&gt;11.2e}{np.exp(bi):&gt;9.3f}   [{np.exp(bi-zc*ei):&gt;7.3f}; {np.exp(bi+zc*ei):&gt;7.3f}]")
+    if theta is None:
+        logv = np.sum(y * np.log(mu) - mu - gammaln(y + 1))
+    else:
+        logv = np.sum(gammaln(y + theta) - gammaln(theta) - gammaln(y + 1)
+                      + theta * np.log(theta / (theta + mu)) + y * np.log(mu / (theta + mu)))
+    return dict(b=b, ep=ep, mu=mu, cov=cov, logv=logv, p=X.shape[1])
+
+# Dados do conjunto warpbreaks: 54 teares; número de rupturas do fio
+quebras = np.array([26, 30, 54, 25, 70, 52, 51, 26, 67, 18, 21, 29, 17, 12, 18, 35, 30, 36,
+                    36, 21, 24, 18, 10, 43, 28, 15, 26, 27, 14, 29, 19, 29, 31, 41, 20, 44,
+                    42, 26, 19, 16, 39, 28, 21, 39, 29, 20, 21, 24, 17, 13, 15, 15, 16, 28])
+la      = np.repeat([0, 1], 27)                     # tipo de lã: 0 = A, 1 = B
+tensao  = np.tile(np.repeat([0, 1, 2], 9), 2)       # tensão: 0 = baixa (L), 1 = média (M), 2 = alta (H)
+# Matriz do modelo: intercepto, lã B, tensão média, tensão alta (níveis de referência: lã A e tensão baixa)
+X = np.column_stack([np.ones(54), la, (tensao == 1) * 1.0, (tensao == 2) * 1.0])
+nomes = ["(Intercepto)", "la B", "tensao M", "tensao H"]
+
+n = len(quebras)
+print(f"n = {n} | média = {quebras.mean():.3f} | variância = {quebras.var(ddof=1):.3f} | razão variância/média = {quebras.var(ddof=1)/quebras.mean():.3f}")
+print("\nMédia e variância por combinação:")
+for w, nw in [(0, "A"), (1, "B")]:
+    for t, nt in [(0, "baixa"), (1, "media"), (2, "alta")]:
+        g = quebras[(la == w) &amp; (tensao == t)]
+        print(f"  la {nw}, tensao {nt:&lt;6} n = {len(g)} | média = {g.mean():6.3f} | variância = {g.var(ddof=1):7.3f}")
+
+# 1. Ajuste do modelo de Poisson com ligação log
+m = glm_poisson(X, quebras, nomes)
+
+# 2. Deviance, AIC e teste global
+mu0 = quebras.mean()
+dev  = 2 * np.sum(np.where(quebras &gt; 0, quebras * np.log(quebras / m["mu"]), 0) - (quebras - m["mu"]))
+dev0 = 2 * np.sum(np.where(quebras &gt; 0, quebras * np.log(quebras / mu0), 0) - (quebras - mu0))
+print(f"\nDeviance nula = {dev0:.3f} ({n-1} gl) | deviance residual = {dev:.3f} ({n-m['p']} gl) | AIC = {-2*m['logv'] + 2*m['p']:.2f}")
+print(f"Teste global: G = {dev0 - dev:.3f}, gl = {m['p']-1}, p-valor = {stats.chi2.sf(dev0-dev, m['p']-1):.3e}")
+
+# 3. Diagnóstico de superdispersão
+X2 = np.sum((quebras - m["mu"])**2 / m["mu"])
+phi = X2 / (n - m["p"])
+print(f"\nQui-quadrado de Pearson = {X2:.3f} | phi = X2 / gl = {phi:.3f} (esperado proximo de 1 sob Poisson)")
+print(f"Deviance / gl = {dev / (n - m['p']):.3f} | p-valor do ajuste = {stats.chi2.sf(dev, n - m['p']):.3e}")
+
+# 4. Taxas estimadas (contagens médias previstas)
+print("\nContagem média prevista por combinação:")
+for w, nw in [(0, "A"), (1, "B")]:
+    for t, nt in [(0, "baixa"), (1, "media"), (2, "alta")]:
+        x0 = np.array([1, w, t == 1, t == 2], dtype=float)
+        print(f"  la {nw}, tensao {nt:&lt;6} {np.exp(x0 @ m['b']):6.3f}")
+
+# 5. Erros-padrão robustos (quasi-Poisson: multiplicam o erro-padrão por raiz de phi)
+print("\nCorreção quase-Poisson (erro-padrão multiplicado por raiz de phi):")
+for nm, bi, ei in zip(nomes, m["b"], m["ep"]):
+    eq = ei * np.sqrt(phi)
+    print(f"  {nm:&lt;14} erro-padrão {ei:.4f} -&gt; {eq:.4f} | t = {bi/eq:6.3f} | p-valor = {2*stats.t.sf(abs(bi/eq), n-m['p']):.4f}")
+
+# 6. Exemplo numérico do texto: taxa prevista para la A e tensao alta
+x0 = np.array([1, 0, 0, 1.])
+print(f"\nla A e tensao alta: preditor linear = {x0 @ m['b']:.4f} | taxa = exp(...) = {np.exp(x0 @ m['b']):.3f}")
+
+# 7. Gráficos: contagens observadas e resíduos
+res_p = (quebras - m["mu"]) / np.sqrt(m["mu"])
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+ax[0].boxplot([quebras[(la == w) &amp; (tensao == t)] for w in (0, 1) for t in (0, 1, 2)])
+ax[0].set_xticks(range(1, 7)); ax[0].set_xticklabels(["A-L", "A-M", "A-H", "B-L", "B-M", "B-H"])
+ax[0].set_ylabel("Rupturas")
+ax[1].scatter(m["mu"], res_p); ax[1].axhline(0, color="red")
+ax[1].set_xlabel("Contagem prevista"); ax[1].set_ylabel("Resíduo de Pearson")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 54 | média = 28.148 | variância = 174.204 | razão variância/média = 6.189
+
+Média e variância por combinação:
+  la A, tensao baixa  n = 9 | média = 44.556 | variância = 327.528
+  la A, tensao media  n = 9 | média = 24.000 | variância =  75.000
+  la A, tensao alta   n = 9 | média = 24.556 | variância = 105.528
+  la B, tensao baixa  n = 9 | média = 28.222 | variância =  97.194
+  la B, tensao media  n = 9 | média = 28.778 | variância =  88.944
+  la B, tensao alta   n = 9 | média = 18.778 | variância =  23.944
+Termo          Estimativa  Erro-padrão       z    p-valor   exp(b)        IC 95% de exp(b)
+(Intercepto)       3.6920       0.0454  81.301   0.00e+00   40.124   [ 36.707;  43.858]
+la B              -0.2060       0.0516  -3.994   6.49e-05    0.814   [  0.736;   0.900]
+tensao M          -0.3213       0.0603  -5.332   9.73e-08    0.725   [  0.644;   0.816]
+tensao H          -0.5185       0.0640  -8.107   5.21e-16    0.595   [  0.525;   0.675]
+
+Deviance nula = 297.372 (53 gl) | deviance residual = 210.392 (50 gl) | AIC = 493.06
+Teste global: G = 86.980, gl = 3, p-valor = 9.750e-19
+
+Qui-quadrado de Pearson = 213.076 | phi = X2 / gl = 4.262 (esperado proximo de 1 sob Poisson)
+Deviance / gl = 4.208 | p-valor do ajuste = 1.446e-21
+
+Contagem média prevista por combinação:
+  la A, tensao baixa  40.124
+  la A, tensao media  29.097
+  la A, tensao alta   23.890
+  la B, tensao baixa  32.654
+  la B, tensao media  23.681
+  la B, tensao alta   19.443
+
+Correção quase-Poisson (erro-padrão multiplicado por raiz de phi):
+  (Intercepto)   erro-padrão 0.0454 -&gt; 0.0937 | t = 39.384 | p-valor = 0.0000
+  la B           erro-padrão 0.0516 -&gt; 0.1065 | t = -1.935 | p-valor = 0.0587
+  tensao M       erro-padrão 0.0603 -&gt; 0.1244 | t = -2.583 | p-valor = 0.0128
+  tensao H       erro-padrão 0.0640 -&gt; 0.1320 | t = -3.927 | p-valor = 0.0003
+
+la A e tensao alta: preditor linear = 3.1735 | taxa = exp(...) = 23.890</pre></div><figure class="fig"><img src="../assets/resultados/poisson.png" alt="Rupturas por combinação, contagens observadas e previstas, e resíduos de Pearson" loading="lazy"/><figcaption><strong>O ajuste do modelo de Poisson.</strong> À esquerda, a distribuição das rupturas em cada combinação. No centro, médias observadas e previstas, próximas entre si. À direita, os resíduos de Pearson: sob a Poisson, cerca de 95% deveriam estar entre −2 e 2, mas vários os ultrapassam, sinal de superdispersão. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Coeficientes</caption><thead><tr><th>Termo</th><th>Estimativa</th><th>Erro-padrão</th><th>z</th><th>Razão de taxas</th><th>IC 95%</th></tr></thead><tbody><tr><td>(Intercepto)</td><td>3,6920</td><td>0,0454</td><td>81,30</td><td>40,12</td><td>[36,71; 43,86]</td></tr><tr><td>lã B</td><td>−0,2060</td><td>0,0516</td><td>−3,99</td><td>0,814</td><td>[0,736; 0,900]</td></tr><tr><td>tensão média</td><td>−0,3213</td><td>0,0603</td><td>−5,33</td><td>0,725</td><td>[0,644; 0,816]</td></tr><tr><td>tensão alta</td><td>−0,5185</td><td>0,0640</td><td>−8,11</td><td>0,595</td><td>[0,525; 0,675]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Ajuste e dispersão</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Deviance nula → residual</td><td>297,37 (53 g.l.) → 210,39 (50 g.l.)</td><td>AIC = 493,06.</td></tr><tr><td>Teste global</td><td>G = 86,98; 3 g.l.; p = 9,8 × 10⁻¹⁹</td><td>Os fatores importam.</td></tr><tr><td>Qui-quadrado de Pearson</td><td>213,08 em 50 g.l.</td><td>φ = 4,26: a variância é quatro vezes a esperada.</td></tr><tr><td>Deviance / g.l.</td><td>4,21</td><td>Mesma conclusão.</td></tr><tr><td>Teste de ajuste</td><td>p = 1,4 × 10⁻²¹</td><td>O modelo de Poisson não descreve bem a dispersão.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Efeito da correção quase-Poisson</caption><thead><tr><th>Termo</th><th>EP Poisson</th><th>EP corrigido</th><th>Valor-p corrigido</th></tr></thead><tbody><tr><td>lã B</td><td>0,0516</td><td>0,1065</td><td>0,0587</td></tr><tr><td>tensão média</td><td>0,0603</td><td>0,1244</td><td>0,0128</td></tr><tr><td>tensão alta</td><td>0,0640</td><td>0,1320</td><td>0,0003</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tensão alta reduz as rupturas esperadas em 40% em relação à tensão baixa, e a lã B em 19% em relação à lã A. O problema está na dispersão: as variâncias dos grupos (de 24 a 328) são muito maiores que as médias (de 19 a 45), e φ = 4,26 confirma a superdispersão. Com a correção quase-Poisson, o efeito do tipo de lã deixa de ser significativo ao nível de 5% (p = 0,059), enquanto o da tensão se mantém. A conclusão prática é que o modelo de Poisson simples exagera a precisão: o passo seguinte é a <a href="nb.html">regressão binomial negativa</a>.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Ignorar a superdispersão</td><td>Calcule φ sempre; corrija com quase-Poisson ou binomial negativa.</td></tr><tr><td>Esquecer o <em>offset</em></td><td>Contagens de períodos ou tamanhos diferentes exigem exposição no modelo.</td></tr><tr><td>Ler exp(b) como diferença</td><td>É um fator multiplicativo.</td></tr><tr><td>Usar Poisson para proporções</td><td>Contagens com total conhecido pedem modelo binomial.</td></tr><tr><td>Ignorar excesso de zeros</td><td>Considere modelos com inflação de zeros ou com barreira.</td></tr><tr><td>Usar regressão linear em contagens pequenas</td><td>Prevê valores negativos e supõe variância constante.</td></tr><tr><td>Confiar no valor-p sem olhar o ajuste</td><td>Deviance muito acima dos graus de liberdade invalida a inferência.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Quase-Poisson</td><td>Superdispersão moderada; mantém as estimativas e corrige os erros-padrão.</td></tr><tr><td><a href="nb.html">Binomial negativa</a></td><td>Superdispersão; modelo de verossimilhança completo, com AIC comparável.</td></tr><tr><td>Modelos com inflação de zeros ou com barreira</td><td>Excesso de zeros em relação ao previsto.</td></tr><tr><td><a href="glm.html">Modelos lineares generalizados</a></td><td>Visão geral da família a que a Poisson pertence.</td></tr><tr><td><a href="gee.html">GEE</a> / modelos mistos</td><td>Contagens agrupadas ou repetidas.</td></tr><tr><td>Regressão de Poisson com variância robusta</td><td>Interesse em razões de risco com resposta binária.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a resposta é uma contagem e verifique a exposição.</li><li>Compare médias e variâncias por grupo.</li><li>Ajuste o modelo de Poisson.</li><li>Calcule φ e a razão deviance / graus de liberdade.</li><li>Se houver superdispersão, passe para quase-Poisson ou binomial negativa.</li><li>Interprete por razões de taxas e contagens previstas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>NELDER, John A.; WEDDERBURN, Robert W. M. Generalized linear models. <em>Journal of the Royal Statistical Society: Series A</em>, v. 135, n. 3, p. 370-384, 1972.</li><li>McCULLAGH, Peter; NELDER, John A. <em>Generalized linear models.</em> 2. ed. London: Chapman &amp; Hall, 1989.</li><li>CAMERON, A. Colin; TRIVEDI, Pravin K. <em>Regression analysis of count data.</em> 2. ed. Cambridge: Cambridge University Press, 2013.</li><li>BORTKIEWICZ, Ladislaus von. <em>Das Gesetz der kleinen Zahlen.</em> Leipzig: Teubner, 1898.</li><li>HILBE, Joseph M. <em>Modeling count data.</em> Cambridge: Cambridge University Press, 2014.</li><li>DOBSON, Annette J.; BARNETT, Adrian G. <em>An introduction to generalized linear models.</em> 4. ed. Boca Raton: CRC Press, 2018.</li><li>TIPPETT, Leonard H. C. <em>The methods of statistics.</em> 4. ed. London: Williams and Norgate, 1950. (Conjunto de dados <code>warpbreaks</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>glm</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta de contagem, observações independentes, variância aproximadamente igual à média e linearidade na escala logarítmica.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="ordinal.html"><span>← ANTERIOR</span>Regressão logística ordinal</a><a href="nb.html"><span>PRÓXIMO →</span>Regressão binomial negativa</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,306 +4,202 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão logística ordinal: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão logística ordinal | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão logística ordinal: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão logística ordinal | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão logística ordinal
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão logística ordinal
-    </h1>
-<p class="detail-lead">
-     Estima as probabilidades de categorias ordenadas, como risco baixo, médio ou alto.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/ordinal.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima as probabilidades de categorias ordenadas, como risco baixo, médio ou alto.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Categorias realmente ordenadas.</li><li>Independência, efeitos lineares nos logits e odds proporcionais (mesma inclinação em todos os pontos de corte).</li><li>Avalie ajuste e plausibilidade do paralelismo.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\\ H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{logit}\Pr(Y\leq j\mid\mathbf x)=\alpha_j-\mathbf x^\top\boldsymbol\beta\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere associação com deslocamento ordinal; sob polr coeficiente positivo desloca probabilidade para categorias superiores.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Número de marchas (3, 4, 5) ordenado por complexidade do câmbio em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-ordinal" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-ordinal"><code># Regressão logística ordinal ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("MASS", quietly = TRUE)) install.packages("MASS")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão logística ordinal</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão logística ordinal</h1><p class="detail-lead">Estima as probabilidades de categorias ordenadas usando a ordem da resposta, com um único coeficiente por preditor.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/ordinal.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/ordinal.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Ruim, regular, bom. Leve, moderado, grave. Discordo, neutro, concordo. Essas categorias têm <strong>ordem</strong>, mas a distância entre elas não é conhecida. Tratá-las como números inventa uma escala; tratá-las como rótulos sem ordem joga informação fora. A logística ordinal usa a ordem sem supor distâncias, e resume o efeito de cada preditor em um único coeficiente.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Logística ordinal" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modelo para resposta</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">com categorias ordenadas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Logitos acumulados</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">com inclinação comum</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Ordem nas categorias</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Chances proporcionais</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Uma OR para todos os cortes</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Probabilidades previstas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">MASS::polr()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Multinomial</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos de cortes separados</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Regressão ordinal com outras ligações</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Logística ordinal</text></svg><figcaption>Visão geral do modelo de chances proporcionais. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O nome do modelo</strong><p>O modelo mais usado chama-se <strong>chances proporcionais</strong> (<em>proportional odds</em>), proposto por McCullagh (1980). O nome vem da sua principal restrição: o efeito do preditor é o mesmo em todos os pontos de corte da escala.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><p>Em vez de modelar a probabilidade de cada categoria isoladamente, o modelo trabalha com probabilidades <strong>acumuladas</strong>: \(P(Y\leq k)\). Para cada um dos \(K-1\) cortes possíveis ajusta-se um logit, e todos compartilham a mesma inclinação:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\ln\!\left(\frac{P(Y\leq k)}{P(Y&gt;k)}\right) \\ &= \zeta_k-\beta_1x_1-\cdots-\beta_px_p,\end{aligned}\]\[k=1,\ldots,K-1\]</div><p>Cada corte tem seu próprio intercepto \(\zeta_k\) (que posiciona a fronteira entre categorias), mas o \(\beta\) é único. Uma forma equivalente de ver o modelo: existe uma variável contínua latente \(Y^*=\beta_1x_1+\cdots+\beta_px_p+\varepsilon\), e a categoria observada é a faixa em que \(Y^*\) cai.</p><figure class="fig"><img src="../assets/resultados/ordinal-didatica.png" alt="Escala latente com dois limiares e curvas acumuladas paralelas" loading="lazy"/><figcaption><strong>A escala latente e as chances proporcionais.</strong> À esquerda, a escala contínua não observada é dividida pelos limiares em três categorias ordenadas. À direita, as curvas de probabilidade acumulada: por terem a mesma inclinação, são paralelas na escala logit e nunca se cruzam. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>Por que o sinal negativo</strong><p>Na parametrização do R (<code>MASS::polr</code>) o preditor entra com sinal negativo na equação acumulada. A consequência prática é direta: um coeficiente <strong>positivo</strong> indica que o aumento do preditor empurra a resposta para as categorias <strong>mais altas</strong>. Outros programas usam a convenção oposta, então vale conferir a documentação.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta com categorias ordenadas</td><td>É a informação que o modelo aproveita.</td><td>A ordem precisa fazer sentido no problema.</td></tr><tr><td>Observações independentes</td><td>Condição dos erros-padrão.</td><td>Delineamento do estudo.</td></tr><tr><td>Chances proporcionais</td><td>Um único coeficiente só descreve todos os cortes se o efeito for o mesmo em todos eles.</td><td>Compare as inclinações de logísticas binárias ajustadas em cada corte; teste de Brant (pacote <code>brant</code>) ou razão de verossimilhanças contra o modelo multinomial.</td></tr><tr><td>Linearidade no logit para preditores quantitativos</td><td>Mesma exigência da logística binária.</td><td>Termos quadráticos, splines, gráficos por faixas.</td></tr><tr><td>Casos suficientes em cada categoria</td><td>Categorias muito raras tornam o limiar impreciso.</td><td><code>table(y)</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0 \\ &\quad \text{(o preditor não desloca a } \\ &\quad \text{resposta na escala ordenada)} \\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[P(Y\leq k\mid\mathbf x)=\frac{1}{1+e^{-(\zeta_k-\mathbf x^{\top}\boldsymbol\beta)}},\]\[\begin{aligned}P(Y &= k) = P(Y \\ &\leq k)-P(Y \leq k-1)\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[t=\frac{b_j}{EP(b_j)},\]\[OR_j=e^{b_j},\]\[G=2\left(\ell_{modelo}-\ell_{nulo}\right)\ \overset{\text{aprox.}}{\sim}\ \chi^2_p\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(K\)</dt><dd>número de categorias ordenadas</dd></div><div><dt>\(\zeta_k\)</dt><dd>limiar (intercepto) do k-ésimo corte; sempre \(\zeta_1&lt;\zeta_2&lt;\cdots\)</dd></div><div><dt>\(\beta_j\)</dt><dd>coeficiente do preditor \(x_j\), comum a todos os cortes</dd></div><div><dt>\(OR_j\)</dt><dd>razão de chances de estar em uma categoria mais alta, por unidade de \(x_j\)</dd></div><div><dt>\(G\)</dt><dd>estatística da razão de verossimilhanças, com \(p\) graus de liberdade</dd></div><div><dt>\(\ell\)</dt><dd>log-verossimilhança</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha, \(b=5{,}186\) (peso, em 1000 lb) e os limiares são \(\zeta_1=14{,}648\) (4 contra 6 ou 8 cilindros) e \(\zeta_2=17{,}429\) (4 ou 6 contra 8 cilindros).</p><div class="worked"><strong>Probabilidades para um carro de 3000 libras (wt = 3)</strong><p>\[\begin{aligned}P(Y &\leq 4\text{ cil.}) \\ &= 1/\bigl(1 \\ &\quad +e^{-(14{,}648-5{,}186\times3)}\bigr) \\ &= 1/(1+e^{-0{,}910}) = 0{,}287.\end{aligned}\]</p><p>\[\begin{aligned}P(Y &\leq 6\text{ cil.}) \\ &= 1/\left(1+e^{-(17{,}429-15{,}558)}\right) \\ &= 1/(1+e^{-1{,}871}) = 0{,}867.\end{aligned}\]</p><p>Logo: \(P(4)=0{,}287\); \(P(6)=0{,}867-0{,}287=0{,}580\); \(P(8)=1-0{,}867=0{,}133\).</p><p>Razão de chances: \(e^{5{,}186}=178{,}7\) por 1000 lb, ou \(e^{0{,}5\times5{,}186}=13{,}4\) por 500 lb.</p></div><h3>Propriedades</h3><ul class="checklist"><li>O modelo estima \(p+K-1\) parâmetros, contra \(p(K-1)+(K-1)\) da <a href="multinomial.html">multinomial</a>: é mais econômico.</li><li>As probabilidades acumuladas são crescentes por construção, e as categorias nunca recebem probabilidade negativa.</li><li>A razão de chances vale para qualquer corte da escala: é esse o conteúdo da hipótese de chances proporcionais.</li><li>Inverter a ordem das categorias apenas troca o sinal do coeficiente.</li><li>Com duas categorias, o modelo se reduz à <a href="logistica.html">logística binária</a>.</li><li>Outras ligações (probit, log-log complementar) são possíveis e mudam a interpretação dos coeficientes.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente b</td><td>Deslocamento na escala latente por unidade do preditor.</td><td>Na parametrização do R, positivo = categorias mais altas.</td></tr><tr><td>exp(b)</td><td>Razão de chances de estar acima de qualquer corte.</td><td>Vale para todos os cortes apenas se a hipótese se sustentar.</td></tr><tr><td>Limiares ζ</td><td>Posição das fronteiras entre categorias.</td><td>Raramente têm interpretação própria.</td></tr><tr><td>Probabilidades previstas</td><td>A leitura mais informativa.</td><td>Apresente-as em valores relevantes do preditor.</td></tr><tr><td>Comparação entre cortes</td><td>Diagnóstico das chances proporcionais.</td><td>Inclinações muito diferentes pedem outro modelo.</td></tr></tbody></table></div><p>Reporte o coeficiente com intervalo de confiança, a razão de chances, os limiares, o teste global e uma avaliação da hipótese de chances proporcionais.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>polr()</code> pertence ao pacote <code>MASS</code>, que acompanha a instalação padrão do R: basta <code>library(MASS)</code>. A resposta precisa ser um fator ordenado (<code>factor(..., ordered = TRUE)</code>). Use <code>Hess = TRUE</code> para que o <code>summary()</code> apresente os erros-padrão. Alternativas: <code>ordinal::clm()</code>, mais completa, e <code>rms::orm()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-ordinal-min" type="button">Copiar código</button></div><pre id="code-ordinal-min"><code>library(MASS)
+dados &lt;- transform(mtcars, cilindros = factor(cyl, levels = c(4, 6, 8), ordered = TRUE))
+modelo &lt;- polr(cilindros ~ wt, data = dados, Hess = TRUE)
+summary(modelo)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>No conjunto <code>mtcars</code>, o número de cilindros assume três valores ordenados: 4, 6 e 8. Vamos modelá-lo em função do peso do automóvel. A pergunta prática é direta: quanto o peso informa sobre o porte do motor?</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-ordinal" type="button">Copiar código</button></div><pre id="code-ordinal"><code># Regressão logística ordinal (chances proporcionais): exemplo completo ----
+# Pacote: MASS (acompanha a instalação padrão do R)
 library(MASS)
-d &lt;- transform(mtcars, gear = ordered(gear))
-ajuste &lt;- polr(gear ~ wt + hp, data = d, Hess = TRUE)
-print(summary(ajuste))
-print(predict(ajuste, newdata = d[1:5, ], type = "probs"))
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: mtcars; resposta ordinal = número de cilindros (4 &lt; 6 &lt; 8), preditor = peso
+dados &lt;- mtcars
+dados$cilindros &lt;- factor(dados$cyl, levels = c(4, 6, 8), ordered = TRUE)
+table(dados$cilindros)
+aggregate(wt ~ cilindros, data = dados, FUN = mean)
 
+# 2. Ajuste do modelo de chances proporcionais
+modelo &lt;- polr(cilindros ~ wt, data = dados, Hess = TRUE)
+summary(modelo)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="multinomial.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão logística multinomial
-    </a>
-<a href="poisson.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão de Poisson
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. Valores-p de Wald (o polr não os imprime)
+ct &lt;- coef(summary(modelo))
+cbind(ct, "valor_p" = 2 * pnorm(abs(ct[, "t value"]), lower.tail = FALSE))
+
+# 4. Razão de chances e intervalo de confiança de 95%
+exp(coef(modelo))
+exp(confint(modelo))        # por verossimilhança perfilada
+
+# 5. Teste da razão de verossimilhanças contra o modelo nulo
+nulo &lt;- polr(cilindros ~ 1, data = dados)
+anova(nulo, modelo)
+
+# 6. Probabilidades estimadas
+novo &lt;- data.frame(wt = c(2.0, 2.5, 3.0, 3.5, 4.0, 5.0))
+cbind(novo, round(predict(modelo, novo, type = "probs"), 3))
+
+# 7. Verificação das chances proporcionais
+#    (a) duas logísticas binárias com cortes diferentes: as inclinações devem ser parecidas
+coef(glm(I(cyl &gt;= 6) ~ wt, data = mtcars, family = binomial))
+coef(glm(I(cyl &gt;= 8) ~ wt, data = mtcars, family = binomial))
+#    (b) teste formal: install.packages("brant"); brant::brant(modelo)
+
+# 8. Gráfico: probabilidades estimadas por categoria
+grade &lt;- data.frame(wt = seq(1.4, 5.6, length.out = 200))
+P &lt;- predict(modelo, grade, type = "probs")
+matplot(grade$wt, P, type = "l", lty = 1, lwd = 2,
+        xlab = "Peso (1000 lb)", ylab = "Probabilidade estimada")
+legend("right", legend = levels(dados$cilindros), col = 1:3, lty = 1, lwd = 2, bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-ordinal" type="button">Copiar código</button></div><pre id="code-py-ordinal"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+
+def polr(X, y, K, nomes):
+    """Modelo de chances proporcionais (logit cumulativo) por máxima verossimilhança."""
+    X = np.atleast_2d(X.T).T if X.ndim == 1 else X
+    n, p = X.shape
+    def corta(par):
+        beta = par[:p]; z = np.r_[par[p], par[p] + np.cumsum(np.exp(par[p+1:]))]
+        return beta, z
+    def menos_logv(par):
+        beta, z = corta(par)
+        eta = z[None, :] - (X @ beta)[:, None]
+        F = 1 / (1 + np.exp(-eta))
+        P = np.diff(np.c_[np.zeros(n), F, np.ones(n)], axis=1)
+        return -np.sum(np.log(np.clip(P[np.arange(n), y], 1e-12, None)))
+    res = optimize.minimize(menos_logv, np.r_[np.zeros(p), np.linspace(0, 1, K - 1)], method="BFGS")
+    H = hessiana(menos_logv, res.x); ep_full = np.sqrt(np.diag(np.linalg.inv(H)))
+    beta, z = corta(res.x)
+    print(f"{'Termo':&lt;16}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'t':&gt;8}{'OR':&gt;9}")
+    for j, nm in enumerate(nomes):
+        print(f"{nm:&lt;16}{beta[j]:&gt;11.4f}{ep_full[j]:&gt;13.4f}{beta[j]/ep_full[j]:&gt;8.3f}{np.exp(beta[j]):&gt;9.3f}")
+    for j, zz in enumerate(z):
+        print(f"{'Limiar ' + str(j+1) + '|' + str(j+2):&lt;16}{zz:&gt;11.4f}")
+    return dict(beta=beta, z=z, ep=ep_full[:p], logv=-res.fun, npar=len(res.x))
+
+def hessiana(f, x, h=1e-4):
+    p = len(x); H = np.zeros((p, p))
+    for i in range(p):
+        for j in range(p):
+            e1 = np.zeros(p); e2 = np.zeros(p); e1[i] = h; e2[j] = h
+            H[i, j] = (f(x+e1+e2) - f(x+e1-e2) - f(x-e1+e2) + f(x-e1-e2)) / (4 * h * h)
+    return H
+
+# 1. Dados: mtcars; resposta ordinal = número de cilindros (4 &lt; 6 &lt; 8), preditor = peso
+wt  = np.array([2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19, 3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2, 1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14, 1.513, 3.17, 2.77, 3.57, 2.78])
+cyl = np.array([6, 6, 4, 6, 8, 6, 8, 4, 4, 6, 6, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 8, 8, 8, 8, 4, 4, 4, 8, 6, 8, 4])
+y = np.searchsorted([5, 7], cyl)          # 0 = 4 cil., 1 = 6 cil., 2 = 8 cil.
+n = len(y)
+for j, nome in enumerate(["4 cilindros", "6 cilindros", "8 cilindros"]):
+    print(f"{nome}: n = {np.sum(y == j)} | peso médio = {wt[y == j].mean():.3f}")
+
+# 2. Ajuste do modelo de chances proporcionais
+m = polr(wt, y, 3, ["peso (wt)"])
+print(f"\nLog-verossimilhança = {m['logv']:.4f} | AIC = {-2 * m['logv'] + 2 * m['npar']:.3f}")
+
+# 3. Teste da razão de verossimilhanças contra o modelo nulo
+props = np.bincount(y) / n
+logv0 = np.sum(np.bincount(y) * np.log(props))
+G = 2 * (m["logv"] - logv0)
+print(f"Modelo nulo: {logv0:.4f} | G = {G:.3f}, gl = 1, p-valor = {stats.chi2.sf(G, 1):.3e}")
+print(f"Pseudo-R² de McFadden = {1 - m['logv'] / logv0:.4f}")
+
+# 4. Razão de chances e intervalo de confiança
+b, ep = m["beta"][0], m["ep"][0]; zc = stats.norm.ppf(0.975)
+print(f"\nOR por +1000 lb = {np.exp(b):.3f}, IC 95% = [{np.exp(b - zc*ep):.3f}; {np.exp(b + zc*ep):.3f}]")
+print(f"OR por +500 lb  = {np.exp(0.5*b):.3f}")
+
+# 5. Probabilidades estimadas por categoria
+print("\n Peso    P(4 cil.)  P(6 cil.)  P(8 cil.)")
+for w in [2.0, 2.5, 3.0, 3.5, 4.0, 5.0]:
+    F = 1 / (1 + np.exp(-(m["z"] - m["beta"][0] * w)))
+    P = np.diff(np.r_[0, F, 1])
+    print(f"{w:5.1f}  {P[0]:&gt;9.3f}  {P[1]:&gt;9.3f}  {P[2]:&gt;9.3f}")
+
+# 6. Verificação da hipótese de chances proporcionais:
+#    duas regressões logísticas binárias com cortes diferentes devem ter inclinações parecidas
+def logistica(x, yb):
+    Xd = np.column_stack([np.ones(len(x)), x]); b = np.zeros(2)
+    for _ in range(50):
+        p = 1 / (1 + np.exp(-Xd @ b)); W = p * (1 - p)
+        b = b + np.linalg.solve(Xd.T @ (Xd * W[:, None]), Xd.T @ (yb - p))
+    return b
+b1 = logistica(wt, (y &gt;= 1).astype(float))     # 6 ou 8 cilindros contra 4
+b2 = logistica(wt, (y &gt;= 2).astype(float))     # 8 cilindros contra 4 ou 6
+print(f"\nInclinação do corte 'y &gt;= 6 cil.' = {b1[1]:.4f} | do corte 'y &gt;= 8 cil.' = {b2[1]:.4f}")
+print(f"Modelo ordinal (inclinação única)   = {m['beta'][0]:.4f}")
+
+# 7. Teste da hipótese de chances proporcionais (razão de verossimilhanças contra o multinomial)
+Xd = np.column_stack([np.ones(n), wt])
+def menos_logv_mult(b):
+    B = np.vstack([np.zeros(2), b.reshape(2, 2)]); eta = Xd @ B.T
+    mx = eta.max(axis=1, keepdims=True)
+    return -np.sum(eta[np.arange(n), y] - mx.ravel() - np.log(np.exp(eta - mx).sum(axis=1)))
+rm = optimize.minimize(menos_logv_mult, np.zeros(4), method="BFGS")
+G2 = 2 * (-rm.fun - m["logv"])
+print(f"Multinomial (inclinações livres): log-verossimilhança = {-rm.fun:.4f}")
+print(f"G = {G2:.3f}, gl = 1, p-valor = {stats.chi2.sf(G2, 1):.4f}")
+
+# 8. Gráfico: probabilidades estimadas por categoria
+grade = np.linspace(1.4, 5.6, 200)
+F = 1 / (1 + np.exp(-(m["z"][None, :] - m["beta"][0] * grade[:, None])))
+P = np.diff(np.c_[np.zeros(200), F, np.ones(200)], axis=1)
+for j, nome in enumerate(["4 cilindros", "6 cilindros", "8 cilindros"]): plt.plot(grade, P[:, j], label=nome)
+plt.xlabel("Peso (1000 lb)"); plt.ylabel("Probabilidade estimada"); plt.legend(); plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">4 cilindros: n = 11 | peso médio = 2.286
+6 cilindros: n = 7 | peso médio = 3.117
+8 cilindros: n = 14 | peso médio = 3.999
+Termo            Estimativa  Erro-padrão       t       OR
+peso (wt)            5.1858       1.5062   3.443  178.724
+Limiar 1|2          14.6479
+Limiar 2|3          17.4289
+
+Log-verossimilhança = -15.2979 | AIC = 36.596
+Modelo nulo: -33.9585 | G = 37.321, gl = 1, p-valor = 1.002e-09
+Pseudo-R² de McFadden = 0.5495
+
+OR por +1000 lb = 178.724, IC 95% = [9.335; 3421.814]
+OR por +500 lb  = 13.369
+
+ Peso    P(4 cil.)  P(6 cil.)  P(8 cil.)
+  2.0      0.986      0.013      0.001
+  2.5      0.843      0.145      0.011
+  3.0      0.287      0.580      0.133
+  3.5      0.029      0.298      0.673
+  4.0      0.002      0.033      0.965
+  5.0      0.000      0.000      1.000
+
+Inclinação do corte 'y &gt;= 6 cil.' = 4.3347 | do corte 'y &gt;= 8 cil.' = 8.4087
+Modelo ordinal (inclinação única)   = 5.1858
+Multinomial (inclinações livres): log-verossimilhança = -14.5659
+G = 1.464, gl = 1, p-valor = 0.2263</pre></div><figure class="fig"><img src="../assets/resultados/ordinal.png" alt="Probabilidades por categoria e curvas acumuladas" loading="lazy"/><figcaption><strong>Probabilidades estimadas em função do peso.</strong> À esquerda, a probabilidade de cada categoria; os pontos na base mostram os pesos observados em cada grupo. A categoria intermediária (6 cilindros) ocupa uma faixa estreita, entre 2,8 e 3,3 mil libras. À direita, as duas curvas acumuladas, deslocadas lateralmente mas com a mesma inclinação: é a restrição de chances proporcionais. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados do ajuste</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Coeficiente do peso</td><td>5,186 (EP 1,506)</td><td>t = 3,443: positivo, logo mais peso indica mais cilindros.</td></tr><tr><td>Limiar 4|6</td><td>14,648</td><td></td></tr><tr><td>Limiar 6|8</td><td>17,429</td><td></td></tr><tr><td>OR por +1000 lb</td><td>178,7 [9,3; 3421,8]</td><td>Intervalo enorme: n = 32 e efeito muito forte.</td></tr><tr><td>OR por +500 lb</td><td>13,4</td><td>Leitura mais próxima da variação típica dos dados.</td></tr><tr><td>Teste da razão de verossimilhanças</td><td>G = 37,32; 1 g.l.; p = 1,0 × 10⁻⁹</td><td></td></tr><tr><td>AIC</td><td>36,60</td><td>Log-verossimilhança = −15,298.</td></tr><tr><td>Pseudo-R² de McFadden</td><td>0,550</td><td></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Probabilidades estimadas</caption><thead><tr><th>Peso (1000 lb)</th><th>P(4 cilindros)</th><th>P(6 cilindros)</th><th>P(8 cilindros)</th></tr></thead><tbody><tr><td>2,0</td><td>0,986</td><td>0,013</td><td>0,001</td></tr><tr><td>2,5</td><td>0,843</td><td>0,145</td><td>0,011</td></tr><tr><td>3,0</td><td>0,287</td><td>0,580</td><td>0,133</td></tr><tr><td>3,5</td><td>0,029</td><td>0,298</td><td>0,673</td></tr><tr><td>4,0</td><td>0,002</td><td>0,033</td><td>0,965</td></tr><tr><td>5,0</td><td>0,000</td><td>0,000</td><td>1,000</td></tr></tbody></table></div><h3>A hipótese de chances proporcionais</h3><div class="table-wrap"><table class="method-table"><caption>Verificação</caption><thead><tr><th>Procedimento</th><th>Resultado</th></tr></thead><tbody><tr><td>Logística binária no corte “6 ou 8 cilindros”</td><td>Inclinação = 4,335</td></tr><tr><td>Logística binária no corte “8 cilindros”</td><td>Inclinação = 8,409</td></tr><tr><td>Modelo ordinal (inclinação única)</td><td>5,186</td></tr><tr><td>Razão de verossimilhanças contra o multinomial</td><td>G = 1,464; 1 g.l.; p = 0,226</td></tr></tbody></table></div><p><strong>Leitura:</strong> o peso prevê bem o número de cilindros. Um carro de 2500 libras tem 84% de probabilidade de ser de 4 cilindros; um de 3500 libras, 67% de ser de 8. A razão de chances por 1000 libras é tão grande que o intervalo de confiança perde utilidade prática: por 500 libras, variação mais próxima do que se observa entre modelos, a leitura fica mais razoável.</p><p>Sobre a hipótese de chances proporcionais: as inclinações dos dois cortes (4,3 e 8,4) parecem bem diferentes, mas o teste formal não rejeita a restrição (p = 0,226). Com 32 observações e apenas 7 carros de 6 cilindros, o poder é baixo: o resultado não confirma a hipótese, apenas indica que os dados não permitem descartá-la. Em uma amostra maior, essa diferença mereceria um modelo com inclinações separadas.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Tratar a resposta ordinal como quantitativa</td><td>Supõe distâncias iguais entre categorias, que não são conhecidas.</td></tr><tr><td>Não verificar as chances proporcionais</td><td>Compare os cortes e aplique o teste de Brant.</td></tr><tr><td>Confundir o sinal do coeficiente</td><td>Confira a convenção do programa com uma probabilidade prevista.</td></tr><tr><td>Reportar só a razão de chances</td><td>Probabilidades previstas comunicam melhor.</td></tr><tr><td>Usar com categorias que não têm ordem clara</td><td>Prefira a <a href="multinomial.html">multinomial</a>.</td></tr><tr><td>Categorias muito raras</td><td>Agrupe-as antes do ajuste.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Modelo de chances parciais (<code>VGAM</code>, <code>ordinal</code>)</td><td>A hipótese de chances proporcionais falha para alguns preditores.</td></tr><tr><td><a href="multinomial.html">Multinomial</a></td><td>A ordem não ajuda ou é claramente violada.</td></tr><tr><td>Ligação log-log complementar</td><td>Interesse em eventos raros em um dos extremos.</td></tr><tr><td>Modelo de razões contínuas</td><td>A progressão por etapas faz sentido (por exemplo, níveis de escolaridade concluídos).</td></tr><tr><td><a href="kruskal.html">Kruskal–Wallis</a> / <a href="spearman.html">Spearman</a></td><td>Análise descritiva, sem modelo.</td></tr><tr><td>Modelos mistos ordinais</td><td>Medidas repetidas ou dados agrupados.</td></tr></tbody></table></div><ol class="steps"><li>Confirme a ordem das categorias e conte os casos em cada uma.</li><li>Explore a distribuição do preditor por categoria.</li><li>Ajuste o modelo e interprete pelas probabilidades previstas.</li><li>Avalie as chances proporcionais.</li><li>Se a hipótese falhar, use chances parciais ou a multinomial.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>McCULLAGH, Peter. Regression models for ordinal data. <em>Journal of the Royal Statistical Society: Series B</em>, v. 42, n. 2, p. 109-142, 1980.</li><li>AGRESTI, Alan. <em>Analysis of ordinal categorical data.</em> 2. ed. Hoboken: Wiley, 2010.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacotes <code>nnet</code> e <code>MASS</code>.)</li><li>BRANT, Rollin. Assessing proportionality in the proportional odds model for ordinal logistic regression. <em>Biometrics</em>, v. 46, n. 4, p. 1171-1178, 1990.</li><li>CHRISTENSEN, Rune H. B. <em>ordinal: regression models for ordinal data.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=ordinal" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=ordinal</a>.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. Cham: Springer, 2015.</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Conjunto de dados <code>mtcars</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta com categorias ordenadas, observações independentes, linearidade no logit e chances proporcionais entre os cortes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>MASS</code> (<code>polr</code>); opcionalmente <code>brant</code> e <code>ordinal</code>.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="multinomial.html"><span>← ANTERIOR</span>Regressão logística multinomial</a><a href="poisson.html"><span>PRÓXIMO →</span>Regressão de Poisson</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

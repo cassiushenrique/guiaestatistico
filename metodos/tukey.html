@@ -4,312 +4,301 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Tukey HSD / Tukey–Kramer: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Tukey HSD / Tukey–Kramer | Estatística e Ciência de Dados
-  </title>
+<meta content="Tukey HSD / Tukey–Kramer: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Tukey HSD / Tukey–Kramer | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Tukey HSD / Tukey–Kramer
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Tukey HSD / Tukey–Kramer
-    </h1>
-<p class="detail-lead">
-     Identifica quais pares de médias diferem após comparar vários grupos.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/tukey.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Identifica quais pares de médias diferem após comparar vários grupos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Amostras independentes, resíduos aproximadamente normais e variâncias homogêneas.</li><li>Para n desiguais usa-se adaptação Tukey–Kramer.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_i=\mu_j\\H_1&amp;:\ \mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[q_{ij}=\frac{|\bar Y_i-\bar Y_j|}{\sqrt{QM_E(1/n_i+1/n_j)/2}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p_{\mathrm{aj}}&lt;0{,}05\) ou \(IC_{95\%}\) simultâneo excluindo 0 indica diferença entre as médias daquele par.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar tensões de fiação no processo têxtil (warpbreaks).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-tukey" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-tukey"><code># Tukey HSD / Tukey–Kramer ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Tukey HSD / Tukey–Kramer</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Tukey HSD / Tukey–Kramer</h1><p class="detail-lead">Compara todas as médias duas a duas mantendo a taxa de erro do conjunto em 5%, usando a distribuição da amplitude estudentizada.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/tukey.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/tukey.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o procedimento</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Depois que a <a href="aov1.html">ANOVA</a> indica que há diferença entre os grupos, a pergunta imediata é <em>entre quais</em>. O ajuste de <a href="bonferroni.html">Bonferroni</a> resolve isso de forma genérica, sem olhar para a estrutura do problema. O procedimento de Tukey faz melhor: ele foi construído especificamente para o caso de todas as comparações duas a duas entre médias, e por isso aproveita o fato de que essas comparações são dependentes entre si.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Tukey HSD" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Comparações pareadas com</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">taxa de erro conjunta de 5%</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Usa a distribuição da</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">AMPLITUDE entre k médias</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Os mesmos da ANOVA</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Com n desiguais</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Tukey–Kramer, que é</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">o padrão do R</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">TukeyHSD(modelo)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">emmeans: adjust = "tukey"</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Entrega</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">IC simultâneos</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">e letras</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Tukey HSD</text></svg><figcaption>Visão geral do procedimento de Tukey. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que "HSD" quer dizer</strong><p><em>Honestly Significant Difference</em>, diferença honestamente significativa: o adjetivo contrapõe o método à "diferença mínima significativa" (LSD) de Fisher, que compara todos os pares pelo teste t comum e não controla a taxa de erro do conjunto. No exemplo desta ficha, a LSD produz ao menos um falso positivo em 35,75% dos experimentos; Tukey, em 4,93%.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o procedimento</h2><p>A ideia é simples e elegante. Entre \(k\) médias, aquela que mais se afasta das demais é a maior ou a menor; se a <em>amplitude</em> entre as duas extremas já não for significativa, nenhuma outra comparação pode ser. Tukey então constrói o teste a partir da distribuição da amplitude máxima entre \(k\) médias normais, padronizada pelo erro-padrão — a <strong>amplitude estudentizada</strong> \(q\) — e aplica o mesmo valor crítico a todas as comparações.</p><figure class="fig"><img src="../assets/resultados/tukey-didatica.png" alt="Distribuição da amplitude estudentizada e crescimento do valor crítico" loading="lazy"/><figcaption><strong>De onde vem o valor crítico.</strong> À esquerda, a distribuição simulada da maior diferença entre seis médias, padronizada: seu percentil 95 é 4,15, bem à direita do valor crítico de uma diferença qualquer tomada isoladamente (|t| = 2,00). A diferença entre as duas réguas é exatamente o que o ajuste representa. À direita, o valor crítico em função do número de grupos: Tukey cresce mais devagar que Bonferroni, e em k = 2 os dois coincidem com o teste t comum. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que Tukey é mais poderoso que Bonferroni aqui</strong><p>Bonferroni trata as quinze comparações como se fossem quinze perguntas independentes e divide o nível por quinze. Tukey sabe que elas não são independentes — cada média aparece em cinco delas, e todas compartilham o mesmo quadrado médio do resíduo — e calcula o valor crítico que essa estrutura exige, nem mais nem menos. Nos dados do exemplo, o multiplicador cai de 3,0476 para 2,9364, e os intervalos encolhem 3,6%.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>O mesmo da ANOVA.</td><td>Delineamento.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a distribuição da amplitude estudentizada.</td><td><code>shapiro.test(residuals(modelo))</code>; Q-Q.</td></tr><tr><td>Variâncias homogêneas</td><td>O procedimento usa um único quadrado médio do resíduo.</td><td>Levene e Brown-Forsythe; se falhar, use <a href="games-howell.html">Games–Howell</a>.</td></tr><tr><td>Grupos de tamanhos iguais (ideal)</td><td>Com n iguais o controle é exato; com n desiguais, a versão de Tukey–Kramer é levemente conservadora.</td><td><code>table(grupo)</code>; o R usa Tukey–Kramer automaticamente.</td></tr><tr><td>Comparações pareadas entre médias</td><td>É para isso que o método foi construído.</td><td>Para contrastes gerais, use Scheffé ou <a href="bonferroni.html">Bonferroni</a>.</td></tr><tr><td>ANOVA significativa antes</td><td><strong>Não é exigido</strong>: Tukey controla a taxa de erro por conta própria.</td><td>—</td></tr></tbody></table></div><div class="callout "><strong>Tukey precisa de uma ANOVA significativa antes?</strong><p>Não. O procedimento controla a taxa de erro do conjunto independentemente, e exigir que a ANOVA rejeite primeiro torna o conjunto ainda mais conservador. A prática de "ANOVA e só então Tukey" é tradicional, mas não é um requisito do método. O que não se pode fazer é o contrário: rodar Tukey, encontrar uma diferença e reportá-la como se fosse uma comparação única e planejada.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{(ij)}&:\ \mu_i=\mu_j \\ &\quad \text{para cada par }(i,j) \\ H_1^{(ij)}&:\ \mu_i\neq\mu_j\end{aligned}\right.\]\[\begin{aligned}\text{com }\text{FWER} &\leq \alpha\text{ sobre todos os pares}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[q_{ij}=\frac{\left|\bar{y}_i-\bar{y}_j\right|}{\sqrt{\dfrac{QM_{\text{res}}}{2}\left(\dfrac{1}{n_i}+\dfrac{1}{n_j}\right)}}\]\[\text{(Tukey–Kramer)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{IC simultâneo}:\]\[\begin{aligned}&\bar{y}_i-\bar{y}_j\  \\ &\quad \pm\ q_{\alpha;\,k,\,\nu}\sqrt{\frac{QM_{\text{res}}}{2}\left(\frac{1}{n_i}+\frac{1}{n_j}\right)}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de grupos (médias comparadas)</dd></div><div><dt>\(\nu\)</dt><dd>graus de liberdade do resíduo</dd></div><div><dt>\(QM_{\text{res}}\)</dt><dd>quadrado médio do resíduo da ANOVA</dd></div><div><dt>\(n_i,\ n_j\)</dt><dd>tamanhos dos dois grupos</dd></div><div><dt>\(q_{\alpha;k,\nu}\)</dt><dd>quantil da distribuição da amplitude estudentizada</dd></div></dl><p>Com grupos balanceados, a fórmula se simplifica: o erro-padrão vira \(\sqrt{QM_{\text{res}}/n}\) e a <strong>diferença mínima significativa</strong> é \(\text{DMS}=q_{\alpha;k,\nu}\sqrt{QM_{\text{res}}/n}\), a mesma para todos os pares.</p><h3>Exemplo numérico, passo a passo</h3><p>Com os dados das seis rações, \(QM_{\text{res}}=3\,008{,}554\), \(\nu=65\) e \(q_{0{,}05;\,6,\,65}=4{,}1527\).</p><div class="worked"><strong>Comparação sunflower − horsebean</strong><p>As médias são 328,917 g (n = 12) e 160,200 g (n = 10), de modo que a diferença é 168,717 g.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\text{EP} &= \sqrt{\frac{3\,008{,}554}{2}\left(\frac{1}{12}+\frac{1}{10}\right)} \\ &= \sqrt{1\,504{,}277\times0{,}18\overline{3}} \\ &= 16{,}606\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[q=\frac{168{,}717}{16{,}606}=10{,}160,\]\[p_{\text{aj}}&lt;0{,}00001.\]</div><p>O intervalo simultâneo é \[\begin{aligned}&168{,}72\pm4{,}1527\times16{,}606 \\ &= 168{,}72\pm68{,}97,\end{aligned}\] isto é, \([99{,}75;\ 237{,}68]\) g.</p></div><div class="worked"><strong>Comparação meatmeal − linseed, que fica de fora</strong><p>A diferença é 58,16 g, com \(q=3{,}592\) e \(p_{\text{aj}}=0{,}1277\). O intervalo, \([-9{,}07;\ 125{,}39]\), contém o zero.</p><p>Por <a href="bonferroni.html">Bonferroni</a> o valor ajustado seria 0,2022 e por Holm, 0,0944. Nenhum atinge 0,05 — mas a ordenação entre os métodos é sempre a mesma: Tukey entre Holm e Bonferroni para comparações pareadas.</p></div><h3>Verificações que a simulação confirma</h3><ul class="checklist"><li>O percentil 95 simulado da amplitude estudentizada com 6 médias e 65 gl é 4,1474, contra o valor teórico de 4,1527.</li><li>Com \(k=2\), \(q_{0{,}05;\,2,\,65}/\sqrt2=1{,}9971\), que é exatamente \(t_{0{,}975;\,65}\): sem multiplicidade, Tukey é o teste t.</li><li>Em 10.000 experimentos com seis grupos de médias iguais, Tukey–Kramer produziu ao menos um falso positivo em 4,93% dos casos (alvo: 5%), contra 35,75% do teste t sem ajuste.</li></ul><h3>Propriedades</h3><ul class="checklist"><li>Com grupos balanceados, o controle da taxa de erro do conjunto é <strong>exato</strong>.</li><li>Com grupos desbalanceados (Tukey–Kramer), é levemente conservador — resultado conjecturado por Tukey e demonstrado por Hayter em 1984.</li><li>É o procedimento mais poderoso entre os que protegem todas as comparações pareadas.</li><li>Fornece intervalos de confiança simultâneos, não apenas valores-p.</li><li>Não serve para contrastes gerais: para esses, use Scheffé ou Bonferroni.</li><li>Perde validade quando as variâncias diferem muito; nesse caso, <a href="games-howell.html">Games–Howell</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>diff</td><td>Diferença entre as duas médias.</td><td>O sinal depende da ordem dos níveis.</td></tr><tr><td>lwr, upr</td><td>Intervalo simultâneo de 95%.</td><td>Conter o zero equivale a p ≥ 0,05.</td></tr><tr><td>p adj</td><td>Valor-p ajustado.</td><td>Já incorpora todas as comparações.</td></tr><tr><td>q</td><td>Estatística na escala da amplitude estudentizada.</td><td>Compare com q crítico.</td></tr><tr><td>Letras</td><td>Resumo visual.</td><td>Compartilhar letra significa ausência de <em>evidência</em> de diferença, não igualdade.</td></tr><tr><td>DMS</td><td>Diferença mínima significativa.</td><td>Só faz sentido com grupos balanceados.</td></tr></tbody></table></div><div class="callout "><strong>O que as letras não dizem</strong><p>A apresentação em letras é cômoda, mas esconde informação: ela transforma intervalos de confiança em uma dicotomia. Duas médias que compartilham letra podem estar muito próximas ou apenas não ter sido distinguidas por falta de amostra. Apresente sempre as médias com seus intervalos ao lado das letras — é o que a figura do exemplo faz.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>TukeyHSD()</code> está no pacote <code>stats</code>, já instalado com o R, e aplica-se diretamente a um objeto de <code>aov()</code>; com grupos de tamanhos diferentes ele usa automaticamente a versão de Tukey–Kramer. <code>qtukey()</code> e <code>ptukey()</code> dão os quantis e as probabilidades da amplitude estudentizada. <code>multcomp::glht()</code> com <code>mcp(fator = "Tukey")</code> e <code>emmeans</code> com <code>adjust = "tukey"</code> oferecem mais recursos, inclusive para modelos mais complexos. As letras saem de <code>multcompView::multcompLetters4()</code> ou de <code>agricolae::HSD.test()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-tukey-min" type="button">Copiar código</button></div><pre id="code-tukey-min"><code>modelo &lt;- aov(weight ~ feed, data = chickwts)
+TukeyHSD(modelo)
+plot(TukeyHSD(modelo), las = 1)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>chickwts</code> registra o peso, aos seis dias, de 71 pintinhos alimentados com seis rações diferentes. Os grupos têm tamanhos ligeiramente desiguais (de 10 a 14 aves), os resíduos passam no teste de normalidade (p = 0,627) e as variâncias são homogêneas (Brown–Forsythe p = 0,590). A ANOVA devolve F(5; 65) = 15,365 com p = 5,9 × 10⁻¹⁰: há diferença, e a pergunta passa a ser <em>onde</em>. Com seis rações são quinze comparações — e é esse número que cria o problema de multiplicidade. As fichas de <a href="bonferroni.html">Bonferroni</a>, <a href="sidak.html">Šidák</a>, <a href="tukey.html">Tukey</a> e <a href="games-howell.html">Games–Howell</a> usam este mesmo conjunto, para que os resultados possam ser comparados diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-tukey" type="button">Copiar código</button></div><pre id="code-tukey"><code># Tukey HSD / Tukey-Kramer: exemplo completo ----
+# Pacotes: stats (base), multcomp e emmeans (versões com mais recursos), multcompView (letras)
+# install.packages(c("multcomp", "emmeans", "multcompView", "agricolae"))
 
-# Ajuste e resultados ----
-modelo &lt;- aov(breaks ~ tension, data = warpbreaks)
-resultado &lt;- TukeyHSD(modelo, conf.level = 0.95)
-print(resultado)
-plot(resultado)
+# 1. Dados: chickwts, peso de pintinhos por tipo de ração
+data(chickwts)
+table(chickwts$feed)                 # n desiguais: 10 a 14
+modelo &lt;- aov(weight ~ feed, data = chickwts)
+summary(modelo)
+tapply(chickwts$weight, chickwts$feed, function(x) c(n = length(x), media = mean(x), dp = sd(x)))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Pressupostos (os mesmos da ANOVA)
+par(mfrow = c(2, 2)); plot(modelo); par(mfrow = c(1, 1))
+shapiro.test(residuals(modelo))
+car::leveneTest(weight ~ feed, data = chickwts, center = median)
 
+# 3. O procedimento
+tk &lt;- TukeyHSD(modelo, conf.level = 0.95)
+tk
+par(mar = c(5, 11, 4, 2)); plot(tk, las = 1, cex.axis = 0.7); par(mar = c(5, 4, 4, 2))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="bonferroni.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Ajuste de Bonferroni
-    </a>
-<a href="games-howell.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Games–Howell
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. De onde vem o valor crítico: a distribuição da amplitude estudentizada
+k &lt;- nlevels(chickwts$feed); gl &lt;- df.residual(modelo)
+qtukey(0.95, k, gl)                  # q crítico
+qtukey(0.95, k, gl) / sqrt(2)        # o mesmo na escala do teste t
+qt(0.975, gl)                        # para comparar: t sem ajuste
+qtukey(0.95, 2, gl) / sqrt(2)        # com k = 2, Tukey vira o teste t
+
+# 5. Diferença mínima significativa, se os grupos fossem balanceados
+QM &lt;- sum(residuals(modelo)^2) / gl
+n_medio &lt;- mean(table(chickwts$feed))
+qtukey(0.95, k, gl) * sqrt(QM / n_medio)    # DMS aproximada
+
+# 6. Versões com mais recursos
+library(multcomp)
+summary(glht(modelo, linfct = mcp(feed = "Tukey")))
+confint(glht(modelo, linfct = mcp(feed = "Tukey")))
+
+library(emmeans)
+em &lt;- emmeans(modelo, ~feed)
+pairs(em, adjust = "tukey")
+plot(em, comparisons = TRUE)         # setas que se sobrepõem indicam ausência de diferença
+
+# 7. Apresentação em letras
+library(multcompView)
+letras &lt;- multcompLetters4(modelo, tk)
+letras
+# alternativa, com a tabela pronta:
+library(agricolae)
+HSD.test(modelo, "feed", console = TRUE)
+
+# 8. Gráfico com médias, intervalos e letras
+medias &lt;- tapply(chickwts$weight, chickwts$feed, mean)
+ns &lt;- table(chickwts$feed)
+eps &lt;- sqrt(QM / ns)
+ordem &lt;- order(medias)
+plot(medias[ordem], seq_along(medias), pch = 19, cex = 1.4, yaxt = "n", xlim = c(100, 450),
+     xlab = "Peso aos 6 dias (g)", ylab = "")
+axis(2, at = seq_along(medias), labels = names(medias)[ordem], las = 1)
+arrows(medias[ordem] - qt(0.975, gl) * eps[ordem], seq_along(medias),
+       medias[ordem] + qt(0.975, gl) * eps[ordem], seq_along(medias),
+       angle = 90, code = 3, length = 0.06)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-tukey" type="button">Copiar código</button></div><pre id="code-py-tukey"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: chickwts (R). Peso (g) de 71 pintinhos aos 6 dias, segundo seis rações.
+# O mesmo conjunto das fichas de Bonferroni e de Šidák, para comparação direta.
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes = list(dados)
+gs = [np.array(v, float) for v in dados.values()]
+k = len(gs); ns = np.array([len(g) for g in gs], float); N = int(ns.sum())
+medias = np.array([g.mean() for g in gs])
+QM = np.sum((ns - 1) * np.array([g.var(ddof=1) for g in gs])) / (N - k)
+gl = N - k
+alfa = 0.05
+print("ração        n    média     DP      EP da média")
+for i, nm in enumerate(nomes):
+    print(f"{nm:&lt;12}{int(ns[i]):2d}  {medias[i]:7.3f}  {gs[i].std(ddof=1):6.2f}    {np.sqrt(QM/ns[i]):.3f}")
+print(f"\nANOVA: F({k-1}; {gl}) = {stats.f_oneway(*gs)[0]:.4f}, p = {stats.f_oneway(*gs)[1]:.4e}")
+print(f"QM do resíduo = {QM:.3f} | DP residual = {np.sqrt(QM):.4f} g | n desiguais: {ns.astype(int)}")
+
+# 1. A distribuição da amplitude estudentizada
+print("\nDe onde vem o valor crítico: a AMPLITUDE entre k médias, não uma diferença qualquer")
+print(f"q crítico (5%, k = {k}, gl = {gl}) = {stats.studentized_range.ppf(1-alfa, k, gl):.4f}")
+print(" k médias   q crítico (5%)   equivalente na escala t (q/raiz(2))")
+for kk in (2, 3, 4, 5, 6, 8, 10):
+    q = stats.studentized_range.ppf(1-alfa, kk, gl)
+    print(f"   {kk:3d}        {q:9.4f}          {q/np.sqrt(2):17.4f}")
+print(f"Com k = 2 o valor na escala t é {stats.studentized_range.ppf(1-alfa,2,gl)/np.sqrt(2):.4f},")
+print(f"exatamente o t bilateral de 5% com {gl} gl ({stats.t.ppf(1-alfa/2, gl):.4f}): sem múltiplas")
+print("comparações, Tukey se reduz ao teste t comum.")
+
+print("\nSimulação: distribuição da amplitude estudentizada com 6 médias e 65 gl")
+rng = np.random.default_rng(5)
+M = 200000
+Z = rng.standard_normal((M, 6))
+S = np.sqrt(rng.chisquare(gl, M) / gl)
+amp = (Z.max(axis=1) - Z.min(axis=1)) / S
+print(f"  percentil 95 simulado = {np.percentile(amp, 95):.4f} | teórico = "
+      f"{stats.studentized_range.ppf(0.95, 6, gl):.4f}")
+
+# 2. Tukey-Kramer: as 15 comparações
+print(f"\nTukey-Kramer ({k*(k-1)//2} comparações; os n desiguais entram no erro-padrão)")
+q95 = stats.studentized_range.ppf(1-alfa, k, gl)
+linhas = []
+for a, b in itertools.combinations(range(k), 2):
+    dif = medias[b] - medias[a]
+    ep = np.sqrt(QM/2 * (1/ns[a] + 1/ns[b]))      # erro-padrão na escala de q
+    q = abs(dif) / ep
+    pa = stats.studentized_range.sf(q, k, gl)
+    marg = q95 * ep
+    linhas.append((f"{nomes[b]} - {nomes[a]}", dif, q, pa, dif - marg, dif + marg))
+print(f"{'comparação':&lt;26}{'dif.':&gt;9}{'q':&gt;8}{'p ajust.':&gt;11}{'IC 95% simultâneo':&gt;26}")
+for nm, dif, q, pa, lo, hi in sorted(linhas, key=lambda x: x[3]):
+    print(f"{nm:&lt;26}{dif:9.2f}{q:8.3f}{pa:11.5f}{'*' if pa&lt;alfa else ' '}"
+          f"  [{lo:8.2f}; {hi:8.2f}]")
+
+# 3. Comparação com os demais ajustes
+m = k*(k-1)//2
+print("\nMultiplicadores críticos na escala t e largura do IC de sunflower - horsebean")
+i = [l[0] for l in linhas].index("sunflower - horsebean")
+ep_t = np.sqrt(QM*(1/ns[0] + 1/ns[3]))
+dif = linhas[i][1]
+for nome, cr in [("LSD (sem ajuste)", stats.t.ppf(1-alfa/2, gl)),
+                 ("Tukey-Kramer", q95/np.sqrt(2)),
+                 ("Šidák", stats.t.ppf(1 - (1-(1-alfa)**(1/m))/2, gl)),
+                 ("Bonferroni", stats.t.ppf(1-alfa/(2*m), gl)),
+                 ("Scheffé", np.sqrt((k-1)*stats.f.ppf(1-alfa, k-1, gl)))]:
+    print(f"  {nome:&lt;18}{cr:7.4f}   IC = [{dif-cr*ep_t:7.2f}; {dif+cr*ep_t:7.2f}]  "
+          f"(largura {2*cr*ep_t:6.2f} g)")
+print("Tukey é o mais curto dos ajustes para comparações pareadas; Scheffé, o mais longo,")
+print("porque protege QUALQUER contraste, inclusive os decididos depois de ver os dados.")
+
+# 4. Apresentação em letras
+print("\nApresentação em letras (médias que compartilham letra não diferem a 5%)")
+ordem = np.argsort(-medias)
+sig = np.ones((k, k), bool)
+for a, b in itertools.combinations(range(k), 2):
+    dif = medias[b] - medias[a]
+    pa = stats.studentized_range.sf(abs(dif)/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl)
+    sig[a, b] = sig[b, a] = (pa &gt;= alfa)         # True = NÃO diferem
+# Grupos maximais de médias que NÃO diferem entre si (cliques do grafo de não significância)
+cliques = []
+for r in range(k, 0, -1):
+    for comb in itertools.combinations(ordem, r):
+        if all(sig[x, y] for x, y in itertools.combinations(comb, 2)):
+            cj = set(comb)
+            if not any(cj &lt;= c for c in cliques):
+                cliques.append(cj)
+letras = [""] * k
+for idx, c in enumerate(cliques):
+    for j in c:
+        letras[j] += chr(ord("a") + idx)
+letras = ["".join(sorted(x)) for x in letras]
+print("ração          média   letras")
+for i in ordem:
+    print(f"{nomes[i]:&lt;12}{medias[i]:9.2f}   {letras[i]}")
+print("Leitura: sunflower e casein (a) não diferem entre si; horsebean (c) é a única")
+print("ração que difere de todas as demais.")
+
+# 5. O erro de pular a ANOVA? Não: Tukey não precisa dela
+print("\nTukey controla a taxa de erro do conjunto por conta própria:")
+print("não é obrigatório que a ANOVA rejeite antes. O procedimento em dois passos")
+print("(ANOVA e só depois Tukey) é ainda mais conservador que Tukey sozinho.")
+print(f"Nestes dados a ANOVA rejeita com folga (p = {stats.f_oneway(*gs)[1]:.3e}), então a questão não se coloca.")
+
+# 6. Simulação da taxa de erro do conjunto
+print("\nSimulação: 10.000 experimentos com 6 grupos de médias IGUAIS (n = 12 cada)")
+rng = np.random.default_rng(31)
+M2 = 10000
+glr = 6 * 11
+q_crit = stats.studentized_range.ppf(1 - alfa, 6, glr)     # calculado UMA vez, fora do laço
+t_crit = stats.t.ppf(1 - alfa/2, glr)
+G = rng.normal(0, 1, (M2, 6, 12))
+mm = G.mean(axis=2)                                        # médias: M2 x 6
+qmr = G.var(axis=2, ddof=1).mean(axis=1)                   # QM do resíduo de cada experimento
+ep = np.sqrt(qmr / 12)
+difs = np.abs(mm[:, :, None] - mm[:, None, :])             # todas as diferenças
+iu = np.triu_indices(6, 1)
+t_obs = difs[:, iu[0], iu[1]] / (ep[:, None] * np.sqrt(2))
+rej_lsd = int(np.sum((t_obs &gt; t_crit).any(axis=1)))
+rej_tuk = int(np.sum((mm.max(axis=1) - mm.min(axis=1)) / ep &gt; q_crit))
+print(f"  LSD (t sem ajuste): {100*rej_lsd/M2:.2f}% de experimentos com ao menos um falso positivo")
+print(f"  Tukey-Kramer:       {100*rej_tuk/M2:.2f}%  (o alvo é 5%)")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ração        n    média     DP      EP da média
+horsebean   10  160.200   38.63    17.345
+linseed     12  218.750   52.24    15.834
+soybean     14  246.429   54.13    14.659
+sunflower   12  328.917   48.84    15.834
+meatmeal    11  276.909   64.90    16.538
+casein      12  323.583   64.43    15.834
+
+ANOVA: F(5; 65) = 15.3648, p = 5.9364e-10
+QM do resíduo = 3008.554 | DP residual = 54.8503 g | n desiguais: [10 12 14 12 11 12]
+
+De onde vem o valor crítico: a AMPLITUDE entre k médias, não uma diferença qualquer
+q crítico (5%, k = 6, gl = 65) = 4.1527
+ k médias   q crítico (5%)   equivalente na escala t (q/raiz(2))
+     2           2.8244                     1.9971
+     3           3.3921                     2.3985
+     4           3.7289                     2.6368
+     5           3.9680                     2.8058
+     6           4.1527                     2.9364
+     8           4.4290                     3.1318
+    10           4.6329                     3.2759
+Com k = 2 o valor na escala t é 1.9971,
+exatamente o t bilateral de 5% com 65 gl (1.9971): sem múltiplas
+comparações, Tukey se reduz ao teste t comum.
+
+Simulação: distribuição da amplitude estudentizada com 6 médias e 65 gl
+  percentil 95 simulado = 4.1474 | teórico = 4.1527
+
+Tukey-Kramer (15 comparações; os n desiguais entram no erro-padrão)
+comparação                     dif.       q   p ajust.         IC 95% simultâneo
+sunflower - horsebean        168.72  10.160    0.00000*  [   99.75;   237.68]
+casein - horsebean           163.38   9.838    0.00000*  [   94.42;   232.35]
+sunflower - linseed          110.17   6.958    0.00009*  [   44.41;   175.92]
+meatmeal - horsebean         116.71   6.887    0.00011*  [   46.34;   187.08]
+casein - linseed             104.83   6.621    0.00021*  [   39.08;   170.59]
+sunflower - soybean           82.49   5.406    0.00388*  [   19.13;   145.85]
+soybean - horsebean           86.23   5.370    0.00422*  [   19.54;   152.92]
+casein - soybean              77.15   5.057    0.00837*  [   13.79;   140.52]
+meatmeal - linseed            58.16   3.592    0.12770   [   -9.07;   125.39]
+linseed - horsebean           58.55   3.526    0.14133   [  -10.41;   127.51]
+meatmeal - sunflower         -52.01   3.212    0.22070   [ -119.24;    15.22]
+casein - meatmeal             46.67   2.883    0.33246   [  -20.56;   113.91]
+meatmeal - soybean            30.48   1.951    0.73914   [  -34.41;    95.38]
+soybean - linseed             27.68   1.814    0.79329   [  -35.68;    91.04]
+casein - sunflower            -5.33   0.337    0.99989   [  -71.09;    60.42]
+
+Multiplicadores críticos na escala t e largura do IC de sunflower - horsebean
+  LSD (sem ajuste)   1.9971   IC = [ 121.81;  215.62]  (largura  93.81 g)
+  Tukey-Kramer       2.9364   IC = [  99.75;  237.68]  (largura 137.93 g)
+  Šidák              3.0393   IC = [  97.34;  240.10]  (largura 142.76 g)
+  Bonferroni         3.0476   IC = [  97.14;  240.29]  (largura 143.15 g)
+  Scheffé            3.4322   IC = [  88.11;  249.32]  (largura 161.21 g)
+Tukey é o mais curto dos ajustes para comparações pareadas; Scheffé, o mais longo,
+porque protege QUALQUER contraste, inclusive os decididos depois de ver os dados.
+
+Apresentação em letras (médias que compartilham letra não diferem a 5%)
+ração          média   letras
+sunflower      328.92   a
+casein         323.58   a
+meatmeal       276.91   ab
+soybean        246.43   b
+linseed        218.75   bc
+horsebean      160.20   c
+Leitura: sunflower e casein (a) não diferem entre si; horsebean (c) é a única
+ração que difere de todas as demais.
+
+Tukey controla a taxa de erro do conjunto por conta própria:
+não é obrigatório que a ANOVA rejeite antes. O procedimento em dois passos
+(ANOVA e só depois Tukey) é ainda mais conservador que Tukey sozinho.
+Nestes dados a ANOVA rejeita com folga (p = 5.936e-10), então a questão não se coloca.
+
+Simulação: 10.000 experimentos com 6 grupos de médias IGUAIS (n = 12 cada)
+  LSD (t sem ajuste): 35.75% de experimentos com ao menos um falso positivo
+  Tukey-Kramer:       4.93%  (o alvo é 5%)</pre></div><figure class="fig"><img src="../assets/resultados/tukey.png" alt="Intervalos simultâneos e médias com letras" loading="lazy"/><figcaption><strong>As duas formas de apresentar o resultado.</strong> À esquerda, os quinze intervalos de confiança simultâneos de 95%, ordenados pela diferença: os oito em vermelho não contêm o zero. À direita, a apresentação mais útil para um relatório: cada ração com a sua média, o intervalo de confiança e as observações individuais, acompanhadas das letras de Tukey. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As comparações significativas</caption><thead><tr><th>Comparação</th><th>Diferença (g)</th><th>q</th><th>p ajustado</th><th>IC 95% simultâneo</th></tr></thead><tbody><tr><td>sunflower − horsebean</td><td>+168,72</td><td>10,160</td><td>&lt; 0,00001</td><td>[+99,75; +237,68]</td></tr><tr><td>casein − horsebean</td><td>+163,38</td><td>9,838</td><td>&lt; 0,00001</td><td>[+94,42; +232,35]</td></tr><tr><td>meatmeal − horsebean</td><td>+116,71</td><td>6,887</td><td>0,00011</td><td>[+46,34; +187,08]</td></tr><tr><td>sunflower − linseed</td><td>+110,17</td><td>6,958</td><td>0,00009</td><td>[+44,41; +175,92]</td></tr><tr><td>casein − linseed</td><td>+104,83</td><td>6,621</td><td>0,00021</td><td>[+39,08; +170,59]</td></tr><tr><td>soybean − horsebean</td><td>+86,23</td><td>5,370</td><td>0,00422</td><td>[+19,54; +152,92]</td></tr><tr><td>sunflower − soybean</td><td>+82,49</td><td>5,406</td><td>0,00388</td><td>[+19,13; +145,85]</td></tr><tr><td>casein − soybean</td><td>+77,15</td><td>5,057</td><td>0,00837</td><td>[+13,79; +140,52]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As que não atingem significância</caption><thead><tr><th>Comparação</th><th>Diferença (g)</th><th>q</th><th>p ajustado</th></tr></thead><tbody><tr><td>linseed − horsebean</td><td>+58,55</td><td>3,526</td><td>0,14133</td></tr><tr><td>meatmeal − linseed</td><td>+58,16</td><td>3,592</td><td>0,12770</td></tr><tr><td>meatmeal − sunflower</td><td>−52,01</td><td>3,212</td><td>0,22070</td></tr><tr><td>casein − meatmeal</td><td>+46,67</td><td>2,883</td><td>0,33246</td></tr><tr><td>meatmeal − soybean</td><td>+30,48</td><td>1,951</td><td>0,73914</td></tr><tr><td>soybean − linseed</td><td>+27,68</td><td>1,814</td><td>0,79329</td></tr><tr><td>casein − sunflower</td><td>−5,33</td><td>0,337</td><td>0,99989</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resumo em letras</caption><thead><tr><th>Ração</th><th>Média (g)</th><th>Letras</th></tr></thead><tbody><tr><td>sunflower</td><td>328,92</td><td>a</td></tr><tr><td>casein</td><td>323,58</td><td>a</td></tr><tr><td>meatmeal</td><td>276,91</td><td>ab</td></tr><tr><td>soybean</td><td>246,43</td><td>b</td></tr><tr><td>linseed</td><td>218,75</td><td>bc</td></tr><tr><td>horsebean</td><td>160,20</td><td>c</td></tr></tbody></table></div><p><strong>Leitura:</strong> as rações de girassol e de caseína produziram os maiores pesos e não se distinguem entre si (5,33 g de diferença, p = 0,9999). O feijão-de-cavalo produziu o menor peso e difere de todas as demais, com a única exceção da linhaça. A farinha de carne ocupa uma posição intermediária que não se separa nem do grupo superior nem do inferior — é o que a letra dupla "ab" indica.</p><p>Para uma recomendação prática, a leitura é: girassol e caseína são equivalentes e superiores; se o critério de desempate for o custo, escolha o mais barato dos dois. O feijão-de-cavalo deve ser descartado.</p><h3>Tukey contra os demais ajustes</h3><div class="table-wrap"><table class="method-table"><caption>Multiplicadores críticos e largura do IC de sunflower − horsebean</caption><thead><tr><th>Procedimento</th><th>Multiplicador (escala t)</th><th>IC 95%</th><th>Largura</th></tr></thead><tbody><tr><td>LSD (sem ajuste)</td><td>1,9971</td><td>[+121,81; +215,62]</td><td>93,81 g</td></tr><tr><td><strong>Tukey–Kramer</strong></td><td><strong>2,9364</strong></td><td><strong>[+99,75; +237,68]</strong></td><td><strong>137,93 g</strong></td></tr><tr><td><a href="sidak.html">Šidák</a></td><td>3,0393</td><td>[+97,34; +240,10]</td><td>142,76 g</td></tr><tr><td><a href="bonferroni.html">Bonferroni</a></td><td>3,0476</td><td>[+97,14; +240,29]</td><td>143,15 g</td></tr><tr><td>Scheffé</td><td>3,4322</td><td>[+88,11; +249,32]</td><td>161,21 g</td></tr></tbody></table></div><p>Tukey é o mais curto dos quatro ajustes, como esperado: ele é o único construído exatamente para o conjunto de comparações que está sendo feito. Scheffé é o mais longo porque protege qualquer contraste imaginável, inclusive os formulados depois de ver os dados — uma proteção muito mais ampla e, portanto, muito mais cara. A LSD, que não protege nada, é a referência de quanto custa o controle da taxa de erro: 44 g de largura adicional, ou 47%.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar com variâncias muito desiguais</td><td>O procedimento depende de um quadrado médio comum; use <a href="games-howell.html">Games–Howell</a>.</td></tr><tr><td>Aplicar a contrastes que não são comparações pareadas</td><td>Para contrastes gerais, Scheffé ou Bonferroni.</td></tr><tr><td>Interpretar letras iguais como igualdade comprovada</td><td>É ausência de evidência de diferença.</td></tr><tr><td>Reportar apenas as letras</td><td>Apresente também médias e intervalos.</td></tr><tr><td>Rodar Tukey e depois destacar uma comparação como se fosse planejada</td><td>O ajuste já contou todas elas.</td></tr><tr><td>Calcular a DMS única com grupos desbalanceados</td><td>Com n desiguais cada par tem o seu erro-padrão.</td></tr><tr><td>Usar depois de uma <a href="aovwelch.html">ANOVA de Welch</a></td><td>Welch não usa variância agrupada; Tukey, sim.</td></tr><tr><td>Achar que a ANOVA precisa ser significativa antes</td><td>Tukey controla a taxa de erro por conta própria.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Dunnett</td><td>Todos os tratamentos contra um controle; mais poderoso que Tukey nesse caso.</td></tr><tr><td><a href="games-howell.html">Games–Howell</a></td><td>Variâncias heterogêneas.</td></tr><tr><td><a href="bonferroni.html">Bonferroni</a> ou Holm</td><td>Famílias que não são comparações pareadas, ou que misturam testes.</td></tr><tr><td>Scheffé</td><td>Contrastes decididos depois de ver os dados.</td></tr><tr><td>Newman–Keuls, Duncan, REGW</td><td>Procedimentos sequenciais; mais poderosos, com controle da taxa de erro menos rigoroso (Newman–Keuls e Duncan) ou igualmente rigoroso (REGW).</td></tr><tr><td>Hochberg GT2 e Gabriel</td><td>Grupos muito desbalanceados.</td></tr><tr><td>Dunn (postos)</td><td>Depois de um <a href="kruskal.html">Kruskal–Wallis</a>.</td></tr><tr><td>Contrastes planejados</td><td>Quando as perguntas foram definidas antes do experimento; mais poderosos que qualquer comparação a posteriori.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste a ANOVA e verifique os seus pressupostos.</li><li>Confira a homogeneidade de variâncias: é o que decide entre Tukey e Games–Howell.</li><li>Aplique <code>TukeyHSD()</code> e examine os intervalos, não só os valores-p.</li><li>Apresente as médias com intervalos; use letras como complemento, não como substituto.</li><li>Se a pergunta era "cada tratamento contra o controle", refaça com Dunnett.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>TUKEY, John W. Comparing individual means in the analysis of variance. <em>Biometrics</em>, v. 5, n. 2, p. 99-114, 1949.</li><li>TUKEY, John W. <em>The problem of multiple comparisons.</em> Princeton: Princeton University, 1953. Manuscrito reproduzido em: <em>The collected works of John W. Tukey</em>, v. 8. New York: Chapman and Hall, 1994.</li><li>KRAMER, Clyde Y. Extension of multiple range tests to group means with unequal numbers of replications. <em>Biometrics</em>, v. 12, n. 3, p. 307-310, 1956.</li><li>HAYTER, Anthony J. A proof of the conjecture that the Tukey-Kramer multiple comparisons procedure is conservative. <em>The Annals of Statistics</em>, v. 12, n. 1, p. 61-75, 1984.</li><li>DUNNETT, Charles W. A multiple comparison procedure for comparing several treatments with a control. <em>Journal of the American Statistical Association</em>, v. 50, n. 272, p. 1096-1121, 1955.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>MILLER JR., Rupert G. <em>Simultaneous statistical inference.</em> 2. ed. New York: Springer, 1981.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>TukeyHSD</code>, <code>qtukey</code> e <code>ptukey</code>, pacote <code>stats</code>.)</li><li>HOTHORN, Torsten; BRETZ, Frank; WESTFALL, Peter. Simultaneous inference in general parametric models. <em>Biometrical Journal</em>, v. 50, n. 3, p. 346-363, 2008. (Pacote <code>multcomp</code>.)</li><li>DE MENDIBURU, Felipe. <em>agricolae: statistical procedures for agricultural research.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=agricolae" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=agricolae</a>. (Função <code>HSD.test</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os mesmos da ANOVA: observações independentes, resíduos aproximadamente normais e variâncias homogêneas. Com grupos de tamanhos desiguais, aplica-se a versão de Tukey–Kramer.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>multcomp, emmeans, multcompView, agricolae</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="bonferroni.html"><span>← ANTERIOR</span>Ajuste de Bonferroni</a><a href="games-howell.html"><span>PRÓXIMO →</span>Games–Howell</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,302 +4,219 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste de Friedman: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste de Friedman | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste de Friedman: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste de Friedman | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste de Friedman
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 11 · NÃO PARAMÉTRICOS
-    </span>
-<h1>
-     Teste de Friedman
-    </h1>
-<p class="detail-lead">
-     Verifica se três ou mais condições diferem quando medidas nas mesmas unidades.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/friedman.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se três ou mais condições diferem quando medidas nas mesmas unidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Blocos independentes, medidas pareadas para todas as condições, respostas pelo menos ordinais.</li><li>Blocos corretamente identificados.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \text{os efeitos das condições são iguais}\\ H_1&amp;:\ \text{algum efeito difere}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[Q=\frac{12}{bk(k+1)}\sum_{j=1}^kR_j^2-3b(k+1)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         tamanho amostral
-        </dd>
-</div>
-<div>
-<dt>
-         \(R_i\)
-        </dt>
-<dd>
-         posto da observação ou soma dos postos, conforme definido na fórmula
-        </dd>
-</div>
-<div>
-<dt>
-         \(k\)
-        </dt>
-<dd>
-         número de grupos ou condições
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : diferença global entre condições; comparações pareadas após teste com ajuste de multiplicidade.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        No conjunto CO2, a absorção é medida repetidamente nas mesmas plantas, em diferentes concentrações de dióxido de carbono.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Absorção de \(CO_{2}\) de cada planta medida em sete concentrações.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-friedman" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-friedman"><code># Teste de Friedman ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste de Friedman</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · NÃO PARAMÉTRICOS</span><h1>Teste de Friedman</h1><p class="detail-lead">Compara três ou mais tratamentos aplicados às mesmas unidades, usando os postos calculados dentro de cada bloco.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/friedman.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/friedman.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Imagine um painel sensorial: dez provadores avaliam quatro formulações de um produto. Alguns são generosos e dão notas altas a tudo; outros são severos. Comparar as notas brutas misturaria dois efeitos — o da formulação e o do provador. O teste de Friedman resolve isso pedindo que cada provador ordene as formulações <em>dentro</em> da sua própria escala, e só então compara essas ordens.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Friedman" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA em blocos</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">feita com postos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Postos dentro de cada</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">bloco, depois a soma</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Blocos independentes</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Todas as condições em</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">cada bloco</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Depois</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Conover, Nemenyi</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">ou Wilcoxon pareado</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">friedman.test(matriz)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">W de Kendall</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">ANOVA de medidas</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">repetidas</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelo misto</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Friedman</text></svg><figcaption>Visão geral do teste de Friedman. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Extensão do Wilcoxon pareado</strong><p>Com duas condições, Friedman e <a href="wilcoxon-assinado.html">Wilcoxon de postos sinalizados</a> chegam à mesma decisão (na verdade, Friedman com k = 2 equivale ao teste do sinal). Com três ou mais condições medidas nas mesmas unidades, Friedman é a extensão natural.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Os dados formam uma matriz de \(n\) blocos (os provadores, os pacientes, as parcelas) por \(k\) tratamentos. Dentro de cada bloco, as \(k\) observações recebem postos de 1 a \(k\). Em seguida somam-se os postos de cada tratamento ao longo dos blocos. Se os tratamentos fossem equivalentes, cada um receberia ora o primeiro posto, ora o último, e todas as somas ficariam próximas de \(n(k+1)/2\).</p><figure class="fig"><img src="../assets/resultados/friedman-didatica.png" alt="Três avaliadores com níveis diferentes mas a mesma ordem, e os postos médios resultantes" loading="lazy"/><figcaption><strong>Por que o posto dentro do bloco resolve o problema.</strong> À esquerda, três avaliadores em níveis muito diferentes — um dá notas altas, outro baixas — mas que concordam na ordem dos tratamentos. Os postos dentro de cada linha são idênticos nos três casos, de modo que o efeito do avaliador desaparece. À direita, os postos médios resultantes, comparados ao valor esperado sob a hipótese nula. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Bloquear é diferente de controlar</strong><p>A ANOVA de medidas repetidas também remove o efeito do bloco, mas pela subtração da média do bloco, o que pressupõe que a escala é a mesma para todos. Friedman não pressupõe isso: um provador que use só a faixa de 7 a 9 e outro que use de 2 a 5 contribuem igualmente, porque o que entra na conta é a ordem, não a magnitude.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Blocos independentes entre si</td><td>A dependência permitida é só dentro do bloco.</td><td>Delineamento.</td></tr><tr><td>Todos os tratamentos em todos os blocos</td><td>O delineamento tem de ser completo e balanceado.</td><td><code>table(bloco, tratamento)</code>; dados faltantes exigem outro método.</td></tr><tr><td>Resposta ao menos ordinal dentro de cada bloco</td><td>É o que permite ordenar.</td><td>Natureza da variável.</td></tr><tr><td>Ausência de interação bloco × tratamento</td><td>Se a ordem se inverte de bloco para bloco, a média dos postos perde sentido.</td><td>Gráfico de perfis: as linhas não deveriam se cruzar sistematicamente.</td></tr><tr><td>Poucos empates dentro dos blocos</td><td>Afetam a estatística; o R aplica a correção.</td><td><code>apply(dados, 1, function(x) any(duplicated(x)))</code>.</td></tr><tr><td>Normalidade e esfericidade</td><td><strong>Não são exigidas</strong> (ver <a href="mauchly.html">Mauchly</a>).</td><td>—</td></tr></tbody></table></div><div class="callout try"><strong>Dados faltantes</strong><p>Se um bloco não tem todos os tratamentos, <code>friedman.test()</code> recusa os dados. As saídas são excluir o bloco inteiro, usar um delineamento em blocos incompletos (teste de Skillings–Mack, em <code>PMCMRplus</code>) ou passar a um <a href="aovmista.html">modelo misto</a>, que lida com desbalanceamento.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \text{os }k\text{ tratamentos têm a } \\ &\quad \text{mesma distribuição dentro } \\ &\quad \text{de cada bloco} \\ H_1&:\ \text{pelo menos um tratamento } \\ &\quad \text{difere dos demais}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{12}{nk(k+1)}\sum_{j=1}^{k}\biggl(R_j \\ &\quad -\frac{n(k+1)}{2}\biggr)^{2} \\ &= \frac{12}{nk(k+1)}\sum_{j=1}^{k}R_j^{2}-3n(k+1)\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q_{\text{corrigido}} &= \frac{Q}{1-\dfrac{\sum_{i=1}^{n}\sum_j\left(t_{ij}^{3}-t_{ij}\right)}{nk\left(k^{2}-1\right)}},\end{aligned}\]\[Q_{\text{corrigido}}\ \dot\sim\ \chi^{2}_{\,k-1}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n\)</dt><dd>número de blocos</dd></div><div><dt>\(k\)</dt><dd>número de tratamentos</dd></div><div><dt>\(R_j\)</dt><dd>soma dos postos do tratamento j ao longo dos blocos</dd></div><div><dt>\(n(k+1)/2\)</dt><dd>valor esperado de R_j sob a hipótese nula</dd></div><div><dt>\(t_{ij}\)</dt><dd>tamanho do j-ésimo grupo de empates no bloco i</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Com dez provadores e quatro formulações, as somas de postos foram:</p><div class="table-wrap"><table class="method-table"><caption>Somas e postos médios</caption><thead><tr><th>Formulação</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr><td>Soma dos postos (R_j)</td><td>17,5</td><td>24,0</td><td>38,0</td><td>20,5</td></tr><tr><td>Posto médio</td><td>1,75</td><td>2,40</td><td>3,80</td><td>2,05</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>Sob \(H_0\), cada soma valeria \(10\times5/2=25\). Somando os quadrados, \(\sum R_j^2=2\,746{,}5\), de modo que</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{12}{10\times4\times5}\times 2\,746{,}5 \\ &\quad -3\times10\times5 \\ &= 14{,}79.\end{aligned}\]</div><p>Houve dois blocos com um empate cada (os provadores 3 e 5), o que dá \(\sum\sum(t^3-t)=12\). O fator de correção é \(1-12/\left[10\times4\times(4^2-1)\right]=0{,}98\) e</p><div class="math-display" role="group" aria-label="Expressão matemática">\[Q_{\text{corrigido}}=\frac{14{,}79}{0{,}98}=15{,}0918,\]\[\text{gl}=4-1=3,\]\[p=0{,}00174.\]</div><p>O \(W\) de Kendall completa a leitura: \(W=Q/\left[n(k-1)\right]=15{,}0918/30=0{,}503\), concordância moderada entre os provadores.</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(0\leq Q\leq n(k-1)\); o máximo ocorre quando todos os blocos produzem exatamente a mesma ordenação.</li><li>O \(W\) de Kendall é \(Q\) reescalado para o intervalo \([0,1]\) e mede a concordância entre os blocos.</li><li>Invariante a transformações monótonas aplicadas dentro de cada bloco.</li><li>Com k = 2, equivale ao teste do sinal aplicado às diferenças.</li><li>Eficiência relativa à ANOVA de medidas repetidas de \(3/\pi\approx0{,}955\) quando k é grande e os dados são normais; cai para \(2/3\) quando k = 2.</li><li>Com n pequeno, o valor-p exato pode ser obtido por enumeração das \((k!)^n\) permutações dentro dos blocos.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Q (Friedman chi-squared)</td><td>Dispersão das somas de postos.</td><td>Já corrigido para empates no R.</td></tr><tr><td>gl = k − 1</td><td>Tratamentos menos um.</td><td>Não depende de n.</td></tr><tr><td>Valor-p</td><td>Evidência de que algum tratamento difere.</td><td>Não indica qual.</td></tr><tr><td>Postos médios</td><td>Ordenação dos tratamentos.</td><td>A leitura mais direta do resultado.</td></tr><tr><td>W de Kendall</td><td>Concordância entre os blocos.</td><td>0 = nenhuma; 1 = total. 0,1 pequeno; 0,3 médio; 0,5 grande.</td></tr><tr><td>Comparações múltiplas</td><td>Pares que diferem.</td><td>Conover tem mais poder; Nemenyi é mais conservador.</td></tr></tbody></table></div><p>Reporte: número de blocos e de tratamentos, Q, graus de liberdade, valor-p, os postos médios, o W de Kendall e o resultado das comparações múltiplas.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>friedman.test()</code> está no pacote <code>stats</code>, já instalado com o R. Aceita uma matriz (blocos nas linhas, tratamentos nas colunas) ou a fórmula <code>resposta ~ tratamento | bloco</code> com os dados em formato longo. As comparações múltiplas vêm de <code>PMCMRplus</code> (<code>frdAllPairsConoverTest</code>, <code>frdAllPairsNemenyiTest</code>) ou de <code>pairwise.wilcox.test()</code> com <code>paired = TRUE</code>. O W de Kendall está em <code>rstatix::friedman_effsize()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-friedman-min" type="button">Copiar código</button></div><pre id="code-friedman-min"><code>friedman.test(notas)                                        # matriz n x k
+friedman.test(nota ~ formulacao | provador, data = longo)   # formato longo
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. Dez provadores treinados avaliaram quatro formulações de um produto numa escala de 0 a 10. Cada provador avaliou todas as quatro, o que torna o provador um bloco: a variabilidade entre pessoas é removida do erro experimental.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-friedman" type="button">Copiar código</button></div><pre id="code-friedman"><code># Teste de Friedman: exemplo completo ----
+# Pacotes: stats (base), PMCMRplus ou rstatix (comparações múltiplas)
+# install.packages(c("PMCMRplus", "rstatix"))
 
-# Ajuste e resultados ----
-d &lt;- CO2
-d$conc &lt;- factor(d$conc)
-print(friedman.test(uptake ~ conc | Plant, data = d))
+# 1. Dados: 10 provadores avaliaram 4 formulações de um produto (escala 0 a 10)
+#    Cada provador avaliou TODAS as formulações: delineamento em blocos.
+notas &lt;- matrix(c(4.8, 5.6, 7.2, 5.8,
+                  7.4, 8.2, 8.4, 7.5,
+                  6.5, 6.5, 7.8, 6.0,
+                  7.2, 7.1, 8.0, 7.0,
+                  7.2, 7.4, 9.1, 7.4,
+                  6.0, 7.2, 8.0, 5.5,
+                  7.7, 7.6, 7.4, 7.2,
+                  5.9, 6.1, 7.8, 6.4,
+                  4.9, 5.2, 6.5, 6.4,
+                  5.4, 6.2, 6.9, 6.3),
+                nrow = 10, byrow = TRUE,
+                dimnames = list(paste("provador", 1:10), c("A", "B", "C", "D")))
+notas
+apply(notas, 2, function(x) c(media = mean(x), mediana = median(x)))
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Os postos são calculados DENTRO de cada bloco (cada provador)
+postos &lt;- t(apply(notas, 1, rank))
+postos
+colSums(postos)            # R_j: soma dos postos de cada formulação
+colMeans(postos)           # posto médio; sob H0, todos valeriam (k+1)/2 = 2,5
 
+# 3. O teste
+friedman.test(notas)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kruskal.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Kruskal–Wallis
-    </a>
-<a href="aov1.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANOVA de um fator
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Equivalente com os dados em formato longo
+longo &lt;- data.frame(nota = as.vector(notas),
+                    formulacao = rep(colnames(notas), each = nrow(notas)),
+                    provador = factor(rep(rownames(notas), times = ncol(notas))))
+friedman.test(nota ~ formulacao | provador, data = longo)
+
+# 5. Concordância entre os provadores: W de Kendall
+Q &lt;- friedman.test(notas)$statistic
+n &lt;- nrow(notas); k &lt;- ncol(notas)
+Q / (n * (k - 1))
+# equivalente: rstatix::friedman_effsize(longo, nota ~ formulacao | provador)
+
+# 6. Comparações múltiplas
+PMCMRplus::frdAllPairsConoverTest(notas, p.adjust.method = "bonferroni")
+PMCMRplus::frdAllPairsNemenyiTest(notas)
+pairwise.wilcox.test(longo$nota, longo$formulacao, paired = TRUE, p.adjust.method = "bonferroni")
+
+# 7. Comparação com a ANOVA de medidas repetidas
+anova_mr &lt;- aov(nota ~ formulacao + Error(provador / formulacao), data = longo)
+summary(anova_mr)
+shapiro.test(residuals(lm(nota ~ formulacao + provador, data = longo)))
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+matplot(t(notas), type = "b", pch = 19, lty = 1, col = "gray60", xaxt = "n",
+        xlab = "Formulação", ylab = "Nota")
+axis(1, at = 1:4, labels = colnames(notas))
+lines(colMeans(notas), type = "b", pch = 18, col = "red", lwd = 3)
+barplot(colMeans(postos), col = "gray85", xlab = "Formulação", ylab = "Posto médio")
+abline(h = (ncol(notas) + 1) / 2, col = "red", lwd = 2, lty = 2)
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-friedman" type="button">Copiar código</button></div><pre id="code-py-friedman"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+import itertools
+
+# Dados: 10 provadores avaliaram 4 formulações de um produto, em escala de 0 a 10 (dados fictícios).
+# Cada provador avaliou TODAS as formulações: é um delineamento em blocos.
+notas = np.array([[4.8, 5.6, 7.2, 5.8], [7.4, 8.2, 8.4, 7.5], [6.5, 6.5, 7.8, 6.0],
+                  [7.2, 7.1, 8.0, 7.0], [7.2, 7.4, 9.1, 7.4], [6.0, 7.2, 8.0, 5.5],
+                  [7.7, 7.6, 7.4, 7.2], [5.9, 6.1, 7.8, 6.4], [4.9, 5.2, 6.5, 6.4],
+                  [5.4, 6.2, 6.9, 6.3]])
+n, k = notas.shape                       # n = blocos (provadores), k = tratamentos (formulações)
+form = ["A", "B", "C", "D"]
+print(f"{n} provadores x {k} formulações")
+print("Formulação   média  mediana")
+for j, f in enumerate(form):
+    print(f"    {f}        {notas[:, j].mean():.3f}   {np.median(notas[:, j]):6.2f}")
+
+# 1. Os postos são calculados DENTRO de cada provador
+postos = np.array([stats.rankdata(linha) for linha in notas])
+print("\nPostos dentro de cada provador (1 = pior, 4 = melhor):")
+for i in range(n):
+    print(f"  provador {i+1:&gt;2}: notas {notas[i]} -&gt; postos {postos[i].astype(int) if np.all(postos[i] == postos[i].astype(int)) else postos[i]}")
+Rj = postos.sum(axis=0)
+print(f"\nSoma dos postos por formulação: {Rj}")
+print(f"Posto médio: {np.round(Rj / n, 3)} | esperado sob H0 = {(k+1)/2:.1f}")
+
+# 2. Estatística de Friedman
+Q = 12 / (n * k * (k + 1)) * np.sum(Rj**2) - 3 * n * (k + 1)
+print(f"\nQ = 12/({n}x{k}x{k+1}) x {np.sum(Rj**2):.1f} - 3x{n}x{k+1} = {Q:.4f}")
+# Correção para empates dentro dos blocos (dois provadores deram notas iguais a duas formulações)
+soma_emp = sum(np.sum(c**3 - c) for linha in notas for c in [np.unique(linha, return_counts=True)[1]])
+correcao = 1 - soma_emp / (n * k * (k**2 - 1))
+print(f"Empates dentro dos blocos: correção = 1 - {soma_emp}/({n}x{k}x({k}²-1)) = {correcao:.5f}")
+print(f"Q corrigido = {Q/correcao:.4f} | gl = k - 1 = {k-1} | p-valor = {stats.chi2.sf(Q/correcao, k-1):.6f}")
+print("scipy:", stats.friedmanchisquare(*notas.T))
+
+# 3. Coeficiente de concordância de Kendall: o quanto os provadores concordam
+W = (Q / correcao) / (n * (k - 1))
+print(f"\nW de Kendall = Q / [n(k-1)] = {W:.4f}  (0 = nenhuma concordância, 1 = concordância total)")
+
+# 4. Comparações múltiplas: Wilcoxon pareado com ajuste de Bonferroni
+pares = list(itertools.combinations(range(k), 2))
+print("\nComparações pareadas (Wilcoxon, ajuste de Bonferroni):")
+for i, j in pares:
+    p = stats.wilcoxon(notas[:, i], notas[:, j]).pvalue
+    pa = min(1, p * len(pares))
+    print(f"  {form[i]} vs {form[j]}: diferença mediana = {np.median(notas[:, i] - notas[:, j]):&gt;5.2f} "
+          f"| p = {p:.4f} | ajustado = {pa:.4f}{' *' if pa &lt; 0.05 else ''}")
+
+# 5. Diferença mínima significativa entre postos médios (Conover)
+A = np.sum(postos**2); B = np.sum(Rj**2) / n
+t_crit = stats.t.ppf(0.975, (n - 1) * (k - 1))
+dms = t_crit * np.sqrt(2 * n * (A - B) / ((n - 1) * (k - 1)))
+print(f"\nDiferença mínima entre SOMAS de postos (Conover, 5%) = {dms:.4f}")
+for i, j in pares:
+    d = abs(Rj[i] - Rj[j])
+    print(f"  |R{form[i]} - R{form[j]}| = {d:.1f}{' &gt; DMS: difere' if d &gt; dms else ''}")
+
+# 6. Comparação com a ANOVA de medidas repetidas
+media_geral = notas.mean()
+SQ_trat = n * np.sum((notas.mean(axis=0) - media_geral)**2)
+SQ_bloco = k * np.sum((notas.mean(axis=1) - media_geral)**2)
+SQ_res = np.sum((notas - media_geral)**2) - SQ_trat - SQ_bloco
+F = (SQ_trat / (k - 1)) / (SQ_res / ((n - 1) * (k - 1)))
+print(f"\nANOVA de medidas repetidas: F({k-1}, {(n-1)*(k-1)}) = {F:.4f}, p-valor = {stats.f.sf(F, k-1, (n-1)*(k-1)):.6f}")
+print(f"Shapiro-Wilk dos resíduos: p-valor = {stats.shapiro((notas - notas.mean(axis=0) - notas.mean(axis=1)[:, None] + media_geral).ravel()).pvalue:.4f}")
+
+# 7. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+for i in range(n): ax[0].plot(range(1, k + 1), notas[i], marker="o", color="gray", alpha=0.6)
+ax[0].plot(range(1, k + 1), notas.mean(axis=0), marker="o", color="red", lw=3)
+ax[0].set_xticks(range(1, k + 1)); ax[0].set_xticklabels(form); ax[0].set_xlabel("Formulação"); ax[0].set_ylabel("Nota")
+ax[1].bar(form, Rj / n, color="lightgray", edgecolor="gray")
+ax[1].axhline((k + 1) / 2, color="red", ls="--"); ax[1].set_ylabel("Posto médio"); ax[1].set_xlabel("Formulação")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">10 provadores x 4 formulações
+Formulação   média  mediana
+    A        6.300     6.25
+    B        6.710     6.80
+    C        7.710     7.80
+    D        6.550     6.40
+
+Postos dentro de cada provador (1 = pior, 4 = melhor):
+  provador  1: notas [4.8 5.6 7.2 5.8] -&gt; postos [1 2 4 3]
+  provador  2: notas [7.4 8.2 8.4 7.5] -&gt; postos [1 3 4 2]
+  provador  3: notas [6.5 6.5 7.8 6. ] -&gt; postos [2.5 2.5 4.  1. ]
+  provador  4: notas [7.2 7.1 8.  7. ] -&gt; postos [3 2 4 1]
+  provador  5: notas [7.2 7.4 9.1 7.4] -&gt; postos [1.  2.5 4.  2.5]
+  provador  6: notas [6.  7.2 8.  5.5] -&gt; postos [2 3 4 1]
+  provador  7: notas [7.7 7.6 7.4 7.2] -&gt; postos [4 3 2 1]
+  provador  8: notas [5.9 6.1 7.8 6.4] -&gt; postos [1 2 4 3]
+  provador  9: notas [4.9 5.2 6.5 6.4] -&gt; postos [1 2 4 3]
+  provador 10: notas [5.4 6.2 6.9 6.3] -&gt; postos [1 2 4 3]
+
+Soma dos postos por formulação: [17.5 24.  38.  20.5]
+Posto médio: [1.75 2.4  3.8  2.05] | esperado sob H0 = 2.5
+
+Q = 12/(10x4x5) x 2746.5 - 3x10x5 = 14.7900
+Empates dentro dos blocos: correção = 1 - 12/(10x4x(4²-1)) = 0.98000
+Q corrigido = 15.0918 | gl = k - 1 = 3 | p-valor = 0.001740
+scipy: FriedmanchisquareResult(statistic=np.float64(15.091836734693869), pvalue=np.float64(0.0017398263486403326))
+
+W de Kendall = Q / [n(k-1)] = 0.5031  (0 = nenhuma concordância, 1 = concordância total)
+
+Comparações pareadas (Wilcoxon, ajuste de Bonferroni):
+  A vs B: diferença mediana = -0.25 | p = 0.0195 | ajustado = 0.1172
+  A vs C: diferença mediana = -1.55 | p = 0.0039 | ajustado = 0.0234 *
+  A vs D: diferença mediana = -0.15 | p = 0.4199 | ajustado = 1.0000
+  B vs C: diferença mediana = -1.10 | p = 0.0039 | ajustado = 0.0234 *
+  B vs D: diferença mediana =  0.05 | p = 0.5156 | ajustado = 1.0000
+  C vs D: diferença mediana =  1.20 | p = 0.0020 | ajustado = 0.0117 *
+
+Diferença mínima entre SOMAS de postos (Conover, 5%) = 8.7141
+  |RA - RB| = 6.5
+  |RA - RC| = 20.5 &gt; DMS: difere
+  |RA - RD| = 3.0
+  |RB - RC| = 14.0 &gt; DMS: difere
+  |RB - RD| = 3.5
+  |RC - RD| = 17.5 &gt; DMS: difere
+
+ANOVA de medidas repetidas: F(3, 27) = 16.1043, p-valor = 0.000003
+Shapiro-Wilk dos resíduos: p-valor = 0.6548</pre></div><figure class="fig"><img src="../assets/resultados/friedman.png" alt="Perfis dos dez provadores e postos médios das quatro formulações" loading="lazy"/><figcaption><strong>Os dados e o resultado do teste.</strong> À esquerda, cada linha cinza é um provador e a linha vermelha é a média por formulação; os níveis individuais variam muito (de notas na faixa de 5 a notas na faixa de 8), mas a forma dos perfis é parecida. Em destaque, o provador 7, o único que não colocou a formulação C em primeiro lugar. À direita, os postos médios: C fica muito acima do valor esperado sob a hipótese nula, e A, B e D não se separam entre si. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Notas atribuídas (escala 0 a 10)</caption><thead><tr><th>Provador</th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead><tbody><tr><td>1</td><td>4,8</td><td>5,6</td><td>7,2</td><td>5,8</td></tr><tr><td>2</td><td>7,4</td><td>8,2</td><td>8,4</td><td>7,5</td></tr><tr><td>3</td><td>6,5</td><td>6,5</td><td>7,8</td><td>6,0</td></tr><tr><td>4</td><td>7,2</td><td>7,1</td><td>8,0</td><td>7,0</td></tr><tr><td>5</td><td>7,2</td><td>7,4</td><td>9,1</td><td>7,4</td></tr><tr><td>6</td><td>6,0</td><td>7,2</td><td>8,0</td><td>5,5</td></tr><tr><td>7</td><td>7,7</td><td>7,6</td><td>7,4</td><td>7,2</td></tr><tr><td>8</td><td>5,9</td><td>6,1</td><td>7,8</td><td>6,4</td></tr><tr><td>9</td><td>4,9</td><td>5,2</td><td>6,5</td><td>6,4</td></tr><tr><td>10</td><td>5,4</td><td>6,2</td><td>6,9</td><td>6,3</td></tr><tr><td><strong>Média</strong></td><td><strong>6,30</strong></td><td><strong>6,71</strong></td><td><strong>7,71</strong></td><td><strong>6,55</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Q sem correção</td><td>14,790</td><td>Antes de tratar os empates.</td></tr><tr><td>Correção para empates</td><td>0,98000</td><td>Dois blocos com um empate cada.</td></tr><tr><td>Q corrigido</td><td>15,0918</td><td>Com gl = 3.</td></tr><tr><td>Valor-p</td><td>0,00174</td><td>Evidência forte de diferença entre formulações.</td></tr><tr><td>Postos médios</td><td>1,75 / 2,40 / 3,80 / 2,05</td><td>A / B / C / D; esperado = 2,5.</td></tr><tr><td>W de Kendall</td><td>0,503</td><td>Concordância moderada entre os provadores.</td></tr><tr><td>DMS de Conover (5%)</td><td>8,714</td><td>Diferença mínima entre somas de postos.</td></tr><tr><td>Wilcoxon pareado + Bonferroni</td><td>C ≠ A, B e D</td><td>A, B e D não se separam.</td></tr><tr><td>ANOVA de medidas repetidas</td><td>F(3; 27) = 16,10; p = 0,000003</td><td>Concorda com a conclusão.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>p = 0,655</td><td>A ANOVA também seria defensável aqui.</td></tr></tbody></table></div><p><strong>Leitura:</strong> as quatro formulações não são equivalentes. A formulação C teve posto médio 3,80, muito acima do valor esperado de 2,5, e foi colocada em primeiro lugar por nove dos dez provadores. As comparações de Conover confirmam: as diferenças |R_C − R_A| = 20,5, |R_C − R_B| = 14,0 e |R_C − R_D| = 17,5 superam a diferença mínima de 8,714, enquanto nenhuma comparação entre A, B e D chega perto disso.</p><p>Dois detalhes merecem atenção. O primeiro é o provador 7, destacado no gráfico: ele foi o único a não preferir C, e sua discordância é justamente o que impede o W de Kendall de subir além de 0,503. O segundo é que, aqui, a ANOVA de medidas repetidas teria funcionado — os resíduos passam no Shapiro–Wilk — e chega à mesma conclusão com um valor-p menor. Quando os dois métodos são aplicáveis, a ANOVA tende a ter mais poder; a vantagem do Friedman aparece quando a escala é ordinal, quando há valores extremos ou quando os provadores usam faixas de nota muito diferentes.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Calcular os postos na coluna inteira</td><td>Os postos vêm de <strong>dentro de cada bloco</strong>; é isso que remove o efeito do bloco.</td></tr><tr><td>Usar com grupos independentes</td><td>Para grupos independentes, use <a href="kruskal.html">Kruskal–Wallis</a>.</td></tr><tr><td>Passar dados longos sem indicar o bloco</td><td>A sintaxe correta é <code>resposta ~ tratamento | bloco</code>.</td></tr><tr><td>Parar no valor-p global</td><td>Faça as comparações múltiplas para saber quais tratamentos diferem.</td></tr><tr><td>Aplicar Wilcoxon par a par sem ajuste</td><td>Com quatro tratamentos há seis comparações.</td></tr><tr><td>Ignorar blocos incompletos</td><td><code>friedman.test()</code> exige delineamento completo; use Skillings–Mack ou um modelo misto.</td></tr><tr><td>Interpretar W de Kendall como tamanho do efeito do tratamento</td><td>W mede a <em>concordância entre os blocos</em>, não a magnitude da diferença.</td></tr><tr><td>Esquecer que a ordem pode se inverter entre blocos</td><td>Examine o gráfico de perfis antes de confiar na média dos postos.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aovrepetida.html">ANOVA de medidas repetidas</a></td><td>Resíduos normais e esfericidade atendida; interesse nas médias.</td></tr><tr><td><a href="aovmista.html">ANOVA mista e modelos mistos</a></td><td>Blocos incompletos, covariáveis ou estrutura de correlação a modelar.</td></tr><tr><td><a href="ordinal.html">Modelo de odds proporcionais com efeito aleatório</a></td><td>Resposta ordinal com poucas categorias.</td></tr><tr><td>Teste de Skillings–Mack</td><td>Blocos incompletos, com dados faltantes.</td></tr><tr><td>Teste Q de Cochran</td><td>Resposta binária em blocos.</td></tr><tr><td><a href="wilcoxon-assinado.html">Wilcoxon de postos sinalizados</a></td><td>Apenas duas condições.</td></tr><tr><td>Teste de permutação dentro de blocos</td><td>Amostra pequena, com interesse nas médias originais.</td></tr><tr><td>ANOVA alinhada por postos (<code>ART</code>)</td><td>Delineamento fatorial com resposta ordinal.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que o delineamento é em blocos completos.</li><li>Faça o gráfico de perfis e verifique se as ordens são consistentes entre blocos.</li><li>Conte os empates dentro dos blocos.</li><li>Aplique o teste e relate Q, gl e valor-p.</li><li>Reporte o W de Kendall como medida de concordância.</li><li>Se rejeitar, faça as comparações múltiplas com ajuste.</li><li>Compare, quando os pressupostos permitirem, com a ANOVA de medidas repetidas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FRIEDMAN, Milton. The use of ranks to avoid the assumption of normality implicit in the analysis of variance. <em>Journal of the American Statistical Association</em>, v. 32, n. 200, p. 675-701, 1937.</li><li>FRIEDMAN, Milton. A comparison of alternative tests of significance for the problem of m rankings. <em>The Annals of Mathematical Statistics</em>, v. 11, n. 1, p. 86-92, 1940.</li><li>KENDALL, Maurice G.; BABINGTON SMITH, B. The problem of m rankings. <em>The Annals of Mathematical Statistics</em>, v. 10, n. 3, p. 275-287, 1939.</li><li>HOLLANDER, Myles; WOLFE, Douglas A.; CHICKEN, Eric. <em>Nonparametric statistical methods.</em> 3. ed. Hoboken: Wiley, 2014.</li><li>CONOVER, William J. <em>Practical nonparametric statistics.</em> 3. ed. New York: Wiley, 1999.</li><li>DEMŠAR, Janez. Statistical comparisons of classifiers over multiple data sets. <em>Journal of Machine Learning Research</em>, v. 7, p. 1-30, 2006. (Uso do teste de Friedman com Nemenyi.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>friedman.test</code>, <code>pairwise.wilcox.test</code> e <code>aov</code>, pacote <code>stats</code>.)</li><li>POHLERT, Thorsten. <em>PMCMRplus: calculate pairwise multiple comparisons of mean rank sums extended.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=PMCMRplus" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=PMCMRplus</a>. (Funções <code>frdAllPairsConoverTest</code> e <code>frdAllPairsNemenyiTest</code>.)</li><li>KASSAMBARA, Alboukadel. <em>rstatix: pipe-friendly framework for basic statistical tests.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rstatix" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rstatix</a>. (Função <code>friedman_effsize</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Blocos independentes, delineamento completo com todos os tratamentos em cada bloco e resposta ao menos ordinal; não exige normalidade nem esfericidade.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>PMCMRplus, rstatix</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kruskal.html"><span>← ANTERIOR</span>Kruskal–Wallis</a><a href="kappa.html"><span>PRÓXIMO →</span>Kappa de Cohen</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

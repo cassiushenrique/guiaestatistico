@@ -4,316 +4,448 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Coeficiente de concordância de Kendall (W): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Coeficiente de concordância de Kendall (W) | Estatística e Ciência de Dados
-  </title>
+<meta content="Coeficiente de concordância de Kendall (W): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Coeficiente de concordância de Kendall (W) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Coeficiente de concordância de Kendall (W)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 12 · CONCORDÂNCIA
-    </span>
-<h1>
-     Coeficiente de concordância de Kendall (W)
-    </h1>
-<p class="detail-lead">
-     Mede o grau de concordância entre classificações ordenadas por vários avaliadores.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/kendall-w.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Mede o grau de concordância entre classificações ordenadas por vários avaliadores.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Todos os avaliadores ordenam os mesmos itens.</li><li>Blocos/itens bem definidos.</li><li>Corrigir empates quando houver.</li><li>Independência dos itens para inferência aproximada.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \text{ausência de concordância sistemática nos rankings}\\ H_1&amp;:\ \text{concordância}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[W=\frac{12\sum_i(R_i-\bar R)^2}{m^2(n^3-n)}\quad\text{(sem empates)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(P_o\)
-        </dt>
-<dd>
-         concordância observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(P_e\)
-        </dt>
-<dd>
-         concordância esperada pela regra de referência do coeficiente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\kappa\)
-        </dt>
-<dd>
-         coeficiente de concordância corrigido para acaso
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) indica concordância além do acaso sob modelo nulo; W próximo de 1 é forte acordo, mas não estabelece validade dos critérios.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Três critérios simulados de avaliação de potência dos mesmos 32 automóveis (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-kendall-w" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-kendall-w"><code># Coeficiente de concordância de Kendall (W) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Coeficiente de concordância de Kendall (W)</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · CONCORDÂNCIA</span><h1>Coeficiente de concordância de Kendall (W)</h1><p class="detail-lead">Mede se m avaliadores ordenam as mesmas unidades da mesma maneira, a partir do espalhamento das somas de postos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/kendall-w.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/kendall-w.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o W de Kendall</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Os coeficientes de kappa perguntam se os avaliadores atribuem a <em>mesma classe</em>. O W de Kendall pergunta algo diferente: se eles <em>ordenam</em> as unidades da mesma maneira. É a pergunta certa quando o que interessa é a hierarquia — qual folha está mais atacada, qual candidato é melhor, qual tratamento responde primeiro — e não o rótulo absoluto.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: W de Kendall" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Concordância de ORDENAÇÃO</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">entre m avaliadores</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Espalhamento das somas</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">de postos por unidade</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Três leituras</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Proporção de S máximo</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Função do Spearman médio</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Friedman reescalonado</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O piso</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">E[W] = 1/m</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">sob independência</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Não mede</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Viés constante</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">valor absoluto</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">irr::kendall()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">W de Kendall</text></svg><figcaption>Visão geral do W de Kendall. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O erro de leitura mais comum</strong><p>W não varia de 0 a 1 como uma correlação. Sob independência completa, o valor <em>esperado</em> é \(1/m\) — com cinco avaliadores, 0,20. Um W de 0,25 com cinco avaliadores não é "concordância fraca": é concordância praticamente nenhuma. A simulação desta ficha confirma: avaliadores que ordenam ao acaso produzem W com média 0,1996 e percentil 95 de 0,269.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o W de Kendall</h2><p>Cada avaliador atribui postos de 1 a \(n\) às unidades. Para cada unidade, some os postos recebidos dos \(m\) avaliadores: chame essa soma de \(R_i\). Se todos ordenarem igual, algumas unidades acumularão postos altos e outras baixos, e os \(R_i\) ficarão muito espalhados; se ordenarem ao acaso, os \(R_i\) se concentrarão em torno da média, que é sempre \(m(n+1)/2\). O W é a razão entre o espalhamento observado e o máximo possível.</p><figure class="fig"><img src="../assets/resultados/kendall-w-didatica.png" alt="Os perfis de postos dos cinco avaliadores, o espalhamento das somas e o piso de 1/m" loading="lazy"/><figcaption><strong>A ideia, em três quadros.</strong> À esquerda, os postos atribuídos pelos cinco avaliadores às 40 folhas, com estas ordenadas pela soma dos postos: as cinco linhas sobem juntas, e é esse paralelismo que o W mede. No centro, a distribuição das somas de postos observadas comparada à de um conjunto simulado ao acaso — a observada é muito mais espalhada, e é isso que produz W alto. À direita, o valor esperado de W sob independência em função do número de avaliadores: ele não é zero, é 1/m, o que muda a leitura de qualquer valor pequeno. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Três leituras do mesmo número</strong><p>O W admite três formas equivalentes, e cada uma esclarece um aspecto. Como <strong>proporção do espalhamento máximo</strong>, ele é a fração da variação possível de \(R_i\) efetivamente alcançada. Como <strong>função da correlação de Spearman média</strong> entre os pares, \(W=[(m-1)\bar r_s+1]/m\), ele mostra de onde vem o piso de \(1/m\). Como <strong>estatística de Friedman reescalonada</strong>, \(\chi^2=m(n-1)W\), ele é o tamanho de efeito de um teste que já existia.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Escala ao menos ORDINAL</td><td>O coeficiente trabalha com postos.</td><td>Natureza da variável; com escala nominal, <a href="fleiss.html">Fleiss</a>.</td></tr><tr><td>Todos os avaliadores julgam TODAS as unidades</td><td>A soma de postos exige delineamento completo.</td><td>Conte as avaliações; com dados faltantes, alfa de Krippendorff.</td></tr><tr><td>Unidades independentes</td><td>A distribuição de referência pressupõe isso.</td><td>Delineamento.</td></tr><tr><td>Avaliações independentes entre avaliadores</td><td>Avaliadores que se consultam inflam W.</td><td>Protocolo.</td></tr><tr><td>Empates em número moderado</td><td>Muitos empates exigem a correção, e a inflacionam.</td><td>Conte os empates; com escala de poucas classes, há muitos.</td></tr><tr><td><strong>n maior que 7 para a aproximação qui-quadrado</strong></td><td>Com n pequeno ela é grosseira.</td><td>Use permutação; a ficha mostra a diferença.</td></tr><tr><td>Interesse na ordem, não no valor</td><td>W ignora deslocamentos constantes.</td><td>Se o valor importa, use o <a href="icc.html">ICC</a> ou o <a href="kappa-ponderado.html">kappa ponderado</a>.</td></tr></tbody></table></div><div class="callout warn"><strong>A correção para empates não é opcional</strong><p>Com uma escala de apenas cinco classes e 40 folhas, há empates em toda parte. Nos dados desta ficha, \(T=17\,028\), e o W sem correção vale 0,6634 contra 0,7007 com correção — uma diferença de 0,037, que não é desprezível. Implementações que ignoram a correção subestimam a concordância sistematicamente quando a escala é grosseira.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \text{as }m\text{ ordenações são } \\ &\quad \text{independentes entre si} \\ H_1&:\ \text{há concordância entre elas}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[R_i=\sum_{j=1}^{m}r_{ij},\]\[\bar R=\frac{m(n+1)}{2},\]\[S=\sum_{i=1}^{n}\left(R_i-\bar R\right)^{2}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[W=\frac{12\,S}{m^{2}\left(n^{3}-n\right)-m\,T},\]\[T=\sum_{j=1}^{m}\sum_{g}\left(t_{gj}^{3}-t_{gj}\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n,\ m\)</dt><dd>número de unidades e de avaliadores</dd></div><div><dt>\(r_{ij}\)</dt><dd>posto dado pelo avaliador \(j\) à unidade \(i\)</dd></div><div><dt>\(R_i\)</dt><dd>soma dos postos da unidade \(i\)</dd></div><div><dt>\(S\)</dt><dd>soma dos desvios quadráticos de \(R_i\)</dd></div><div><dt>\(T\)</dt><dd>correção para empates; \(t_{gj}\) é o tamanho do \(g\)-ésimo grupo de empates do avaliador \(j\)</dd></div></dl><h3>As três identidades</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{(a)}\quad W=\frac{S}{S_{\max}},\]\[S_{\max}=\frac{m^{2}(n^{3}-n)-mT}{12}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{(b)}\quad W=\frac{(m-1)\,\bar r_s+1}{m}\]\[\Longleftrightarrow\]\[\bar r_s=\frac{mW-1}{m-1}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{(c)}\quad \chi^{2}_{\text{Friedman}}=m\,(n-1)\,W\ \dot\sim\ \chi^{2}_{n-1}\]</div><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Soma dos postos de doze folhas</caption><thead><tr><th>Folha</th><th>Classes dadas</th><th>Postos dos cinco avaliadores</th><th>Rᵢ</th></tr></thead><tbody><tr><td>1</td><td>3, 3, 4, 3, 4</td><td>22,5 · 21,5 · 21,0 · 23,0 · 31,0</td><td>119,0</td></tr><tr><td>2</td><td>5, 4, 4, 4, 5</td><td>37,5 · 29,5 · 21,0 · 33,0 · 38,0</td><td>159,0</td></tr><tr><td>3</td><td>4, 4, 5, 3, 5</td><td>31,5 · 29,5 · 34,0 · 23,0 · 38,0</td><td>156,0</td></tr><tr><td><strong>4</strong></td><td>5, 5, 5, 4, 5</td><td>37,5 · 36,5 · 34,0 · 33,0 · 38,0</td><td><strong>179,0</strong></td></tr><tr><td>5</td><td>5, 5, 5, 4, 3</td><td>37,5 · 36,5 · 34,0 · 33,0 · 21,0</td><td>162,0</td></tr><tr><td>6</td><td>1, 2, 2, 1, 1</td><td>4,0 · 12,0 · 6,5 · 4,5 · 5,0</td><td>32,0</td></tr><tr><td>7</td><td>2, 2, 3, 2, 4</td><td>12,0 · 12,0 · 11,5 · 13,0 · 31,0</td><td>79,5</td></tr><tr><td><strong>8</strong></td><td>1, 2, 1, 1, 1</td><td>4,0 · 12,0 · 2,5 · 4,5 · 5,0</td><td><strong>28,0</strong></td></tr><tr><td>9</td><td>3, 3, 4, 3, 4</td><td>22,5 · 21,5 · 21,0 · 23,0 · 31,0</td><td>119,0</td></tr><tr><td>10</td><td>3, 4, 5, 4, 2</td><td>22,5 · 29,5 · 34,0 · 33,0 · 12,5</td><td>131,5</td></tr><tr><td>11</td><td>4, 3, 4, 3, 4</td><td>31,5 · 21,5 · 21,0 · 23,0 · 31,0</td><td>128,0</td></tr><tr><td>12</td><td>3, 4, 4, 3, 3</td><td>22,5 · 29,5 · 21,0 · 23,0 · 21,0</td><td>117,0</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>A média das somas de postos é \(\bar R=m(n+1)/2=5\times41/2=102{,}5\), como tem de ser. A folha 4, em que todos deram classe alta, tem \(R=179{,}0\); a folha 8, em que todos deram classe baixa, tem \(R=28{,}0\). É esse espalhamento que o coeficiente mede.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}S &= \sum_i\left(R_i-102{,}5\right)^{2} \\ &= 88\,391{,}50,\end{aligned}\]\[T=17\,028\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}W &= \frac{12\times88\,391{,}50}{5^{2}\left(40^{3}-40\right)-5\times17\,028} \\ &= \frac{1\,060\,698}{1\,513\,860} \\ &= 0{,}7007.\end{aligned}\]</div><p>Verificação pela segunda identidade: a média das dez correlações de Spearman pareadas é \(\bar r_s=0{,}6258\), e</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\frac{(5-1)\times0{,}6258+1}{5} \\ &= \frac{3{,}5032}{5} \\ &= 0{,}7006,\end{aligned}\]</div><p>que é o mesmo valor até a quarta casa. Verificação pela terceira: \(\chi^2=5\times39\times0{,}7007=136{,}63\) com 39 graus de liberdade e \(p=9{,}1\times10^{-13}\) — exatamente o que <code>friedman.test()</code> devolve.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Sob independência, \(\mathbb{E}[W]=1/m\), e não 0. O coeficiente nunca é negativo.</li><li>\(W=1\) na concordância perfeita; \(W=0\) exigiria que todas as somas de postos fossem iguais, um arranjo muito improvável.</li><li>É invariante a transformações monótonas dos valores: só a ordem importa.</li><li>Não detecta viés constante: somar uma classe a tudo o que um avaliador fez não altera W.</li><li>É exatamente a estatística de <a href="friedman.html">Friedman</a> dividida por \(m(n-1)\): o mesmo teste, em escala de efeito.</li><li>Relaciona-se de forma exata à correlação de Spearman média entre os pares.</li><li>Com \(m=2\), \(W=(1+r_s)/2\), de modo que \(r_s=0\) dá \(W=0{,}5\).</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>value</td><td>A estimativa de W.</td><td>Compare com 1/m, não com 0.</td></tr><tr><td>Correção para empates</td><td>Se foi aplicada.</td><td>Sem ela, W é subestimado.</td></tr><tr><td>χ² e valor-p</td><td>Teste de independência das ordenações.</td><td>Com n ≤ 7, use permutação.</td></tr><tr><td>Spearman médio</td><td>A leitura em escala de correlação.</td><td>r̄ = (mW − 1)/(m − 1).</td></tr><tr><td>Deixa-um-de-fora</td><td>Quem ordena de forma diferente.</td><td>É o diagnóstico acionável.</td></tr><tr><td>Perfis de postos</td><td>Onde as ordenações divergem.</td><td>O gráfico mostra o que o número resume.</td></tr></tbody></table></div><div class="callout try"><strong>O que W revela que o kappa não</strong><p>Nos dados desta ficha, a análise deixa-um-de-fora do <a href="fleiss.html">kappa de Fleiss</a> aponta o avaliador <strong>C</strong> como o mais problemático, e a do W aponta o <strong>E</strong>. Não é contradição: são defeitos diferentes. O C tem viés de severidade — classifica em média uma classe acima — mas ordena as folhas corretamente, e por isso prejudica o kappa e não o W. O E ordena de forma errática sem ser sistematicamente severo, e por isso prejudica o W. Usar os dois coeficientes juntos é o que permite distinguir os dois problemas, e cada um exige uma intervenção diferente no treinamento.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>irr::kendall()</code>, com <code>correct = TRUE</code> para a correção de empates — que deve ser o padrão sempre que a escala tiver poucas classes. <code>DescTools::KendallW()</code> oferece o teste e intervalo. A verificação pelo <a href="friedman.html">teste de Friedman</a> é recomendável, mas exige atenção aos papéis: em <code>friedman.test()</code>, as colunas são os tratamentos e as linhas os blocos, de modo que a matriz precisa ser transposta.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-kendall-w-min" type="button">Copiar código</button></div><pre id="code-kendall-w-min"><code>library(irr)
+kendall(sev, correct = TRUE)     # W com correção para empates
+friedman.test(t(sev))            # o mesmo teste: chi2 = m(n-1)W
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 40 folhas de cafeeiro avaliadas quanto à severidade de ferrugem por cinco avaliadores (A a E), em escala ordinal de 1 (ausente) a 5 (muito alta). O mesmo conjunto atravessa as seis fichas de concordância, o que permite ver como cada coeficiente responde à mesma estrutura de desacordo. Dois dos avaliadores foram construídos com defeitos distintos: o C classifica sistematicamente cerca de uma classe acima dos demais, e o E é o mais errático sem ser o mais severo. Esta ficha trata a escala como ordinal e pergunta apenas se os avaliadores põem as folhas na mesma ordem.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-kendall-w" type="button">Copiar código</button></div><pre id="code-kendall-w"><code># Coeficiente de concordância de Kendall (W): exemplo completo ----
+# Pacotes: irr (kendall), DescTools (KendallW), vegan
+# install.packages(c("irr", "DescTools"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("irr", quietly = TRUE)) install.packages("irr")
+# Os mesmos dados das demais fichas de concordância.
+sev &lt;- matrix(c(
+ 3,3,4,3,4, 5,4,4,4,5, 4,4,5,3,5, 5,5,5,4,5, 5,5,5,4,3,
+ 1,2,2,1,1, 2,2,3,2,4, 1,2,1,1,1, 3,3,4,3,4, 3,4,5,4,2,
+ 4,3,4,3,4, 3,4,4,3,3, 1,1,1,1,1, 3,3,5,3,3, 2,3,2,2,1,
+ 5,5,5,5,4, 5,5,4,3,5, 4,5,5,4,4, 2,2,5,2,2, 3,4,5,4,3,
+ 4,4,4,4,1, 1,2,3,1,3, 3,3,3,3,3, 2,3,5,2,3, 2,1,2,2,2,
+ 2,1,3,2,3, 3,3,4,3,1, 2,1,1,1,5, 3,2,4,5,4, 1,1,1,1,2,
+ 4,5,5,4,4, 2,2,4,2,1, 1,1,4,1,3, 1,1,2,1,1, 3,3,3,2,3,
+ 3,3,3,3,3, 3,5,4,3,2, 2,2,4,2,1, 4,2,5,4,4, 5,5,5,5,2),
+ ncol = 5, byrow = TRUE,
+ dimnames = list(NULL, c("A","B","C","D","E")))
+
 library(irr)
-set.seed(2026)
-ratings &lt;- data.frame(
-  avaliador_1 = mtcars$hp + rnorm(32, 0, 8),
-  avaliador_2 = mtcars$hp + rnorm(32, 0, 8),
-  avaliador_3 = mtcars$hp + rnorm(32, 0, 8))
-print(kendall(ratings, correct = TRUE))
+kendall(sev, correct = TRUE)      # W com correção para empates
+kendall(sev, correct = FALSE)     # sem correção
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+library(DescTools)
+KendallW(sev, correct = TRUE, test = TRUE)
+KendallW(sev, correct = TRUE, test = TRUE, conf.level = 0.95)
 
+# A conta à mão
+n &lt;- nrow(sev); m &lt;- ncol(sev)
+R  &lt;- apply(sev, 2, rank)         # postos DENTRO de cada avaliador
+Rt &lt;- rowSums(R)                  # soma dos postos de cada folha
+mean(Rt)                          # é sempre m(n+1)/2
+S  &lt;- sum((Rt - mean(Rt))^2); S
+TT &lt;- sum(apply(R, 2, function(r) {
+  t &lt;- table(r); sum(t^3 - t) }))  # correção para empates
+TT
+12*S/(m^2*(n^3 - n) - m*TT)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       As avaliações foram simuladas com ruído a partir da potência observada.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="icc.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Coeficiente de correlação intraclasse (ICC)
-    </a>
-<a href="gwet.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Coeficiente AC1 de Gwet
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# As três leituras equivalentes de W
+# (a) proporção da variação máxima de Rt
+Smax &lt;- (m^2*(n^3 - n) - m*TT)/12
+S/Smax
+
+# (b) função da correlação de Spearman média
+pares &lt;- combn(m, 2)
+rs &lt;- apply(pares, 2, function(p) cor(sev[, p[1]], sev[, p[2]], method = "spearman"))
+rbar &lt;- mean(rs); rbar
+((m - 1)*rbar + 1)/m              # é exatamente W
+
+# (c) relação com o teste de Friedman
+W &lt;- 12*S/(m^2*(n^3 - n) - m*TT)
+m*(n - 1)*W                       # a estatística de Friedman
+friedman.test(t(sev))             # os mesmos números
+pchisq(m*(n-1)*W, df = n - 1, lower.tail = FALSE)
+
+# ATENÇÃO aos papéis: em friedman.test(), as COLUNAS são os tratamentos
+# e as LINHAS os blocos. Para o W de Kendall das folhas, as folhas fazem
+# o papel de tratamentos e os avaliadores o de blocos: por isso t(sev).
+
+# O que W NÃO mede: deslocamentos constantes
+sev2 &lt;- sev; sev2[, "C"] &lt;- pmin(sev2[, "C"] + 1, 6)
+kendall(sev2)$value               # praticamente igual
+# E o que ele mede: inversões de ordem
+sev3 &lt;- sev; sev3[, "C"] &lt;- 6 - sev3[, "C"]
+kendall(sev3)$value               # cai muito
+
+# Quem destoa na ordenação
+sapply(1:m, function(j) kendall(sev[, -j])$value)
+
+# Valor-p por permutação, indispensável com n pequeno
+set.seed(4)
+permuta &lt;- function(X, B = 10000) {
+  Wobs &lt;- kendall(X)$value
+  mean(replicate(B, kendall(apply(X, 2, sample))$value) &gt;= Wobs)
+}
+permuta(sev[1:6, ])               # com 6 folhas, a aproximação falha
+
+# Gráficos
+matplot(apply(sev, 2, rank)[order(rowSums(apply(sev, 2, rank))), ],
+        type = "l", lty = 1, col = 1:5, xlab = "Folhas (ordenadas)",
+        ylab = "Posto atribuído")
+legend("topleft", colnames(sev), col = 1:5, lty = 1, bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-kendall-w" type="button">Copiar código</button></div><pre id="code-py-kendall-w"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# concordância: 40 folhas de cafeeiro avaliadas quanto à severidade de
+# ferrugem por cinco avaliadores, em escala de 1 (ausente) a 5 (muito alta).
+# ===================================================================
+SEV = np.array([
+ [3,3,4,3,4],[5,4,4,4,5],[4,4,5,3,5],[5,5,5,4,5],[5,5,5,4,3],
+ [1,2,2,1,1],[2,2,3,2,4],[1,2,1,1,1],[3,3,4,3,4],[3,4,5,4,2],
+ [4,3,4,3,4],[3,4,4,3,3],[1,1,1,1,1],[3,3,5,3,3],[2,3,2,2,1],
+ [5,5,5,5,4],[5,5,4,3,5],[4,5,5,4,4],[2,2,5,2,2],[3,4,5,4,3],
+ [4,4,4,4,1],[1,2,3,1,3],[3,3,3,3,3],[2,3,5,2,3],[2,1,2,2,2],
+ [2,1,3,2,3],[3,3,4,3,1],[2,1,1,1,5],[3,2,4,5,4],[1,1,1,1,2],
+ [4,5,5,4,4],[2,2,4,2,1],[1,1,4,1,3],[1,1,2,1,1],[3,3,3,2,3],
+ [3,3,3,3,3],[3,5,4,3,2],[2,2,4,2,1],[4,2,5,4,4],[5,5,5,5,2]])
+AVAL = ["A", "B", "C", "D", "E"]
+
+from collections import Counter
+
+def postos(v):
+    """Postos médios, com empates resolvidos pela média."""
+    return stats.rankdata(v)
+
+def kendall_w(X, corrigir=True):
+    """W de Kendall. X: n unidades (linhas) x m avaliadores (colunas)."""
+    X = np.asarray(X, float); n, m = X.shape
+    R = np.array([postos(X[:, j]) for j in range(m)])      # m x n
+    Rt = R.sum(axis=0)                                     # soma por unidade
+    S = ((Rt - Rt.mean())**2).sum()
+    if corrigir:
+        T = sum(sum(t**3 - t for t in Counter(R[j]).values()) for j in range(m))
+    else:
+        T = 0.0
+    W = 12*S/(m**2*(n**3 - n) - m*T)
+    return W, S, T, R, Rt
+
+n, m = SEV.shape
+print(f"{n} folhas, {m} avaliadores, severidade ordinal de 1 a 5")
+print("O W de Kendall pergunta se os avaliadores ORDENAM as folhas da mesma")
+print("maneira, e não se atribuem a mesma classe: é a pergunta certa quando o")
+print("que interessa é a hierarquia, e não o rótulo.")
+
+W, S, T, R, Rt = kendall_w(SEV)
+print(f"\nSoma dos postos por folha (Rt), primeiras doze folhas")
+print(f"{'folha':&gt;6}{'classificações':&gt;22}{'postos dos 5 avaliadores':&gt;36}{'Rt':&gt;9}")
+for i in range(12):
+    print(f"{i+1:&gt;6}{str(SEV[i].tolist()):&gt;22}"
+          f"{'  '.join(f'{R[j,i]:5.1f}' for j in range(m)):&gt;36}{Rt[i]:&gt;9.1f}")
+print("...")
+print(f"\nMédia de Rt = {Rt.mean():.2f} (é sempre m(n+1)/2 = "
+      f"{m*(n+1)/2:.2f})")
+print(f"S = soma dos desvios quadráticos de Rt = {S:.2f}")
+print(f"Correção para empates: T = {T:.0f}")
+print(f"\nW = 12 S / [m²(n³ − n) − m T]")
+print(f"W = 12 x {S:.2f} / [{m}² x ({n}³ − {n}) − {m} x {T:.0f}] = {W:.4f}")
+Wsc = kendall_w(SEV, corrigir=False)[0]
+print(f"Sem a correção para empates, W = {Wsc:.4f} - a correção importa aqui,")
+print(f"porque com só cinco classes e {n} folhas há muitos empates.")
+
+# ===================================================================
+# PARTE 1 - as três leituras equivalentes de W
+# ===================================================================
+print("\n" + "=" * 70)
+print("W tem três leituras, todas iguais em valor")
+print("\n(a) Proporção da variação máxima possível de Rt")
+Smax = (m**2*(n**3-n) - m*T)/12
+print(f"    S observado = {S:.2f} | S máximo possível = {Smax:.2f}")
+print(f"    razão = {S/Smax:.4f} = W")
+print("    W = 1 significa concordância perfeita: todos ordenam igual.")
+print("    W = 0 exigiria que as somas de postos fossem todas iguais, o que é")
+print("    um arranjo MUITO improvável, e não o resultado do acaso: sob")
+print("    independência W vale 1/m em média, como a parte 3 mostra.")
+
+print("\n(b) Função da correlação de Spearman média entre os pares")
+rs = []
+for i in range(m):
+    for j in range(i+1, m):
+        rs.append(stats.spearmanr(SEV[:,i], SEV[:,j]).statistic)
+rs = np.array(rs)
+print(f"    {len(rs)} correlações de Spearman pareadas:")
+print("    " + "  ".join(f"{v:.3f}" for v in rs))
+rbar = rs.mean()
+print(f"    média = {rbar:.4f}")
+print(f"    W previsto = [(m − 1)·rbar + 1]/m = [{m-1}x{rbar:.4f} + 1]/{m} = "
+      f"{((m-1)*rbar+1)/m:.4f}")
+print(f"    W calculado = {W:.4f}")
+print("    A relação r = (mW − 1)/(m − 1) é uma identidade algébrica, e vale")
+print("    também com empates, desde que W use a correção e as correlações")
+print("    sejam de Spearman com postos médios.")
+print(f"    A identidade é exata até a quarta casa. Note o que ela implica:")
+print(f"    com m = {m}, mesmo rbar = 0 daria W = 1/m = {1/m:.4f}.")
+print("    W NUNCA é negativo - e por isso 'W = 0,2' não quer dizer o mesmo")
+print("    que 'correlação de 0,2'.")
+
+print("\n(c) Relação exata com o teste de Friedman")
+chi2_fried = m*(n-1)*W
+p_fried = stats.chi2.sf(chi2_fried, n-1)
+print(f"    qui² de Friedman = m(n − 1)W = {m} x {n-1} x {W:.4f} = "
+      f"{chi2_fried:.4f}")
+print(f"    gl = n − 1 = {n-1} | p = {p_fried:.4e}")
+amostra = SEV.T
+chi2_direto = stats.friedmanchisquare(*[amostra[:, i] for i in range(n)]).statistic
+p_direto = stats.friedmanchisquare(*[amostra[:, i] for i in range(n)]).pvalue
+print(f"    scipy.stats.friedmanchisquare devolve {chi2_direto:.4f} "
+      f"com p = {p_direto:.4e}")
+print("    São o MESMO teste: W é a estatística de Friedman reescalonada para")
+print("    o intervalo [0, 1]. Friedman dá o valor-p; W dá o tamanho do efeito.")
+print("    ATENÇÃO aos papéis: no Friedman da ficha correspondente, os")
+print("    tratamentos são as colunas e os blocos as linhas. Aqui é o")
+print("    contrário - as FOLHAS fazem o papel de 'tratamentos' e os")
+print("    AVALIADORES o de blocos, porque a pergunta é se as folhas são")
+print("    ordenadas de modo consistente.")
+
+# ===================================================================
+# PARTE 2 - o que W não diz
+# ===================================================================
+print("\n" + "=" * 70)
+print("W mede concordância de ORDEM, não de VALOR.")
+print("\nDemonstração: somando 1 classe a tudo o que o avaliador C fez")
+S2 = SEV.copy(); S2[:,2] = np.clip(S2[:,2] + 1, 1, 6)
+W2 = kendall_w(S2)[0]
+print(f"    W original = {W:.4f} | W com +1 em C = {W2:.4f}")
+print("    Quase não muda: somar uma constante não altera a ordenação.")
+print("    Se o que interessa é o VALOR atribuído, e não a ordem, W é a")
+print("    ferramenta errada - use o ICC ou o kappa ponderado.")
+
+print("\nDemonstração oposta: INVERTENDO a ordenação do avaliador C")
+S3 = SEV.copy(); S3[:,2] = 6 - S3[:,2]
+W3 = kendall_w(S3)[0]
+print(f"    W com C invertido = {W3:.4f}")
+print(f"    A queda é grande ({W:.4f} para {W3:.4f}), mas W continua bem acima")
+print("    de zero, porque os outros quatro avaliadores seguem concordando")
+print("    entre si. W é um índice GLOBAL: ele não aponta o dissidente.")
+
+print("\nPara localizar o dissidente, retire um avaliador de cada vez:")
+print(f"{'sem o avaliador':&gt;18}{'W':&gt;10}{'variação':&gt;12}")
+for j in range(m):
+    resto = [c for c in range(m) if c != j]
+    Wj = kendall_w(SEV[:, resto])[0]
+    print(f"{AVAL[j]:&gt;18}{Wj:&gt;10.4f}{Wj-W:&gt;+12.4f}")
+print("Tirar E é o que mais eleva W: ele é o avaliador cuja ORDENAÇÃO mais")
+print("destoa. Compare com a ficha do kappa de Fleiss, em que o avaliador C")
+print("era o mais problemático - lá a pergunta era sobre o VALOR da classe,")
+print("e C tem viés de severidade sem errar a ordem.")
+
+# ===================================================================
+# PARTE 3 - distribuição de W sob independência
+# ===================================================================
+print("\n" + "=" * 70)
+print("O que W vale quando não há concordância nenhuma?")
+print("Simulação: 20.000 conjuntos em que cada avaliador ordena as 40 folhas")
+print("ao acaso, usando as mesmas marginais dos avaliadores reais.")
+rng = np.random.default_rng(13)
+marg = [np.bincount(SEV[:,j], minlength=6)[1:]/n for j in range(m)]
+sim = []
+for _ in range(20000):
+    Z = np.column_stack([rng.choice(5, n, p=marg[j])+1 for j in range(m)])
+    sim.append(kendall_w(Z)[0])
+sim = np.array(sim)
+print(f"\n  média = {sim.mean():.4f}  (o valor esperado é 1/m = {1/m:.4f})")
+print(f"  desvio-padrão = {sim.std(ddof=1):.4f}")
+print(f"  percentil 95 = {np.percentile(sim, 95):.4f}")
+print(f"  W observado = {W:.4f}, muito acima de qualquer valor simulado")
+print(f"  (maior W simulado = {sim.max():.4f})")
+print("\nO valor esperado de W sob independência é 1/m, e não 0: com cinco")
+print(f"avaliadores, {1/m:.2f}. Um W de 0,25 com cinco avaliadores não é")
+print("concordância fraca - é concordância NENHUMA. Esse é o erro de leitura")
+print("mais comum do coeficiente.")
+print(f"\nValor esperado de W sob independência, por número de avaliadores:")
+print("  " + "  ".join(f"m = {mm}: {1/mm:.3f}" for mm in [2, 3, 5, 10, 20]))
+
+# ===================================================================
+# PARTE 4 - W com poucas unidades e o teste exato
+# ===================================================================
+print("\n" + "=" * 70)
+print("Com n pequeno, a aproximação qui-quadrado falha e é preciso permutar.")
+print("Permutação: embaralham-se os postos DENTRO de cada avaliador, que é o")
+print("que a hipótese nula autoriza.")
+def p_permuta(X, B=20000, semente=4):
+    Wobs = kendall_w(X)[0]; nn, mm = X.shape
+    rng = np.random.default_rng(semente); c = 0
+    for _ in range(B):
+        Z = np.column_stack([rng.permutation(X[:, j]) for j in range(mm)])
+        if kendall_w(Z)[0] &gt;= Wobs: c += 1
+    return (c+1)/(B+1)
+print(f"\n{'subconjunto':&lt;22}{'n':&gt;4}{'W':&gt;9}{'p qui-quadrado':&gt;18}"
+      f"{'p permutação':&gt;16}")
+for rot, idx in [("todas as folhas", np.arange(40)),
+                 ("12 primeiras", np.arange(12)),
+                 ("6 primeiras", np.arange(6))]:
+    Xs = SEV[idx]; Ws = kendall_w(Xs)[0]; ns = len(idx)
+    pq = stats.chi2.sf(m*(ns-1)*Ws, ns-1)
+    print(f"{rot:&lt;22}{ns:&gt;4}{Ws:&gt;9.4f}{pq:&gt;18.3e}{p_permuta(Xs):&gt;16.5f}")
+print("\nO valor-p por permutação não pode descer abaixo de 1/(B + 1) = 5e-05,")
+print("que é o piso de 20.000 reamostragens: com 40 e com 12 folhas, os dois")
+print("métodos apenas concordam em que a evidência é esmagadora. Com 6 folhas,")
+print("porém, a aproximação qui-quadrado devolve 2,2e-03 e a permutação 2,5e-04,")
+print("quase dez vezes menor - a aproximação é grosseira ali. A recomendação")
+print("clássica é usá-la apenas com n maior que 7; abaixo disso, tabelas exatas")
+print("ou permutação.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">40 folhas, 5 avaliadores, severidade ordinal de 1 a 5
+O W de Kendall pergunta se os avaliadores ORDENAM as folhas da mesma
+maneira, e não se atribuem a mesma classe: é a pergunta certa quando o
+que interessa é a hierarquia, e não o rótulo.
+
+Soma dos postos por folha (Rt), primeiras doze folhas
+ folha        classificações            postos dos 5 avaliadores       Rt
+     1       [3, 3, 4, 3, 4]    22.5   21.5   21.0   23.0   31.0    119.0
+     2       [5, 4, 4, 4, 5]    37.5   29.5   21.0   33.0   38.0    159.0
+     3       [4, 4, 5, 3, 5]    31.5   29.5   34.0   23.0   38.0    156.0
+     4       [5, 5, 5, 4, 5]    37.5   36.5   34.0   33.0   38.0    179.0
+     5       [5, 5, 5, 4, 3]    37.5   36.5   34.0   33.0   21.0    162.0
+     6       [1, 2, 2, 1, 1]     4.0   12.0    6.5    4.5    5.0     32.0
+     7       [2, 2, 3, 2, 4]    12.0   12.0   11.5   13.0   31.0     79.5
+     8       [1, 2, 1, 1, 1]     4.0   12.0    2.5    4.5    5.0     28.0
+     9       [3, 3, 4, 3, 4]    22.5   21.5   21.0   23.0   31.0    119.0
+    10       [3, 4, 5, 4, 2]    22.5   29.5   34.0   33.0   12.5    131.5
+    11       [4, 3, 4, 3, 4]    31.5   21.5   21.0   23.0   31.0    128.0
+    12       [3, 4, 4, 3, 3]    22.5   29.5   21.0   23.0   21.0    117.0
+...
+
+Média de Rt = 102.50 (é sempre m(n+1)/2 = 102.50)
+S = soma dos desvios quadráticos de Rt = 88391.50
+Correção para empates: T = 17028
+
+W = 12 S / [m²(n³ − n) − m T]
+W = 12 x 88391.50 / [5² x (40³ − 40) − 5 x 17028] = 0.7007
+Sem a correção para empates, W = 0.6634 - a correção importa aqui,
+porque com só cinco classes e 40 folhas há muitos empates.
+
+======================================================================
+W tem três leituras, todas iguais em valor
+
+(a) Proporção da variação máxima possível de Rt
+    S observado = 88391.50 | S máximo possível = 126155.00
+    razão = 0.7007 = W
+    W = 1 significa concordância perfeita: todos ordenam igual.
+    W = 0 exigiria que as somas de postos fossem todas iguais, o que é
+    um arranjo MUITO improvável, e não o resultado do acaso: sob
+    independência W vale 1/m em média, como a parte 3 mostra.
+
+(b) Função da correlação de Spearman média entre os pares
+    10 correlações de Spearman pareadas:
+    0.839  0.674  0.893  0.564  0.668  0.774  0.339  0.735  0.356  0.416
+    média = 0.6258
+    W previsto = [(m − 1)·rbar + 1]/m = [4x0.6258 + 1]/5 = 0.7006
+    W calculado = 0.7007
+    A relação r = (mW − 1)/(m − 1) é uma identidade algébrica, e vale
+    também com empates, desde que W use a correção e as correlações
+    sejam de Spearman com postos médios.
+    A identidade é exata até a quarta casa. Note o que ela implica:
+    com m = 5, mesmo rbar = 0 daria W = 1/m = 0.2000.
+    W NUNCA é negativo - e por isso 'W = 0,2' não quer dizer o mesmo
+    que 'correlação de 0,2'.
+
+(c) Relação exata com o teste de Friedman
+    qui² de Friedman = m(n − 1)W = 5 x 39 x 0.7007 = 136.6283
+    gl = n − 1 = 39 | p = 9.1458e-13
+    scipy.stats.friedmanchisquare devolve 136.6283 com p = 9.1458e-13
+    São o MESMO teste: W é a estatística de Friedman reescalonada para
+    o intervalo [0, 1]. Friedman dá o valor-p; W dá o tamanho do efeito.
+    ATENÇÃO aos papéis: no Friedman da ficha correspondente, os
+    tratamentos são as colunas e os blocos as linhas. Aqui é o
+    contrário - as FOLHAS fazem o papel de 'tratamentos' e os
+    AVALIADORES o de blocos, porque a pergunta é se as folhas são
+    ordenadas de modo consistente.
+
+======================================================================
+W mede concordância de ORDEM, não de VALOR.
+
+Demonstração: somando 1 classe a tudo o que o avaliador C fez
+    W original = 0.7007 | W com +1 em C = 0.7007
+    Quase não muda: somar uma constante não altera a ordenação.
+    Se o que interessa é o VALOR atribuído, e não a ordem, W é a
+    ferramenta errada - use o ICC ou o kappa ponderado.
+
+Demonstração oposta: INVERTENDO a ordenação do avaliador C
+    W com C invertido = 0.3145
+    A queda é grande (0.7007 para 0.3145), mas W continua bem acima
+    de zero, porque os outros quatro avaliadores seguem concordando
+    entre si. W é um índice GLOBAL: ele não aponta o dissidente.
+
+Para localizar o dissidente, retire um avaliador de cada vez:
+   sem o avaliador         W    variação
+                 A    0.6607     -0.0400
+                 B    0.7047     +0.0040
+                 C    0.7281     +0.0274
+                 D    0.6801     -0.0206
+                 E    0.8233     +0.1226
+Tirar E é o que mais eleva W: ele é o avaliador cuja ORDENAÇÃO mais
+destoa. Compare com a ficha do kappa de Fleiss, em que o avaliador C
+era o mais problemático - lá a pergunta era sobre o VALOR da classe,
+e C tem viés de severidade sem errar a ordem.
+
+======================================================================
+O que W vale quando não há concordância nenhuma?
+Simulação: 20.000 conjuntos em que cada avaliador ordena as 40 folhas
+ao acaso, usando as mesmas marginais dos avaliadores reais.
+
+  média = 0.1996  (o valor esperado é 1/m = 0.2000)
+  desvio-padrão = 0.0405
+  percentil 95 = 0.2690
+  W observado = 0.7007, muito acima de qualquer valor simulado
+  (maior W simulado = 0.3862)
+
+O valor esperado de W sob independência é 1/m, e não 0: com cinco
+avaliadores, 0.20. Um W de 0,25 com cinco avaliadores não é
+concordância fraca - é concordância NENHUMA. Esse é o erro de leitura
+mais comum do coeficiente.
+
+Valor esperado de W sob independência, por número de avaliadores:
+  m = 2: 0.500  m = 3: 0.333  m = 5: 0.200  m = 10: 0.100  m = 20: 0.050
+
+======================================================================
+Com n pequeno, a aproximação qui-quadrado falha e é preciso permutar.
+Permutação: embaralham-se os postos DENTRO de cada avaliador, que é o
+que a hipótese nula autoriza.
+
+subconjunto              n        W    p qui-quadrado    p permutação
+todas as folhas         40   0.7007         9.146e-13         0.00005
+12 primeiras            12   0.7656         1.553e-05         0.00005
+6 primeiras              6   0.7484         2.177e-03         0.00025
+
+O valor-p por permutação não pode descer abaixo de 1/(B + 1) = 5e-05,
+que é o piso de 20.000 reamostragens: com 40 e com 12 folhas, os dois
+métodos apenas concordam em que a evidência é esmagadora. Com 6 folhas,
+porém, a aproximação qui-quadrado devolve 2,2e-03 e a permutação 2,5e-04,
+quase dez vezes menor - a aproximação é grosseira ali. A recomendação
+clássica é usá-la apenas com n maior que 7; abaixo disso, tabelas exatas
+ou permutação.</pre></div><figure class="fig"><img src="../assets/resultados/kendall-w.png" alt="A matriz de correlações de Spearman, o efeito de remover cada avaliador e a distribuição nula de W" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, as correlações de Spearman entre todos os pares, cuja média de 0,6258 reproduz o W pela identidade algébrica. No centro, o W recalculado sem cada avaliador: remover o E eleva de 0,70 para 0,82, identificando-o como o que mais destoa na ordenação. À direita, a distribuição de W em 20.000 conjuntos simulados em que os avaliadores ordenam ao acaso, concentrada em torno de 1/m = 0,20, com o valor observado muito à direita. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O coeficiente</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>S (soma dos desvios quadráticos de Rᵢ)</td><td>88 391,50</td></tr><tr><td>S máximo possível</td><td>126 155,00</td></tr><tr><td>Correção para empates (T)</td><td>17 028</td></tr><tr><td><strong>W com correção</strong></td><td><strong>0,7007</strong></td></tr><tr><td>W sem correção</td><td>0,6634</td></tr><tr><td>Spearman médio dos dez pares</td><td>0,6258</td></tr><tr><td>W previsto por [(m−1)r̄ + 1]/m</td><td>0,7006</td></tr><tr><td>χ² de Friedman = m(n−1)W</td><td>136,6283; gl = 39; p = 9,15 × 10⁻¹³</td></tr><tr><td>Verificação com <code>friedmanchisquare</code></td><td>136,6283; p = 9,15 × 10⁻¹³</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As dez correlações de Spearman pareadas</caption><thead><tr><th>Par</th><th>rₛ</th><th>Par</th><th>rₛ</th></tr></thead><tbody><tr><td>A–B</td><td>0,839</td><td>B–D</td><td>0,774</td></tr><tr><td>A–C</td><td>0,674</td><td>B–E</td><td>0,339</td></tr><tr><td><strong>A–D</strong></td><td><strong>0,893</strong></td><td>C–D</td><td>0,735</td></tr><tr><td>A–E</td><td>0,564</td><td>C–E</td><td>0,356</td></tr><tr><td>B–C</td><td>0,668</td><td><strong>D–E</strong></td><td><strong>0,416</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O que W mede e o que não mede</caption><thead><tr><th>Transformação aplicada ao avaliador C</th><th>W resultante</th></tr></thead><tbody><tr><td>Nenhuma (dados originais)</td><td>0,7007</td></tr><tr><td>Somar 1 classe a todas as avaliações</td><td><strong>0,7007</strong> — não muda</td></tr><tr><td>Inverter a ordenação (6 − classe)</td><td>0,3145 — cai muito</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Deixa-um-de-fora</caption><thead><tr><th>Sem o avaliador</th><th>W</th><th>Variação</th></tr></thead><tbody><tr><td>A</td><td>0,6607</td><td>−0,0400</td></tr><tr><td>B</td><td>0,7047</td><td>+0,0040</td></tr><tr><td>C</td><td>0,7281</td><td>+0,0274</td></tr><tr><td>D</td><td>0,6801</td><td>−0,0206</td></tr><tr><td><strong>E</strong></td><td><strong>0,8233</strong></td><td><strong>+0,1226</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>W sob independência (20 000 simulações, m = 5, n = 40)</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>Média</td><td>0,1996 (o esperado é 1/m = 0,2000)</td></tr><tr><td>Desvio-padrão</td><td>0,0405</td></tr><tr><td>Percentil 95</td><td>0,2690</td></tr><tr><td>Maior valor simulado</td><td>0,3862</td></tr><tr><td><strong>W observado</strong></td><td><strong>0,7007</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Aproximação qui-quadrado contra permutação</caption><thead><tr><th>Subconjunto</th><th>n</th><th>W</th><th>p (qui-quadrado)</th><th>p (permutação)</th></tr></thead><tbody><tr><td>Todas as folhas</td><td>40</td><td>0,7007</td><td>9,15 × 10⁻¹³</td><td>0,00005</td></tr><tr><td>12 primeiras</td><td>12</td><td>0,7656</td><td>1,55 × 10⁻⁵</td><td>0,00005</td></tr><tr><td><strong>6 primeiras</strong></td><td>6</td><td>0,7484</td><td><strong>2,18 × 10⁻³</strong></td><td><strong>2,5 × 10⁻⁴</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> o W de 0,7007 indica concordância substancial de ordenação — e a comparação relevante não é com zero, mas com 0,20, que é o valor esperado sob independência com cinco avaliadores. A simulação confirma que o maior W obtido em 20 000 conjuntos aleatórios foi 0,386, muito abaixo do observado.</p><p>As três identidades funcionam como verificação mútua. A média das correlações de Spearman, 0,6258, reproduz o W pela fórmula \([(m-1)\bar r_s+1]/m\) até a quarta casa decimal. E a estatística de Friedman calculada como \(m(n-1)W\) coincide exatamente com a que <code>friedmanchisquare</code> devolve. Isso não é coincidência numérica: W é a estatística de Friedman reescalonada para o intervalo \([1/m, 1]\). O teste de Friedman fornece o valor-p; o W fornece o tamanho do efeito.</p><p><strong>Sobre o que W não mede:</strong> somando uma classe inteira a todas as avaliações do C, o W não se altera — porque a ordenação é a mesma. Invertendo a ordenação dele, o W cai para 0,3145, mas continua bem acima de 0,20, porque os outros quatro avaliadores seguem concordando entre si. As duas demonstrações delimitam o que o coeficiente enxerga: ordem, e só ordem. Se o valor atribuído importa, a ferramenta é o <a href="icc.html">ICC</a> ou o <a href="kappa-ponderado.html">kappa ponderado</a>.</p><p><strong>Sobre quem destoa:</strong> a análise deixa-um-de-fora aponta o avaliador E — removê-lo eleva o W de 0,70 para 0,82. As correlações pareadas confirmam: as três menores da matriz envolvem o E (0,339 com B, 0,356 com C, 0,416 com D). Note o contraste com a ficha do <a href="fleiss.html">kappa de Fleiss</a>, em que o avaliador C era o mais problemático. Os dois destoam por motivos diferentes, e é justamente o uso dos dois coeficientes lado a lado que permite separar "avaliador severo mas consistente" de "avaliador errático".</p><p><strong>Sobre a aproximação:</strong> com 40 e com 12 folhas, a aproximação qui-quadrado e a permutação concordam em que a evidência é esmagadora — o valor-p por permutação não pode descer abaixo de 1/(B+1) = 5 × 10⁻⁵, que é o piso de 20 000 reamostragens. Com 6 folhas, porém, a aproximação devolve 2,2 × 10⁻³ e a permutação 2,5 × 10⁻⁴, quase dez vezes menor: a aproximação é grosseira ali, e conservadora. A recomendação clássica de usá-la apenas com \(n&gt;7\) se confirma.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Comparar W com zero</td><td>O piso sob independência é 1/m.</td></tr><tr><td>Ler W como se fosse uma correlação</td><td>Converta com r̄ = (mW − 1)/(m − 1).</td></tr><tr><td>Omitir a correção para empates</td><td>Com poucas classes, ela muda o resultado em 0,04.</td></tr><tr><td>Usar a aproximação qui-quadrado com n pequeno</td><td>Com n ≤ 7, use permutação.</td></tr><tr><td>Esperar que W detecte viés constante</td><td>Ele ignora deslocamentos; use o <a href="icc.html">ICC</a>.</td></tr><tr><td>Trocar os papéis em <code>friedman.test()</code></td><td>As colunas são os tratamentos; transponha a matriz.</td></tr><tr><td>Aplicar a escala nominal</td><td>Sem ordem, use o <a href="fleiss.html">kappa de Fleiss</a>.</td></tr><tr><td>Usar com dados faltantes</td><td>W exige delineamento completo; use Krippendorff.</td></tr><tr><td>Reportar só W, sem o deixa-um-de-fora</td><td>O índice global não aponta o dissidente.</td></tr><tr><td>Supor que W significativo implica boa concordância</td><td>Com n grande, W de 0,30 é significativo e ruim.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="friedman.html">Teste de Friedman</a></td><td>Quando se quer o valor-p; é o mesmo teste.</td></tr><tr><td><a href="spearman.html">Correlação de Spearman</a></td><td>Exatamente dois avaliadores.</td></tr><tr><td><a href="icc.html">Correlação intraclasse</a></td><td>Quando o valor absoluto importa, e não só a ordem.</td></tr><tr><td><a href="kappa-ponderado.html">Kappa ponderado</a></td><td>Escala ordinal com poucas categorias e crédito parcial.</td></tr><tr><td><a href="fleiss.html">Kappa de Fleiss</a></td><td>Escala nominal.</td></tr><tr><td>Alfa de Krippendorff ordinal</td><td>Dados faltantes ou número variável de avaliadores.</td></tr><tr><td>W de Kendall parcial</td><td>Quando se quer controlar o efeito de uma terceira ordenação.</td></tr><tr><td>Modelos de Bradley–Terry ou Plackett–Luce</td><td>Quando se quer modelar as preferências, e não só medir a concordância.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a escala é ordinal e o delineamento completo.</li><li>Calcule W com a correção para empates.</li><li>Compare o valor com 1/m, e não com zero.</li><li>Converta para a escala de Spearman, que é mais familiar.</li><li>Verifique o resultado pela identidade com o teste de Friedman.</li><li>Com n pequeno, obtenha o valor-p por permutação.</li><li>Faça a análise deixa-um-de-fora para localizar o dissidente.</li><li>Combine com um coeficiente que meça o valor, não só a ordem.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>KENDALL, Maurice G.; BABINGTON SMITH, B. The problem of m rankings. <em>The Annals of Mathematical Statistics</em>, v. 10, n. 3, p. 275-287, 1939.</li><li>KENDALL, Maurice G. <em>Rank correlation methods.</em> London: Charles Griffin, 1948.</li><li>KENDALL, Maurice G. A new measure of rank correlation. <em>Biometrika</em>, v. 30, n. 1-2, p. 81-93, 1938.</li><li>FRIEDMAN, Milton. The use of ranks to avoid the assumption of normality implicit in the analysis of variance. <em>Journal of the American Statistical Association</em>, v. 32, n. 200, p. 675-701, 1937.</li><li>SIEGEL, Sidney; CASTELLAN, N. John. <em>Nonparametric statistics for the behavioral sciences.</em> 2. ed. New York: McGraw-Hill, 1988.</li><li>LEGENDRE, Pierre. Species associations: the Kendall coefficient of concordance revisited. <em>Journal of Agricultural, Biological, and Environmental Statistics</em>, v. 10, n. 2, p. 226-245, 2005.</li><li>GIBBONS, Jean Dickinson; CHAKRABORTI, Subhabrata. <em>Nonparametric statistical inference.</em> 5. ed. Boca Raton: CRC Press, 2011.</li><li>HOLLANDER, Myles; WOLFE, Douglas A.; CHICKEN, Eric. <em>Nonparametric statistical methods.</em> 3. ed. Hoboken: Wiley, 2014.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>GWET, Kilem L. <em>Handbook of inter-rater reliability.</em> 4. ed. Gaithersburg: Advanced Analytics, 2014.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>friedman.test</code>, pacote <code>stats</code>.)</li><li>GAMER, Matthias; LEMON, Jim; FELLOWS, Ian; SINGH, Puspendra. <em>irr: various coefficients of interrater reliability and agreement.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=irr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=irr</a>.</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Escala ao menos ordinal, delineamento completo, unidades e avaliações independentes, e n maior que 7 para a aproximação qui-quadrado.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>irr, DescTools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="icc.html"><span>← ANTERIOR</span>Coeficiente de correlação intraclasse (ICC)</a><a href="gwet.html"><span>PRÓXIMO →</span>Coeficiente AC1 de Gwet</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

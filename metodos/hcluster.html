@@ -4,306 +4,391 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Agrupamento hierárquico: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Agrupamento hierárquico | Estatística e Ciência de Dados
-  </title>
+<meta content="Agrupamento hierárquico: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Agrupamento hierárquico | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado não supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Agrupamento hierárquico
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado não supervisionado · 08 · AGRUPAMENTO
-    </span>
-<h1>
-     Agrupamento hierárquico
-    </h1>
-<p class="detail-lead">
-     Identifica grupos de observações semelhantes sem definir previamente sua composição.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/hcluster.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Identifica grupos de observações semelhantes sem definir previamente sua composição.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Escala e seleção de variáveis adequadas, distância pertinente e sensibilidade a outliers verificada.</li><li>Não exige normalidade.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[d(i,j)=\sqrt{\sum_{\ell=1}^{p}(x_{i\ell}-x_{j\ell})^2}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(d(i,j)\)
-        </dt>
-<dd>
-         distância euclidiana entre observações i e j
-        </dd>
-</div>
-<div>
-<dt>
-         \(x_{i\ell}\)
-        </dt>
-<dd>
-         atributo ℓ da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(p\)
-        </dt>
-<dd>
-         número de atributos
-        </dd>
-</div>
-</dl>
-<p>
-       Distância d( \(x_{i}\) , \(x_{j}\) ) e critério de Ward, ligação média/completa etc.; sem estatística de teste geral.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Avalie estabilidade dos agrupamentos, dendrograma e interpretação técnica. \(p&lt;0{,}05\) não se aplica automaticamente.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne diferentes características quantitativas de automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Construir um dendrograma e examinar quais veículos se agrupam segundo suas características.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-hcluster" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-hcluster"><code># Agrupamento hierárquico ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado não supervisionado</span><span>›</span><span>Agrupamento hierárquico</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado não supervisionado · AGRUPAMENTO</span><h1>Agrupamento hierárquico</h1><p class="detail-lead">Constrói uma hierarquia de fusões sucessivas entre observações, resumida em um dendrograma que o analista corta onde julgar adequado.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/hcluster.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/hcluster.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o método</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O agrupamento hierárquico constrói uma árvore de fusões sucessivas: começa com cada observação em seu próprio grupo e, a cada passo, junta os dois grupos mais próximos, até que todos estejam em um só. O resultado não é uma partição, mas uma hierarquia de partições — e a escolha de onde cortá-la é uma decisão do analista, não do algoritmo.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Agrupamento hierárquico" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Árvore de fusões</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">não uma partição única</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Decisões</text><text x="208" y="196.5" text-anchor="end" font-size="10.8" fill="#3d5042">Medida de distância</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Critério de ligação</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Padronizar ou não</text><text x="208" y="241.5" text-anchor="end" font-size="10.8" fill="#3d5042">Onde cortar</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Critérios</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Simples, completa</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">média, Ward</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Avaliação</text><text x="832" y="49.0" text-anchor="start" font-size="10.8" fill="#3d5042">Correlação cofenética</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Silhueta</text><text x="832" y="79.0" text-anchor="start" font-size="10.8" fill="#3d5042">Alturas de fusão</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">dist() + hclust()</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">cutree()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Simples encadeia</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">Ward favorece esferas</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Agrupamento hierárquico</text></svg><figcaption>Visão geral do agrupamento hierárquico. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Quatro decisões, não uma</strong><p>O algoritmo é determinístico, mas o resultado depende de quatro escolhas do analista: qual distância usar, qual critério de ligação, padronizar ou não as variáveis, e onde cortar a árvore. Nesta ficha cada uma delas é exibida com os números que produz, porque as quatro mudam a resposta — em <code>iris</code>, padronizar reduz o índice de Rand ajustado de 0,731 para 0,615.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o método</h2><p>Partindo de \(n\) grupos unitários, o método aglomerativo repete \(n-1\) vezes o mesmo passo: encontrar o par de grupos com a menor distância entre si e fundi-lo. O que distingue os critérios de ligação é apenas a definição de distância <em>entre grupos</em>, a partir das distâncias entre pontos.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{simples:}\]\[D(G,H)=\min_{i\in G,\,j\in H}d_{ij}\]\[\text{completa:}\]\[D(G,H)=\max_{i\in G,\,j\in H}d_{ij}\]\[\text{média (UPGMA):}\]\[D(G,H)=\frac{1}{|G||H|}\sum_{i\in G}\sum_{j\in H}d_{ij}\]\[\text{Ward:}\]\[D(G,H)=\sqrt{\frac{2|G||H|}{|G|+|H|}}\;\lVert\bar x_G-\bar x_H\rVert\]</div><figure class="fig"><img src="../assets/resultados/hcluster-didatica.png" alt="Os seis pontos do exemplo, a matriz de distâncias e os dendrogramas dos quatro critérios" loading="lazy"/><figcaption><strong>A mecânica, em seis pontos.</strong> À esquerda, as seis amostras no plano, com os pares mais próximos indicados. No centro, a matriz de distâncias euclidianas que alimenta o algoritmo. À direita, os quatro dendrogramas: todos fundem (a,b) e (c,d) nos dois primeiros passos, porque a menor distância é a mesma, mas divergem a partir do terceiro — a ligação simples junta (a,b) ao bloco de (c,d,e) antes de incorporar f, e os critérios completa e Ward fazem o contrário. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>O que a altura de cada fusão significa</strong><p>A altura de um nó do dendrograma é a distância entre os dois grupos no momento da fusão. Fusões baixas juntam coisas parecidas; uma fusão muito mais alta que as anteriores indica que o algoritmo foi obrigado a juntar grupos realmente diferentes — e é por isso que o maior salto nas alturas é a pista usual para escolher onde cortar.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><p>O agrupamento hierárquico não é um teste de hipóteses e não tem pressupostos distribucionais. Tem, em troca, um conjunto de requisitos práticos que determinam se o resultado significará algo.</p><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Requisito</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Distância adequada ao tipo de dado</td><td>Euclidiana supõe variáveis numéricas comparáveis.</td><td>Para dados mistos, use a distância de Gower; para binários, Jaccard.</td></tr><tr><td>Escalas comparáveis</td><td>Variáveis de maior amplitude dominam a distância.</td><td>Compare desvios-padrão e amplitudes; decida sobre padronizar.</td></tr><tr><td>Ausência de observações atípicas extremas</td><td>Um ponto distante pode formar um grupo unitário.</td><td>Examine as distâncias máximas e as últimas fusões.</td></tr><tr><td>Estrutura de grupos compatível com o critério</td><td>Ward favorece grupos esféricos de tamanho similar.</td><td>Compare vários critérios; use a silhueta.</td></tr><tr><td>Dendrograma fiel às distâncias</td><td>Se não for, a árvore engana.</td><td>Correlação cofenética: acima de 0,8 é satisfatório.</td></tr><tr><td>Número de observações manejável</td><td>A matriz de distâncias é O(n²).</td><td>Com n acima de alguns milhares, prefira <a href="kmeans.html">k-médias</a>.</td></tr></tbody></table></div><div class="callout warn"><strong>Padronizar: o padrão, mas não sempre</strong><p>Quando as variáveis estão em unidades diferentes, padronizar é obrigatório — do contrário a variável medida em unidades maiores domina. Quando estão na mesma unidade, padronizar pode <em>custar</em> informação, porque iguala o peso de uma variável discriminante e de uma irrelevante. Em <code>iris</code>, as quatro medidas estão em centímetros, e o comprimento da pétala (DP = 1,765 cm) separa as espécies muito melhor que a largura da sépala (DP = 0,436 cm). Padronizar iguala as duas e derruba o Rand ajustado de 0,731 para 0,615.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Não há hipótese nula a testar: o método é descritivo. A formulação é algorítmica, e o que se calcula é a sequência de fusões, as alturas correspondentes e as medidas de qualidade.</p><h3>A fórmula de recorrência de Lance–Williams</h3><p>Todos os critérios de ligação usuais são casos particulares de uma única recorrência, que é o que permite implementá-los em um só algoritmo. Quando os grupos \(G\) e \(H\) se fundem, a distância do novo grupo a um terceiro grupo \(K\) é</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&D(G\cup H,K) \\ &= \alpha_G D(G,K)+\alpha_H D(H,K) \\ &\quad +\beta\,D(G,H) \\ &\quad +\gamma\bigl|D(G,K) \\ &\quad -D(H,K)\bigr|.\end{aligned}\]</div><div class="table-wrap"><table class="method-table"><caption>Coeficientes de Lance–Williams</caption><thead><tr><th>Critério</th><th>α_G</th><th>α_H</th><th>β</th><th>γ</th></tr></thead><tbody><tr><td>Simples</td><td>1/2</td><td>1/2</td><td>0</td><td>−1/2</td></tr><tr><td>Completa</td><td>1/2</td><td>1/2</td><td>0</td><td>+1/2</td></tr><tr><td>Média (UPGMA)</td><td>|G|/(|G|+|H|)</td><td>|H|/(|G|+|H|)</td><td>0</td><td>0</td></tr><tr><td>Centroide</td><td>|G|/(|G|+|H|)</td><td>|H|/(|G|+|H|)</td><td>−|G||H|/(|G|+|H|)²</td><td>0</td></tr><tr><td>Ward</td><td>(|G|+|K|)/(|G|+|H|+|K|)</td><td>(|H|+|K|)/(|G|+|H|+|K|)</td><td>−|K|/(|G|+|H|+|K|)</td><td>0</td></tr></tbody></table></div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(d_{ij}\)</dt><dd>distância entre as observações \(i\) e \(j\)</dd></div><div><dt>\(D(G,H)\)</dt><dd>distância entre os grupos \(G\) e \(H\)</dd></div><div><dt>\(|G|\)</dt><dd>número de observações no grupo \(G\)</dd></div><div><dt>\(\bar x_G\)</dt><dd>vetor de médias do grupo \(G\)</dd></div><div><dt>\(\alpha,\beta,\gamma\)</dt><dd>coeficientes que definem o critério de ligação</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Seis amostras, duas medidas</caption><thead><tr><th>Amostra</th><th>x₁</th><th>x₂</th></tr></thead><tbody><tr><td>a</td><td>1,0</td><td>1,0</td></tr><tr><td>b</td><td>1,5</td><td>1,2</td></tr><tr><td>c</td><td>5,0</td><td>5,0</td></tr><tr><td>d</td><td>5,5</td><td>5,2</td></tr><tr><td>e</td><td>3,0</td><td>4,5</td></tr><tr><td>f</td><td>8,0</td><td>1,0</td></tr></tbody></table></div><div class="worked"><strong>As fusões, com ligação simples</strong><p>A menor distância da matriz é \(d_{ab}=\sqrt{0{,}5^2+0{,}2^2}=0{,}5385\), e \(d_{cd}\) tem exatamente o mesmo valor. Os dois primeiros passos são, portanto, (a,b) e (c,d), em qualquer critério.</p><p>No terceiro passo, a ligação simples calcula \[\begin{aligned}&D(\{e\},\{c,d\}) \\ &= \min(2{,}0616;\,2{,}5962) \\ &= 2{,}0616,\end{aligned}\] que é menor que \(D(\{a,b\},\{c,d\})=5{,}1662\) e que \(D(\{f\},\cdot)\). Funde-se então e ao bloco (c,d), à altura 2,0616.</p><div class="table-wrap"><table class="method-table"><caption>As cinco fusões, por critério</caption><thead><tr><th>Passo</th><th>Fusão</th><th>Simples</th><th>Completa</th><th>Média</th><th>Ward</th></tr></thead><tbody><tr><td>1</td><td>(a,b)</td><td>0,5385</td><td>0,5385</td><td>0,5385</td><td>0,5385</td></tr><tr><td>2</td><td>(c,d)</td><td>0,5385</td><td>0,5385</td><td>0,5385</td><td>0,5385</td></tr><tr><td>3</td><td>e com (c,d)</td><td>2,0616</td><td>2,5962</td><td>2,3289</td><td>2,6889</td></tr><tr><td>4</td><td>—</td><td>3,6249</td><td>6,1033</td><td>5,0486</td><td>6,4179</td></tr><tr><td>5</td><td>—</td><td>4,8877</td><td>7,0000</td><td>5,8988</td><td>8,1644</td></tr></tbody></table></div><p>Note que no quarto passo os critérios divergem: a simples e a média fundem (a,b) ao bloco (c,d,e), enquanto a completa e Ward fundem f a esse bloco. O ponto f, isolado à direita, é tratado de modo diferente conforme o critério considere o vizinho mais próximo ou o mais distante.</p><div class="table-wrap"><table class="method-table"><caption>Correlação cofenética dos quatro dendrogramas</caption><thead><tr><th>Critério</th><th>Correlação</th></tr></thead><tbody><tr><td>Simples</td><td>0,9095</td></tr><tr><td>Completa</td><td>0,9027</td></tr><tr><td><strong>Média</strong></td><td><strong>0,9263</strong></td></tr><tr><td>Ward</td><td>0,8882</td></tr></tbody></table></div></div><h3>Propriedades</h3><ul class="checklist"><li>A ligação simples e a completa dependem apenas da <em>ordem</em> das distâncias, não dos seus valores: qualquer transformação monótona da matriz produz o mesmo dendrograma.</li><li>A ligação simples é equivalente à árvore geradora mínima do grafo de distâncias, o que explica a sua tendência ao encadeamento.</li><li>A ligação simples e a completa não sofrem inversões no dendrograma; o método do centroide pode sofrer.</li><li>Ward minimiza, em cada passo, o aumento da soma de quadrados intragrupos — o mesmo objetivo que o <a href="kmeans.html">k-médias</a> otimiza globalmente.</li><li>O método é determinístico e aninhado: uma fusão feita nunca é desfeita, de modo que um erro inicial se propaga.</li><li>O custo é \(O(n^2)\) em memória e ao menos \(O(n^2\log n)\) em tempo, o que limita o método a alguns milhares de observações.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Dendrograma</td><td>A hierarquia completa de fusões.</td><td>A ordem horizontal dos ramos é arbitrária.</td></tr><tr><td>Alturas de fusão</td><td>Quão diferentes eram os grupos fundidos.</td><td>O maior salto sugere onde cortar.</td></tr><tr><td>Correlação cofenética</td><td>Fidelidade da árvore às distâncias.</td><td>Acima de 0,8 é satisfatório.</td></tr><tr><td>Silhueta</td><td>Qualidade da separação por observação.</td><td>Valores negativos indicam má alocação.</td></tr><tr><td>Tamanhos dos grupos</td><td>Se o corte produziu grupos úteis.</td><td>Grupos unitários sugerem observações atípicas.</td></tr><tr><td>Perfis médios por grupo</td><td>O que distingue cada grupo.</td><td>É aqui que o resultado ganha significado.</td></tr></tbody></table></div><div class="callout warn"><strong>A árvore sempre produz uma resposta</strong><p>O algoritmo devolve um dendrograma mesmo quando não há nenhuma estrutura de grupos nos dados — aplicado a pontos uniformemente distribuídos, ele produz uma árvore de aparência perfeitamente respeitável. A existência do dendrograma não é evidência de que haja grupos. Isso se verifica com a estatística de lacuna, a silhueta, ou simplesmente comparando com dados aleatórios de mesma dimensão e escala.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O fluxo básico são três funções do pacote <code>stats</code>: <code>dist()</code> para a matriz de distâncias, <code>hclust()</code> para a árvore e <code>cutree()</code> para extrair a partição. Use <code>method = "ward.D2"</code>, que implementa o critério de Ward corretamente sobre distâncias euclidianas (<code>"ward.D"</code> é mantido por compatibilidade histórica e espera distâncias ao quadrado). Para avaliar, <code>cophenetic()</code> e <code>cluster::silhouette()</code>; para os gráficos, <code>factoextra::fviz_dend()</code> e <code>dendextend</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-hcluster-min" type="button">Copiar código</button></div><pre id="code-hcluster-min"><code>d  &lt;- dist(scale(dados))
+h  &lt;- hclust(d, method = "ward.D2")
+g  &lt;- cutree(h, k = 3)
+cor(d, cophenetic(h))      # fidelidade do dendrograma
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A aplicação usa <code>iris</code>, as 150 flores medidas por Anderson e analisadas por Fisher, já empregadas nas fichas de <a href="manova.html">MANOVA</a> e <a href="kmeans.html">k-médias</a>. O ponto importante do delineamento: <strong>a espécie não entra no agrupamento</strong>. Ela é revelada apenas no final, para medir o quanto a estrutura descoberta pelo algoritmo corresponde à estrutura biológica. A ficha fecha com uma demonstração do efeito de encadeamento da ligação simples, em dados fictícios construídos para esse fim.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-hcluster" type="button">Copiar código</button></div><pre id="code-hcluster"><code># Agrupamento hierárquico: exemplo completo ----
+# Pacotes: stats (base), cluster, factoextra, dendextend
+# install.packages(c("cluster", "factoextra", "dendextend"))
 
-# Ajuste e resultados ----
-X &lt;- scale(mtcars[, c("mpg", "wt", "hp", "qsec")])
-ajuste &lt;- hclust(dist(X), method = "ward.D2")
-plot(ajuste, labels = FALSE, main = "Veículos: dendrograma")
-grupos &lt;- cutree(ajuste, k = 3)
-print(table(grupos))
-print(aggregate(mtcars[, c("mpg", "wt", "hp")],
-                by = list(grupo = grupos), mean))
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# PARTE 1 - seis amostras, duas medidas: a mecânica do algoritmo
+X &lt;- matrix(c(1.0,1.0, 1.5,1.2, 5.0,5.0, 5.5,5.2, 3.0,4.5, 8.0,1.0),
+            ncol = 2, byrow = TRUE,
+            dimnames = list(letters[1:6], c("x1", "x2")))
+X
+d &lt;- dist(X)                        # distâncias euclidianas
+round(as.matrix(d), 3)
 
+# Os quatro critérios de ligação
+hs &lt;- hclust(d, method = "single")
+hc &lt;- hclust(d, method = "complete")
+ha &lt;- hclust(d, method = "average")
+hw &lt;- hclust(d, method = "ward.D2")
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado não supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="loglinear.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Análise log-linear
-    </a>
-<a href="kmeans.html">
-<span>
-      PRÓXIMO →
-     </span>
-     K-means
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# A sequência de fusões: merge e height contam a história
+cbind(hs$merge, altura = round(hs$height, 4))
+cbind(hw$merge, altura = round(hw$height, 4))
+
+# Fidelidade do dendrograma: correlação cofenética
+sapply(list(single = hs, complete = hc, average = ha, ward = hw),
+       function(h) cor(d, cophenetic(h)))
+
+par(mfrow = c(2, 2))
+plot(hs, main = "ligação simples", xlab = "", sub = "")
+plot(hc, main = "ligação completa", xlab = "", sub = "")
+plot(ha, main = "ligação média", xlab = "", sub = "")
+plot(hw, main = "Ward", xlab = "", sub = "")
+par(mfrow = c(1, 1))
+
+# PARTE 2 - iris: 150 flores, quatro medidas. A espécie NÃO entra no
+# agrupamento; ela só serve para avaliar o resultado no final.
+data(iris)
+Z  &lt;- scale(iris[, 1:4])            # padronizado
+dZ &lt;- dist(Z);  dO &lt;- dist(iris[, 1:4])
+
+apply(iris[, 1:4], 2, function(v) c(media = mean(v), dp = sd(v), ampl = diff(range(v))))
+
+hw_o &lt;- hclust(dO, method = "ward.D2")
+hw_z &lt;- hclust(dZ, method = "ward.D2")
+g_o  &lt;- cutree(hw_o, k = 3)
+g_z  &lt;- cutree(hw_z, k = 3)
+table(iris$Species, g_o)
+table(iris$Species, g_z)
+
+# Índice de Rand ajustado: concordância com a espécie, corrigida pelo acaso
+library(mclust)                      # ou fossil::adj.rand.index
+adjustedRandIndex(iris$Species, g_o)
+adjustedRandIndex(iris$Species, g_z)
+
+# Onde cortar? As últimas alturas de fusão e o maior salto
+tail(hw_z$height, 10)
+plot(rev(tail(hw_z$height, 10)), type = "b", pch = 19,
+     xlab = "Número de grupos", ylab = "Altura da fusão")
+
+library(factoextra)
+fviz_dend(hw_z, k = 3, rect = TRUE)
+fviz_nbclust(Z, FUN = hcut, method = "silhouette")
+
+# Silhueta do agrupamento escolhido
+library(cluster)
+sil &lt;- silhouette(g_z, dZ)
+summary(sil)
+plot(sil)
+
+# PARTE 3 - por que a ligação simples costuma falhar: o encadeamento
+# Dois blocos separados com uma ponte de pontos entre eles (dados fictícios).
+set.seed(42)
+A &lt;- cbind(rnorm(30, 0, 0.6), rnorm(30, 0, 0.6))
+B &lt;- cbind(rnorm(30, 10, 0.6), rnorm(30, 0, 0.6))
+P &lt;- cbind(seq(2.2, 7.8, length.out = 22), rnorm(22, 0, 0.12))
+Y &lt;- rbind(A, B, P)
+dy &lt;- dist(Y)
+sapply(c("single", "complete", "average", "ward.D2"), function(m) {
+  h &lt;- hclust(dy, method = m)
+  c(table(cutree(h, 2)), razao = h$height[length(h$height)] /
+                                 h$height[length(h$height) - 1])
+})
+
+# Comparar dois dendrogramas lado a lado
+library(dendextend)
+tanglegram(as.dendrogram(hclust(dy, "single")),
+           as.dendrogram(hclust(dy, "ward.D2")))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-hcluster" type="button">Copiar código</button></div><pre id="code-py-hcluster"><code># Bibliotecas: numpy, scipy, matplotlib e scikit-learn (todas já no Google Colab)
+import numpy as np
+from scipy.cluster import hierarchy
+from scipy.spatial.distance import pdist, squareform
+from scipy import stats
+from sklearn.datasets import load_iris
+
+# ===================================================================
+# PARTE 1 - a mecânica, com seis pontos
+# Dados fictícios: seis amostras, duas medidas cada.
+P = np.array([[1.0, 1.0], [1.5, 1.2], [5.0, 5.0], [5.5, 5.2], [3.0, 4.5], [8.0, 1.0]])
+rot = ["a", "b", "c", "d", "e", "f"]
+print("Seis amostras, duas medidas")
+for r, p in zip(rot, P):
+    print(f"  {r}: ({p[0]:.1f}; {p[1]:.1f})")
+D = squareform(pdist(P))
+print("\nMatriz de distâncias euclidianas")
+print("      " + "".join(f"{r:&gt;8}" for r in rot))
+for i, r in enumerate(rot):
+    print(f"  {r}  " + "".join(f"{D[i,j]:8.3f}" for j in range(6)))
+
+print("\nFusões sucessivas, por três critérios de ligação")
+for metodo, nome in [("single", "ligação simples (vizinho mais próximo)"),
+                     ("complete", "ligação completa (vizinho mais distante)"),
+                     ("average", "ligação média (UPGMA)"),
+                     ("ward", "método de Ward (mínima variância)")]:
+    Z = hierarchy.linkage(pdist(P), method=metodo)
+    print(f"\n{nome}")
+    print(f"{'passo':&gt;6}{'funde':&gt;16}{'distância':&gt;12}{'tamanho':&gt;9}")
+    nomes = {i: rot[i] for i in range(6)}
+    for k_, (i, j, d, t) in enumerate(Z, start=1):
+        novo = "(" + nomes[int(i)] + "," + nomes[int(j)] + ")"
+        nomes[5 + k_] = novo
+        print(f"{k_:6d}{novo:&gt;16}{d:12.4f}{int(t):9d}")
+    coph = hierarchy.cophenet(Z, pdist(P))[0]
+    print(f"  correlação cofenética = {coph:.4f}")
+
+print("\nA correlação cofenética mede o quanto o dendrograma preserva as distâncias")
+print("originais. Valores acima de 0,8 indicam uma representação fiel.")
+
+# ===================================================================
+# PARTE 2 - aplicação: iris, sem usar a espécie
+print("\n" + "=" * 70)
+print("iris: 150 flores, quatro medidas. O agrupamento NÃO usa a espécie;")
+print("ela só é revelada no final, para avaliar o resultado.")
+d = load_iris(); X = d.data; esp = d.target
+especies = ["setosa", "versicolor", "virginica"]
+print(f"\nEscalas das quatro variáveis (a padronização importa):")
+for j, nm in enumerate(d.feature_names):
+    print(f"  {nm:&lt;22} média = {X[:,j].mean():6.3f}  DP = {X[:,j].std(ddof=1):6.3f}  "
+          f"amplitude = {np.ptp(X[:,j]):5.2f}")
+Z_pad = (X - X.mean(0))/X.std(0, ddof=1)
+
+for titulo, M in [("dados ORIGINAIS", X), ("dados PADRONIZADOS", Z_pad)]:
+    dist = pdist(M)
+    print(f"\n{titulo}")
+    print(f"{'ligação':&lt;12}{'cofenética':&gt;12}{'grupos de 3':&gt;40}")
+    for metodo in ("single", "complete", "average", "ward"):
+        Z = hierarchy.linkage(dist, method=metodo)
+        gr = hierarchy.fcluster(Z, 3, criterion="maxclust")
+        coph = hierarchy.cophenet(Z, dist)[0]
+        tam = [int(np.sum(gr == g)) for g in np.unique(gr)]
+        print(f"{metodo:&lt;12}{coph:12.4f}{str(tam):&gt;40}")
+
+# Avaliação contra a espécie verdadeira
+print("\nComparando o agrupamento de Ward (dados padronizados) com a espécie")
+Zw = hierarchy.linkage(pdist(Z_pad), method="ward")
+gr = hierarchy.fcluster(Zw, 3, criterion="maxclust")
+print(f"{'':&lt;14}" + "".join(f"{f'grupo {g}':&gt;10}" for g in np.unique(gr)))
+for i, e in enumerate(especies):
+    print(f"{e:&lt;14}" + "".join(f"{int(np.sum((gr==g)&amp;(esp==i))):10d}" for g in np.unique(gr)))
+# índice de Rand ajustado, calculado sem sklearn.metrics
+def rand_ajustado(a, b):
+    n = len(a)
+    tab = np.zeros((len(np.unique(a)), len(np.unique(b))))
+    for i, va in enumerate(np.unique(a)):
+        for j, vb in enumerate(np.unique(b)):
+            tab[i, j] = np.sum((a == va) &amp; (b == vb))
+    c2 = lambda m: m*(m-1)/2
+    soma_ij = c2(tab).sum(); soma_i = c2(tab.sum(1)).sum(); soma_j = c2(tab.sum(0)).sum()
+    esperado = soma_i*soma_j/c2(n)
+    maximo = (soma_i + soma_j)/2
+    return (soma_ij - esperado)/(maximo - esperado)
+print(f"\nÍndice de Rand ajustado = {rand_ajustado(esp, gr):.4f}")
+Zw_bruto = hierarchy.linkage(pdist(X), method="ward")
+gr_bruto = hierarchy.fcluster(Zw_bruto, 3, criterion="maxclust")
+print(f"Com os dados ORIGINAIS (sem padronizar), o mesmo critério dá "
+      f"Rand ajustado = {rand_ajustado(esp, gr_bruto):.4f}")
+print("Aqui a padronização PIORA o resultado, porque ela dá o mesmo peso à largura")
+print("da sépala, que quase não separa as espécies, e ao comprimento da pétala, que")
+print("separa muito bem. Padronizar é o padrão quando as unidades diferem; quando")
+print("são as mesmas, como aqui (todas em cm), pode custar informação.")
+print(f"Flores classificadas no grupo majoritário da sua espécie: ", end="")
+acerto = sum(max(np.sum((gr == g) &amp; (esp == i)) for i in range(3)) for g in np.unique(gr))
+print(f"{acerto} de 150 ({100*acerto/150:.1f}%)")
+print("A setosa se separa perfeitamente; versicolor e virginica se sobrepõem,")
+print("exatamente como nas elipses da ficha da MANOVA.")
+
+# Altura das fusões: onde cortar
+print("\nAs dez últimas alturas de fusão (Ward, dados padronizados)")
+alturas = Zw[-10:, 2]
+print("  " + "  ".join(f"{a:.3f}" for a in alturas))
+saltos = np.diff(alturas)
+i_salto = int(np.argmax(saltos))
+k_salto = 10 - i_salto          # quantos grupos existem logo antes dessa fusão
+print(f"  maior salto: de {alturas[i_salto]:.3f} para {alturas[i_salto+1]:.3f} "
+      f"(aumento de {saltos.max():.3f})")
+print(f"  cortar logo abaixo dele deixa {k_salto} grupos")
+print("  O critério do salto é visual e aproximado; compare sempre com o que se sabe")
+print("  sobre o problema.")
+for k_ in (2, 3, 4, 5):
+    g_ = hierarchy.fcluster(Zw, k_, criterion="maxclust")
+    print(f"  k = {k_}: tamanhos {[int(np.sum(g_==x)) for x in np.unique(g_)]}, "
+          f"Rand ajustado = {rand_ajustado(esp, g_):.4f}")
+
+# ===================================================================
+# PARTE 3 - o efeito do encadeamento na ligação simples
+print("\n" + "=" * 70)
+print("Por que a ligação simples costuma falhar: o efeito de encadeamento")
+rng = np.random.default_rng(11)
+A = rng.normal([0, 0], 0.35, (30, 2))
+B = rng.normal([5, 0], 0.35, (30, 2))
+ponte = np.column_stack([np.linspace(0.9, 4.1, 22), rng.normal(0, 0.08, 22)])
+Pc = np.vstack([A, B, ponte])
+verdade = np.r_[np.zeros(30), np.ones(30), np.full(22, 2)]
+print(f"Dois grupos bem separados, com {len(ponte)} pontos formando uma ponte entre eles.")
+print(f"{'ligação':&lt;12}{'grupos (k = 2)':&gt;18}{'ponte dividida?':&gt;18}"
+      f"{'altura da última':&gt;18}{'penúltima':&gt;12}{'razão':&gt;8}")
+for metodo in ("single", "complete", "average", "ward"):
+    Zc = hierarchy.linkage(pdist(Pc), method=metodo)
+    g = hierarchy.fcluster(Zc, 2, criterion="maxclust")
+    tam = sorted(int(np.sum(g == x)) for x in np.unique(g))
+    gp = g[60:]                      # os 22 pontos da ponte
+    divide = "sim" if len(np.unique(gp)) &gt; 1 else "NÃO"
+    h1, h2 = Zc[-1, 2], Zc[-2, 2]
+    print(f"{metodo:&lt;12}{str(tam):&gt;18}{divide:&gt;18}{h1:18.4f}{h2:12.4f}{h1/h2:8.2f}")
+print("\nA ligação simples anexa a ponte INTEIRA a um dos blocos e deixa o outro")
+print("sozinho: ela percorre a cadeia de vizinhos próximos e nunca enxerga o vão")
+print("entre os dois grupos. Os demais critérios dividem a ponte e recuperam a")
+print("estrutura de dois blocos.")
+print("\nA razão entre a última e a penúltima altura de fusão mostra o mesmo: na")
+print("ligação simples ela é próxima de 1, ou seja, o dendrograma não tem um corte")
+print("natural; em Ward ela passa de 3, e o corte em dois grupos salta aos olhos.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Seis amostras, duas medidas
+  a: (1.0; 1.0)
+  b: (1.5; 1.2)
+  c: (5.0; 5.0)
+  d: (5.5; 5.2)
+  e: (3.0; 4.5)
+  f: (8.0; 1.0)
+
+Matriz de distâncias euclidianas
+             a       b       c       d       e       f
+  a     0.000   0.539   5.657   6.155   4.031   7.000
+  b     0.539   0.000   5.166   5.657   3.625   6.503
+  c     5.657   5.166   0.000   0.539   2.062   5.000
+  d     6.155   5.657   0.539   0.000   2.596   4.888
+  e     4.031   3.625   2.062   2.596   0.000   6.103
+  f     7.000   6.503   5.000   4.888   6.103   0.000
+
+Fusões sucessivas, por três critérios de ligação
+
+ligação simples (vizinho mais próximo)
+ passo           funde   distância  tamanho
+     1           (a,b)      0.5385        2
+     2           (c,d)      0.5385        2
+     3       (e,(c,d))      2.0616        3
+     4((a,b),(e,(c,d)))      3.6249        5
+     5(f,((a,b),(e,(c,d))))      4.8877        6
+  correlação cofenética = 0.9095
+
+ligação completa (vizinho mais distante)
+ passo           funde   distância  tamanho
+     1           (a,b)      0.5385        2
+     2           (c,d)      0.5385        2
+     3       (e,(c,d))      2.5962        3
+     4   (f,(e,(c,d)))      6.1033        4
+     5((a,b),(f,(e,(c,d))))      7.0000        6
+  correlação cofenética = 0.9027
+
+ligação média (UPGMA)
+ passo           funde   distância  tamanho
+     1           (a,b)      0.5385        2
+     2           (c,d)      0.5385        2
+     3       (e,(c,d))      2.3289        3
+     4((a,b),(e,(c,d)))      5.0486        5
+     5(f,((a,b),(e,(c,d))))      5.8988        6
+  correlação cofenética = 0.9263
+
+método de Ward (mínima variância)
+ passo           funde   distância  tamanho
+     1           (a,b)      0.5385        2
+     2           (c,d)      0.5385        2
+     3       (e,(c,d))      2.6889        3
+     4   (f,(e,(c,d)))      6.4179        4
+     5((a,b),(f,(e,(c,d))))      8.1644        6
+  correlação cofenética = 0.8882
+
+A correlação cofenética mede o quanto o dendrograma preserva as distâncias
+originais. Valores acima de 0,8 indicam uma representação fiel.
+
+======================================================================
+iris: 150 flores, quatro medidas. O agrupamento NÃO usa a espécie;
+ela só é revelada no final, para avaliar o resultado.
+
+Escalas das quatro variáveis (a padronização importa):
+  sepal length (cm)      média =  5.843  DP =  0.828  amplitude =  3.60
+  sepal width (cm)       média =  3.057  DP =  0.436  amplitude =  2.40
+  petal length (cm)      média =  3.758  DP =  1.765  amplitude =  5.90
+  petal width (cm)       média =  1.199  DP =  0.762  amplitude =  2.40
+
+dados ORIGINAIS
+ligação       cofenética                             grupos de 3
+single            0.8639                             [50, 2, 98]
+complete          0.7270                            [72, 28, 50]
+average           0.8770                            [50, 36, 64]
+ward              0.8728                            [50, 36, 64]
+
+dados PADRONIZADOS
+ligação       cofenética                             grupos de 3
+single            0.8300                            [100, 49, 1]
+complete          0.7515                            [77, 24, 49]
+average           0.8544                             [50, 3, 97]
+ward              0.8226                            [49, 30, 71]
+
+Comparando o agrupamento de Ward (dados padronizados) com a espécie
+                 grupo 1   grupo 2   grupo 3
+setosa                49         1         0
+versicolor             0        27        23
+virginica              0         2        48
+
+Índice de Rand ajustado = 0.6153
+Com os dados ORIGINAIS (sem padronizar), o mesmo critério dá Rand ajustado = 0.7312
+Aqui a padronização PIORA o resultado, porque ela dá o mesmo peso à largura
+da sépala, que quase não separa as espécies, e ao comprimento da pétala, que
+separa muito bem. Padronizar é o padrão quando as unidades diferem; quando
+são as mesmas, como aqui (todas em cm), pode custar informação.
+Flores classificadas no grupo majoritário da sua espécie: 124 de 150 (82.7%)
+A setosa se separa perfeitamente; versicolor e virginica se sobrepõem,
+exatamente como nas elipses da ficha da MANOVA.
+
+As dez últimas alturas de fusão (Ward, dados padronizados)
+  3.430  3.920  3.938  4.048  4.213  4.229  6.586  7.978  12.595  27.159
+  maior salto: de 12.595 para 27.159 (aumento de 14.564)
+  cortar logo abaixo dele deixa 2 grupos
+  O critério do salto é visual e aproximado; compare sempre com o que se sabe
+  sobre o problema.
+  k = 2: tamanhos [49, 101], Rand ajustado = 0.5438
+  k = 3: tamanhos [49, 30, 71], Rand ajustado = 0.6153
+  k = 4: tamanhos [49, 30, 45, 26], Rand ajustado = 0.5879
+  k = 5: tamanhos [20, 29, 30, 45, 26], Rand ajustado = 0.4402
+
+======================================================================
+Por que a ligação simples costuma falhar: o efeito de encadeamento
+Dois grupos bem separados, com 22 pontos formando uma ponte entre eles.
+ligação         grupos (k = 2)   ponte dividida?  altura da última   penúltima   razão
+single                [30, 52]               NÃO            0.5071      0.4204    1.21
+complete              [40, 42]               sim            6.4173      3.3196    1.93
+average               [38, 44]               sim            4.1283      1.9902    2.07
+ward                  [38, 44]               sim           26.2505      8.5268    3.08
+
+A ligação simples anexa a ponte INTEIRA a um dos blocos e deixa o outro
+sozinho: ela percorre a cadeia de vizinhos próximos e nunca enxerga o vão
+entre os dois grupos. Os demais critérios dividem a ponte e recuperam a
+estrutura de dois blocos.
+
+A razão entre a última e a penúltima altura de fusão mostra o mesmo: na
+ligação simples ela é próxima de 1, ou seja, o dendrograma não tem um corte
+natural; em Ward ela passa de 3, e o corte em dois grupos salta aos olhos.</pre></div><figure class="fig"><img src="../assets/resultados/hcluster.png" alt="Dendrograma de iris, comparação de critérios e a demonstração do encadeamento" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o dendrograma de Ward sobre os dados padronizados de iris, com o corte em três grupos e as cores da espécie real nas folhas: a setosa forma um bloco limpo, e a fronteira entre versicolor e virginica é onde os erros se concentram. No centro, as alturas das dez últimas fusões: o salto de 12,6 para 27,2 indica dois grupos, não três. À direita, a demonstração do encadeamento: dois blocos ligados por uma ponte de 22 pontos, com as partições em dois grupos obtidas por ligação simples e por Ward. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Escalas das quatro variáveis de iris</caption><thead><tr><th>Variável</th><th>Média</th><th>DP</th><th>Amplitude</th></tr></thead><tbody><tr><td>Comprimento da sépala</td><td>5,843</td><td>0,828</td><td>3,60</td></tr><tr><td>Largura da sépala</td><td>3,057</td><td>0,436</td><td>2,40</td></tr><tr><td><strong>Comprimento da pétala</strong></td><td>3,758</td><td><strong>1,765</strong></td><td>5,90</td></tr><tr><td>Largura da pétala</td><td>1,199</td><td>0,762</td><td>2,40</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Correlação cofenética e tamanhos dos grupos (k = 3)</caption><thead><tr><th>Ligação</th><th>Cofenética (originais)</th><th>Grupos (originais)</th><th>Cofenética (padronizados)</th><th>Grupos (padronizados)</th></tr></thead><tbody><tr><td>Simples</td><td>0,8639</td><td>50 · 2 · 98</td><td>0,8300</td><td>100 · 49 · 1</td></tr><tr><td>Completa</td><td>0,7270</td><td>72 · 28 · 50</td><td>0,7515</td><td>77 · 24 · 49</td></tr><tr><td><strong>Média</strong></td><td><strong>0,8770</strong></td><td>50 · 36 · 64</td><td>0,8544</td><td>50 · 3 · 97</td></tr><tr><td>Ward</td><td>0,8728</td><td>50 · 36 · 64</td><td>0,8226</td><td>49 · 30 · 71</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Ward sobre os dados padronizados, confrontado com a espécie</caption><thead><tr><th>Espécie</th><th>Grupo 1</th><th>Grupo 2</th><th>Grupo 3</th></tr></thead><tbody><tr><td>setosa</td><td>49</td><td>1</td><td>0</td></tr><tr><td>versicolor</td><td>0</td><td>27</td><td>23</td></tr><tr><td>virginica</td><td>0</td><td>2</td><td>48</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Índice de Rand ajustado</caption><thead><tr><th>Configuração</th><th>Rand ajustado</th><th>Leitura</th></tr></thead><tbody><tr><td><strong>Ward, dados originais</strong></td><td><strong>0,7312</strong></td><td>A melhor concordância obtida.</td></tr><tr><td>Ward, dados padronizados</td><td>0,6153</td><td>Padronizar piora, aqui.</td></tr><tr><td>k = 2 (padronizados)</td><td>0,5438</td><td>O que o salto nas alturas sugeriria.</td></tr><tr><td>k = 4 (padronizados)</td><td>0,5879</td><td>—</td></tr><tr><td>k = 5 (padronizados)</td><td>0,4402</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Encadeamento: dois blocos de 30 pontos e uma ponte de 22</caption><thead><tr><th>Ligação</th><th>Grupos (k = 2)</th><th>Ponte dividida?</th><th>Última altura</th><th>Penúltima</th><th>Razão</th></tr></thead><tbody><tr><td><strong>Simples</strong></td><td><strong>30 · 52</strong></td><td><strong>não</strong></td><td>0,5071</td><td>0,4204</td><td><strong>1,21</strong></td></tr><tr><td>Completa</td><td>40 · 42</td><td>sim</td><td>6,4173</td><td>3,3196</td><td>1,93</td></tr><tr><td>Média</td><td>38 · 44</td><td>sim</td><td>4,1283</td><td>1,9902</td><td>2,07</td></tr><tr><td>Ward</td><td>38 · 44</td><td>sim</td><td>26,2505</td><td>8,5268</td><td><strong>3,08</strong></td></tr></tbody></table></div><p><strong>Leitura de iris:</strong> o método de Ward sobre os dados originais recupera a estrutura de espécies com Rand ajustado de 0,731 — 124 das 150 flores caem no grupo majoritário da sua espécie. A setosa se separa perfeitamente; os erros estão todos na fronteira entre versicolor e virginica, que se sobrepõem no espaço das quatro medidas, exatamente como mostram as elipses de confiança da ficha da <a href="manova.html">MANOVA</a>.</p><p><strong>Sobre padronizar:</strong> o resultado contraria a recomendação automática. Padronizando, o Rand ajustado cai de 0,731 para 0,615. A razão é identificável nos desvios-padrão da tabela de escalas: o comprimento da pétala varia quatro vezes mais que a largura da sépala, e essa diferença de variação é informativa — é justamente a pétala que distingue as espécies. Padronizar impõe o mesmo peso a uma variável discriminante e a uma quase irrelevante. Como as quatro medidas estão na mesma unidade, não há razão métrica para padronizar; a recomendação se aplica quando as unidades diferem.</p><p><strong>Sobre onde cortar:</strong> o critério do maior salto nas alturas de fusão aponta para <strong>dois</strong> grupos, não três: o salto de 12,595 para 27,159 é muito maior que qualquer outro. E ele não está errado quanto à geometria dos dados — versicolor e virginica realmente formam uma nuvem contínua. O critério identifica a estrutura presente nas medidas, que é de dois blocos; a divisão em três espécies vem do conhecimento biológico, não da geometria. É um bom exemplo de por que a escolha de k não deve ser delegada a um critério automático.</p><p><strong>Sobre o encadeamento:</strong> a demonstração é inequívoca. Com dois blocos de 30 pontos separados por uma ponte de 22 pontos, a ligação simples não recupera a estrutura: ela percorre a cadeia de vizinhos próximos e anexa a ponte <em>inteira</em> a um dos blocos, produzindo a partição 30 · 52. Os outros três critérios dividem a ponte e devolvem 38 · 44 ou 40 · 42. A razão entre a última e a penúltima altura de fusão mede o mesmo fenômeno de outro jeito: 1,21 na ligação simples, o que significa que não há corte natural no dendrograma, contra 3,08 em Ward, onde o corte em dois grupos salta aos olhos.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Padronizar ou não padronizar por reflexo</td><td>Compare as duas versões; com unidades iguais, padronizar pode custar informação.</td></tr><tr><td>Usar ligação simples como padrão</td><td>Ela encadeia; prefira Ward ou média, salvo se a estrutura esperada for alongada.</td></tr><tr><td>Confundir <code>ward.D</code> com <code>ward.D2</code></td><td>Use <code>ward.D2</code> com distâncias euclidianas.</td></tr><tr><td>Interpretar a ordem horizontal dos ramos</td><td>Ela é arbitrária entre ramos irmãos.</td></tr><tr><td>Ler o dendrograma como prova de que há grupos</td><td>Ele existe mesmo em dados sem estrutura.</td></tr><tr><td>Escolher k só pelo maior salto</td><td>Em iris ele indica 2, não 3; combine com conhecimento do domínio.</td></tr><tr><td>Ignorar a correlação cofenética</td><td>Abaixo de 0,8, a árvore distorce as distâncias.</td></tr><tr><td>Incluir a variável que se quer prever</td><td>Em iris, a espécie não entra no agrupamento.</td></tr><tr><td>Aplicar distância euclidiana a dados mistos</td><td>Use a distância de Gower.</td></tr><tr><td>Rodar com n muito grande</td><td>A matriz é O(n²); prefira <a href="kmeans.html">k-médias</a>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kmeans.html">k-médias</a></td><td>n grande, k conhecido, grupos aproximadamente esféricos.</td></tr><tr><td>PAM / k-medoides</td><td>Robustez a atípicos; permite qualquer matriz de dissimilaridade.</td></tr><tr><td>DBSCAN</td><td>Grupos de forma arbitrária e densidade similar; identifica ruído.</td></tr><tr><td>Modelos de mistura (mclust)</td><td>Quando se quer um modelo probabilístico e critérios como o BIC para escolher k.</td></tr><tr><td>Agrupamento divisivo (DIANA)</td><td>Quando interessa mais a estrutura de nível alto que a de nível baixo.</td></tr><tr><td>Distância de Gower + PAM</td><td>Dados mistos, com variáveis numéricas e categóricas.</td></tr><tr><td><a href="pcr.html">Componentes principais</a> antes do agrupamento</td><td>Muitas variáveis correlacionadas; reduz ruído.</td></tr><tr><td><a href="manova.html">MANOVA</a> ou análise discriminante</td><td>Quando os grupos são <em>conhecidos</em>: o problema deixa de ser agrupamento.</td></tr></tbody></table></div><ol class="steps"><li>Defina se todas as variáveis devem entrar e exclua a que se quer avaliar.</li><li>Examine escalas e decida sobre a padronização, comparando as duas versões.</li><li>Escolha a distância conforme o tipo de dado.</li><li>Ajuste vários critérios de ligação e compare as correlações cofenéticas.</li><li>Examine o dendrograma e as últimas alturas de fusão.</li><li>Escolha k combinando o salto nas alturas, a silhueta e o conhecimento do domínio.</li><li>Corte a árvore e descreva os grupos pelos perfis médios das variáveis.</li><li>Avalie a estabilidade reamostrando as observações ou perturbando os dados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>SOKAL, Robert R.; MICHENER, Charles D. A statistical method for evaluating systematic relationships. <em>University of Kansas Science Bulletin</em>, v. 38, p. 1409-1438, 1958.</li><li>SOKAL, Robert R.; ROHLF, F. James. The comparison of dendrograms by objective methods. <em>Taxon</em>, v. 11, n. 2, p. 33-40, 1962.</li><li>WARD, Joe H. Hierarchical grouping to optimize an objective function. <em>Journal of the American Statistical Association</em>, v. 58, n. 301, p. 236-244, 1963.</li><li>LANCE, G. N.; WILLIAMS, W. T. A general theory of classificatory sorting strategies: I. Hierarchical systems. <em>The Computer Journal</em>, v. 9, n. 4, p. 373-380, 1967.</li><li>GOWER, J. C.; ROSS, G. J. S. Minimum spanning trees and single linkage cluster analysis. <em>Journal of the Royal Statistical Society: Series C</em>, v. 18, n. 1, p. 54-64, 1969.</li><li>MURTAGH, Fionn; LEGENDRE, Pierre. Ward’s hierarchical agglomerative clustering method: which algorithms implement Ward’s criterion? <em>Journal of Classification</em>, v. 31, n. 3, p. 274-295, 2014.</li><li>ROUSSEEUW, Peter J. Silhouettes: a graphical aid to the interpretation and validation of cluster analysis. <em>Journal of Computational and Applied Mathematics</em>, v. 20, p. 53-65, 1987.</li><li>HUBERT, Lawrence; ARABIE, Phipps. Comparing partitions. <em>Journal of Classification</em>, v. 2, n. 1, p. 193-218, 1985.</li><li>KAUFMAN, Leonard; ROUSSEEUW, Peter J. <em>Finding groups in data: an introduction to cluster analysis.</em> Hoboken: Wiley, 1990.</li><li>EVERITT, Brian S.; LANDAU, Sabine; LEESE, Morven; STAHL, Daniel. <em>Cluster analysis.</em> 5. ed. Chichester: Wiley, 2011.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>ANDERSON, Edgar. The species problem in Iris. <em>Annals of the Missouri Botanical Garden</em>, v. 23, n. 3, p. 457-509, 1936. (Conjunto de dados <code>iris</code>, pacote <code>datasets</code> do R.)</li><li>FISHER, Ronald A. The use of multiple measurements in taxonomic problems. <em>Annals of Eugenics</em>, v. 7, n. 2, p. 179-188, 1936.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>dist</code>, <code>hclust</code>, <code>cutree</code> e <code>cophenetic</code>, pacote <code>stats</code>.)</li><li>MAECHLER, Martin et al. <em>cluster: cluster analysis basics and extensions.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=cluster" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=cluster</a>.</li><li>KASSAMBARA, Alboukadel; MUNDT, Fabian. <em>factoextra: extract and visualize the results of multivariate data analyses.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=factoextra" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=factoextra</a>.</li><li>GALILI, Tal. dendextend: an R package for visualizing, adjusting and comparing trees of hierarchical clustering. <em>Bioinformatics</em>, v. 31, n. 22, p. 3718-3720, 2015.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado não supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Não é um teste de hipóteses: exige distância adequada ao tipo de dado, escalas comparáveis e um critério de ligação compatível com a estrutura esperada.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, cluster, factoextra, dendextend</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="loglinear.html"><span>← ANTERIOR</span>Análise log-linear</a><a href="kmeans.html"><span>PRÓXIMO →</span>K-means</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

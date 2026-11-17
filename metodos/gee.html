@@ -4,315 +4,269 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Equações de estimação generalizadas (GEE): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Equações de estimação generalizadas (GEE) | Estatística e Ciência de Dados
-  </title>
+<meta content="Equações de estimação generalizadas (GEE): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Equações de estimação generalizadas (GEE) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Equações de estimação generalizadas (GEE)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Equações de estimação generalizadas (GEE)
-    </h1>
-<p class="detail-lead">
-     Avalia efeitos médios quando uma mesma unidade é medida repetidamente ou os dados são agrupados.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/gee.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia efeitos médios quando uma mesma unidade é medida repetidamente ou os dados são agrupados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência entre clusters.</li><li>Correlação dentro do cluster permitida.</li><li>Especificação da média adequada.</li><li>Número de clusters suficientemente grande para aproximação sanduíche.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_{j}=0 \text{ para efeitos marginais}\\ H_1&amp;:\ \beta_{j}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\sum_{i=1}^m\mathbf D_i^\top\mathbf V_i^{-1}(\mathbf Y_i-\boldsymbol\mu_i)=\mathbf0\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere associação marginal; \(IC_{95\%}\) robustos dependem de condições assintóticas, especialmente do número de clusters.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em CO2, uptake é a absorção de dióxido de carbono, medida repetidamente nas mesmas plantas em diferentes concentrações.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Avaliar a relação marginal entre concentração e absorção, levando em conta a correlação entre medidas da mesma planta.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-gee" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-gee"><code># Equações de estimação generalizadas (GEE) ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("geepack", quietly = TRUE)) install.packages("geepack")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Equações de estimação generalizadas (GEE)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Equações de estimação generalizadas (GEE)</h1><p class="detail-lead">Estima efeitos médios na população quando as observações são agrupadas ou repetidas na mesma unidade.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/gee.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/gee.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o método</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quatro medidas do mesmo operador não são quatro informações independentes: um operador habilidoso tende a ir bem nas quatro tarefas, e um operador com dificuldade, mal nas quatro. Tratar as 120 observações como se fossem 120 unidades independentes produz erros-padrão errados. As equações de estimação generalizadas (GEE) corrigem isso sem abandonar a interpretação simples dos coeficientes.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: GEE" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Extensão dos GLM para</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">dados agrupados ou repetidos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Correlação de trabalho</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">+ variância robusta</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Grupos independentes entre si</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Média bem especificada</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Dados faltantes ao acaso</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Efeito MÉDIO na população</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">não para um mesmo indivíduo</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">geepack::geeglm()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos mistos</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">ANOVA de medidas repetidas</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Erros-padrão agrupados</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">GEE</text></svg><figcaption>Visão geral das equações de estimação generalizadas. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A pergunta que o GEE responde</strong><p>Se todos os operadores da população fizessem o curso, <strong>quanto subiria a taxa média de sucesso</strong>? Essa é uma pergunta sobre a média populacional. O modelo misto responde a outra: se <em>este</em> operador fizesse o curso, quanto mudaria a chance dele? As duas são legítimas, e dão números diferentes.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o método</h2><p>O GEE (LIANG; ZEGER, 1986) parte de um <a href="glm.html">GLM</a> comum e acrescenta duas coisas. Primeiro, uma <strong>matriz de correlação de trabalho</strong> \(\mathbf R(\alpha)\), que descreve como as observações dentro de um grupo se relacionam. Segundo, uma <strong>variância robusta</strong> (do tipo sanduíche), que corrige os erros-padrão mesmo que essa correlação tenha sido mal escolhida.</p><figure class="fig"><img src="../assets/resultados/gee-didatica.png" alt="Perfis de unidades com medidas repetidas e três estruturas de correlação de trabalho" loading="lazy"/><figcaption><strong>Agrupamento e estruturas de correlação.</strong> À esquerda, oito unidades medidas quatro vezes: as linhas quase não se cruzam, porque o nível de cada unidade puxa suas quatro medidas. À direita, três estruturas usuais: independência (nenhuma correlação), permutável (a mesma correlação entre quaisquer duas medidas) e AR(1) (correlação que decai com a distância entre as medidas). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Qual estrutura escolher</caption><thead><tr><th>Estrutura</th><th>Quando faz sentido</th></tr></thead><tbody><tr><td>Independência</td><td>Nenhuma correlação suposta; os coeficientes saem iguais aos do GLM comum, mas os erros-padrão são corrigidos.</td></tr><tr><td>Permutável (exchangeable)</td><td>Medidas sem ordem natural dentro do grupo: alunos de uma turma, peças de um lote, tarefas sem sequência.</td></tr><tr><td>AR(1)</td><td>Medidas em sequência temporal, com correlação que diminui com o intervalo.</td></tr><tr><td>Não estruturada</td><td>Poucas medidas por grupo e muitos grupos; estima todas as correlações separadamente.</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Grupos independentes entre si</td><td>A correção vale dentro do grupo, não entre grupos.</td><td>Delineamento do estudo.</td></tr><tr><td>Modelo da média bem especificado</td><td>É a única parte que precisa estar certa para que as estimativas sejam consistentes.</td><td>Resíduos contra os preditores; formas funcionais alternativas.</td></tr><tr><td>Número suficiente de grupos</td><td>A variância robusta é assintótica no número de <strong>grupos</strong>, não de observações.</td><td>Referência usual: ao menos 30 a 40 grupos; abaixo disso, use correções de amostra pequena.</td></tr><tr><td>Dados faltantes completamente ao acaso</td><td>O GEE padrão exige a condição mais forte (MCAR), diferente dos modelos mistos.</td><td>Avalie o mecanismo de perda; se necessário, use GEE ponderado.</td></tr><tr><td>Estrutura de correlação razoável</td><td>Afeta a eficiência, não a consistência.</td><td>Compare estruturas pelo QIC; observe a correlação estimada.</td></tr><tr><td>Dados ordenados por grupo</td><td>Vários programas exigem isso.</td><td>Ordene por identificador antes de ajustar.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0\\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\sum_{i=1}^{K}\mathbf D_i^{\top}\mathbf V_i^{-1}\left(\mathbf y_i-\boldsymbol\mu_i\right)=\mathbf 0,\]\[\mathbf V_i=\phi\,\mathbf A_i^{1/2}\,\mathbf R(\alpha)\,\mathbf A_i^{1/2}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\widehat{\operatorname{Var}}_{rob}(\mathbf b)\\ &\quad=\mathbf H^{-1}\biggl[\sum_{i=1}^{K}\mathbf D_i^{\top}\mathbf V_i^{-1}\left(\mathbf y_i-\boldsymbol\mu_i\right)\\ &\qquad\quad\left(\mathbf y_i-\boldsymbol\mu_i\right)^{\top}\mathbf V_i^{-1}\mathbf D_i\biggr]\mathbf H^{-1},\end{aligned}\]\[\mathbf H=\sum_{i=1}^{K}\mathbf D_i^{\top}\mathbf V_i^{-1}\mathbf D_i\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(K\)</dt><dd>número de grupos (unidades independentes)</dd></div><div><dt>\(\mathbf y_i,\ \boldsymbol\mu_i\)</dt><dd>vetor de respostas e de médias do grupo i</dd></div><div><dt>\(\mathbf D_i\)</dt><dd>matriz de derivadas de \(\boldsymbol\mu_i\) em relação aos coeficientes</dd></div><div><dt>\(\mathbf A_i\)</dt><dd>matriz diagonal com as variâncias marginais de cada observação</dd></div><div><dt>\(\mathbf R(\alpha)\)</dt><dd>matriz de correlação de trabalho, com parâmetro \(\alpha\)</dd></div><div><dt>\(\phi\)</dt><dd>parâmetro de escala</dd></div><div><dt>\(\mathbf H\)</dt><dd>matriz de informação do modelo, usada como o “pão” do sanduíche</dd></div></dl><p>A expressão central não é uma verossimilhança: é um sistema de <strong>equações de estimação</strong>. Por isso o GEE não tem AIC nem teste de razão de verossimilhanças; a seleção de modelos usa o QIC (PAN, 2001).</p><h3>Exemplo numérico, passo a passo</h3><p>A correlação permutável estimada no exemplo é \(\alpha=0{,}188\). Com 4 medidas por operador, a matriz de trabalho é</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf R=\begin{pmatrix}1&0{,}188&0{,}188&0{,}188\\0{,}188&1&0{,}188&0{,}188\\0{,}188&0{,}188&1&0{,}188\\0{,}188&0{,}188&0{,}188&1\end{pmatrix}\]</div><div class="worked"><strong>O que essa correlação faz com a informação</strong><p>Uma regra prática: com \(m\) medidas por grupo e correlação \(\alpha\), o número <em>efetivo</em> de observações independentes para um preditor que varia entre grupos é aproximadamente \(n/\left[1+(m-1)\alpha\right]\).</p><p>Aqui: \(1+(4-1)\times0{,}188=1{,}564\). As 120 observações equivalem a cerca de \(120/1{,}564\approx77\) independentes.</p><p>Como o erro-padrão cresce com \(1/\sqrt{n}\), isso corresponde a um aumento de cerca de \(\sqrt{1{,}564}=1{,}25\) — muito próximo do fator 1,26 observado no coeficiente do treinamento.</p></div><h3>Propriedades</h3><ul class="checklist"><li>As estimativas dos coeficientes são consistentes mesmo com a estrutura de correlação errada, desde que o modelo da média esteja correto.</li><li>A variância robusta protege contra a má especificação da correlação, mas exige muitos grupos para funcionar bem.</li><li>Os coeficientes têm interpretação <strong>marginal</strong> (média na população), não condicional a um indivíduo.</li><li>Para respostas não lineares, como a logística, os coeficientes do GEE são sistematicamente menores em módulo que os de um modelo misto.</li><li>A escolha da estrutura afeta a eficiência: uma estrutura próxima da real dá erros-padrão menores.</li><li>O GEE não fornece verossimilhança: use o QIC para comparar modelos.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente e exp(b)</td><td>Efeito médio na população, na escala da ligação.</td><td>Não é o efeito para um mesmo indivíduo.</td></tr><tr><td>Erro-padrão robusto</td><td>Precisão corrigida pelo agrupamento.</td><td>Pouco confiável com menos de 30 grupos.</td></tr><tr><td>Erro-padrão do modelo</td><td>Válido só se a correlação estiver bem especificada.</td><td>Prefira o robusto.</td></tr><tr><td>α estimado</td><td>Força da correlação dentro do grupo.</td><td>Valores altos indicam que ignorar o agrupamento seria grave.</td></tr><tr><td>QIC</td><td>Comparação entre estruturas de correlação.</td><td>Menor é melhor; não compare com AIC.</td></tr></tbody></table></div><div class="callout warn"><strong>O erro-padrão pode subir ou descer</strong><ul class="checklist"><li>Preditor que varia <strong>entre</strong> grupos (como o treinamento): a análise ingênua <em>subestima</em> o erro-padrão, porque conta cada grupo várias vezes.</li><li>Preditor que varia <strong>dentro</strong> do grupo (como a dificuldade): a análise ingênua costuma <em>superestimar</em> o erro-padrão, porque desperdiça a comparação interna.</li></ul></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>geeglm()</code> pertence ao pacote <code>geepack</code> (HALEKOH; HØJSGAARD; YAN, 2006). Instale uma única vez com <code>install.packages("geepack")</code>. O identificador do grupo vai em <code>id=</code>, a estrutura em <code>corstr=</code>, e os dados precisam estar ordenados por grupo. O pacote <code>gee</code> é uma alternativa.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-gee-min" type="button">Copiar código</button></div><pre id="code-gee-min"><code># install.packages("geepack")
 library(geepack)
-d &lt;- CO2[order(CO2$Plant, CO2$conc), ]
-d$Plant &lt;- factor(d$Plant)
-ajuste &lt;- geeglm(uptake ~ conc + Type, id = Plant,
-                data = d, family = gaussian(),
-                corstr = "exchangeable")
-print(summary(ajuste))
+modelo &lt;- geeglm(sucesso ~ treinamento + dificuldade, id = operador,
+                 data = dados, family = binomial, corstr = "exchangeable")
+summary(modelo)
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Trinta operadores executaram as mesmas quatro tarefas, de dificuldade crescente, e registrou-se se cada tarefa foi concluída no tempo previsto. Metade dos operadores havia feito um curso de treinamento. São 120 observações, mas apenas 30 unidades independentes: as quatro tarefas de um mesmo operador compartilham a habilidade dele. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-gee" type="button">Copiar código</button></div><pre id="code-gee"><code># Equações de estimação generalizadas (GEE): exemplo completo ----
+# Pacote: geepack. Instale uma única vez: install.packages("geepack")
+library(geepack)
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: 30 operadores executam as mesmas 4 tarefas (dados fictícios)
+treino_operador &lt;- c(1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0,
+                     1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0)
+sucesso &lt;- c(1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1,
+             1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+             1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0,
+             1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+             1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0,
+             1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1)
+dados &lt;- data.frame(
+  operador    = factor(rep(1:30, each = 4)),
+  treinamento = rep(treino_operador, each = 4),
+  dificuldade = rep(1:4, times = 30) - 2.5,
+  sucesso     = sucesso)
+xtabs(~ treinamento + sucesso, data = dados)
 
+# 2. Análise ingênua: logística que ignora o agrupamento por operador
+m_naive &lt;- glm(sucesso ~ treinamento + dificuldade, data = dados, family = binomial)
+summary(m_naive)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Há apenas 12 plantas no conjunto CO2; a inferência sanduíche assintótica deve ser interpretada com cautela.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="glm.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Modelos lineares generalizados (GLM)
-    </a>
-<a href="t1.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste t para uma amostra
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. GEE com correlação de trabalho permutável (exchangeable)
+#    IMPORTANTE: os dados precisam estar ordenados por unidade (id)
+m_gee &lt;- geeglm(sucesso ~ treinamento + dificuldade, id = operador,
+                data = dados, family = binomial, corstr = "exchangeable")
+summary(m_gee)
+
+# 4. Correlação de trabalho estimada
+summary(m_gee)$corr
+
+# 5. Razões de chances e intervalos de confiança de 95%
+b &lt;- coef(m_gee); ep &lt;- summary(m_gee)$coefficients[, 2]
+round(exp(cbind(OR = b, inferior = b - 1.96 * ep, superior = b + 1.96 * ep)), 4)
+
+# 6. Outras estruturas de trabalho e comparação por QIC
+m_ind &lt;- geeglm(sucesso ~ treinamento + dificuldade, id = operador,
+                data = dados, family = binomial, corstr = "independence")
+m_ar1 &lt;- geeglm(sucesso ~ treinamento + dificuldade, id = operador,
+                data = dados, family = binomial, corstr = "ar1")
+rbind(independencia = QIC(m_ind), permutavel = QIC(m_gee), ar1 = QIC(m_ar1))
+
+# 7. Comparação com o modelo misto (efeito aleatório por operador)
+# install.packages("lme4")
+# m_misto &lt;- lme4::glmer(sucesso ~ treinamento + dificuldade + (1 | operador),
+#                        data = dados, family = binomial)
+# O GEE estima o efeito MÉDIO NA POPULAÇÃO; o misto, o efeito PARA UM MESMO operador.
+
+# 8. Gráfico: taxas observadas
+taxas &lt;- tapply(dados$sucesso, list(dados$dificuldade, dados$treinamento), mean)
+matplot(1:4, taxas, type = "b", pch = 19, lty = 1, lwd = 2, ylim = c(0, 1),
+        xlab = "Dificuldade da tarefa", ylab = "Proporção de sucesso")
+legend("bottomleft", c("sem treinamento", "com treinamento"), col = 1:2, lwd = 2, bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-gee" type="button">Copiar código</button></div><pre id="code-py-gee"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+
+# Dados: 30 operadores executam as mesmas 4 tarefas, de dificuldade crescente (dados fictícios).
+# sucesso = 1 se a tarefa foi concluída no tempo previsto | treinamento = 1 se o operador fez o curso
+treino_operador = np.array([1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0,
+                            1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0.])
+sucesso = np.array([1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+                    1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0,
+                    1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0,
+                    1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1.])
+G, T = 30, 4
+operador    = np.repeat(np.arange(1, G + 1), T)
+treinamento = np.repeat(treino_operador, T)
+dificuldade = np.tile(np.arange(1, T + 1), G)
+X = np.column_stack([np.ones(G * T), treinamento, dificuldade - 2.5])
+nomes = ["(Intercepto)", "treinamento", "dificuldade"]
+
+def imprime(nomes, b, ep, rotulo):
+    z = b / ep; p = 2 * stats.norm.sf(np.abs(z)); zc = stats.norm.ppf(0.975)
+    print(f"  {rotulo}")
+    print(f"  {'Termo':&lt;14}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;8}{'p-valor':&gt;10}{'OR':&gt;8}{'IC 95% da OR':&gt;22}")
+    for nm, bi, ei, zi, pi in zip(nomes, b, ep, z, p):
+        print(f"  {nm:&lt;14}{bi:&gt;11.4f}{ei:&gt;13.4f}{zi:&gt;8.3f}{pi:&gt;10.4f}{np.exp(bi):&gt;8.3f}   [{np.exp(bi-zc*ei):&gt;6.3f}; {np.exp(bi+zc*ei):&gt;6.3f}]")
+
+def logistica(X, y):
+    """Regressão logística comum, que supõe todas as observações independentes."""
+    b = np.zeros(X.shape[1])
+    for _ in range(60):
+        p = 1 / (1 + np.exp(-X @ b)); W = p * (1 - p)
+        b = b + np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (y - p))
+    p = 1 / (1 + np.exp(-X @ b))
+    return b, np.sqrt(np.diag(np.linalg.inv(X.T @ (X * (p * (1 - p))[:, None]))))
+
+def gee(X, y, grupo, estrutura="permutavel"):
+    """Equações de estimação generalizadas, resposta binária, com variância robusta (sanduíche)."""
+    b, _ = logistica(X, y); grupos = np.unique(grupo); n, p = X.shape
+    for _ in range(80):
+        mu = 1 / (1 + np.exp(-X @ b))
+        r = (y - mu) / np.sqrt(mu * (1 - mu))              # resíduos de Pearson
+        phi = np.sum(r**2) / (n - p)
+        if estrutura == "permutavel":                       # correlação igual entre todos os pares
+            soma = 0.0; pares = 0
+            for g in grupos:
+                rr = r[grupo == g]
+                for a in range(len(rr)):
+                    for c in range(a + 1, len(rr)): soma += rr[a] * rr[c]; pares += 1
+            alpha = soma / (pares * phi)
+        else:
+            alpha = 0.0                                     # independência
+        U = np.zeros(p); H = np.zeros((p, p)); M = np.zeros((p, p))
+        for g in grupos:
+            i = np.where(grupo == g)[0]; m = len(i)
+            Xi = X[i]; mui = mu[i]; A = mui * (1 - mui)
+            R = np.full((m, m), alpha); np.fill_diagonal(R, 1.0)
+            V = phi * np.outer(np.sqrt(A), np.sqrt(A)) * R
+            Vinv = np.linalg.inv(V); D = Xi * A[:, None]; res = y[i] - mui
+            U += D.T @ Vinv @ res; H += D.T @ Vinv @ D
+            M += D.T @ Vinv @ np.outer(res, res) @ Vinv @ D
+        passo = np.linalg.solve(H, U); b = b + passo
+        if np.max(np.abs(passo)) &lt; 1e-10: break
+    Hinv = np.linalg.inv(H)
+    return b, np.sqrt(np.diag(Hinv @ M @ Hinv)), np.sqrt(np.diag(Hinv)), alpha, phi
+
+# 1. Descrição
+print(f"{G} operadores x {T} tarefas = {G*T} observações | taxa geral de sucesso = {sucesso.mean():.3f}")
+print(f"Com treinamento: {sucesso[treinamento==1].mean():.3f} | sem treinamento: {sucesso[treinamento==0].mean():.3f}")
+print("Taxa por dificuldade:", [round(sucesso[dificuldade == d].mean(), 3) for d in range(1, 5)])
+
+# 2. Análise ingênua: regressão logística que ignora o agrupamento
+b_n, ep_n = logistica(X, sucesso)
+print(); imprime(nomes, b_n, ep_n, "Logística comum (supõe independência):")
+
+# 3. GEE com correlação permutável (exchangeable)
+b_g, ep_rob, ep_mod, alpha, phi = gee(X, sucesso, operador)
+print(f"\n  Correlação permutável estimada: alpha = {alpha:.4f} | parâmetro de escala: phi = {phi:.4f}")
+imprime(nomes, b_g, ep_rob, "GEE permutável, erro-padrão robusto:")
+
+# 4. O mesmo GEE com erro-padrão baseado no modelo (sem a correção robusta)
+print(); imprime(nomes, b_g, ep_mod, "GEE permutável, erro-padrão do modelo:")
+
+# 5. GEE com estrutura de independência e erro-padrão robusto
+b_i, ep_i, _, _, _ = gee(X, sucesso, operador, estrutura="independencia")
+print(); imprime(nomes, b_i, ep_i, "GEE independência, erro-padrão robusto:")
+
+# 6. Comparação dos erros-padrão
+print("\nTermo            Logística comum   GEE robusto    Razão")
+for nm, e1, e2 in zip(nomes, ep_n, ep_rob):
+    print(f"{nm:&lt;16}{e1:&gt;14.4f}{e2:&gt;14.4f}{e2/e1:&gt;9.2f}")
+print("treinamento varia ENTRE operadores: a logística comum subestima o erro-padrão.")
+print("dificuldade varia DENTRO de cada operador: a logística comum o superestima.")
+
+# 7. Correlação dentro do operador, observada diretamente
+m = sucesso.reshape(G, T)
+print(f"\nCorrelação média entre pares de tarefas do mesmo operador: {np.mean([np.corrcoef(m[:, a], m[:, c])[0,1] for a in range(T) for c in range(a+1, T)]):.4f}")
+print(f"Operadores com 0, 1, 2, 3 e 4 sucessos: {np.bincount(m.sum(axis=1).astype(int), minlength=5)}")
+
+# 8. Comparação com o modelo misto (efeito aleatório por operador)
+#    O GEE estima o efeito MÉDIO NA POPULAÇÃO; o modelo misto, o efeito PARA UM MESMO operador.
+nos, pesos = np.polynomial.hermite_e.hermegauss(31)
+def menos_logv_misto(par):
+    b = par[:3]; sigma = np.exp(par[3]); total = 0.0
+    for g in range(1, G + 1):
+        i = operador == g; eta = X[i] @ b; yi = sucesso[i]
+        lp = np.array([np.sum(yi * (eta + sigma * v) - np.log1p(np.exp(eta + sigma * v))) for v in nos])
+        m = lp.max(); total += m + np.log(np.sum(pesos * np.exp(lp - m)) / np.sqrt(2 * np.pi))
+    return -total
+res = optimize.minimize(menos_logv_misto, [0.1, 1.0, -0.7, np.log(1.5)], method="Nelder-Mead",
+                        options={"xatol": 1e-7, "fatol": 1e-7, "maxiter": 4000})
+bm = res.x[:3]; sigma = np.exp(res.x[3])
+print(f"\nModelo misto (quadratura de Gauss-Hermite): sigma do operador = {sigma:.4f}")
+print(f"{'Termo':&lt;16}{'GEE (populacional)':&gt;20}{'Misto (por operador)':&gt;22}")
+for nm, g1, g2 in zip(nomes, b_g, bm):
+    print(f"{nm:&lt;16}{g1:&gt;20.4f}{g2:&gt;22.4f}")
+print(f"Atenuação esperada: {bm[1]:.4f} / raiz(1 + 0,346 x {sigma:.3f}²) = {bm[1]/np.sqrt(1+0.346*sigma**2):.4f}"
+      f" (GEE: {b_g[1]:.4f})")
+
+# 9. Gráfico
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+for t in range(1, 5):
+    ax[0].bar([t - 0.2, t + 0.2], [sucesso[(dificuldade == t) &amp; (treinamento == 0)].mean(),
+                                   sucesso[(dificuldade == t) &amp; (treinamento == 1)].mean()],
+              width=0.38, color=["gray", "darkgreen"])
+ax[0].set_xticks(range(1, 5)); ax[0].set_xlabel("Dificuldade da tarefa"); ax[0].set_ylabel("Proporção de sucesso")
+ax[1].bar(np.arange(3) - 0.2, ep_n, width=0.38, label="logística comum")
+ax[1].bar(np.arange(3) + 0.2, ep_rob, width=0.38, label="GEE robusto")
+ax[1].set_xticks(range(3)); ax[1].set_xticklabels(nomes, rotation=15); ax[1].set_ylabel("Erro-padrão"); ax[1].legend()
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">30 operadores x 4 tarefas = 120 observações | taxa geral de sucesso = 0.642
+Com treinamento: 0.750 | sem treinamento: 0.533
+Taxa por dificuldade: [np.float64(0.867), np.float64(0.7), np.float64(0.567), np.float64(0.433)]
+
+  Logística comum (supõe independência):
+  Termo          Estimativa  Erro-padrão       z   p-valor      OR          IC 95% da OR
+  (Intercepto)       0.1546       0.2786   0.555    0.5790   1.167   [ 0.676;  2.015]
+  treinamento        1.1000       0.4264   2.580    0.0099   3.004   [ 1.302;  6.929]
+  dificuldade       -0.7168       0.1995  -3.594    0.0003   0.488   [ 0.330;  0.722]
+
+  Correlação permutável estimada: alpha = 0.1881 | parâmetro de escala: phi = 1.0569
+  GEE permutável, erro-padrão robusto:
+  Termo          Estimativa  Erro-padrão       z   p-valor      OR          IC 95% da OR
+  (Intercepto)       0.1487       0.3275   0.454    0.6498   1.160   [ 0.611;  2.204]
+  treinamento        1.1449       0.5387   2.125    0.0336   3.142   [ 1.093;  9.032]
+  dificuldade       -0.7197       0.1753  -4.104    0.0000   0.487   [ 0.345;  0.687]
+
+  GEE permutável, erro-padrão do modelo:
+  Termo          Estimativa  Erro-padrão       z   p-valor      OR          IC 95% da OR
+  (Intercepto)       0.1487       0.3576   0.416    0.6776   1.160   [ 0.576;  2.339]
+  treinamento        1.1449       0.5455   2.099    0.0358   3.142   [ 1.079;  9.153]
+  dificuldade       -0.7197       0.1870  -3.848    0.0001   0.487   [ 0.337;  0.702]
+
+  GEE independência, erro-padrão robusto:
+  Termo          Estimativa  Erro-padrão       z   p-valor      OR          IC 95% da OR
+  (Intercepto)       0.1546       0.3275   0.472    0.6370   1.167   [ 0.614;  2.218]
+  treinamento        1.1000       0.5385   2.043    0.0411   3.004   [ 1.046;  8.631]
+  dificuldade       -0.7168       0.1737  -4.128    0.0000   0.488   [ 0.347;  0.686]
+
+Termo            Logística comum   GEE robusto    Razão
+(Intercepto)            0.2786        0.3275     1.18
+treinamento             0.4264        0.5387     1.26
+dificuldade             0.1995        0.1753     0.88
+treinamento varia ENTRE operadores: a logística comum subestima o erro-padrão.
+dificuldade varia DENTRO de cada operador: a logística comum o superestima.
+
+Correlação média entre pares de tarefas do mesmo operador: 0.2378
+Operadores com 0, 1, 2, 3 e 4 sucessos: [2 3 9 8 8]
+
+Modelo misto (quadratura de Gauss-Hermite): sigma do operador = 1.2723
+Termo             GEE (populacional)  Misto (por operador)
+(Intercepto)                  0.1487                0.1849
+treinamento                   1.1449                1.4469
+dificuldade                  -0.7197               -0.9145
+Atenuação esperada: 1.4469 / raiz(1 + 0,346 x 1.272²) = 1.1584 (GEE: 1.1449)</pre></div><figure class="fig"><img src="../assets/resultados/gee.png" alt="Taxas de sucesso por dificuldade e comparação dos erros-padrão" loading="lazy"/><figcaption><strong>O que muda ao reconhecer o agrupamento.</strong> À esquerda, as taxas observadas: o sucesso cai com a dificuldade e é maior entre os treinados, com a diferença se ampliando nas tarefas difíceis. À direita, os erros-padrão: o do treinamento sobe 26% e o da dificuldade cai 12%, exatamente o padrão esperado. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descrição</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Operadores × tarefas</td><td>30 × 4 = 120 observações</td></tr><tr><td>Taxa geral de sucesso</td><td>0,642</td></tr><tr><td>Com e sem treinamento</td><td>0,750 e 0,533</td></tr><tr><td>Taxa por dificuldade (1 a 4)</td><td>0,867; 0,700; 0,567; 0,433</td></tr><tr><td>Correlação observada entre tarefas do mesmo operador</td><td>0,238</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Coeficientes</caption><thead><tr><th>Termo</th><th>Logística comum: estimativa (EP)</th><th>GEE permutável: estimativa (EP robusto)</th><th>OR do GEE (IC 95%)</th></tr></thead><tbody><tr><td>(Intercepto)</td><td>0,1546 (0,2786)</td><td>0,1487 (0,3275)</td><td>1,160 [0,611; 2,204]</td></tr><tr><td>Treinamento</td><td>1,1000 (0,4264)</td><td>1,1449 (0,5387)</td><td>3,142 [1,093; 9,032]</td></tr><tr><td>Dificuldade</td><td>−0,7168 (0,1995)</td><td>−0,7197 (0,1753)</td><td>0,487 [0,345; 0,687]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Efeito sobre a inferência</caption><thead><tr><th>Termo</th><th>Valor-p ingênuo</th><th>Valor-p do GEE</th><th>Razão entre os erros-padrão</th></tr></thead><tbody><tr><td>Treinamento</td><td>0,0099</td><td>0,0336</td><td>1,26</td></tr><tr><td>Dificuldade</td><td>0,0003</td><td>&lt; 0,0001</td><td>0,88</td></tr></tbody></table></div><p><strong>Leitura:</strong> os coeficientes quase não mudam, mas a precisão sim. O treinamento varia <em>entre</em> operadores: a análise ingênua contava cada operador quatro vezes e, por isso, exagerava a confiança (p de 0,010 passa para 0,034). A dificuldade varia <em>dentro</em> de cada operador: ali a comparação é interna, e o GEE reconhece que ela é mais informativa do que parecia (o erro-padrão cai 12%). A correlação de trabalho estimada foi α = 0,188, próxima da correlação observada entre tarefas do mesmo operador (0,238).</p><h3>GEE ou modelo misto?</h3><div class="table-wrap"><table class="method-table"><caption>Os mesmos dados, duas perguntas</caption><thead><tr><th>Termo</th><th>GEE (efeito populacional)</th><th>Modelo misto (efeito por operador)</th></tr></thead><tbody><tr><td>(Intercepto)</td><td>0,1487</td><td>0,1849</td></tr><tr><td>Treinamento</td><td>1,1449</td><td>1,4469</td></tr><tr><td>Dificuldade</td><td>−0,7197</td><td>−0,9145</td></tr><tr><td>Desvio-padrão entre operadores</td><td>—</td><td>1,272</td></tr></tbody></table></div><p>Os coeficientes do modelo misto são maiores em módulo, e isso não é erro de nenhum dos dois: eles respondem a perguntas diferentes. A relação entre eles é aproximadamente \(\beta_{\text{populacional}}\approx\beta_{\text{individual}}/\sqrt{1+0{,}346\,\sigma^2}\). Aqui: \(1{,}447/\sqrt{1+0{,}346\times1{,}272^2}=1{,}158\), muito próximo do 1,145 estimado pelo GEE. Para decidir sobre um programa de treinamento aplicado a toda a equipe, o número do GEE é o que interessa; para aconselhar um operador específico, o do modelo misto.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Comparar coeficientes de GEE e de modelo misto como se fossem a mesma coisa</td><td>São efeitos marginais e condicionais; não são intercambiáveis.</td></tr><tr><td>Usar GEE com poucos grupos</td><td>Com menos de 30 grupos, a variância robusta é otimista; use correções de amostra pequena.</td></tr><tr><td>Reportar o erro-padrão do modelo em vez do robusto</td><td>O robusto é a razão de ser do método.</td></tr><tr><td>Usar AIC ou teste de razão de verossimilhanças</td><td>Não há verossimilhança; use o QIC.</td></tr><tr><td>Ignorar o padrão de dados faltantes</td><td>O GEE padrão exige perda completamente ao acaso.</td></tr><tr><td>Não ordenar os dados por grupo</td><td>Vários programas produzem resultados errados silenciosamente.</td></tr><tr><td>Supor que a estrutura de correlação precisa estar certa</td><td>Ela afeta a eficiência; o que precisa estar certo é o modelo da média.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Modelos mistos (<code>lme4</code>, <code>nlme</code>)</td><td>Interesse no efeito individual, na variabilidade entre unidades ou em previsões por unidade; dados faltantes ao acaso.</td></tr><tr><td>Erros-padrão agrupados (<em>cluster-robust</em>)</td><td>Apenas corrigir a inferência de um modelo já ajustado.</td></tr><tr><td><a href="aovrepetida.html">ANOVA de medidas repetidas</a></td><td>Resposta contínua, delineamento balanceado e sem dados faltantes.</td></tr><tr><td>GEE ponderado por probabilidade inversa</td><td>Dados faltantes que dependem de variáveis observadas.</td></tr><tr><td><a href="glm.html">GLM comum</a></td><td>Observações realmente independentes.</td></tr><tr><td>Modelos de equações estruturais ou multiníveis</td><td>Hierarquias com três ou mais níveis.</td></tr></tbody></table></div><ol class="steps"><li>Identifique a unidade de agrupamento e conte quantas existem.</li><li>Especifique o modelo da média com cuidado: é a parte que precisa estar certa.</li><li>Escolha uma estrutura de correlação plausível.</li><li>Ajuste e reporte os erros-padrão robustos.</li><li>Compare estruturas pelo QIC.</li><li>Decida entre efeito marginal e individual conforme a pergunta.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>LIANG, Kung-Yee; ZEGER, Scott L. Longitudinal data analysis using generalized linear models. <em>Biometrika</em>, v. 73, n. 1, p. 13-22, 1986.</li><li>ZEGER, Scott L.; LIANG, Kung-Yee. Longitudinal data analysis for discrete and continuous outcomes. <em>Biometrics</em>, v. 42, n. 1, p. 121-130, 1986.</li><li>HARDIN, James W.; HILBE, Joseph M. <em>Generalized estimating equations.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2013.</li><li>HALEKOH, Ulrich; HØJSGAARD, Søren; YAN, Jun. The R package geepack for generalized estimating equations. <em>Journal of Statistical Software</em>, v. 15, n. 2, p. 1-11, 2006.</li><li>PAN, Wei. Akaike’s information criterion in generalized estimating equations. <em>Biometrics</em>, v. 57, n. 1, p. 120-125, 2001.</li><li>DIGGLE, Peter J.; HEAGERTY, Patrick; LIANG, Kung-Yee; ZEGER, Scott L. <em>Analysis of longitudinal data.</em> 2. ed. Oxford: Oxford University Press, 2002.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Grupos independentes entre si, modelo da média bem especificado e número suficiente de grupos; dados faltantes completamente ao acaso.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>geepack</code> (<code>geeglm</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="glm.html"><span>← ANTERIOR</span>Modelos lineares generalizados (GLM)</a><a href="t1.html"><span>PRÓXIMO →</span>Teste t para uma amostra</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

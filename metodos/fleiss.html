@@ -4,313 +4,395 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Kappa de Fleiss: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Kappa de Fleiss | Estatística e Ciência de Dados
-  </title>
+<meta content="Kappa de Fleiss: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Kappa de Fleiss | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Kappa de Fleiss
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 12 · CONCORDÂNCIA
-    </span>
-<h1>
-     Kappa de Fleiss
-    </h1>
-<p class="detail-lead">
-     Avalia a concordância das classificações atribuídas por três ou mais avaliadores.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/fleiss.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia a concordância das classificações atribuídas por três ou mais avaliadores.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Categorias comuns, número de avaliações por item constante segundo definição clássica e dados comparáveis.</li><li>Avaliar distribuição de categorias.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \kappa_F=0\\ H_1&amp;:\ \kappa_F\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\kappa_F=\frac{\bar P-\bar P_e}{1-\bar P_e}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\kappa_F)\approx\widehat\kappa_F\pm1{,}96\operatorname{EP}(\widehat\kappa_F)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(P_o\)
-        </dt>
-<dd>
-         concordância observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(P_e\)
-        </dt>
-<dd>
-         concordância esperada pela regra de referência do coeficiente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\kappa\)
-        </dt>
-<dd>
-         coeficiente de concordância corrigido para acaso
-        </dd>
-</div>
-</dl>
-<p>
-       O intervalo normal é apenas aproximado e depende de hipóteses de amostragem dos avaliadores.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) não implica qualidade suficiente de classificação; IC e magnitude são mais informativos.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Três sistemas de classificação de veículos em alto/baixo desempenho, construídos de mpg, hp e wt (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-fleiss" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-fleiss"><code># Kappa de Fleiss ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Kappa de Fleiss</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · CONCORDÂNCIA</span><h1>Kappa de Fleiss</h1><p class="detail-lead">Generaliza o kappa para três ou mais avaliadores intercambiáveis, contando os pares concordantes dentro de cada unidade.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/fleiss.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/fleiss.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o kappa de Fleiss</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="kappa.html">kappa de Cohen</a> compara dois avaliadores. Quando há três ou mais, e quando eles são <em>intercambiáveis</em> — isto é, quando não interessa quem é quem —, o kappa de Fleiss é a generalização natural. Ele não compara avaliadores dois a dois: para cada unidade, conta quantos pares de avaliadores concordaram, e compara esse total com o que se esperaria por acaso.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Kappa de Fleiss" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Concordância de m avaliadores</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">corrigida pelo acaso</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Para cada unidade, conte</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">os pares concordantes</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Supõe</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Avaliadores intercambiáveis</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">escala nominal</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A conta</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">(Pbarra − Pe)/(1 − Pe)</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Por categoria</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Mostra quais classes</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">são reconhecíveis</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">irr::kappam.fleiss()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Kappa de Fleiss</text></svg><figcaption>Visão geral do kappa de Fleiss. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que "intercambiáveis" significa</strong><p>No kappa de Fleiss, nem sempre são os mesmos avaliadores que julgam todas as unidades: o que se exige é que cada unidade seja julgada por \(m\) avaliadores quaisquer, sorteados de um mesmo pool. Quando os avaliadores são fixos e identificados — como nos dados desta ficha —, o coeficiente continua válido, mas perde-se informação sobre <em>quem</em> destoa. A análise deixa-um-de-fora recupera parte dessa informação.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o kappa de Fleiss</h2><p>Para cada unidade \(i\), conte quantos dos \(\binom{m}{2}\) pares de avaliadores a classificaram na mesma categoria, e divida por \(\binom{m}{2}\). Isso dá \(P_i\), a concordância daquela unidade. A média dos \(P_i\) é a concordância observada global, e a esperada vem das proporções globais de cada categoria.</p><figure class="fig"><img src="../assets/resultados/fleiss-didatica.png" alt="O cálculo de Pi em quatro folhas, a distribuição dos 40 valores e o kappa de cada categoria" loading="lazy"/><figcaption><strong>Da folha isolada ao coeficiente.</strong> À esquerda, quatro folhas escolhidas para mostrar o cálculo: a folha 13, em que os cinco avaliadores deram a classe 1, tem Pi = 1; a folha 7, com classes espalhadas, tem Pi = 0,30. No centro, a distribuição dos 40 valores de Pi, com a média em 0,4275 e a concordância esperada por acaso em 0,2042 — a distância entre as duas linhas é o que o kappa mede. À direita, o kappa calculado separadamente para cada categoria, que mostra quais classes os avaliadores reconhecem com segurança. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Fleiss e Light: duas generalizações diferentes</strong><p>Há dois modos de levar o kappa a \(m\) avaliadores. O de Fleiss usa as proporções <em>globais</em> de cada categoria para calcular \(p_e\), supondo avaliadores intercambiáveis. O de Light calcula um <a href="kappa.html">kappa de Cohen</a> para cada par, com as marginais daquele par, e tira a média. Nos dados desta ficha dão 0,2806 e 0,2860 — quase idênticos. Eles se separam quando algum avaliador tem viés marginal forte.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>O mesmo número m de avaliadores por unidade</td><td>A fórmula pressupõe m fixo.</td><td>Conte as avaliações por unidade; com m variável, use o alfa de Krippendorff.</td></tr><tr><td><strong>Avaliadores intercambiáveis</strong></td><td>pe usa as marginais globais, não as de cada avaliador.</td><td>Compare as distribuições por avaliador; se uma destoar muito, o pressuposto é frágil.</td></tr><tr><td>Categorias nominais, exclusivas e exaustivas</td><td>Cada avaliação cai em exatamente uma.</td><td>Soma das contagens = n × m.</td></tr><tr><td>Unidades independentes</td><td>O erro-padrão pressupõe isso.</td><td>Delineamento.</td></tr><tr><td>Avaliações independentes entre si</td><td>Avaliadores que se consultam inflam a concordância.</td><td>Protocolo.</td></tr><tr><td>Escala sem ordem relevante</td><td>Fleiss não dá crédito parcial.</td><td>Com escala ordinal, prefira o <a href="gwet.html">AC2</a> ou o <a href="icc.html">ICC</a>.</td></tr><tr><td>Categorias com frequência razoável</td><td>Classes raras tornam o coeficiente instável.</td><td>Tabela de prevalências.</td></tr></tbody></table></div><div class="callout warn"><strong>O erro-padrão do R não serve para o intervalo</strong><p>A fórmula de Fleiss (1971) para o erro-padrão foi derivada <em>sob a hipótese nula</em> de que \(\kappa=0\), e é isso que <code>kappam.fleiss()</code> usa no teste \(z\). Nos dados desta ficha ela dá 0,0258, enquanto o bootstrap sobre as folhas dá 0,0458 — quase o dobro. Usar o erro-padrão de Fleiss para construir um intervalo produz um intervalo estreito demais. Para o intervalo, use bootstrap.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}n_{ij} &= \text{número de } \\ &\quad \text{avaliadores que } \\ &\quad \text{puseram a } \\ &\quad \text{unidade }i\text{ na categoria }j,\end{aligned}\]\[\sum_j n_{ij}=m\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[P_i=\frac{1}{m(m-1)}\left(\sum_{j=1}^{k}n_{ij}^{2}-m\right),\]\[\bar P=\frac{1}{n}\sum_{i=1}^{n}P_i\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[p_j=\frac{1}{nm}\sum_{i=1}^{n}n_{ij},\]\[P_e=\sum_{j=1}^{k}p_j^{2},\]\[\hat\kappa=\frac{\bar P-P_e}{1-P_e}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n\)</dt><dd>número de unidades</dd></div><div><dt>\(m\)</dt><dd>número de avaliadores por unidade</dd></div><div><dt>\(k\)</dt><dd>número de categorias</dd></div><div><dt>\(n_{ij}\)</dt><dd>avaliadores que puseram a unidade \(i\) na categoria \(j\)</dd></div><div><dt>\(P_i\)</dt><dd>proporção dos \(\binom{m}{2}\) pares que concordaram na unidade \(i\)</dd></div><div><dt>\(p_j\)</dt><dd>proporção global de avaliações na categoria \(j\)</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Prevalência global de cada classe (40 folhas × 5 avaliadores = 200 avaliações)</caption><thead><tr><th>Classe</th><th>Avaliações</th><th>pⱼ</th></tr></thead><tbody><tr><td>1 ausente</td><td>35</td><td>0,1750</td></tr><tr><td>2 baixa</td><td>37</td><td>0,1850</td></tr><tr><td>3 média</td><td>50</td><td>0,2500</td></tr><tr><td>4 alta</td><td>43</td><td>0,2150</td></tr><tr><td>5 muito alta</td><td>35</td><td>0,1750</td></tr><tr><td><strong>Total</strong></td><td><strong>200</strong></td><td><strong>Pe = Σpⱼ² = 0,2042</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A concordância de oito folhas</caption><thead><tr><th>Folha</th><th>Classes dadas</th><th>Contagens por classe</th><th>Pᵢ</th></tr></thead><tbody><tr><td>1</td><td>3, 3, 4, 3, 4</td><td>[0, 0, 3, 2, 0]</td><td>0,4000</td></tr><tr><td>2</td><td>5, 4, 4, 4, 5</td><td>[0, 0, 0, 3, 2]</td><td>0,4000</td></tr><tr><td>3</td><td>4, 4, 5, 3, 5</td><td>[0, 0, 1, 2, 2]</td><td>0,2000</td></tr><tr><td>4</td><td>5, 5, 5, 4, 5</td><td>[0, 0, 0, 1, 4]</td><td>0,6000</td></tr><tr><td>5</td><td>5, 5, 5, 4, 3</td><td>[0, 0, 1, 1, 3]</td><td>0,3000</td></tr><tr><td>6</td><td>1, 2, 2, 1, 1</td><td>[3, 2, 0, 0, 0]</td><td>0,4000</td></tr><tr><td>7</td><td>2, 2, 3, 2, 4</td><td>[0, 3, 1, 1, 0]</td><td>0,3000</td></tr><tr><td>8</td><td>1, 2, 1, 1, 1</td><td>[4, 1, 0, 0, 0]</td><td>0,6000</td></tr></tbody></table></div><div class="worked"><strong>O cálculo de P₄ e do kappa</strong><p>Na folha 4, quatro avaliadores deram a classe 5 e um deu a classe 4. Os pares concordantes são os 6 pares formados entre os quatro que deram 5. Como há 10 pares ao todo:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}P_4 &= \frac{1}{5\times4}\left(4^{2}+1^{2}-5\right) \\ &= \frac{16+1-5}{20} = \frac{12}{20} \\ &= 0{,}6000.\end{aligned}\]</div><p>A média dos 40 valores de \(P_i\) é \(\bar P=0{,}4275\). Com \(P_e=0{,}2042\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat\kappa &= \frac{0{,}4275-0{,}2042}{1-0{,}2042} \\ &= \frac{0{,}2233}{0{,}7958} \\ &= 0{,}2806.\end{aligned}\]</div><p>O erro-padrão sob \(H_0\) é 0,0258, de modo que \(z=10{,}90\) e \(p=1{,}2\times10^{-27}\): a concordância é claramente superior ao acaso. Mas o intervalo por bootstrap, [0,1843; 0,3631], mostra que a estimativa é imprecisa — e é esse o número a reportar.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com \(m=2\), aproxima-se do <a href="kappa.html">kappa de Cohen</a>, mas não coincide exatamente: Fleiss usa as marginais globais e Cohen as de cada avaliador.</li><li>Não exige que sejam os mesmos \(m\) avaliadores em todas as unidades.</li><li>Vale 1 na concordância perfeita; o mínimo depende de \(k\) e \(m\), e pode ser negativo.</li><li>Admite decomposição por categoria, colapsando as demais em uma só.</li><li>É sensível ao número de categorias: colapsar a escala muda \(\bar P\) e \(P_e\) ao mesmo tempo.</li><li>Sofre o mesmo paradoxo da prevalência do kappa de Cohen, e por isso convém reportá-lo ao lado do <a href="gwet.html">AC1 de Gwet</a>.</li><li>O erro-padrão de Fleiss (1971) é válido apenas sob \(H_0\); para intervalos, use bootstrap.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>value</td><td>A estimativa global.</td><td>Reporte com intervalo por bootstrap.</td></tr><tr><td>z e p.value</td><td>Teste de κ = 0.</td><td>Quase sempre rejeita; informa pouco.</td></tr><tr><td>detail = TRUE</td><td>Kappa de cada categoria.</td><td>É o diagnóstico mais útil.</td></tr><tr><td>Pbarra e Pe</td><td>Os dois ingredientes.</td><td>Reportá-los torna o número legível.</td></tr><tr><td>Deixa-um-de-fora</td><td>Quem puxa o kappa para baixo.</td><td>Combine com a média de cada avaliador.</td></tr><tr><td>Kappa de Light</td><td>Média dos kappas pareados.</td><td>Diverge de Fleiss quando há viés marginal.</td></tr><tr><td>Prevalências</td><td>Se alguma classe domina.</td><td>Paradoxo da prevalência.</td></tr></tbody></table></div><div class="callout try"><strong>O kappa por categoria é o que orienta o treinamento</strong><p>Nos dados desta ficha, a classe 1 (ausência de sintoma) tem kappa 0,446 e a classe 4 tem 0,141. O padrão não é simplesmente "extremos fáceis, meio difícil": a classe 5 também fica baixa, em 0,273, porque a fronteira entre "alta" e "muito alta" é tão subjetiva quanto a do meio da escala. Em um programa de calibração de avaliadores, é nessas fronteiras específicas que se investe, e não na escala como um todo.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>irr::kappam.fleiss()</code>, que aceita uma matriz com uma linha por unidade e uma coluna por avaliador. O argumento <code>detail = TRUE</code> acrescenta o kappa de cada categoria. <code>irr::kappam.light()</code> calcula a média dos kappas pareados, e <code>DescTools::KappaM()</code> oferece intervalo. Para o intervalo por bootstrap, reamostre as <em>linhas</em> da matriz — são as unidades, e não as avaliações, que são independentes.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-fleiss-min" type="button">Copiar código</button></div><pre id="code-fleiss-min"><code>library(irr)
+kappam.fleiss(sev)                 # kappa global
+kappam.fleiss(sev, detail = TRUE)  # por categoria
+kappam.light(sev)                  # média dos pareados
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 40 folhas de cafeeiro avaliadas quanto à severidade de ferrugem por cinco avaliadores (A a E), em escala ordinal de 1 (ausente) a 5 (muito alta). O mesmo conjunto atravessa as seis fichas de concordância, o que permite ver como cada coeficiente responde à mesma estrutura de desacordo. Dois dos avaliadores foram construídos com defeitos distintos: o C classifica sistematicamente cerca de uma classe acima dos demais, e o E é o mais errático sem ser o mais severo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-fleiss" type="button">Copiar código</button></div><pre id="code-fleiss"><code># Kappa de Fleiss: exemplo completo ----
+# Pacotes: irr (kappam.fleiss, kappam.light), DescTools, irrCAC
+# install.packages(c("irr", "DescTools"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("irr", quietly = TRUE)) install.packages("irr")
+# Os mesmos dados das demais fichas de concordância: 40 folhas, cinco
+# avaliadores, severidade de ferrugem de 1 a 5.
+sev &lt;- matrix(c(
+ 3,3,4,3,4, 5,4,4,4,5, 4,4,5,3,5, 5,5,5,4,5, 5,5,5,4,3,
+ 1,2,2,1,1, 2,2,3,2,4, 1,2,1,1,1, 3,3,4,3,4, 3,4,5,4,2,
+ 4,3,4,3,4, 3,4,4,3,3, 1,1,1,1,1, 3,3,5,3,3, 2,3,2,2,1,
+ 5,5,5,5,4, 5,5,4,3,5, 4,5,5,4,4, 2,2,5,2,2, 3,4,5,4,3,
+ 4,4,4,4,1, 1,2,3,1,3, 3,3,3,3,3, 2,3,5,2,3, 2,1,2,2,2,
+ 2,1,3,2,3, 3,3,4,3,1, 2,1,1,1,5, 3,2,4,5,4, 1,1,1,1,2,
+ 4,5,5,4,4, 2,2,4,2,1, 1,1,4,1,3, 1,1,2,1,1, 3,3,3,2,3,
+ 3,3,3,3,3, 3,5,4,3,2, 2,2,4,2,1, 4,2,5,4,4, 5,5,5,5,2),
+ ncol = 5, byrow = TRUE,
+ dimnames = list(NULL, c("A","B","C","D","E")))
+
 library(irr)
-ratings &lt;- data.frame(
-  A = ifelse(mtcars$mpg &lt; median(mtcars$mpg), "alto", "baixo"),
-  B = ifelse(mtcars$hp &gt; median(mtcars$hp), "alto", "baixo"),
-  C = ifelse(mtcars$wt &gt; median(mtcars$wt), "alto", "baixo"))
-print(kappam.fleiss(ratings))
+kappam.fleiss(sev)                  # o kappa global, com z e valor-p
+kappam.fleiss(sev, detail = TRUE)   # kappa de cada categoria
+kappam.light(sev)                   # média dos kappas pareados
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# A conta à mão
+n &lt;- nrow(sev); m &lt;- ncol(sev); k &lt;- 5
+N &lt;- t(apply(sev, 1, function(r) table(factor(r, levels = 1:k))))
+head(N)                              # contagens por folha e classe
+pj &lt;- colSums(N)/(n*m); pj           # prevalência de cada classe
+Pe &lt;- sum(pj^2); Pe
+Pi &lt;- (rowSums(N^2) - m)/(m*(m-1))   # concordância dentro de cada folha
+Pbar &lt;- mean(Pi); Pbar
+(Pbar - Pe)/(1 - Pe)
 
+# Erro-padrão de Fleiss (válido sob H0: kappa = 0) e teste
+num &lt;- 2*(Pe - (2*m-3)*Pe^2 + 2*(m-2)*sum(pj^3))
+ep0 &lt;- sqrt(num/(n*m*(m-1)))/(1-Pe); ep0
+kap &lt;- (Pbar - Pe)/(1 - Pe); kap/ep0
+2*pnorm(abs(kap/ep0), lower.tail = FALSE)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kappa-ponderado.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Kappa ponderado
-    </a>
-<a href="icc.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Coeficiente de correlação intraclasse (ICC)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Para o INTERVALO, use bootstrap das unidades (o EP acima só vale sob H0)
+set.seed(7)
+bs &lt;- replicate(5000, {
+  idx &lt;- sample(n, replace = TRUE)
+  kappam.fleiss(sev[idx, ])$value
+})
+quantile(bs, c(0.025, 0.975)); sd(bs)
+
+# Quem derruba a concordância: deixa-um-de-fora
+sapply(1:m, function(j) kappam.fleiss(sev[, -j])$value)
+colMeans(sev)                        # o avaliador C é o mais severo
+
+# O efeito de colapsar categorias
+s3 &lt;- ifelse(sev &lt;= 2, 1, ifelse(sev == 3, 2, 3))
+s2 &lt;- ifelse(sev &lt;= 3, 1, 2)
+c(cinco = kappam.fleiss(sev)$value,
+  tres  = kappam.fleiss(s3)$value,
+  duas  = kappam.fleiss(s2)$value)
+
+# Alternativas para o mesmo delineamento
+library(DescTools)
+KappaM(sev, method = "Fleiss", conf.level = 0.95)
+# irrCAC::gwet.ac1.raw(as.data.frame(sev))      # AC1 de Gwet
+# irr::kripp.alpha(t(sev), method = "nominal")  # alfa de Krippendorff
+
+# Gráficos
+barplot(colMeans(sev), ylab = "Classe média atribuída", col = "darkseagreen")
+boxplot(as.vector(sev) ~ rep(colnames(sev), each = nrow(sev)),
+        xlab = "Avaliador", ylab = "Classe")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-fleiss" type="button">Copiar código</button></div><pre id="code-py-fleiss"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# concordância: 40 folhas de cafeeiro avaliadas quanto à severidade de
+# ferrugem por cinco avaliadores, em escala de 1 (ausente) a 5 (muito alta).
+# ===================================================================
+SEV = np.array([
+ [3,3,4,3,4],[5,4,4,4,5],[4,4,5,3,5],[5,5,5,4,5],[5,5,5,4,3],
+ [1,2,2,1,1],[2,2,3,2,4],[1,2,1,1,1],[3,3,4,3,4],[3,4,5,4,2],
+ [4,3,4,3,4],[3,4,4,3,3],[1,1,1,1,1],[3,3,5,3,3],[2,3,2,2,1],
+ [5,5,5,5,4],[5,5,4,3,5],[4,5,5,4,4],[2,2,5,2,2],[3,4,5,4,3],
+ [4,4,4,4,1],[1,2,3,1,3],[3,3,3,3,3],[2,3,5,2,3],[2,1,2,2,2],
+ [2,1,3,2,3],[3,3,4,3,1],[2,1,1,1,5],[3,2,4,5,4],[1,1,1,1,2],
+ [4,5,5,4,4],[2,2,4,2,1],[1,1,4,1,3],[1,1,2,1,1],[3,3,3,2,3],
+ [3,3,3,3,3],[3,5,4,3,2],[2,2,4,2,1],[4,2,5,4,4],[5,5,5,5,2]])
+AVAL = ["A", "B", "C", "D", "E"]
+
+def contagens(X, k):
+    """Matriz n x k com quantos avaliadores puseram cada unidade em cada classe."""
+    n, m = X.shape
+    N = np.zeros((n, k))
+    for i in range(n):
+        for v in X[i]: N[i, v-1] += 1
+    return N
+
+def fleiss(X, k):
+    """Kappa de Fleiss para m avaliadores e k categorias."""
+    n, m = X.shape
+    N = contagens(X, k)
+    pj = N.sum(0)/(n*m)                       # proporção global de cada classe
+    Pi = ((N**2).sum(1) - m)/(m*(m-1))        # concordância dentro de cada unidade
+    Pb = Pi.mean(); Pe = (pj**2).sum()
+    return (Pb-Pe)/(1-Pe), Pb, Pe, pj, Pi, N
+
+def ep_fleiss(X, k):
+    """Erro-padrão assintótico de Fleiss (1971), válido sob H0: kappa = 0."""
+    n, m = X.shape
+    N = contagens(X, k); pj = N.sum(0)/(n*m); Pe = (pj**2).sum()
+    num = 2*(Pe - (2*m-3)*Pe**2 + 2*(m-2)*(pj**3).sum())
+    return np.sqrt(num/(n*m*(m-1)))/(1-Pe)
+
+def kappa_categoria(X, k, j):
+    """Kappa de Fleiss para UMA categoria, colapsando as demais."""
+    Xb = np.where(X == j+1, 1, 2)
+    return fleiss(Xb, 2)[0]
+
+def kappa_cohen(a, b, k):
+    O = np.zeros((k, k))
+    for x, y in zip(a, b): O[x-1, y-1] += 1
+    P = O/O.sum(); po = np.trace(P); pe = (P.sum(1)*P.sum(0)).sum()
+    return (po-pe)/(1-pe)
+
+# ===================================================================
+# PARTE 1 - o kappa de Fleiss nos cinco avaliadores
+# ===================================================================
+n, m = SEV.shape; k = 5
+print(f"{n} folhas, {m} avaliadores, {k} classes de severidade")
+print("Cada folha foi avaliada pelos CINCO avaliadores: é o delineamento para")
+print("o qual o kappa de Fleiss foi construído.")
+
+K, Pb, Pe, pj, Pi, N = fleiss(SEV, k)
+print(f"\nProporção global de cada classe (pj)")
+for j in range(k):
+    print(f"  classe {j+1}: {int(N[:,j].sum()):&gt;3d} atribuições de {n*m}"
+          f"  -&gt; pj = {pj[j]:.4f}")
+print(f"  soma = {pj.sum():.4f}  |  Pe = soma dos pj² = {Pe:.4f}")
+
+print(f"\nConcordância dentro de cada folha (Pi), primeiras oito folhas")
+print(f"{'folha':&gt;6}{'classificações':&gt;22}{'contagens por classe':&gt;26}{'Pi':&gt;9}")
+for i in range(8):
+    print(f"{i+1:&gt;6}{str(SEV[i].tolist()):&gt;22}"
+          f"{str([int(v) for v in N[i]]):&gt;26}{Pi[i]:&gt;9.4f}")
+print(f"...")
+print(f"  média dos 40 valores: Pbarra = {Pb:.4f}")
+print(f"\nKappa de Fleiss = (Pbarra - Pe)/(1 - Pe) = ({Pb:.4f} - {Pe:.4f})/"
+      f"(1 - {Pe:.4f}) = {K:.4f}")
+ep0 = ep_fleiss(SEV, k)
+print(f"Erro-padrão sob H0 = {ep0:.4f} | z = {K/ep0:.4f} | "
+      f"p = {2*stats.norm.sf(abs(K/ep0)):.3e}")
+
+# intervalo por bootstrap sobre as folhas
+rng = np.random.default_rng(7)
+bs = []
+for _ in range(5000):
+    idx = rng.choice(n, n, replace=True)
+    bs.append(fleiss(SEV[idx], k)[0])
+print(f"IC 95% por bootstrap das folhas = [{np.percentile(bs,2.5):.4f}; "
+      f"{np.percentile(bs,97.5):.4f}]  (EP = {np.std(bs, ddof=1):.4f})")
+print("O erro-padrão de Fleiss vale só sob a hipótese de kappa = 0, e serve")
+print("para o teste, não para o intervalo. Para o intervalo, use bootstrap.")
+
+# ===================================================================
+# PARTE 2 - kappa por categoria: onde está o desacordo
+# ===================================================================
+print("\n" + "=" * 70)
+print("Kappa de cada categoria isoladamente: mostra QUAIS classes são")
+print("difíceis de reconhecer.")
+print(f"\n{'classe':&gt;24}{'atribuições':&gt;14}{'kappa da classe':&gt;18}")
+nomes = ["1 ausente", "2 baixa", "3 média", "4 alta", "5 muito alta"]
+for j in range(k):
+    print(f"{nomes[j]:&gt;24}{int(N[:,j].sum()):&gt;14d}{kappa_categoria(SEV,k,j):&gt;18.4f}")
+print("\nA classe 1, ausência de sintoma, é de longe a mais reconhecível (0,446):")
+print("é a única decisão qualitativamente diferente das demais. A classe 4 é a")
+print("mais confundida (0,141), e as classes 2, 3 e 5 ficam entre 0,22 e 0,33.")
+print("O padrão não é simplesmente 'extremos fáceis, meio difícil': a classe 5")
+print("também é confundida, porque a fronteira entre 'alta' e 'muito alta' é")
+print("tão subjetiva quanto a do meio da escala. Em um treinamento de")
+print("avaliadores, é nessas fronteiras que se investe.")
+
+# ===================================================================
+# PARTE 3 - Fleiss, Light e os kappas pareados
+# ===================================================================
+print("\n" + "=" * 70)
+print("Três maneiras de resumir a concordância de cinco avaliadores")
+pares = [(i,j) for i in range(5) for j in range(i+1,5)]
+kp = np.array([kappa_cohen(SEV[:,i], SEV[:,j], k) for i,j in pares])
+print(f"\n  kappa de Fleiss                        = {K:.4f}")
+print(f"  kappa de Light (média dos 10 pareados) = {kp.mean():.4f}")
+print(f"  menor e maior kappa pareado            = {kp.min():.4f} e {kp.max():.4f}")
+print("Fleiss e Light quase coincidem aqui, mas respondem a perguntas")
+print("ligeiramente diferentes: Fleiss supõe avaliadores INTERCAMBIÁVEIS e usa")
+print("as marginais globais; Light calcula um kappa por par, com as marginais")
+print("de cada par, e tira a média. Quando um avaliador tem viés forte, os dois")
+print("se separam.")
+
+print("\nDeixando cada avaliador de fora, um de cada vez:")
+print(f"{'sem o avaliador':&gt;18}{'kappa de Fleiss':&gt;18}{'variação':&gt;12}")
+for j in range(5):
+    resto = [c for c in range(5) if c != j]
+    Kj = fleiss(SEV[:, resto], k)[0]
+    print(f"{AVAL[j]:&gt;18}{Kj:&gt;18.4f}{Kj-K:&gt;+12.4f}")
+print(f"\nMédia das classificações de cada avaliador: "
+      + ", ".join(f"{AVAL[j]} {SEV[:,j].mean():.2f}" for j in range(5)))
+print("Tirar o avaliador C eleva o kappa de forma expressiva: ele classifica")
+print("em média 3,67, quase uma classe acima dos demais. Tirar E também eleva,")
+print("por outro motivo - E é o mais errático, e não o mais severo.")
+
+# ===================================================================
+# PARTE 4 - quantos avaliadores e quantas unidades?
+# ===================================================================
+print("\n" + "=" * 70)
+print("O kappa de Fleiss é afetado pelo NÚMERO DE CATEGORIAS: com mais")
+print("classes, a concordância esperada por acaso cai, mas a tarefa fica mais")
+print("difícil. Colapsando a escala de 5 para 3 e para 2 classes:")
+print(f"\n{'escala':&lt;34}{'Pe':&gt;10}{'Pbarra':&gt;10}{'kappa':&gt;10}")
+K5, Pb5, Pe5, *_ = fleiss(SEV, 5)
+print(f"{'5 classes (original)':&lt;34}{Pe5:&gt;10.4f}{Pb5:&gt;10.4f}{K5:&gt;10.4f}")
+S3 = np.where(SEV &lt;= 2, 1, np.where(SEV == 3, 2, 3))
+K3, Pb3, Pe3, *_ = fleiss(S3, 3)
+print(f"{'3 classes (1-2 / 3 / 4-5)':&lt;34}{Pe3:&gt;10.4f}{Pb3:&gt;10.4f}{K3:&gt;10.4f}")
+S2 = np.where(SEV &lt;= 3, 1, 2)
+K2, Pb2, Pe2, *_ = fleiss(S2, 2)
+print(f"{'2 classes (1-3 / 4-5)':&lt;34}{Pe2:&gt;10.4f}{Pb2:&gt;10.4f}{K2:&gt;10.4f}")
+print("\nColapsar categorias aumenta a concordância observada e também a")
+print("esperada; aqui o efeito líquido é de subida. Não se deve escolher o")
+print("agrupamento depois de ver qual dá o maior kappa.")
+
+print("\nQuantas unidades e quantos avaliadores? Largura do IC 95% por bootstrap")
+print("DAS FOLHAS, com o conjunto de avaliadores fixado (2.000 reamostragens).")
+rng = np.random.default_rng(21)
+print(f"\n{'avaliadores':&lt;22}{'kappa':&gt;9}{'n = 20':&gt;10}{'n = 40':&gt;10}{'n = 120':&gt;10}")
+for jj, rot in [([0,1,2], "A, B, C"), ([0,1,2,3], "A, B, C, D"),
+                ([0,1,2,3,4], "A, B, C, D, E"), ([0,1,3,4], "A, B, D, E (sem C)")]:
+    linha = []
+    for nn in [20, 40, 120]:
+        larg = [fleiss(SEV[np.ix_(rng.choice(n, nn, replace=True), jj)], k)[0]
+                for _ in range(2000)]
+        linha.append(np.percentile(larg, 97.5) - np.percentile(larg, 2.5))
+    print(f"{rot:&lt;22}{fleiss(SEV[:, jj], k)[0]:&gt;9.4f}"
+          + "".join(f"{v:&gt;10.4f}" for v in linha))
+print("\nAs duas vias de ganho rendem quase o mesmo nesta faixa. Com os mesmos")
+print("três avaliadores, triplicar as folhas de 40 para 120 estreita o")
+print("intervalo em 44% (0,284 para 0,160); com as mesmas 40 folhas, passar de")
+print("três para cinco avaliadores estreita 40% (0,284 para 0,171). A escolha")
+print("entre as duas é de custo: folhas costumam ser mais baratas que")
+print("avaliadores treinados.")
+print("O que mais muda o RESULTADO, porém, não é nenhuma das duas: é QUEM")
+print("avalia. Trocar o avaliador C por nada - usando A, B, D e E - eleva o")
+print("kappa de 0,281 para 0,341 sem coletar um único dado novo. Antes de")
+print("aumentar a amostra, vale calibrar quem já está avaliando.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">40 folhas, 5 avaliadores, 5 classes de severidade
+Cada folha foi avaliada pelos CINCO avaliadores: é o delineamento para
+o qual o kappa de Fleiss foi construído.
+
+Proporção global de cada classe (pj)
+  classe 1:  35 atribuições de 200  -&gt; pj = 0.1750
+  classe 2:  37 atribuições de 200  -&gt; pj = 0.1850
+  classe 3:  50 atribuições de 200  -&gt; pj = 0.2500
+  classe 4:  43 atribuições de 200  -&gt; pj = 0.2150
+  classe 5:  35 atribuições de 200  -&gt; pj = 0.1750
+  soma = 1.0000  |  Pe = soma dos pj² = 0.2042
+
+Concordância dentro de cada folha (Pi), primeiras oito folhas
+ folha        classificações      contagens por classe       Pi
+     1       [3, 3, 4, 3, 4]           [0, 0, 3, 2, 0]   0.4000
+     2       [5, 4, 4, 4, 5]           [0, 0, 0, 3, 2]   0.4000
+     3       [4, 4, 5, 3, 5]           [0, 0, 1, 2, 2]   0.2000
+     4       [5, 5, 5, 4, 5]           [0, 0, 0, 1, 4]   0.6000
+     5       [5, 5, 5, 4, 3]           [0, 0, 1, 1, 3]   0.3000
+     6       [1, 2, 2, 1, 1]           [3, 2, 0, 0, 0]   0.4000
+     7       [2, 2, 3, 2, 4]           [0, 3, 1, 1, 0]   0.3000
+     8       [1, 2, 1, 1, 1]           [4, 1, 0, 0, 0]   0.6000
+...
+  média dos 40 valores: Pbarra = 0.4275
+
+Kappa de Fleiss = (Pbarra - Pe)/(1 - Pe) = (0.4275 - 0.2042)/(1 - 0.2042) = 0.2806
+Erro-padrão sob H0 = 0.0258 | z = 10.8960 | p = 1.205e-27
+IC 95% por bootstrap das folhas = [0.1843; 0.3631]  (EP = 0.0458)
+O erro-padrão de Fleiss vale só sob a hipótese de kappa = 0, e serve
+para o teste, não para o intervalo. Para o intervalo, use bootstrap.
+
+======================================================================
+Kappa de cada categoria isoladamente: mostra QUAIS classes são
+difíceis de reconhecer.
+
+                  classe   atribuições   kappa da classe
+               1 ausente            35            0.4459
+                 2 baixa            37            0.2207
+                 3 média            50            0.3333
+                  4 alta            43            0.1409
+            5 muito alta            35            0.2727
+
+A classe 1, ausência de sintoma, é de longe a mais reconhecível (0,446):
+é a única decisão qualitativamente diferente das demais. A classe 4 é a
+mais confundida (0,141), e as classes 2, 3 e 5 ficam entre 0,22 e 0,33.
+O padrão não é simplesmente 'extremos fáceis, meio difícil': a classe 5
+também é confundida, porque a fronteira entre 'alta' e 'muito alta' é
+tão subjetiva quanto a do meio da escala. Em um treinamento de
+avaliadores, é nessas fronteiras que se investe.
+
+======================================================================
+Três maneiras de resumir a concordância de cinco avaliadores
+
+  kappa de Fleiss                        = 0.2806
+  kappa de Light (média dos 10 pareados) = 0.2860
+  menor e maior kappa pareado            = 0.0618 e 0.6505
+Fleiss e Light quase coincidem aqui, mas respondem a perguntas
+ligeiramente diferentes: Fleiss supõe avaliadores INTERCAMBIÁVEIS e usa
+as marginais globais; Light calcula um kappa por par, com as marginais
+de cada par, e tira a média. Quando um avaliador tem viés forte, os dois
+se separam.
+
+Deixando cada avaliador de fora, um de cada vez:
+   sem o avaliador   kappa de Fleiss    variação
+                 A            0.1991     -0.0815
+                 B            0.2708     -0.0098
+                 C            0.3409     +0.0603
+                 D            0.2413     -0.0393
+                 E            0.3460     +0.0654
+
+Média das classificações de cada avaliador: A 2.88, B 2.98, C 3.67, D 2.75, E 2.88
+Tirar o avaliador C eleva o kappa de forma expressiva: ele classifica
+em média 3,67, quase uma classe acima dos demais. Tirar E também eleva,
+por outro motivo - E é o mais errático, e não o mais severo.
+
+======================================================================
+O kappa de Fleiss é afetado pelo NÚMERO DE CATEGORIAS: com mais
+classes, a concordância esperada por acaso cai, mas a tarefa fica mais
+difícil. Colapsando a escala de 5 para 3 e para 2 classes:
+
+escala                                    Pe    Pbarra     kappa
+5 classes (original)                  0.2042    0.4275    0.2806
+3 classes (1-2 / 3 / 4-5)             0.3442    0.6375    0.4472
+2 classes (1-3 / 4-5)                 0.5242    0.7300    0.4325
+
+Colapsar categorias aumenta a concordância observada e também a
+esperada; aqui o efeito líquido é de subida. Não se deve escolher o
+agrupamento depois de ver qual dá o maior kappa.
+
+Quantas unidades e quantos avaliadores? Largura do IC 95% por bootstrap
+DAS FOLHAS, com o conjunto de avaliadores fixado (2.000 reamostragens).
+
+avaliadores               kappa    n = 20    n = 40   n = 120
+A, B, C                  0.2876    0.3913    0.2837    0.1600
+A, B, C, D               0.3460    0.3168    0.2153    0.1293
+A, B, C, D, E            0.2806    0.2527    0.1714    0.0979
+A, B, D, E (sem C)       0.3409    0.2839    0.1970    0.1155
+
+As duas vias de ganho rendem quase o mesmo nesta faixa. Com os mesmos
+três avaliadores, triplicar as folhas de 40 para 120 estreita o
+intervalo em 44% (0,284 para 0,160); com as mesmas 40 folhas, passar de
+três para cinco avaliadores estreita 40% (0,284 para 0,171). A escolha
+entre as duas é de custo: folhas costumam ser mais baratas que
+avaliadores treinados.
+O que mais muda o RESULTADO, porém, não é nenhuma das duas: é QUEM
+avalia. Trocar o avaliador C por nada - usando A, B, D e E - eleva o
+kappa de 0,281 para 0,341 sem coletar um único dado novo. Antes de
+aumentar a amostra, vale calibrar quem já está avaliando.</pre></div><figure class="fig"><img src="../assets/resultados/fleiss.png" alt="Fleiss contra os dez pares, o efeito de remover cada avaliador e o que compra precisão" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, os dez kappas pareados ordenados, com as linhas do kappa de Fleiss e do kappa de Light praticamente coincidindo em 0,28. No centro, o kappa recalculado sem cada avaliador, com os losangos roxos marcando a classe média que cada um atribui: tirar o C eleva o kappa, e ele é justamente o mais severo. À direita, a largura do intervalo de confiança em função do número de folhas, para três, quatro e cinco avaliadores. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O coeficiente global</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Concordância observada (P̄)</td><td>0,4275</td></tr><tr><td>Concordância esperada (Pe)</td><td>0,2042</td></tr><tr><td><strong>Kappa de Fleiss</strong></td><td><strong>0,2806</strong></td></tr><tr><td>Erro-padrão sob H₀</td><td>0,0258 · z = 10,90 · p = 1,2 × 10⁻²⁷</td></tr><tr><td><strong>IC 95% por bootstrap</strong></td><td><strong>[0,1843; 0,3631]</strong> (EP = 0,0458)</td></tr><tr><td>Kappa de Light (média dos pareados)</td><td>0,2860</td></tr><tr><td>Menor e maior kappa pareado</td><td>0,0618 (B–E) e 0,6505 (A–D)</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Kappa de cada categoria</caption><thead><tr><th>Classe</th><th>Avaliações</th><th>Kappa da classe</th></tr></thead><tbody><tr><td><strong>1 ausente</strong></td><td>35</td><td><strong>0,4459</strong></td></tr><tr><td>2 baixa</td><td>37</td><td>0,2207</td></tr><tr><td>3 média</td><td>50</td><td>0,3333</td></tr><tr><td><strong>4 alta</strong></td><td>43</td><td><strong>0,1409</strong></td></tr><tr><td>5 muito alta</td><td>35</td><td>0,2727</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Deixa-um-de-fora</caption><thead><tr><th>Sem o avaliador</th><th>Kappa</th><th>Variação</th><th>Classe média do avaliador</th></tr></thead><tbody><tr><td>A</td><td>0,1991</td><td>−0,0815</td><td>2,88</td></tr><tr><td>B</td><td>0,2708</td><td>−0,0098</td><td>2,98</td></tr><tr><td><strong>C</strong></td><td><strong>0,3409</strong></td><td><strong>+0,0603</strong></td><td><strong>3,67</strong></td></tr><tr><td>D</td><td>0,2413</td><td>−0,0393</td><td>2,75</td></tr><tr><td><strong>E</strong></td><td><strong>0,3460</strong></td><td><strong>+0,0654</strong></td><td>2,88</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O efeito de colapsar categorias</caption><thead><tr><th>Escala</th><th>Pe</th><th>P̄</th><th>Kappa</th></tr></thead><tbody><tr><td>5 classes (original)</td><td>0,2042</td><td>0,4275</td><td>0,2806</td></tr><tr><td>3 classes (1-2 / 3 / 4-5)</td><td>0,3442</td><td>0,6375</td><td>0,4472</td></tr><tr><td>2 classes (1-3 / 4-5)</td><td>0,5242</td><td>0,7300</td><td>0,4325</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Largura do IC 95% por bootstrap das folhas</caption><thead><tr><th>Avaliadores</th><th>Kappa</th><th>n = 20</th><th>n = 40</th><th>n = 120</th></tr></thead><tbody><tr><td>A, B, C</td><td>0,2876</td><td>0,3913</td><td>0,2837</td><td>0,1600</td></tr><tr><td>A, B, C, D</td><td>0,3460</td><td>0,3168</td><td>0,2153</td><td>0,1293</td></tr><tr><td>A, B, C, D, E</td><td>0,2806</td><td>0,2527</td><td>0,1714</td><td>0,0979</td></tr><tr><td>A, B, D, E (sem C)</td><td>0,3409</td><td>0,2839</td><td>0,1970</td><td>0,1155</td></tr></tbody></table></div><p><strong>Leitura:</strong> o kappa de Fleiss dos cinco avaliadores é 0,2806, com intervalo [0,18; 0,36] — concordância fraca em qualquer convenção. O teste contra zero rejeita de forma esmagadora, mas isso não ajuda: a pergunta prática é se 0,28 basta para o uso pretendido, e a resposta claramente é não. O kappa de Light, 0,2860, praticamente coincide, o que indica que nenhum avaliador tem viés marginal extremo a ponto de separar os dois coeficientes.</p><p>O kappa por categoria localiza o problema. A ausência de sintoma é reconhecida com segurança razoável (0,446) — é a única decisão qualitativamente distinta das demais. A classe 4 é a mais confundida (0,141), e as classes 2, 3 e 5 ficam entre 0,22 e 0,33. Ou seja: os avaliadores concordam em distinguir folha doente de folha sã, e divergem em quase tudo o que vem depois.</p><p><strong>Sobre quem destoa:</strong> remover o avaliador C eleva o kappa de 0,281 para 0,341, e remover o E eleva para 0,346. Os dois destoam por motivos diferentes, e a coluna da classe média mostra qual é qual: o C atribui em média 3,67, quase uma classe inteira acima dos outros quatro, que ficam entre 2,75 e 2,98 — é viés sistemático de severidade. O E tem média 2,88, igual à de A, e portanto não é mais severo: é mais errático. A ficha do <a href="kendall-w.html">W de Kendall</a> separa os dois casos com nitidez, porque lá a pergunta é sobre a <em>ordenação</em>, e não sobre o valor da classe.</p><p><strong>Sobre colapsar categorias:</strong> passar de cinco para três classes eleva o kappa de 0,28 para 0,45. Isso não significa que os avaliadores melhoraram; significa que a tarefa ficou mais fácil. Note que colapsar aumenta simultaneamente a concordância observada (de 0,43 para 0,64) e a esperada (de 0,20 para 0,34), e o efeito líquido pode ir nos dois sentidos — ao passar de três para duas classes, o kappa até cai ligeiramente. A decisão sobre a escala tem de ser anterior à análise.</p><p><strong>Sobre o planejamento:</strong> a tabela final responde a uma pergunta prática de delineamento. Com os mesmos três avaliadores, triplicar as folhas de 40 para 120 estreita o intervalo em 44%; com as mesmas 40 folhas, passar de três para cinco avaliadores estreita 40%. As duas vias rendem quase o mesmo, e a escolha é de custo. Mas o que mais muda o <em>resultado</em> não é nenhuma das duas: substituir o conjunto de cinco avaliadores por quatro, excluindo o C, eleva o kappa de 0,281 para 0,341 sem coletar um único dado novo. Antes de aumentar a amostra, vale calibrar quem já está avaliando.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar o erro-padrão de Fleiss para o intervalo</td><td>Ele vale só sob H₀; use bootstrap das unidades.</td></tr><tr><td>Reportar só o kappa global</td><td>O kappa por categoria é mais informativo.</td></tr><tr><td>Confundir Fleiss com a média dos kappas pareados</td><td>Essa é a generalização de Light.</td></tr><tr><td>Aplicar a escala ordinal sem crédito parcial</td><td>Prefira o <a href="gwet.html">AC2</a> ou o <a href="icc.html">ICC</a>.</td></tr><tr><td>Colapsar categorias depois de ver o resultado</td><td>Decida a escala no protocolo.</td></tr><tr><td>Ignorar o paradoxo da prevalência</td><td>Reporte também as prevalências e o <a href="gwet.html">AC1</a>.</td></tr><tr><td>Supor que m pode variar entre unidades</td><td>A fórmula exige m fixo; com m variável, Krippendorff.</td></tr><tr><td>Interpretar o valor-p como evidência de boa concordância</td><td>Ele só rejeita κ = 0.</td></tr><tr><td>Recrutar mais avaliadores em vez de treinar os atuais</td><td>Remover um avaliador enviesado rendeu mais que dois avaliadores novos.</td></tr><tr><td>Reamostrar as avaliações, e não as unidades, no bootstrap</td><td>As unidades é que são independentes.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kappa.html">Kappa de Cohen</a></td><td>Exatamente dois avaliadores.</td></tr><tr><td>Kappa de Light</td><td>Avaliadores fixos e identificados: dá o perfil par a par.</td></tr><tr><td><a href="gwet.html">AC1 de Gwet</a></td><td>Categorias desequilibradas.</td></tr><tr><td>Alfa de Krippendorff</td><td>Número variável de avaliadores, dados faltantes, qualquer escala.</td></tr><tr><td><a href="icc.html">Correlação intraclasse</a></td><td>Resposta contínua ou ordinal tratada como intervalar.</td></tr><tr><td><a href="kendall-w.html">W de Kendall</a></td><td>Quando interessa a ordenação, e não a classe.</td></tr><tr><td>Modelos de classe latente</td><td>Quando se quer estimar a acurácia de cada avaliador, e não só a concordância.</td></tr><tr><td><a href="cochran-q.html">Q de Cochran</a></td><td>Quando a pergunta é se as taxas marginais diferem entre avaliadores.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que cada unidade tem o mesmo número de avaliações.</li><li>Monte a matriz de contagens e examine as prevalências das categorias.</li><li>Calcule o kappa global e o kappa de cada categoria.</li><li>Obtenha o intervalo por bootstrap das unidades, não pelo EP de Fleiss.</li><li>Compare com o kappa de Light; divergência indica viés marginal.</li><li>Faça a análise deixa-um-de-fora e confronte com a classe média de cada avaliador.</li><li>Reporte também o <a href="gwet.html">AC1</a> e as prevalências.</li><li>Use o kappa por categoria para orientar o treinamento.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FLEISS, Joseph L. Measuring nominal scale agreement among many raters. <em>Psychological Bulletin</em>, v. 76, n. 5, p. 378-382, 1971.</li><li>LIGHT, Richard J. Measures of response agreement for qualitative data: some generalizations and alternatives. <em>Psychological Bulletin</em>, v. 76, n. 5, p. 365-377, 1971.</li><li>FLEISS, Joseph L.; NEE, John C. M.; LANDIS, J. Richard. Large sample variance of kappa in the case of different sets of raters. <em>Psychological Bulletin</em>, v. 86, n. 5, p. 974-977, 1979.</li><li>CONGER, Anthony J. Integration and generalization of kappas for multiple raters. <em>Psychological Bulletin</em>, v. 88, n. 2, p. 322-328, 1980.</li><li>DAVIES, Mark; FLEISS, Joseph L. Measuring agreement for multinomial data. <em>Biometrics</em>, v. 38, n. 4, p. 1047-1051, 1982.</li><li>KRIPPENDORFF, Klaus. <em>Content analysis: an introduction to its methodology.</em> 4. ed. Thousand Oaks: SAGE, 2018.</li><li>ZAPF, Antonia et al. Measuring inter-rater reliability for nominal data: which coefficients and confidence intervals are appropriate? <em>BMC Medical Research Methodology</em>, v. 16, art. 93, 2016.</li><li>LANDIS, J. Richard; KOCH, Gary G. The measurement of observer agreement for categorical data. <em>Biometrics</em>, v. 33, n. 1, p. 159-174, 1977.</li><li>FEINSTEIN, Alvan R.; CICCHETTI, Domenic V. High agreement but low kappa: I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology</em>, v. 43, n. 6, p. 543-549, 1990.</li><li>BYRT, Ted; BISHOP, Janet; CARLIN, John B. Bias, prevalence and kappa. <em>Journal of Clinical Epidemiology</em>, v. 46, n. 5, p. 423-429, 1993.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>GWET, Kilem L. <em>Handbook of inter-rater reliability.</em> 4. ed. Gaithersburg: Advanced Analytics, 2014.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>GAMER, Matthias; LEMON, Jim; FELLOWS, Ian; SINGH, Puspendra. <em>irr: various coefficients of interrater reliability and agreement.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=irr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=irr</a>.</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Mesmo número de avaliadores por unidade, avaliadores intercambiáveis, categorias nominais exclusivas e exaustivas e unidades independentes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>irr, DescTools, irrCAC</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kappa-ponderado.html"><span>← ANTERIOR</span>Kappa ponderado</a><a href="icc.html"><span>PRÓXIMO →</span>Coeficiente de correlação intraclasse (ICC)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

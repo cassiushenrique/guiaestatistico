@@ -4,315 +4,312 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Games–Howell: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Games–Howell | Estatística e Ciência de Dados
-  </title>
+<meta content="Games–Howell: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Games–Howell | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Games–Howell
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Games–Howell
-    </h1>
-<p class="detail-lead">
-     Identifica pares de grupos com médias distintas quando as variâncias podem ser diferentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/games-howell.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Identifica pares de grupos com médias distintas quando as variâncias podem ser diferentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Grupos independentes.</li><li>Normalidade aproximada em amostras pequenas, n suficiente por grupo.</li><li>Não pressupõe homocedasticidade.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_{i}=\mu_{j}\\ H_1&amp;:\ \text{diferentes}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[t_{ij}=\frac{\bar Y_i-\bar Y_j}{\sqrt{S_i^2/n_i+S_j^2/n_j}}\quad\text{(calibração Games--Howell)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       t de Welch por par e distribuição da amplitude studentizada, com gl de Welch–Satterthwaite.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       p ajustado &lt; 0,05 e IC simultâneo excluindo zero indicam diferença entre aquele par.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparação das médias de quebras nos três níveis de tensão (warpbreaks).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-games-howell" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-games-howell"><code># Games–Howell ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Games–Howell</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Games–Howell</h1><p class="detail-lead">Compara todas as médias duas a duas usando a variância de cada par, apropriado quando as variâncias dos grupos são desiguais.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/games-howell.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/games-howell.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o procedimento</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O procedimento de <a href="tukey.html">Tukey</a> compara todas as médias usando uma única estimativa de ruído, o quadrado médio do resíduo. Quando os grupos têm variâncias muito diferentes, essa régua única serve mal a todos: é larga demais para os grupos homogêneos e estreita demais para os dispersos. Games–Howell troca a régua comum pela régua própria de cada par.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Games–Howell" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Comparações pareadas sem</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">supor variâncias iguais</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">EP de cada par e gl de</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Welch–Satterthwaite</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Distribuição</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">A mesma do Tukey:</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">amplitude estudentizada</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando usar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Depois de uma</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">ANOVA de Welch</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">rstatix::</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">games_howell_test()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Custo</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Com variâncias iguais,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">perde um pouco de poder</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Games–Howell</text></svg><figcaption>Visão geral do procedimento de Games–Howell. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O resultado deste exemplo</strong><p>Nos dados de concreto, o par B–D tem p = 0,0918 por Tukey e p = 0,00004 por Games–Howell. A diferença de 6,15 MPa é a mesma; o que muda é o erro-padrão, que cai de 2,569 para 0,981 — porque B e D são justamente as duas centrais mais homogêneas, e a régua agrupada estava inflada pela central A.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o procedimento</h2><p>A estrutura é a de Tukey: a estatística é uma diferença de médias dividida por um erro-padrão, e o valor crítico vem da distribuição da amplitude estudentizada com \(k\) médias. As duas trocas são no denominador. O erro-padrão de cada par usa as variâncias <em>daquele par</em>, como no <a href="twelch.html">teste t de Welch</a>; e os graus de liberdade, em vez de serem os \(N-k\) do resíduo, são estimados par a par pela fórmula de Welch–Satterthwaite.</p><figure class="fig"><img src="../assets/resultados/games-howell-didatica.png" alt="Duas réguas para as mesmas médias e taxas de erro simuladas" loading="lazy"/><figcaption><strong>O problema e o que ele custa.</strong> À esquerda, as quatro centrais com os mesmos pontos e as mesmas médias, mas com dois intervalos: em ocre, o construído com o erro-padrão agrupado que o Tukey usa; em verde, o construído com a variância do próprio grupo. Para as centrais B, C e D a régua agrupada é larga demais; para a A, estreita demais. À direita, 10.000 experimentos com quatro médias populacionais iguais: Tukey fica em 1,92% quando a maior variância está no maior grupo (conservador, perde poder) e em 28,25% quando ela está no menor (liberal, falsos positivos). Games–Howell fica entre 4,51% e 5,02% nos três cenários. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Os dois erros do Tukey</strong><p>É o mesmo fenômeno descrito na ficha da <a href="aovwelch.html">ANOVA de Welch</a>, e vale repetir porque só metade dele costuma ser lembrada. Quando a maior variância cai no <em>menor</em> grupo, o quadrado médio do resíduo subestima o ruído daquele grupo e o teste produz falsos positivos em excesso. Quando ela cai no <em>maior</em> grupo, o quadrado médio é inflado por ele e as comparações entre os grupos homogêneos ficam cegas. O segundo caso é o do exemplo desta ficha, e é o mais traiçoeiro: nada no resultado indica que algo foi perdido.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Indispensável.</td><td>Delineamento.</td></tr><tr><td>Normalidade <strong>dentro de cada grupo</strong></td><td>Sustenta a aproximação.</td><td><code>by(y, g, shapiro.test)</code>; Q-Q por grupo. Não use os resíduos agrupados.</td></tr><tr><td>Variâncias homogêneas</td><td><strong>Não é exigida</strong>: é o que se dispensa.</td><td>Verifique mesmo assim, para decidir entre este método e Tukey.</td></tr><tr><td>Pelo menos cerca de 6 observações por grupo</td><td>Com n muito pequeno, a variância de cada grupo é instável e os gl estimados ficam ruins.</td><td>Conte as observações; alguns autores recomendam n ≥ 10.</td></tr><tr><td>Ausência de valores extremos dominantes</td><td>As variâncias amostrais ficam instáveis.</td><td>Boxplots; considere médias aparadas (ver <a href="yuen.html">Yuen</a>).</td></tr></tbody></table></div><div class="callout "><strong>O teste global que combina com ele</strong><p>Games–Howell é o acompanhamento natural da <a href="aovwelch.html">ANOVA de Welch</a>, não da ANOVA clássica. Usar a ANOVA clássica (que supõe variâncias iguais) e depois Games–Howell (que não supõe) é uma incoerência comum. Neste exemplo, aliás, a ANOVA clássica nem rejeita (p = 0,123), enquanto a de Welch rejeita com folga (p = 2,9 × 10⁻⁵).</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{(ij)}&:\ \mu_i=\mu_j \\ &\quad \text{para cada par }(i,j) \\ H_1^{(ij)}&:\ \mu_i\neq\mu_j\end{aligned}\right.\]\[\text{com }\text{FWER}\approx\alpha\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[q_{ij}=\frac{\left|\bar{y}_i-\bar{y}_j\right|}{\sqrt{\dfrac{1}{2}\left(\dfrac{s_i^{2}}{n_i}+\dfrac{s_j^{2}}{n_j}\right)}},\]\[\nu_{ij}=\frac{\left(\dfrac{s_i^{2}}{n_i}+\dfrac{s_j^{2}}{n_j}\right)^{2}}{\dfrac{\left(s_i^{2}/n_i\right)^{2}}{n_i-1}+\dfrac{\left(s_j^{2}/n_j\right)^{2}}{n_j-1}}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{IC}:\quad \bar{y}_i-\bar{y}_j\ \pm\ q_{\alpha;\,k,\,\nu_{ij}}\sqrt{\frac{1}{2}\left(\frac{s_i^{2}}{n_i}+\frac{s_j^{2}}{n_j}\right)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de grupos — entra no valor crítico, mesmo nas comparações par a par</dd></div><div><dt>\(s_i^2,\ n_i\)</dt><dd>variância e tamanho do grupo i</dd></div><div><dt>\(\nu_{ij}\)</dt><dd>graus de liberdade estimados para <em>aquele</em> par</dd></div><div><dt>\(q_{\alpha;k,\nu}\)</dt><dd>quantil da amplitude estudentizada</dd></div></dl><p>Note que \(k\) permanece no valor crítico: é assim que o procedimento continua protegendo o conjunto das comparações, mesmo calculando cada erro-padrão separadamente.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>As quatro centrais</caption><thead><tr><th>Central</th><th>n</th><th>Média (MPa)</th><th>Desvio-padrão</th><th>Variância</th><th>s²/n</th></tr></thead><tbody><tr><td>A</td><td>20</td><td>51,435</td><td>8,523</td><td>72,644</td><td>3,632</td></tr><tr><td>B</td><td>10</td><td>49,170</td><td>2,350</td><td>5,525</td><td>0,553</td></tr><tr><td>C</td><td>12</td><td>52,525</td><td>3,256</td><td>10,604</td><td>0,884</td></tr><tr><td>D</td><td>10</td><td>55,320</td><td>2,026</td><td>4,106</td><td>0,411</td></tr></tbody></table></div><div class="worked"><strong>Comparação B − D</strong><p>A diferença é \(55{,}320-49{,}170=6{,}150\) MPa.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\text{EP} &= \sqrt{\tfrac{1}{2}\left(0{,}553+0{,}411\right)} \\ &= \sqrt{0{,}4820} = 0{,}6943\end{aligned}\]\[\text{(na escala de }q\text{)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\nu &= \frac{\left(0{,}553+0{,}411\right)^{2}}{\dfrac{0{,}553^{2}}{9}+\dfrac{0{,}411^{2}}{9}} \\ &= 17{,}62,\end{aligned}\]\[q=\frac{6{,}150}{0{,}6943}=8{,}857.\]</div><p>Com \(q_{0{,}05;\,4,\,17{,}62}=3{,}999\), o intervalo é \([+3{,}371;\ +8{,}929]\) MPa e \(p_{\text{aj}}=0{,}00004\).</p><p>Por Tukey, o erro-padrão do mesmo par seria \(\sqrt{\tfrac{32{,}991}{2}\left(\tfrac1{10}+\tfrac1{10}\right)}=1{,}816\) na escala de \(q\) — 2,6 vezes maior —, com 48 graus de liberdade, resultando em \(q=3{,}386\) e \(p_{\text{aj}}=0{,}0918\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com variâncias iguais, aproxima-se de Tukey e perde pouco poder — os graus de liberdade de cada par são menores que os do resíduo agrupado.</li><li>Com variâncias desiguais, mantém a taxa de erro do conjunto perto do nominal em uma faixa ampla de configurações.</li><li>Com k = 2, equivale ao <a href="twelch.html">teste t de Welch</a>.</li><li>Os graus de liberdade \(\nu_{ij}\) são fracionários e variam de par para par.</li><li>O controle da taxa de erro é aproximado, não exato; com grupos pequenos pode ficar ligeiramente acima de α.</li><li>Fornece intervalos de confiança, não apenas valores-p.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Diferença</td><td>Estimativa pontual.</td><td>A mesma do Tukey.</td></tr><tr><td>Erro-padrão</td><td>Calculado com as variâncias do par.</td><td>É aqui que os métodos divergem.</td></tr><tr><td>gl</td><td>Estimados par a par.</td><td>Fracionários; informe-os.</td></tr><tr><td>p ajustado</td><td>Já protege o conjunto.</td><td>Vem de <code>ptukey</code> com os gl daquele par.</td></tr><tr><td>IC</td><td>Intervalo de 95% para o par.</td><td>A largura varia de par para par.</td></tr><tr><td>Comparação com Tukey</td><td>Revela o efeito da heterogeneidade.</td><td>Vale apresentar os dois quando a diferença é grande.</td></tr></tbody></table></div><p>Reporte as médias, os desvios-padrão e os tamanhos de cada grupo; as diferenças com intervalos; e os graus de liberdade de cada comparação. Diga explicitamente que o método não supõe variâncias iguais, e justifique a escolha com o teste de homogeneidade.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não há função no R base. <code>rstatix::games_howell_test()</code> é a rota mais simples e devolve diferenças, intervalos e valores-p ajustados em um quadro pronto; <code>PMCMRplus::gamesHowellTest()</code> é a alternativa. Uma aproximação razoável sem pacotes extras é <code>pairwise.t.test()</code> com <code>pool.sd = FALSE</code> e ajuste de Holm — ela usa as variâncias de cada par, mas controla a multiplicidade por Holm em vez da amplitude estudentizada. <code>qtukey()</code> e <code>ptukey()</code>, do pacote <code>stats</code>, aceitam graus de liberdade fracionários, o que permite implementar o procedimento diretamente.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-games-howell-min" type="button">Copiar código</button></div><pre id="code-games-howell-min"><code>rstatix::games_howell_test(dados, resistencia ~ central)
+# teste global compatível:
+oneway.test(resistencia ~ central, data = dados, var.equal = FALSE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. A primeira parte usa os corpos de prova de concreto de quatro centrais dosadoras — o mesmo conjunto da ficha da <a href="aovwelch.html">ANOVA de Welch</a> —, em que a central A tem variância 17,7 vezes maior que a da D. A segunda parte aplica o mesmo procedimento a <code>chickwts</code>, onde as variâncias são homogêneas, para mostrar o que se perde usando Games–Howell quando ele não é necessário.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-games-howell" type="button">Copiar código</button></div><pre id="code-games-howell"><code># Games-Howell: exemplo completo ----
+# Pacotes: rstatix ou PMCMRplus. Opcional: userfriendlyscience (descontinuado)
+# install.packages(c("rstatix", "PMCMRplus", "car"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("rstatix", quietly = TRUE)) install.packages("rstatix")
+# 1. Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+#    de quatro centrais dosadoras. É o conjunto da ficha da ANOVA de Welch.
+resistencia &lt;- c(57.0,54.0,51.5,31.1,55.9,32.9,60.2,57.5,59.5,59.4,
+                 54.7,47.2,49.2,65.6,46.8,49.9,45.5,47.3,49.2,54.3,
+                 48.4,48.3,47.8,49.2,46.3,49.1,51.6,47.5,48.9,54.6,
+                 50.5,48.9,51.9,57.5,58.1,50.0,54.4,53.0,51.5,48.1,55.6,50.8,
+                 55.6,55.2,58.7,57.4,52.7,54.5,57.1,52.3,54.2,55.5)
+central &lt;- factor(rep(c("A", "B", "C", "D"), times = c(20, 10, 12, 10)))
+dados &lt;- data.frame(central, resistencia)
+aggregate(resistencia ~ central, data = dados,
+          FUN = function(x) c(n = length(x), media = mean(x), dp = sd(x), var = var(x)))
+
+# 2. O pressuposto que decide entre Tukey e Games-Howell
+library(car)
+leveneTest(resistencia ~ central, data = dados, center = median)
+v &lt;- tapply(dados$resistencia, dados$central, var); max(v) / min(v)
+boxplot(resistencia ~ central, data = dados, col = "gray85")
+
+# 3. O teste global compatível: ANOVA de Welch, não a clássica
+oneway.test(resistencia ~ central, data = dados, var.equal = FALSE)
+oneway.test(resistencia ~ central, data = dados, var.equal = TRUE)   # para comparar
+
+# 4. Games-Howell
 library(rstatix)
-print(games_howell_test(warpbreaks, breaks ~ tension,
-                        conf.level = 0.95))
+games_howell_test(dados, resistencia ~ central)
+# alternativas:
+# PMCMRplus::gamesHowellTest(resistencia ~ central, data = dados)
+# pairwise.t.test(dados$resistencia, dados$central, pool.sd = FALSE, p.adjust.method = "holm")
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 5. Para comparar: Tukey, que usa a variância agrupada
+TukeyHSD(aov(resistencia ~ central, data = dados))
 
+# 6. O cálculo passo a passo de um par, para entender a fórmula
+m &lt;- tapply(dados$resistencia, dados$central, mean)
+s2 &lt;- tapply(dados$resistencia, dados$central, var)
+n &lt;- table(dados$central)
+i &lt;- "B"; j &lt;- "D"
+dif &lt;- m[j] - m[i]
+ep  &lt;- sqrt((s2[i]/n[i] + s2[j]/n[j]) / 2)              # erro-padrão na escala de q
+gl  &lt;- (s2[i]/n[i] + s2[j]/n[j])^2 /
+       ((s2[i]/n[i])^2/(n[i]-1) + (s2[j]/n[j])^2/(n[j]-1))   # Welch-Satterthwaite
+q   &lt;- abs(dif) / ep
+c(diferenca = dif, ep = ep, gl = gl, q = q,
+  p = ptukey(q, nmeans = 4, df = gl, lower.tail = FALSE),
+  inferior = dif - qtukey(0.95, 4, gl) * ep,
+  superior = dif + qtukey(0.95, 4, gl) * ep)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="tukey.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Tukey HSD / Tukey–Kramer
-    </a>
-<a href="regwf.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Ryan–Einot–Gabriel–Welsch (REGW)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 7. Gráfico: médias com o intervalo de cada grupo, não com o agrupado
+medias &lt;- m; eps &lt;- sqrt(s2 / n)
+plot(1:4, medias, ylim = c(44, 60), pch = 18, cex = 2, xaxt = "n",
+     xlab = "Central dosadora", ylab = "Resistência (MPa)")
+axis(1, at = 1:4, labels = levels(dados$central))
+arrows(1:4, medias - 1.96 * eps, 1:4, medias + 1.96 * eps, angle = 90, code = 3, length = 0.08)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-games-howell" type="button">Copiar código</button></div><pre id="code-py-games-howell"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+alfa = 0.05
+
+def games_howell(gs, nomes):
+    """Comparações múltiplas com a variância de cada grupo e gl de Welch-Satterthwaite."""
+    k = len(gs)
+    n = np.array([len(g) for g in gs], float)
+    m = np.array([g.mean() for g in gs])
+    v = np.array([g.var(ddof=1) for g in gs])
+    linhas = []
+    for a, b in itertools.combinations(range(k), 2):
+        dif = m[b] - m[a]
+        ep = np.sqrt((v[a]/n[a] + v[b]/n[b]) / 2)          # erro-padrão na escala de q
+        glw = (v[a]/n[a] + v[b]/n[b])**2 / ((v[a]/n[a])**2/(n[a]-1) + (v[b]/n[b])**2/(n[b]-1))
+        q = abs(dif) / ep
+        pa = stats.studentized_range.sf(q, k, glw)
+        marg = stats.studentized_range.ppf(1-alfa, k, glw) * ep
+        linhas.append((f"{nomes[b]} - {nomes[a]}", dif, ep*np.sqrt(2), glw, q, pa, dif-marg, dif+marg))
+    return linhas
+
+def tukey(gs, nomes):
+    """Tukey-Kramer: variância agrupada e gl do resíduo."""
+    k = len(gs)
+    n = np.array([len(g) for g in gs], float)
+    m = np.array([g.mean() for g in gs])
+    v = np.array([g.var(ddof=1) for g in gs])
+    N = int(n.sum()); QM = np.sum((n-1)*v)/(N-k); gl = N-k
+    linhas = []
+    for a, b in itertools.combinations(range(k), 2):
+        dif = m[b] - m[a]
+        ep = np.sqrt(QM/2 * (1/n[a] + 1/n[b]))
+        q = abs(dif)/ep
+        marg = stats.studentized_range.ppf(1-alfa, k, gl)*ep
+        linhas.append((f"{nomes[b]} - {nomes[a]}", dif, ep*np.sqrt(2), float(gl),
+                       q, stats.studentized_range.sf(q, k, gl), dif-marg, dif+marg))
+    return linhas
+
+# ===================================================================
+# PARTE 1 - onde Games-Howell faz diferença: variâncias muito desiguais
+# Dados fictícios: resistência à compressão (MPa) de corpos de prova de concreto
+# de quatro centrais dosadoras. É o conjunto da ficha da ANOVA de Welch.
+A = np.array([57.0,54.0,51.5,31.1,55.9,32.9,60.2,57.5,59.5,59.4,54.7,47.2,49.2,65.6,46.8,49.9,45.5,47.3,49.2,54.3])
+B = np.array([48.4,48.3,47.8,49.2,46.3,49.1,51.6,47.5,48.9,54.6])
+C = np.array([50.5,48.9,51.9,57.5,58.1,50.0,54.4,53.0,51.5,48.1,55.6,50.8])
+D = np.array([55.6,55.2,58.7,57.4,52.7,54.5,57.1,52.3,54.2,55.5])
+gs = [A, B, C, D]; nm = ["A", "B", "C", "D"]
+n = np.array([len(g) for g in gs], float)
+v = np.array([g.var(ddof=1) for g in gs])
+print("central   n    média     DP   variância")
+for i, s in enumerate(nm):
+    print(f"   {s}     {int(n[i]):2d}   {gs[i].mean():6.3f}  {np.sqrt(v[i]):5.3f}   {v[i]:8.3f}")
+print(f"Razão entre a maior e a menor variância = {v.max()/v.min():.2f}")
+print(f"Brown-Forsythe: W = {stats.levene(*gs, center='median')[0]:.4f}, "
+      f"p-valor = {stats.levene(*gs, center='median')[1]:.5f}")
+N = int(n.sum()); k = 4
+QM = np.sum((n-1)*v)/(N-k)
+print(f"\nQM do resíduo agrupado = {QM:.3f} (DP = {np.sqrt(QM):.3f} MPa)")
+print("Esse número é a única régua que o Tukey usa. Compare com os DP de cada central:")
+print("  ele é mais que o dobro do DP de B, C e D, e bem menor que o de A.")
+
+gh = games_howell(gs, nm); tk = tukey(gs, nm)
+print("\nTukey-Kramer (variância agrupada, 48 gl para todos os pares)")
+print(f"{'comparação':&lt;12}{'dif.':&gt;9}{'EP':&gt;8}{'gl':&gt;8}{'q':&gt;8}{'p ajust.':&gt;11}{'IC 95%':&gt;24}")
+for nome, dif, ep, g_, q, pa, lo, hi in tk:
+    print(f"{nome:&lt;12}{dif:9.3f}{ep:8.3f}{g_:8.2f}{q:8.3f}{pa:11.5f}{'*' if pa&lt;alfa else ' '}"
+          f" [{lo:8.3f}; {hi:8.3f}]")
+print("\nGames-Howell (variância de cada par, gl de Welch-Satterthwaite)")
+print(f"{'comparação':&lt;12}{'dif.':&gt;9}{'EP':&gt;8}{'gl':&gt;8}{'q':&gt;8}{'p ajust.':&gt;11}{'IC 95%':&gt;24}")
+for nome, dif, ep, g_, q, pa, lo, hi in gh:
+    print(f"{nome:&lt;12}{dif:9.3f}{ep:8.3f}{g_:8.2f}{q:8.3f}{pa:11.5f}{'*' if pa&lt;alfa else ' '}"
+          f" [{lo:8.3f}; {hi:8.3f}]")
+i_bd = [l[0] for l in tk].index("D - B")
+print(f"\nO par B-D: Tukey usa EP = {tk[i_bd][2]:.3f} com {tk[i_bd][3]:.0f} gl; "
+      f"Games-Howell usa EP = {gh[i_bd][2]:.3f} com {gh[i_bd][3]:.2f} gl.")
+print(f"O erro-padrão cai {100*(1 - gh[i_bd][2]/tk[i_bd][2]):.1f}%, porque B e D são justamente as")
+print("duas centrais mais homogêneas: a régua agrupada, inflada pela central A, era")
+print(f"larga demais para elas. A diferença de {tk[i_bd][1]:.2f} MPa, que o Tukey não detecta")
+print(f"(p = {tk[i_bd][5]:.4f}), passa a p = {gh[i_bd][5]:.5f}.")
+
+# ===================================================================
+# PARTE 2 - onde Games-Howell quase não muda nada: variâncias homogêneas
+print("\n" + "=" * 70)
+print("chickwts: seis rações, variâncias homogêneas (o conjunto da ficha de Tukey)")
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes2 = list(dados); gs2 = [np.array(v_, float) for v_ in dados.values()]
+v2 = np.array([g.var(ddof=1) for g in gs2])
+print(f"Razão entre variâncias = {v2.max()/v2.min():.2f} | "
+      f"Brown-Forsythe p = {stats.levene(*gs2, center='median')[1]:.4f}")
+gh2 = games_howell(gs2, nomes2); tk2 = tukey(gs2, nomes2)
+print(f"\n{'comparação':&lt;26}{'dif.':&gt;9}{'Tukey':&gt;11}{'Games-Howell':&gt;15}{'gl de G-H':&gt;12}")
+for (nome, dif, _, _, _, pt, _, _), (_, _, _, glw, _, pg, _, _) in zip(tk2, gh2):
+    print(f"{nome:&lt;26}{dif:9.2f}{pt:11.5f}{'*' if pt&lt;alfa else ' '}"
+          f"{pg:14.5f}{'*' if pg&lt;alfa else ' '}{glw:12.2f}")
+ct, cg = sum(1 for l in tk2 if l[5] &lt; alfa), sum(1 for l in gh2 if l[5] &lt; alfa)
+print(f"\nSignificativas: Tukey {ct} | Games-Howell {cg}. As conclusões coincidem.")
+print("Com variâncias homogêneas, Games-Howell custa poder (os gl de cada par são")
+print("menores que os 65 do resíduo agrupado), mas o prejuízo é pequeno.")
+
+# ===================================================================
+# PARTE 3 - taxa de erro do conjunto nos dois cenários
+print("\n" + "=" * 70)
+print("Simulação: 10.000 experimentos com QUATRO grupos de médias IGUAIS")
+rng = np.random.default_rng(2026)
+M = 10000
+# O valor crítico q(5%, k = 4, gl) é liso em gl: tabela-se uma vez e interpola-se,
+# em vez de recalcular a integral em cada uma das 240.000 comparações da simulação.
+gl_tab = np.unique(np.round(np.geomspace(3, 400, 90), 3))
+q_tab = np.array([stats.studentized_range.ppf(1-alfa, 4, g_) for g_ in gl_tab])
+q_interp = lambda g_: np.interp(np.clip(g_, gl_tab[0], gl_tab[-1]), gl_tab, q_tab)
+erro = max(abs(q_interp(g_) - stats.studentized_range.ppf(1-alfa, 4, g_))
+           for g_ in (4.7, 9.3, 17.6, 33.1, 88.4))
+print(f"(erro máximo da interpolação do valor crítico: {erro:.6f})")
+for titulo, ns_, sds_ in [("variâncias iguais (n = 10, 12, 10, 12; DP = 3 em todos)",
+                           [10, 12, 10, 12], [3., 3., 3., 3.]),
+                          ("variâncias desiguais (n = 20, 10, 12, 10; DP = 9, 2, 2.5, 2)",
+                           [20, 10, 12, 10], [9., 2., 2.5, 2.]),
+                          ("pior caso: a maior variância no menor grupo (n = 20, 12, 10, 6)",
+                           [20, 12, 10, 6], [2., 2.5, 2., 9.])]:
+    kk = 4
+    N_ = sum(ns_); glr = N_ - kk
+    q_t = stats.studentized_range.ppf(1-alfa, kk, glr)
+    nn_ = np.array(ns_, float)
+    G = [rng.normal(50, s, (M, nnn)) for nnn, s in zip(ns_, sds_)]
+    mm = np.column_stack([g.mean(axis=1) for g in G])          # M x 4
+    vv = np.column_stack([g.var(axis=1, ddof=1) for g in G])
+    QMr = (vv * (nn_ - 1)).sum(axis=1) / glr
+    achou_t = np.zeros(M, bool); achou_g = np.zeros(M, bool)
+    for a, b in itertools.combinations(range(kk), 2):
+        d = np.abs(mm[:, b] - mm[:, a])
+        achou_t |= d / np.sqrt(QMr/2 * (1/nn_[a] + 1/nn_[b])) &gt; q_t
+        sa, sb = vv[:, a]/nn_[a], vv[:, b]/nn_[b]
+        epg = np.sqrt((sa + sb)/2)
+        glw = (sa + sb)**2 / (sa**2/(nn_[a]-1) + sb**2/(nn_[b]-1))
+        achou_g |= d/epg &gt; q_interp(glw)
+    print(f"\n  {titulo}")
+    print(f"    Tukey-Kramer: {100*achou_t.mean():5.2f}%   Games-Howell: "
+          f"{100*achou_g.mean():5.2f}%   (alvo: 5%)")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">central   n    média     DP   variância
+   A     20   51.435  8.523     72.644
+   B     10   49.170  2.350      5.525
+   C     12   52.525  3.256     10.604
+   D     10   55.320  2.026      4.106
+Razão entre a maior e a menor variância = 17.69
+Brown-Forsythe: W = 5.8593, p-valor = 0.00171
+
+QM do resíduo agrupado = 32.991 (DP = 5.744 MPa)
+Esse número é a única régua que o Tukey usa. Compare com os DP de cada central:
+  ele é mais que o dobro do DP de B, C e D, e bem menor que o de A.
+
+Tukey-Kramer (variância agrupada, 48 gl para todos os pares)
+comparação       dif.      EP      gl       q   p ajust.                  IC 95%
+B - A          -2.265   2.225   48.00   1.440    0.73966  [  -8.185;    3.655]
+C - A           1.090   2.097   48.00   0.735    0.95395  [  -4.492;    6.672]
+D - A           3.885   2.225   48.00   2.470    0.31161  [  -2.035;    9.805]
+C - B           3.355   2.459   48.00   1.929    0.52756  [  -3.190;    9.900]
+D - B           6.150   2.569   48.00   3.386    0.09185  [  -0.686;   12.986]
+D - C           2.795   2.459   48.00   1.607    0.66905  [  -3.750;    9.340]
+
+Games-Howell (variância de cada par, gl de Welch-Satterthwaite)
+comparação       dif.      EP      gl       q   p ajust.                  IC 95%
+B - A          -2.265   2.046   24.04   1.566    0.68864  [  -7.907;    3.377]
+C - A           1.090   2.125   26.65   0.725    0.95528  [  -4.730;    6.910]
+D - A           3.885   2.011   22.92   2.733    0.24285  [  -1.681;    9.451]
+C - B           3.355   1.198   19.66   3.959    0.05036  [  -0.004;    6.714]
+D - B           6.150   0.981   17.62   8.863    0.00004* [   3.371;    8.929]
+D - C           2.795   1.138   18.67   3.474    0.10048  [  -0.409;    5.999]
+
+O par B-D: Tukey usa EP = 2.569 com 48 gl; Games-Howell usa EP = 0.981 com 17.62 gl.
+O erro-padrão cai 61.8%, porque B e D são justamente as
+duas centrais mais homogêneas: a régua agrupada, inflada pela central A, era
+larga demais para elas. A diferença de 6.15 MPa, que o Tukey não detecta
+(p = 0.0918), passa a p = 0.00004.
+
+======================================================================
+chickwts: seis rações, variâncias homogêneas (o conjunto da ficha de Tukey)
+Razão entre variâncias = 2.82 | Brown-Forsythe p = 0.5896
+
+comparação                     dif.      Tukey   Games-Howell   gl de G-H
+linseed - horsebean           58.55    0.14133        0.06494        19.77
+soybean - horsebean           86.23    0.00422*       0.00190*       22.00
+sunflower - horsebean        168.72    0.00000*       0.00000*       19.96
+meatmeal - horsebean         116.71    0.00011*       0.00124*       16.52
+casein - horsebean           163.38    0.00000*       0.00001*       18.36
+soybean - linseed             27.68    0.79329        0.76890        23.63
+sunflower - linseed          110.17    0.00009*       0.00030*       21.90
+meatmeal - linseed            58.16    0.12770        0.22093        19.24
+casein - linseed             104.83    0.00021*       0.00310*       21.10
+sunflower - soybean           82.49    0.00388*       0.00509*       23.92
+meatmeal - soybean            30.48    0.73914        0.80600        19.45
+casein - soybean              77.15    0.00837*       0.03604*       21.63
+meatmeal - sunflower         -52.01    0.22070        0.30300        18.54
+casein - sunflower            -5.33    0.99989        0.99990        20.50
+casein - meatmeal             46.67    0.33246        0.52927        20.80
+
+Significativas: Tukey 8 | Games-Howell 8. As conclusões coincidem.
+Com variâncias homogêneas, Games-Howell custa poder (os gl de cada par são
+menores que os 65 do resíduo agrupado), mas o prejuízo é pequeno.
+
+======================================================================
+Simulação: 10.000 experimentos com QUATRO grupos de médias IGUAIS
+(erro máximo da interpolação do valor crítico: 0.001156)
+
+  variâncias iguais (n = 10, 12, 10, 12; DP = 3 em todos)
+    Tukey-Kramer:  4.85%   Games-Howell:  5.02%   (alvo: 5%)
+
+  variâncias desiguais (n = 20, 10, 12, 10; DP = 9, 2, 2.5, 2)
+    Tukey-Kramer:  1.92%   Games-Howell:  4.51%   (alvo: 5%)
+
+  pior caso: a maior variância no menor grupo (n = 20, 12, 10, 6)
+    Tukey-Kramer: 28.25%   Games-Howell:  4.93%   (alvo: 5%)</pre></div><figure class="fig"><img src="../assets/resultados/games-howell.png" alt="Tukey e Games–Howell nos dois conjuntos" loading="lazy"/><figcaption><strong>Quando o método importa e quando não importa.</strong> À esquerda, os dados de concreto: o par B–D, que Tukey deixa passar com p = 0,0918, aparece com p = 0,00004 em Games–Howell. À direita, <code>chickwts</code>: os quinze pontos ficam perto da diagonal e nenhum cruza a linha de 0,05 em um sentido e não no outro — com variâncias homogêneas, os dois procedimentos concordam. <span class="source-line">Fonte: o autor.</span></figcaption></figure><h3>Parte 1: concreto, variâncias muito desiguais</h3><div class="table-wrap"><table class="method-table"><caption>Diagnóstico</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Razão entre variâncias</td><td>17,69</td><td>Muito acima do tolerável.</td></tr><tr><td>Brown–Forsythe</td><td>W = 5,859; p = 0,0017</td><td>Heterogeneidade confirmada.</td></tr><tr><td>QM do resíduo agrupado</td><td>32,991 (DP = 5,744 MPa)</td><td>Mais que o dobro do DP de B, C e D.</td></tr><tr><td>ANOVA clássica</td><td>F(3; 48) = 2,021; p = 0,1235</td><td>Não rejeita.</td></tr><tr><td>ANOVA de Welch</td><td>F(3; 25,891) = 12,583; p = 2,9 × 10⁻⁵</td><td>Rejeita com folga.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As seis comparações</caption><thead><tr><th>Par</th><th>Diferença (MPa)</th><th>Tukey: EP / gl / p</th><th>Games–Howell: EP / gl / p</th></tr></thead><tbody><tr><td>B − A</td><td>−2,265</td><td>2,225 / 48 / 0,7397</td><td>2,046 / 24,04 / 0,6886</td></tr><tr><td>C − A</td><td>+1,090</td><td>2,097 / 48 / 0,9540</td><td>2,125 / 26,65 / 0,9553</td></tr><tr><td>D − A</td><td>+3,885</td><td>2,225 / 48 / 0,3116</td><td>2,011 / 22,92 / 0,2429</td></tr><tr><td>C − B</td><td>+3,355</td><td>2,459 / 48 / 0,5276</td><td>1,198 / 19,66 / 0,0504</td></tr><tr><td><strong>D − B</strong></td><td><strong>+6,150</strong></td><td><strong>2,569 / 48 / 0,0918</strong></td><td><strong>0,981 / 17,62 / 0,00004 *</strong></td></tr><tr><td>D − C</td><td>+2,795</td><td>2,459 / 48 / 0,6690</td><td>1,138 / 18,67 / 0,1005</td></tr></tbody></table></div><p><strong>Leitura:</strong> a central D entrega concreto com resistência média 6,15 MPa maior que a da central B, com intervalo de 3,37 a 8,93 MPa. Tukey não detecta essa diferença, e o motivo não tem nada a ver com os dois grupos comparados: é a central A, com desvio-padrão de 8,52 MPa e vinte dos 52 corpos de prova, que infla o quadrado médio do resíduo e impõe a B e a D uma régua 2,6 vezes maior do que a que lhes cabe.</p><p>O par C–B fica no limite (p = 0,0504 por Games–Howell, contra 0,5276 por Tukey), e é um bom lembrete de que a mudança de método não é um atalho para obter significância: ela muda o resultado porque muda a pergunta sobre qual é o ruído relevante.</p><h3>Parte 2: chickwts, variâncias homogêneas</h3><div class="table-wrap"><table class="method-table"><caption>O que muda quando a heterogeneidade não existe</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Razão entre variâncias</td><td>2,82</td></tr><tr><td>Brown–Forsythe</td><td>p = 0,5896</td></tr><tr><td>Significativas por Tukey</td><td>8 de 15</td></tr><tr><td>Significativas por Games–Howell</td><td>8 de 15</td></tr><tr><td>Graus de liberdade por par (Games–Howell)</td><td>entre 16,5 e 23,6</td></tr><tr><td>Graus de liberdade (Tukey)</td><td>65 para todos os pares</td></tr></tbody></table></div><p><strong>Leitura:</strong> as conclusões são idênticas. O custo de usar Games–Howell desnecessariamente aparece nos graus de liberdade: cada par trabalha com 16 a 24 graus de liberdade, contra os 65 do resíduo agrupado. Isso alarga um pouco os intervalos e, em comparações de fronteira, pode custar significância — a comparação <em>linseed − horsebean</em>, por exemplo, tem p = 0,1413 por Tukey e p = 0,0649 por Games–Howell, nenhum dos dois significativo, mas em direções que poderiam ter importado.</p><p>A regra prática é simples: quando há evidência de heterogeneidade, Games–Howell; quando não há, Tukey, que usa toda a informação disponível sobre o ruído. Alguns autores recomendam Games–Howell como padrão, pelo mesmo argumento que leva a recomendar Welch por padrão — o prejuízo de usá-lo sem necessidade é pequeno, e o de não usá-lo quando necessário é grande.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar Games–Howell depois de uma ANOVA clássica</td><td>O teste global compatível é a <a href="aovwelch.html">ANOVA de Welch</a>.</td></tr><tr><td>Aplicar com grupos muito pequenos</td><td>Com n &lt; 6 as variâncias são instáveis; o controle da taxa de erro se degrada.</td></tr><tr><td>Testar normalidade nos resíduos agrupados</td><td>Com variâncias desiguais eles formam uma mistura; teste por grupo.</td></tr><tr><td>Reportar os gl arredondados para inteiro</td><td>São fracionários e variam de par para par.</td></tr><tr><td>Desenhar barras de erro com o erro-padrão agrupado</td><td>Use o de cada grupo.</td></tr><tr><td>Trocar de método depois de ver que Tukey não deu significativo</td><td>A decisão vem do diagnóstico de homogeneidade, não do resultado.</td></tr><tr><td>Achar que Games–Howell resolve assimetria</td><td>Ele trata variâncias desiguais, não a forma da distribuição.</td></tr><tr><td>Supor que Tukey só erra para mais</td><td>Quando a maior variância está no maior grupo, ele perde poder.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Variâncias homogêneas; usa toda a informação sobre o ruído.</td></tr><tr><td>Dunnett T3</td><td>Variâncias desiguais com grupos pequenos (n &lt; 50); mais conservador.</td></tr><tr><td>Dunnett C</td><td>Variâncias desiguais; alternativa baseada na amplitude estudentizada.</td></tr><tr><td>Tamhane T2</td><td>Variâncias desiguais, com ajuste de Šidák; conservador.</td></tr><tr><td><code>pairwise.t.test</code> com <code>pool.sd = FALSE</code> e Holm</td><td>Rota simples, sem pacotes extras.</td></tr><tr><td>Médias aparadas (<code>WRS2::lincon</code>)</td><td>Caudas pesadas, além de variâncias desiguais (ver <a href="yuen.html">Yuen</a>).</td></tr><tr><td>Dunn (postos)</td><td>Depois de um <a href="kruskal.html">Kruskal–Wallis</a>.</td></tr><tr><td><a href="bootstrap.html">Bootstrap</a> com ajuste</td><td>Amostras pequenas e distribuições irregulares.</td></tr></tbody></table></div><ol class="steps"><li>Descreva cada grupo: n, média, desvio-padrão e variância.</li><li>Calcule a razão entre a maior e a menor variância e aplique Brown–Forsythe.</li><li>Verifique a normalidade dentro de cada grupo.</li><li>Se houver heterogeneidade, use a ANOVA de Welch como teste global.</li><li>Aplique Games–Howell e reporte diferenças, intervalos, gl e valores-p ajustados.</li><li>Apresente as médias com os intervalos construídos a partir da variância de cada grupo.</li><li>Quando a diferença entre Tukey e Games–Howell for grande, mostre as duas e explique por quê.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>GAMES, Paul A.; HOWELL, John F. Pairwise multiple comparison procedures with unequal n’s and/or variances: a Monte Carlo study. <em>Journal of Educational Statistics</em>, v. 1, n. 2, p. 113-125, 1976.</li><li>WELCH, B. L. The generalization of Student’s problem when several different population variances are involved. <em>Biometrika</em>, v. 34, n. 1-2, p. 28-35, 1947.</li><li>SATTERTHWAITE, Franklin E. An approximate distribution of estimates of variance components. <em>Biometrics Bulletin</em>, v. 2, n. 6, p. 110-114, 1946.</li><li>GAMES, Paul A.; KESELMAN, H. J.; ROGAN, Joanne C. Simultaneous pairwise multiple comparison procedures for means when sample sizes are unequal. <em>Psychological Bulletin</em>, v. 90, n. 3, p. 594-598, 1981.</li><li>DUNNETT, Charles W. Pairwise multiple comparisons in the unequal variance case. <em>Journal of the American Statistical Association</em>, v. 75, n. 372, p. 796-800, 1980.</li><li>DELACRE, Marie et al. Taking parametric assumptions seriously: arguments for the use of Welch’s F-test instead of the classical F-test in one-way ANOVA. <em>International Review of Social Psychology</em>, v. 32, n. 1, art. 13, 2019.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>ptukey</code>, <code>qtukey</code>, <code>oneway.test</code> e <code>pairwise.t.test</code>, pacote <code>stats</code>.)</li><li>KASSAMBARA, Alboukadel. <em>rstatix: pipe-friendly framework for basic statistical tests.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=rstatix" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=rstatix</a>. (Função <code>games_howell_test</code>.)</li><li>POHLERT, Thorsten. <em>PMCMRplus: calculate pairwise multiple comparisons of mean rank sums extended.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=PMCMRplus" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=PMCMRplus</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes e normalidade dentro de cada grupo; não exige variâncias homogêneas. Recomenda-se pelo menos cerca de 6 observações por grupo.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>rstatix, PMCMRplus, car</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="tukey.html"><span>← ANTERIOR</span>Tukey HSD / Tukey–Kramer</a><a href="regwf.html"><span>PRÓXIMO →</span>Ryan–Einot–Gabriel–Welsch (REGW)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

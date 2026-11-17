@@ -4,305 +4,333 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="MANOVA: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   MANOVA | Estatística e Ciência de Dados
-  </title>
+<meta content="MANOVA: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>MANOVA | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     MANOVA
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     MANOVA
-    </h1>
-<p class="detail-lead">
-     Verifica se grupos diferem simultaneamente em várias respostas quantitativas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/manova.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se grupos diferem simultaneamente em várias respostas quantitativas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes.</li><li>Resíduos multivariados aproximadamente normais.</li><li>Matrizes de covariância adequadas.</li><li>Dependência entre respostas considerada.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \boldsymbol\mu_1=\cdots=\boldsymbol\mu_k\\ H_1&amp;:\ \exists\,i\neq j:\boldsymbol\mu_i\neq\boldsymbol\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[V=\operatorname{tr}\!\left[\mathbf H(\mathbf H+\mathbf E)^{-1}\right]\quad\text{(traço de Pillai)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu\)
-        </dt>
-<dd>
-         média ou efeito médio
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         estatística de razão de variâncias baseada nos quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       Estatística de Pillai, Wilks, Hotelling–Lawley ou Roy, convertida em F aproximado conforme dimensões.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) indica diferença multivariada, sem identificar isoladamente qual variável ou grupo.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto iris registra medidas de sépalas e pétalas de três espécies; os dados permitem ilustrar procedimentos com múltiplas características dimensionais.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar conjuntamente comprimento de sépala e pétala entre espécies (iris), analogia a várias especificações dimensionais.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-manova" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-manova"><code># MANOVA ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>MANOVA</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>MANOVA</h1><p class="detail-lead">Compara vetores de médias de vários grupos usando todas as respostas ao mesmo tempo, aproveitando a correlação entre elas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/manova.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/manova.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a MANOVA</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando um experimento mede <em>várias</em> respostas nas mesmas unidades — altura e diâmetro, resistência e alongamento, quatro medidas de uma flor —, a saída mais comum é rodar uma <a href="aov1.html">ANOVA</a> para cada uma. Isso inflaciona a taxa de erro, como sempre, mas o problema maior é outro: ignora que as respostas estão correlacionadas, e com isso deixa escapar diferenças que só aparecem na combinação delas.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: MANOVA" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA com várias</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">respostas ao mesmo tempo</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara matrizes H e E</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">em vez de somas de quadrados</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quatro estatísticas</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pillai, Wilks,</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Hotelling–Lawley, Roy</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Normalidade multivariada</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Covariâncias iguais</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">manova(cbind(y1,y2) ~ g)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">summary(mod)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Depois</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">ANOVAs com ajuste</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">Análise discriminante</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">MANOVA</text></svg><figcaption>Visão geral da análise multivariada de variância. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que a MANOVA vê e as ANOVAs não</strong><p>No exemplo desta ficha, duas medidas de um polímero dão p = 0,217 e p = 0,245 quando analisadas separadamente — nada. Analisadas juntas, p = 6,5 × 10⁻⁸. A informação não estava em nenhuma das duas: estava na <em>relação</em> entre elas.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a MANOVA</h2><p>Na ANOVA de um fator, a variação total é uma soma de quadrados que se parte em duas: entre e dentro. Na MANOVA, cada uma dessas parcelas vira uma <strong>matriz</strong> \(p\times p\), com variâncias na diagonal e covariâncias fora dela: \(\mathbf H\) para a hipótese (entre grupos) e \(\mathbf E\) para o erro (dentro). O teste pergunta o quanto \(\mathbf H\) é grande em relação a \(\mathbf E\) — e, como matrizes não se dividem, há mais de uma forma de responder.</p><figure class="fig"><img src="../assets/resultados/manova-didatica.png" alt="Duas medidas isoladas e as mesmas duas em conjunto" loading="lazy"/><figcaption><strong>A informação que só existe na combinação.</strong> À esquerda, cada medida analisada sozinha: os três lotes se misturam e as ANOVAs não encontram nada (p = 0,217 e p = 0,245). À direita, as duas ao mesmo tempo. Dentro de cada lote as duas medidas andam juntas (r = 0,95), de modo que cada nuvem é uma elipse alongada; os lotes, porém, se deslocam ao longo da direção <em>estreita</em> dessa elipse. É uma diferença grande em relação à variação que existe nessa direção — e a MANOVA a detecta com p = 6,5 × 10⁻⁸. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que a correlação muda tudo</strong><p>Se as duas medidas fossem independentes, a nuvem de cada lote seria circular e a separação ao longo da diagonal apareceria também em cada eixo. É a correlação alta dentro dos grupos que achata a nuvem e cria uma direção de baixa variabilidade: nessa direção, um deslocamento pequeno em cada variável é um deslocamento grande em termos relativos. A MANOVA pondera automaticamente por essa estrutura.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Indispensável.</td><td>Delineamento.</td></tr><tr><td>Normalidade multivariada em cada grupo</td><td>Sustenta as distribuições aproximadas.</td><td>Teste de <a href="mardia.html">Mardia</a>; Q-Q das distâncias de Mahalanobis; Shapiro–Wilk em cada resposta é condição necessária, não suficiente.</td></tr><tr><td>Matrizes de covariância iguais entre os grupos</td><td>É o análogo multivariado da homogeneidade de variâncias.</td><td>Teste M de <a href="boxm.html">Box</a>. Ele é sensível a desvios de normalidade; com grupos balanceados, o traço de Pillai tolera bem a violação.</td></tr><tr><td>n por grupo maior que o número de respostas</td><td>E, de preferência, bem maior.</td><td>Se \(n_i\leq p\), a matriz E fica singular e nada é estimável.</td></tr><tr><td>Relações lineares entre as respostas</td><td>As matrizes de covariância só capturam associação linear.</td><td>Matriz de diagramas de dispersão.</td></tr><tr><td>Ausência de multicolinearidade severa</td><td>Respostas quase redundantes tornam E mal condicionada.</td><td>Correlações entre as respostas; determinante de E.</td></tr><tr><td>Ausência de observações multivariadas atípicas</td><td>Um ponto distante em duas dimensões pode não ser extremo em nenhuma delas.</td><td>Distância de Mahalanobis.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \boldsymbol\mu_1=\boldsymbol\mu_2=\cdots=\boldsymbol\mu_k \\ &\quad \text{(os vetores de médias são } \\ &\quad \text{iguais)} \\ H_1&:\ \text{ao menos um vetor de } \\ &\quad \text{médias difere dos demais}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf H=\sum_{i=1}^{k}n_i\left(\bar{\mathbf y}_i-\bar{\mathbf y}\right)\left(\bar{\mathbf y}_i-\bar{\mathbf y}\right)^{\!\top},\]\[\mathbf E=\sum_{i=1}^{k}\sum_{j=1}^{n_i}\left(\mathbf y_{ij}-\bar{\mathbf y}_i\right)\left(\mathbf y_{ij}-\bar{\mathbf y}_i\right)^{\!\top}\]</div><p>Sejam \(\lambda_1\geq\lambda_2\geq\cdots\geq\lambda_s\) os autovalores não nulos de \(\mathbf E^{-1}\mathbf H\), com \(s=\min(k-1,p)\). As quatro estatísticas usuais são funções desses autovalores:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[V=\sum_{j=1}^{s}\frac{\lambda_j}{1+\lambda_j}\ \text{(Pillai)},\]\[\Lambda=\prod_{j=1}^{s}\frac{1}{1+\lambda_j}\ \text{(Wilks)},\]\[T=\sum_{j=1}^{s}\lambda_j\ \text{(Hotelling–Lawley)},\]\[\theta=\lambda_1\ \text{(Roy)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(p\)</dt><dd>número de respostas</dd></div><div><dt>\(k\)</dt><dd>número de grupos</dd></div><div><dt>\(n_i\)</dt><dd>tamanho do grupo i</dd></div><div><dt>\(\bar{\mathbf y}_i\)</dt><dd>vetor de médias do grupo i</dd></div><div><dt>\(\mathbf H,\ \mathbf E\)</dt><dd>matrizes de somas de quadrados e produtos cruzados, entre e dentro</dd></div><div><dt>\(\lambda_j\)</dt><dd>autovalores de E⁻¹H: medem a separação em cada direção</dd></div><div><dt>\(s\)</dt><dd>número de direções discriminantes possíveis</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Nos dados dos três lotes de polímero (k = 3, p = 2, n = 15 cada, N = 45), os autovalores de \(\mathbf E^{-1}\mathbf H\) são \(\lambda_1=2{,}8158\) e \(\lambda_2=0{,}0004\).</p><div class="worked"><strong>Cálculo</strong><p>\(V=\dfrac{2{,}8158}{3{,}8158}+\dfrac{0{,}0004}{1{,}0004}=0{,}7383\); \(\Lambda=\dfrac{1}{3{,}8158}\times\dfrac{1}{1{,}0004}=0{,}2620\); \(T=2{,}8162\); \(\theta=2{,}8158\).</p><p>Com \(s=\min(2,2)=2\), \(\text{gl}_H=2\) e \(\text{gl}_E=42\), a aproximação F do traço de Pillai usa \(m=(|2-2|-1)/2=-0{,}5\) e \(n=(42-2-1)/2=19{,}5\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}F &= \frac{V}{s-V}\cdot\frac{s(2n+s+1)}{s(2m+s+1)} \\ &= \frac{0{,}7383}{1{,}2617}\cdot\frac{84}{4} = 12{,}29,\end{aligned}\]\[\text{gl}=(4;\ 84),\]\[p=6{,}5\times10^{-8}.\]</div><p>O segundo autovalor é praticamente zero: toda a separação está em <strong>uma</strong> direção. Essa direção é, aproximadamente, a diferença resistência − alongamento, cuja ANOVA univariada devolve \(F(2;42)=58{,}34\) e \(p=7{,}5\times10^{-13}\).</p></div><h3>Qual das quatro estatísticas usar</h3><div class="table-wrap"><table class="method-table"><caption>As quatro estatísticas multivariadas</caption><thead><tr><th>Estatística</th><th>Base</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Traço de Pillai</td><td>Soma de λ/(1+λ); entre 0 e s.</td><td><strong>Padrão recomendado.</strong> É a mais robusta a desvios de normalidade e de homogeneidade das covariâncias. É o padrão de <code>summary.manova</code>.</td></tr><tr><td>Lambda de Wilks</td><td>Produto de 1/(1+λ); entre 0 e 1, pequeno indica separação.</td><td>A mais tradicional; liga-se diretamente ao teste de razão de verossimilhanças.</td></tr><tr><td>Traço de Hotelling–Lawley</td><td>Soma dos λ.</td><td>Mais poderosa quando a separação se espalha por várias direções.</td></tr><tr><td>Maior raiz de Roy</td><td>Apenas λ₁.</td><td>Mais poderosa quando toda a separação está em uma direção; a menos robusta, e seu valor-p é apenas um limite inferior.</td></tr></tbody></table></div><p>As quatro coincidem quando \(s=1\) — isto é, com dois grupos ou uma só resposta. Quando divergem na conclusão, é sinal de que a estrutura de separação é peculiar, e vale examinar os autovalores.</p><h3>Propriedades</h3><ul class="checklist"><li>Com p = 1, reduz-se à <a href="aov1.html">ANOVA de um fator</a>.</li><li>Com k = 2, equivale ao \(T^2\) de Hotelling, o análogo multivariado do <a href="t2.html">teste t</a>.</li><li>\(\Lambda=\det(\mathbf E)/\det(\mathbf E+\mathbf H)\): é a razão entre os "volumes" do erro e do total.</li><li>Tamanho de efeito: \(\eta^2_{\text{multi}}=V/s\) (de Pillai) ou \(1-\Lambda^{1/s}\).</li><li>As aproximações F são exatas em alguns casos (p ≤ 2 ou k ≤ 3) e aproximadas nos demais.</li><li>Rejeitar \(H_0\) não diz qual resposta nem qual grupo: isso exige acompanhamento.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><ol class="steps"><li>Leia a estatística multivariada e seu valor-p. Prefira o traço de Pillai salvo razão em contrário.</li><li>Olhe os autovalores: eles dizem se a separação está em uma direção ou espalhada.</li><li>Se rejeitar, acompanhe com as ANOVAs univariadas, <strong>com ajuste</strong> para o número de respostas.</li><li>Para entender a estrutura, use a análise discriminante: os coeficientes dizem que combinação das respostas separa os grupos.</li><li>Reporte a estatística, a aproximação F com seus dois graus de liberdade, o valor-p e o tamanho de efeito.</li></ol><div class="callout try"><strong>Um cuidado com o acompanhamento univariado</strong><p>É prática comum rodar as ANOVAs separadas depois de uma MANOVA significativa, como se a MANOVA fosse um "porteiro" que protege a taxa de erro. A proteção é parcial: ela vale para a hipótese conjunta, não para cada resposta. Por isso o ajuste (Bonferroni, por exemplo) continua necessário. E, mais importante, as ANOVAs univariadas podem não encontrar <em>nada</em> mesmo com a MANOVA significativa — é exatamente o que acontece no exemplo do polímero. Nesse caso, a resposta está na combinação, e é a análise discriminante que a revela.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>manova()</code> está no pacote <code>stats</code>, já instalado com o R: as respostas entram do lado esquerdo da fórmula com <code>cbind()</code>. <code>summary(mod)</code> devolve o traço de Pillai; o argumento <code>test</code> aceita <code>"Wilks"</code>, <code>"Hotelling-Lawley"</code> e <code>"Roy"</code>. <code>summary.aov(mod)</code> extrai as ANOVAs univariadas. Para o teste M de Box use <code>biotools::boxM()</code>; para normalidade multivariada, <code>MVN</code>; para a análise discriminante, <code>MASS::lda()</code>. <code>car::Anova()</code> dá mais controle em delineamentos complexos.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-manova-min" type="button">Copiar código</button></div><pre id="code-manova-min"><code>mod &lt;- manova(cbind(y1, y2) ~ grupo, data = dados)
+summary(mod)                      # traço de Pillai
+summary(mod, test = "Wilks")
+summary.aov(mod)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. A primeira parte usa três lotes de um polímero, com duas medidas por corpo de prova — resistência à tração e alongamento na ruptura —, construídos para mostrar o que a análise conjunta enxerga. A segunda parte usa <code>iris</code>, o conjunto clássico de Anderson e Fisher: quatro medidas florais em três espécies, com 50 flores cada.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-manova" type="button">Copiar código</button></div><pre id="code-manova"><code># MANOVA: exemplo completo ----
+# Pacotes: stats (base), car (testes multivariados), biotools (M de Box), MASS (discriminante)
+# install.packages(c("car", "biotools", "MASS", "MVN"))
 
-# Ajuste e resultados ----
-ajuste &lt;- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
-print(summary(ajuste, test = "Pillai"))
-print(summary.aov(ajuste))
+# PARTE 1 - por que uma MANOVA e não várias ANOVAs
+# Dados fictícios: três lotes de um polímero, com duas medidas por corpo de prova.
+resistencia &lt;- c(51.62,49.33,48.71,51.01,49.47,50.83,50.19,51.66,49.92,50.79,52.05,50.06,47.94,49.26,49.31,
+                 52.30,49.77,50.40,48.27,50.21,50.20,52.54,48.56,50.72,50.08,49.83,52.58,49.98,51.20,51.70,
+                 50.45,51.49,48.84,50.42,50.59,49.51,50.13,49.74,47.87,49.70,50.59,50.74,49.25,49.57,48.08)
+alongamento &lt;- c(31.10,28.81,29.43,31.04,29.77,30.33,29.88,32.14,30.19,30.52,32.30,30.22,28.15,29.17,29.59,
+                 30.93,28.42,29.58,27.82,29.63,29.47,31.75,27.62,30.36,29.42,28.83,31.39,29.25,30.31,30.91,
+                 30.77,31.55,30.04,31.17,31.05,29.75,30.40,29.89,28.50,30.53,32.10,31.07,29.70,30.63,28.82)
+lote &lt;- factor(rep(c("A", "B", "C"), each = 15))
+polimero &lt;- data.frame(lote, resistencia, alongamento)
+aggregate(cbind(resistencia, alongamento) ~ lote, data = polimero, FUN = mean)
 
-# Visualização e diagnóstico ----
-plot(iris$Sepal.Length, iris$Petal.Length, col = iris$Species, pch = 19, xlab = "Comprimento da sépala", ylab = "Comprimento da pétala")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# As duas ANOVAs separadas
+summary(aov(resistencia ~ lote, data = polimero))
+summary(aov(alongamento ~ lote, data = polimero))
 
+# A MANOVA
+mod &lt;- manova(cbind(resistencia, alongamento) ~ lote, data = polimero)
+summary(mod)                              # padrão: traço de Pillai
+summary(mod, test = "Wilks")
+summary(mod, test = "Hotelling-Lawley")
+summary(mod, test = "Roy")
+summary.aov(mod)                          # as ANOVAs univariadas, de dentro do objeto
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="ancova.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANCOVA
-    </a>
-<a href="mancova.html">
-<span>
-      PRÓXIMO →
-     </span>
-     MANCOVA
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# O gráfico que explica o resultado
+plot(resistencia, alongamento, col = lote, pch = 19,
+     xlab = "Resistência (MPa)", ylab = "Alongamento (%)")
+legend("topleft", levels(lote), col = 1:3, pch = 19)
+
+# PARTE 2 - o exemplo canônico: iris
+data(iris)
+mod2 &lt;- manova(cbind(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width) ~ Species, data = iris)
+summary(mod2)
+summary(mod2, test = "Wilks")
+summary.aov(mod2)
+
+# Pressupostos
+library(biotools)
+boxM(iris[, 1:4], iris$Species)                      # igualdade das covariâncias
+library(MVN)
+mvn(iris[iris$Species == "setosa", 1:4])             # normalidade multivariada por grupo
+# (em versões recentes do pacote a função chama-se mvn_test)
+
+# Comparações depois da MANOVA: ANOVAs com ajuste, ou funções discriminantes
+p.adjust(sapply(1:4, function(j) summary(aov(iris[, j] ~ iris$Species))[[1]][1, 5]),
+         method = "bonferroni")
+library(MASS)
+ld &lt;- lda(Species ~ ., data = iris)
+ld                                                    # coeficientes de LD1 e LD2
+plot(ld)
+
+# Alternativa com car, que dá mais controle sobre o tipo de soma de quadrados
+library(car)
+m3 &lt;- lm(cbind(Sepal.Length, Sepal.Width, Petal.Length, Petal.Width) ~ Species, data = iris)
+Anova(m3, test.statistic = "Pillai")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-manova" type="button">Copiar código</button></div><pre id="code-py-manova"><code># Bibliotecas: numpy, scipy, matplotlib e scikit-learn (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+from sklearn.datasets import load_iris
+
+def manova(X, g, rotulos=None):
+    """Devolve as quatro estatísticas multivariadas e suas aproximações F."""
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    gm = X.mean(axis=0)
+    H = np.zeros((p, p)); E = np.zeros((p, p))
+    for i in niveis:
+        Xi = X[g == i]; mi = Xi.mean(axis=0)
+        H += len(Xi) * np.outer(mi - gm, mi - gm)       # entre grupos (hipótese)
+        E += (Xi - mi).T @ (Xi - mi)                    # dentro dos grupos (erro)
+    autov = np.sort(np.linalg.eigvals(np.linalg.inv(E) @ H).real)[::-1]
+    glh, gle = k - 1, n - k
+    s = min(glh, p)
+    pillai = float(np.sum(autov[:s] / (1 + autov[:s])))
+    wilks = float(np.prod(1 / (1 + autov[:s])))
+    hl = float(np.sum(autov[:s]))
+    roy = float(autov[0])
+    m = (abs(glh - p) - 1) / 2; nn = (gle - p - 1) / 2
+    saida = {}
+    # Pillai
+    d1 = s * (2*m + s + 1); d2 = s * (2*nn + s + 1)
+    F = (pillai / (s - pillai)) * (d2 / d1)
+    saida["Pillai"] = (pillai, F, d1, d2, stats.f.sf(F, d1, d2))
+    # Wilks (aproximação de Rao)
+    r_ = gle - (p - glh + 1) / 2
+    u = (p * glh - 2) / 4
+    den = p**2 + glh**2 - 5
+    t = np.sqrt((p**2 * glh**2 - 4) / den) if den &gt; 0 else 1.0
+    d1 = p * glh; d2 = r_ * t - 2 * u
+    F = ((1 - wilks**(1/t)) / wilks**(1/t)) * (d2 / d1)
+    saida["Wilks"] = (wilks, F, d1, d2, stats.f.sf(F, d1, d2))
+    # Hotelling-Lawley
+    b = (gle + glh - p - 1) * (gle - 1) / ((gle - p - 3) * (gle - p))
+    d1 = s * (2*m + s + 1); d2 = 4 + (d1 + 2) / (b - 1)
+    cte = d1 * (d2 - 2) / (d2 * (gle - p - 1))
+    F = hl / cte
+    saida["Hotelling-Lawley"] = (hl, F, d1, d2, stats.f.sf(F, d1, d2))
+    # Roy
+    rr = max(p, glh); d1 = rr; d2 = gle - rr + glh
+    F = roy * d2 / d1
+    saida["Roy"] = (roy, F, d1, d2, stats.f.sf(F, d1, d2))
+    return saida, H, E, autov
+
+def imprime(saida):
+    print("estatística           valor      F aprox.     gl1      gl2     p-valor")
+    for nome, (v, F, d1, d2, pv) in saida.items():
+        print(f"{nome:&lt;20}{v:8.5f}  {F:11.4f}  {d1:6.1f}  {d2:7.2f}   {pv:.4e}")
+
+def boxM(X, g):
+    """Teste M de Box para igualdade das matrizes de covariância."""
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    ns = np.array([np.sum(g == i) for i in niveis], float)
+    Ss = [np.cov(X[g == i], rowvar=False) for i in niveis]
+    Sp = sum((ns[j] - 1) * Ss[j] for j in range(k)) / (n - k)
+    M = (n - k) * np.log(np.linalg.det(Sp)) - sum((ns[j] - 1) * np.log(np.linalg.det(Ss[j])) for j in range(k))
+    c = (sum(1/(ns - 1)) - 1/(n - k)) * (2*p**2 + 3*p - 1) / (6*(p + 1)*(k - 1))
+    gl = (k - 1) * p * (p + 1) / 2
+    qui = M * (1 - c)
+    return M, qui, gl, stats.chi2.sf(qui, gl)
+
+# ===================================================================
+# PARTE 1 - por que uma MANOVA e não várias ANOVAs
+# Dados fictícios: três lotes de um polímero, com duas medidas por corpo de prova:
+# resistência à tração (MPa) e alongamento na ruptura (%).
+res = np.array([51.62,49.33,48.71,51.01,49.47,50.83,50.19,51.66,49.92,50.79,52.05,50.06,47.94,49.26,49.31,
+                52.30,49.77,50.40,48.27,50.21,50.20,52.54,48.56,50.72,50.08,49.83,52.58,49.98,51.20,51.70,
+                50.45,51.49,48.84,50.42,50.59,49.51,50.13,49.74,47.87,49.70,50.59,50.74,49.25,49.57,48.08])
+alo = np.array([31.10,28.81,29.43,31.04,29.77,30.33,29.88,32.14,30.19,30.52,32.30,30.22,28.15,29.17,29.59,
+                30.93,28.42,29.58,27.82,29.63,29.47,31.75,27.62,30.36,29.42,28.83,31.39,29.25,30.31,30.91,
+                30.77,31.55,30.04,31.17,31.05,29.75,30.40,29.89,28.50,30.53,32.10,31.07,29.70,30.63,28.82])
+Y = np.column_stack([res, alo])
+lote = np.repeat([0, 1, 2], 15)
+rot = ["A", "B", "C"]
+print("lote   n   resistência (MPa)   alongamento (%)")
+for i in range(3):
+    m = lote == i
+    print(f"  {rot[i]}   {m.sum():2d}    {res[m].mean():6.3f} ± {res[m].std(ddof=1):.3f}    "
+          f"{alo[m].mean():6.3f} ± {alo[m].std(ddof=1):.3f}")
+dentro = np.vstack([Y[lote == i] - Y[lote == i].mean(axis=0) for i in range(3)])
+print(f"Correlação entre as duas medidas, DENTRO dos lotes: r = {np.corrcoef(dentro.T)[0,1]:.4f}")
+
+print("\nAs duas ANOVAs separadas não encontram nada:")
+for j, nm in enumerate(["resistência", "alongamento"]):
+    F, pv = stats.f_oneway(*[Y[lote == i, j] for i in range(3)])
+    print(f"  {nm:&lt;12} F(2; 42) = {F:.4f} | p-valor = {pv:.4f}")
+
+print("\nA MANOVA, que usa as duas ao mesmo tempo:")
+saida, H, E, autov = manova(Y, lote)
+imprime(saida)
+print(f"Autovalores de E⁻¹H: {np.round(autov[:2], 5)}")
+
+print("\nPor que a diferença aparece: a combinação resistência - alongamento")
+comb = res - alo
+F, pv = stats.f_oneway(*[comb[lote == i] for i in range(3)])
+print(f"  médias da combinação por lote: {[round(comb[lote==i].mean(), 3) for i in range(3)]}")
+print(f"  ANOVA sobre a combinação: F(2; 42) = {F:.4f} | p-valor = {pv:.3e}")
+print("  Cada medida sozinha varia muito; a razão entre elas é estável dentro do lote")
+print("  e diferente entre lotes. Só a análise conjunta enxerga isso.")
+
+print("\nPressupostos")
+M, qui, gl, pM = boxM(Y, lote)
+print(f"  Teste M de Box: M = {M:.4f}, qui-quadrado = {qui:.4f}, gl = {int(gl)}, p-valor = {pM:.4f}")
+for i in range(3):
+    r2 = stats.shapiro(Y[lote == i, 0])[1]; a2 = stats.shapiro(Y[lote == i, 1])[1]
+    print(f"  Shapiro-Wilk no lote {rot[i]}: resistência p = {r2:.4f} | alongamento p = {a2:.4f}")
+
+# ===================================================================
+# PARTE 2 - o exemplo canônico: iris, com quatro respostas
+print("\n" + "=" * 70)
+print("iris: quatro medidas florais em três espécies (Anderson 1935; Fisher 1936)")
+d = load_iris()
+X = d.data; esp = d.target
+nomes = ["comprimento da sépala", "largura da sépala", "comprimento da pétala", "largura da pétala"]
+especies = ["setosa", "versicolor", "virginica"]
+print("\nMédias por espécie (cm)")
+print(f"{'espécie':&lt;12}" + "".join(f"{n[:18]:&gt;20}" for n in nomes))
+for i in range(3):
+    print(f"{especies[i]:&lt;12}" + "".join(f"{X[esp==i, j].mean():20.3f}" for j in range(4)))
+
+saida, H, E, autov = manova(X, esp)
+print("\nMANOVA")
+imprime(saida)
+print(f"Autovalores de E⁻¹H: {np.round(autov[:2], 4)}")
+print(f"O primeiro autovalor concentra {100*autov[0]/autov[:2].sum():.2f}% da separação:")
+print("uma única direção discriminante quase basta para separar as três espécies.")
+
+print("\nANOVAs univariadas de acompanhamento (com ajuste de Bonferroni para 4 testes)")
+print("resposta                     F(2; 147)      p bruto    p ajustado")
+for j, nm in enumerate(nomes):
+    F, pv = stats.f_oneway(*[X[esp == i, j] for i in range(3)])
+    print(f"{nm:&lt;28}{F:10.3f}   {pv:11.3e}  {min(1, 4*pv):11.3e}")
+
+print("\nPressupostos")
+M, qui, gl, pM = boxM(X, esp)
+print(f"  Teste M de Box: M = {M:.4f}, qui-quadrado = {qui:.4f}, gl = {int(gl)}, p-valor = {pM:.3e}")
+print("  O M de Box REJEITA: as covariâncias das três espécies não são iguais.")
+print("  Com grupos do mesmo tamanho (50 cada), o traço de Pillai é o mais robusto a isso.")
+for i in range(3):
+    d2 = np.sum((X[esp == i] - X[esp == i].mean(0)) @ np.linalg.inv(np.cov(X[esp == i], rowvar=False))
+                * (X[esp == i] - X[esp == i].mean(0)), axis=1)
+    b1 = np.mean([[ (a @ np.linalg.inv(np.cov(X[esp==i], rowvar=False)) @ b)**3
+                   for b in (X[esp==i]-X[esp==i].mean(0))] for a in (X[esp==i]-X[esp==i].mean(0))])
+    n_i, p_ = len(d2), 4
+    A = n_i * b1 / 6
+    glm = p_*(p_+1)*(p_+2)/6
+    b2 = np.mean(d2**2)
+    B = (b2 - p_*(p_+2)) / np.sqrt(8*p_*(p_+2)/n_i)
+    print(f"  Mardia na {especies[i]:&lt;11}: assimetria p = {stats.chi2.sf(A, glm):.4f} | "
+          f"curtose p = {2*stats.norm.sf(abs(B)):.4f}")
+
+print("\nDireção discriminante (primeiro autovetor de E⁻¹H), dividido pelo maior coeficiente")
+ev, evec = np.linalg.eig(np.linalg.inv(E) @ H)
+i0 = int(np.argmax(ev.real))
+a1 = evec[:, i0].real
+a1 = a1 / np.abs(a1).max()
+for j, nm in enumerate(nomes):
+    print(f"  {nm:&lt;28}{a1[j]:+8.4f}")
+print("  A separação é dominada pelas medidas da pétala, com sinal oposto ao das sépalas.")
+print("  Confere com lda(Species ~ ., data = iris): os coeficientes de LD1 do R,")
+print("  0.8294, 1.5345, -2.2012 e -2.8105, são proporcionais a estes (com sinal trocado).")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">lote   n   resistência (MPa)   alongamento (%)
+  A   15    50.143 ± 1.175    30.176 ± 1.142
+  B   15    50.556 ± 1.310    29.713 ± 1.238
+  C   15    49.798 ± 0.999    30.398 ± 0.974
+Correlação entre as duas medidas, DENTRO dos lotes: r = 0.9489
+
+As duas ANOVAs separadas não encontram nada:
+  resistência  F(2; 42) = 1.5839 | p-valor = 0.2172
+  alongamento  F(2; 42) = 1.4537 | p-valor = 0.2452
+
+A MANOVA, que usa as duas ao mesmo tempo:
+estatística           valor      F aprox.     gl1      gl2     p-valor
+Pillai               0.73834      12.2895     4.0    84.00   6.5150e-08
+Wilks                0.26196      19.5529     4.0    82.00   2.4914e-11
+Hotelling-Lawley     2.81618      28.6469     4.0    48.18   3.2958e-12
+Roy                  2.81577      59.1311     2.0    42.00   6.1204e-13
+Autovalores de E⁻¹H: [2.81577e+00 4.10000e-04]
+
+Por que a diferença aparece: a combinação resistência - alongamento
+  médias da combinação por lote: [np.float64(19.967), np.float64(20.843), np.float64(19.4)]
+  ANOVA sobre a combinação: F(2; 42) = 58.3353 | p-valor = 7.548e-13
+  Cada medida sozinha varia muito; a razão entre elas é estável dentro do lote
+  e diferente entre lotes. Só a análise conjunta enxerga isso.
+
+Pressupostos
+  Teste M de Box: M = 3.1349, qui-quadrado = 2.9193, gl = 6, p-valor = 0.8189
+  Shapiro-Wilk no lote A: resistência p = 0.8749 | alongamento p = 0.8906
+  Shapiro-Wilk no lote B: resistência p = 0.3706 | alongamento p = 0.8469
+  Shapiro-Wilk no lote C: resistência p = 0.6185 | alongamento p = 0.9404
+
+======================================================================
+iris: quatro medidas florais em três espécies (Anderson 1935; Fisher 1936)
+
+Médias por espécie (cm)
+espécie       comprimento da sép   largura da sépala  comprimento da pét   largura da pétala
+setosa                     5.006               3.428               1.462               0.246
+versicolor                 5.936               2.770               4.260               1.326
+virginica                  6.588               2.974               5.552               2.026
+
+MANOVA
+estatística           valor      F aprox.     gl1      gl2     p-valor
+Pillai               1.19190      53.4665     8.0   290.00   9.7422e-53
+Wilks                0.02344     199.1453     8.0   288.00   1.3650e-112
+Hotelling-Lawley    32.47732     582.1970     8.0   203.40   1.0774e-135
+Roy                 32.19193    1166.9574     4.0   145.00   3.7873e-109
+Autovalores de E⁻¹H: [32.1919  0.2854]
+O primeiro autovalor concentra 99.12% da separação:
+uma única direção discriminante quase basta para separar as três espécies.
+
+ANOVAs univariadas de acompanhamento (com ajuste de Bonferroni para 4 testes)
+resposta                     F(2; 147)      p bruto    p ajustado
+comprimento da sépala          119.265     1.670e-31    6.679e-31
+largura da sépala               49.160     4.492e-17    1.797e-16
+comprimento da pétala         1180.161     2.857e-91    1.143e-90
+largura da pétala              960.007     4.169e-85    1.668e-84
+
+Pressupostos
+  Teste M de Box: M = 146.6632, qui-quadrado = 140.9430, gl = 20, p-valor = 3.352e-20
+  O M de Box REJEITA: as covariâncias das três espécies não são iguais.
+  Com grupos do mesmo tamanho (50 cada), o traço de Pillai é o mais robusto a isso.
+  Mardia na setosa     : assimetria p = 0.2357 | curtose p = 0.4480
+  Mardia na versicolor : assimetria p = 0.2556 | curtose p = 0.3010
+  Mardia na virginica  : assimetria p = 0.2121 | curtose p = 0.7350
+
+Direção discriminante (primeiro autovetor de E⁻¹H), dividido pelo maior coeficiente
+  comprimento da sépala        -0.2951
+  largura da sépala            -0.5460
+  comprimento da pétala        +0.7832
+  largura da pétala            +1.0000
+  A separação é dominada pelas medidas da pétala, com sinal oposto ao das sépalas.
+  Confere com lda(Species ~ ., data = iris): os coeficientes de LD1 do R,
+  0.8294, 1.5345, -2.2012 e -2.8105, são proporcionais a estes (com sinal trocado).</pre></div><figure class="fig"><img src="../assets/resultados/manova.png" alt="Duas das quatro medidas de iris e os escores discriminantes" loading="lazy"/><figcaption><strong>O exemplo canônico.</strong> À esquerda, duas das quatro respostas de <code>iris</code>, com elipses de concentração por espécie: as orientações e os tamanhos diferentes são o que faz o teste M de Box rejeitar. À direita, as mesmas 150 flores projetadas nas duas direções que mais separam as espécies; a primeira direção, sozinha, já as ordena quase sem sobreposição. <span class="source-line">Fonte: o autor.</span></figcaption></figure><h3>Parte 1: os lotes de polímero</h3><div class="table-wrap"><table class="method-table"><caption>Descrição</caption><thead><tr><th>Lote</th><th>n</th><th>Resistência (MPa)</th><th>Alongamento (%)</th></tr></thead><tbody><tr><td>A</td><td>15</td><td>50,143 ± 1,175</td><td>30,176 ± 1,142</td></tr><tr><td>B</td><td>15</td><td>50,556 ± 1,310</td><td>29,713 ± 1,238</td></tr><tr><td>C</td><td>15</td><td>49,798 ± 0,999</td><td>30,398 ± 0,974</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Correlação dentro dos lotes</td><td>r = 0,949</td><td>As duas medidas andam juntas.</td></tr><tr><td>ANOVA da resistência</td><td>F(2; 42) = 1,584; p = 0,2172</td><td>Nada.</td></tr><tr><td>ANOVA do alongamento</td><td>F(2; 42) = 1,454; p = 0,2452</td><td>Nada.</td></tr><tr><td>Pillai</td><td>0,73834; F(4; 84) = 12,290; p = 6,5 × 10⁻⁸</td><td>Diferença clara.</td></tr><tr><td>Wilks</td><td>0,26196; F(4; 82) = 19,553; p = 2,5 × 10⁻¹¹</td><td>Idem.</td></tr><tr><td>Hotelling–Lawley</td><td>2,81618; F(4; 48,18) = 28,647; p = 3,3 × 10⁻¹²</td><td>Idem.</td></tr><tr><td>Roy</td><td>2,81577; F(2; 42) = 59,131; p = 6,1 × 10⁻¹³</td><td>Idem.</td></tr><tr><td>Autovalores</td><td>2,8158 e 0,0004</td><td>Toda a separação em uma direção.</td></tr><tr><td>ANOVA da combinação resistência − alongamento</td><td>F(2; 42) = 58,335; p = 7,5 × 10⁻¹³</td><td>A direção que separa.</td></tr><tr><td>Teste M de Box</td><td>χ² = 2,919; gl = 6; p = 0,8189</td><td>Covariâncias compatíveis.</td></tr><tr><td>Shapiro–Wilk por lote e resposta</td><td>p entre 0,371 e 0,940</td><td>Normalidade aceitável.</td></tr></tbody></table></div><p><strong>Leitura:</strong> os três lotes não diferem em resistência nem em alongamento, mas diferem na <em>relação</em> entre as duas. Cada corpo de prova varia muito nas duas medidas ao mesmo tempo — por isso cada medida isolada parece ruidosa —, mas a razão entre elas é estável dentro de um lote e diferente entre lotes. As médias da diferença resistência − alongamento são 19,97, 20,84 e 19,40, e separam os lotes com p = 7,5 × 10⁻¹³.</p><p>Essa situação é comum em controle de qualidade, em morfometria e em química analítica: a matéria-prima varia, empurrando todas as medidas na mesma direção, enquanto o que distingue os processos é a proporção. Uma análise resposta a resposta nunca encontraria isso.</p><h3>Parte 2: iris, o exemplo canônico</h3><div class="table-wrap"><table class="method-table"><caption>Médias por espécie (cm)</caption><thead><tr><th>Espécie</th><th>Comp. sépala</th><th>Larg. sépala</th><th>Comp. pétala</th><th>Larg. pétala</th></tr></thead><tbody><tr><td>setosa</td><td>5,006</td><td>3,428</td><td>1,462</td><td>0,246</td></tr><tr><td>versicolor</td><td>5,936</td><td>2,770</td><td>4,260</td><td>1,326</td></tr><tr><td>virginica</td><td>6,588</td><td>2,974</td><td>5,552</td><td>2,026</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Pillai</td><td>1,19190; F(8; 290) = 53,467; p = 9,7 × 10⁻⁵³</td><td>Separação máxima possível é 2; chegou a 1,19.</td></tr><tr><td>Wilks</td><td>0,02344; F(8; 288) = 199,145; p = 1,4 × 10⁻¹¹²</td><td>Idem.</td></tr><tr><td>Hotelling–Lawley</td><td>32,47732; F(8; 203,4) = 582,197</td><td>Idem.</td></tr><tr><td>Roy</td><td>32,19193; F(4; 145) = 1166,957</td><td>Idem.</td></tr><tr><td>Autovalores</td><td>32,192 e 0,285</td><td>A primeira direção concentra 99,1%.</td></tr><tr><td>ANOVAs univariadas</td><td>F entre 49,2 e 1180,2; todos p &lt; 10⁻¹⁶</td><td>Aqui cada resposta já separa sozinha.</td></tr><tr><td>Teste M de Box</td><td>χ² = 140,943; gl = 20; p = 3,4 × 10⁻²⁰</td><td><strong>Rejeita</strong>: as covariâncias diferem.</td></tr><tr><td>Mardia por espécie</td><td>assimetria p ≥ 0,212; curtose p ≥ 0,301</td><td>Normalidade multivariada aceitável.</td></tr><tr><td>Primeira direção discriminante</td><td>−0,295; −0,546; +0,783; +1,000</td><td>Dominada pelas pétalas.</td></tr></tbody></table></div><p><strong>Leitura:</strong> as três espécies diferem, o que não surpreende ninguém. O interesse de <code>iris</code> aqui é outro: ele mostra o que fazer quando o M de Box rejeita. As covariâncias das três espécies são de fato diferentes — basta olhar as elipses na figura —, e com grupos de tamanhos iguais (50 cada) a recomendação é usar o traço de Pillai, que é a estatística mais robusta a esse tipo de violação. Com efeitos dessa magnitude, as quatro estatísticas concordam de qualquer modo.</p><p>A direção discriminante é mais informativa que os valores-p. Ela combina as quatro medidas com coeficientes −0,295, −0,546, +0,783 e +1,000: a separação é um contraste entre o tamanho das <em>pétalas</em> e o das sépalas, e não o tamanho global da flor. Esses coeficientes são proporcionais aos de <code>LD1</code> que <code>MASS::lda()</code> devolve (0,829; 1,534; −2,201; −2,811), com o sinal trocado — o sinal de um autovetor é arbitrário.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Rodar p ANOVAs e chamar isso de análise multivariada</td><td>São coisas diferentes; as ANOVAs ignoram as correlações.</td></tr><tr><td>Tratar a MANOVA como porteiro que dispensa ajuste depois</td><td>A proteção é só para a hipótese conjunta; ajuste as ANOVAs de acompanhamento.</td></tr><tr><td>Incluir respostas redundantes</td><td>Respostas quase colineares tornam E mal condicionada e <em>reduzem</em> o poder.</td></tr><tr><td>Usar com n por grupo menor que o número de respostas</td><td>E fica singular e nada é estimável.</td></tr><tr><td>Escolher a estatística depois de ver qual dá o menor p</td><td>Decida antes; o padrão razoável é Pillai.</td></tr><tr><td>Abandonar a análise porque o M de Box rejeitou</td><td>Com grupos balanceados, Pillai tolera bem; o M de Box é muito sensível.</td></tr><tr><td>Interpretar a significância multivariada como significância de cada resposta</td><td>Pode não haver nenhuma resposta significativa sozinha.</td></tr><tr><td>Esquecer os valores atípicos multivariados</td><td>Um ponto pode ser comum em cada variável e extremo no conjunto.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aov1.html">ANOVAs separadas com ajuste</a></td><td>As respostas são conceitualmente independentes e o interesse é em cada uma.</td></tr><tr><td>\(T^2\) de Hotelling</td><td>Apenas dois grupos.</td></tr><tr><td>Análise discriminante (<a href="lda.html">LDA</a>)</td><td>O interesse é descrever ou classificar, não só testar.</td></tr><tr><td><a href="mancova.html">MANCOVA</a></td><td>Há covariáveis contínuas a controlar.</td></tr><tr><td><a href="aovrepetida.html">ANOVA de medidas repetidas</a></td><td>As "respostas" são a mesma variável medida em momentos diferentes.</td></tr><tr><td>MANOVA não paramétrica (permutação, PERMANOVA)</td><td>Normalidade multivariada insustentável.</td></tr><tr><td>Modelo multivariado misto</td><td>Estrutura hierárquica ou dados faltantes.</td></tr><tr><td><a href="pcr.html">Componentes principais (PCR)</a> antes da ANOVA</td><td>Muitas respostas correlacionadas; reduza a dimensão primeiro.</td></tr></tbody></table></div><ol class="steps"><li>Verifique que faz sentido tratar as respostas como um conjunto.</li><li>Confira n por grupo contra o número de respostas.</li><li>Examine a matriz de diagramas de dispersão e as correlações.</li><li>Teste normalidade multivariada e igualdade das covariâncias.</li><li>Rode a MANOVA e reporte Pillai com sua aproximação F.</li><li>Olhe os autovalores para saber se a separação é unidimensional.</li><li>Acompanhe com ANOVAs ajustadas e com a análise discriminante.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>WILKS, S. S. Certain generalizations in the analysis of variance. <em>Biometrika</em>, v. 24, n. 3-4, p. 471-494, 1932.</li><li>PILLAI, K. C. S. Some new test criteria in multivariate analysis. <em>The Annals of Mathematical Statistics</em>, v. 26, n. 1, p. 117-121, 1955.</li><li>HOTELLING, Harold. A generalized T test and measure of multivariate dispersion. In: <em>Proceedings of the Second Berkeley Symposium on Mathematical Statistics and Probability.</em> Berkeley: University of California Press, 1951. p. 23-41.</li><li>ROY, S. N. On a heuristic method of test construction and its use in multivariate analysis. <em>The Annals of Mathematical Statistics</em>, v. 24, n. 2, p. 220-238, 1953.</li><li>OLSON, Chester L. On choosing a test statistic in multivariate analysis of variance. <em>Psychological Bulletin</em>, v. 83, n. 4, p. 579-586, 1976.</li><li>JOHNSON, Richard A.; WICHERN, Dean W. <em>Applied multivariate statistical analysis.</em> 6. ed. Upper Saddle River: Pearson, 2007.</li><li>RENCHER, Alvin C.; CHRISTENSEN, William F. <em>Methods of multivariate analysis.</em> 3. ed. Hoboken: Wiley, 2012.</li><li>HAIR JR., Joseph F. et al. <em>Multivariate data analysis.</em> 8. ed. Andover: Cengage, 2019.</li><li>ANDERSON, Edgar. The irises of the Gaspé Peninsula. <em>Bulletin of the American Iris Society</em>, v. 59, p. 2-5, 1935.</li><li>FISHER, Ronald A. The use of multiple measurements in taxonomic problems. <em>Annals of Eugenics</em>, v. 7, n. 2, p. 179-188, 1936. (Fonte dos dados <code>iris</code>.)</li><li>BOX, George E. P. A general distribution theory for a class of likelihood criteria. <em>Biometrika</em>, v. 36, n. 3-4, p. 317-346, 1949.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>manova</code> e <code>summary.manova</code>, pacote <code>stats</code>.)</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacote <code>MASS</code>, função <code>lda</code>.)</li><li>DA SILVA, Anderson Rodrigo. <em>biotools: tools for biometry and applied statistics in agricultural science.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=biotools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=biotools</a>. (Função <code>boxM</code>.)</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, normalidade multivariada em cada grupo, matrizes de covariância iguais e n por grupo maior que o número de respostas.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>car, biotools, MASS, MVN</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="ancova.html"><span>← ANTERIOR</span>ANCOVA</a><a href="mancova.html"><span>PRÓXIMO →</span>MANCOVA</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

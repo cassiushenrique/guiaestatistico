@@ -4,309 +4,219 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão binomial negativa: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão binomial negativa | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão binomial negativa: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão binomial negativa | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão binomial negativa
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão binomial negativa
-    </h1>
-<p class="detail-lead">
-     Modela contagens de eventos cuja variabilidade excede a esperada no modelo de Poisson.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/nb.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Modela contagens de eventos cuja variabilidade excede a esperada no modelo de Poisson.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Contagens não negativas.</li><li>Independência.</li><li>Média log-linear.</li><li>Avaliar excesso de zeros, estrutura de dependência e dispersão.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\\ H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbb E(Y_i\mid\mathbf x_i)=\mu_i,\qquad \operatorname{Var}(Y_i\mid\mathbf x_i)=\mu_i+\frac{\mu_i^2}{\theta}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(e^{\beta_j})\approx\exp\!\left[\widehat\beta_j\pm1{,}96\operatorname{EP}(\widehat\beta_j)\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mu_i\)
-        </dt>
-<dd>
-         média condicional da contagem
-        </dd>
-</div>
-<div>
-<dt>
-         \(\theta\)
-        </dt>
-<dd>
-         parâmetro de dispersão positivo; pode ser estimado por máxima verossimilhança
-        </dd>
-</div>
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         contagem observada
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere associação com a contagem; intervalos de confiança das razões de médias são obtidos exponenciando IC de \(\beta\) .
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em warpbreaks, as contagens de quebras variam entre lotes sob diferentes tensões.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Explicar as contagens quando a variância condicional é maior que a média, situação em que o modelo de Poisson pode ser inadequado.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-nb" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-nb"><code># Regressão binomial negativa ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("MASS", quietly = TRUE)) install.packages("MASS")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão binomial negativa</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão binomial negativa</h1><p class="detail-lead">Modela contagens cuja variabilidade excede a prevista pelo modelo de Poisson, acrescentando um parâmetro de dispersão.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/nb.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/nb.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Na <a href="poisson.html">regressão de Poisson</a>, a variância é obrigatoriamente igual à média. Na prática, contagens quase sempre variam mais do que isso: há teares melhores e piores, trechos de estrada mais e menos perigosos, pessoas mais e menos propensas. Esse excesso de variabilidade chama-se <strong>superdispersão</strong>, e a regressão binomial negativa é a resposta usual para ele.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Binomial negativa" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modelo para contagens</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">com superdispersão</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Poisson com média</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">que varia entre unidades</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Parâmetro θ</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Controla a dispersão</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">θ grande: volta à Poisson</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="832" y="49.0" text-anchor="start" font-size="10.8" fill="#3d5042">Contagens independentes</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">var = μ + μ²/θ</text><text x="832" y="79.0" text-anchor="start" font-size="10.8" fill="#3d5042">Linearidade no log</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">MASS::glm.nb()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Quase-Poisson</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Inflação de zeros</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos mistos</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Binomial negativa</text></svg><figcaption>Visão geral da regressão binomial negativa. Fonte: o autor.</figcaption></figure><div class="callout "><strong>De onde vem o modelo</strong><p>Imagine que cada unidade tem sua própria taxa média, e que essas taxas variam entre as unidades segundo uma distribuição gama. A contagem resultante segue uma binomial negativa. Por isso o modelo é descrito como uma mistura Poisson–gama: ele acomoda a heterogeneidade que não foi capturada pelos preditores.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[Y_i\sim\text{BN}(\mu_i,\theta),\]\[\ln(\mu_i)=\beta_0+\beta_1x_{i1}+\cdots+\beta_px_{ip},\]\[\operatorname{Var}(Y_i)=\mu_i+\frac{\mu_i^2}{\theta}\]</div><p>A parte sistemática é idêntica à da Poisson: mesma ligação logarítmica, mesma leitura multiplicativa dos coeficientes. O que muda é a função de variância, que ganha um termo quadrático. O parâmetro \(\theta\) controla o tamanho desse acréscimo: quanto <strong>maior</strong> \(\theta\), menor a dispersão extra, e no limite \(\theta\to\infty\) o modelo volta a ser a Poisson.</p><figure class="fig"><img src="../assets/resultados/nb-didatica.png" alt="Distribuições com a mesma média e funções de variância" loading="lazy"/><figcaption><strong>A diferença está na dispersão, não na média.</strong> À esquerda, duas distribuições com média 25: a binomial negativa é bem mais espalhada. À direita, as funções de variância: a Poisson é uma reta de inclinação 1, a quase-Poisson uma reta mais inclinada e a binomial negativa uma curva. Os pontos escuros são os grupos do exemplo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Binomial negativa ou quase-Poisson?</strong><p>As duas corrigem a superdispersão, mas de formas diferentes. A quase-Poisson supõe variância \(\phi\mu\) (proporcional à média) e não é um modelo de verossimilhança completo: não tem AIC. A binomial negativa supõe \(\mu+\mu^2/\theta\) (crescimento quadrático), é um modelo completo e permite comparação por AIC. Quando a dispersão cresce mais depressa que a média, a binomial negativa costuma descrever melhor.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta é contagem</td><td>Definição do modelo.</td><td>Natureza da variável.</td></tr><tr><td>Observações independentes</td><td>Condição dos erros-padrão.</td><td>Delineamento; para agrupamentos, modelos mistos.</td></tr><tr><td>Função de variância μ + μ²/θ</td><td>Define os erros-padrão.</td><td>Resíduos de Pearson contra a média prevista; comparar variâncias observadas e previstas por grupo.</td></tr><tr><td>Linearidade no log</td><td>Mesma exigência da Poisson.</td><td>Resíduos contra os preditores.</td></tr><tr><td>Superdispersão de fato presente</td><td>Sem ela, a Poisson é mais eficiente.</td><td>φ da Poisson e teste de razão de verossimilhanças contra a binomial negativa.</td></tr><tr><td>Zeros compatíveis com o modelo</td><td>Excesso de zeros pede outro modelo.</td><td>Comparar zeros observados e previstos.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0 \\ &\quad \text{(o preditor não altera a } \\ &\quad \text{taxa)} \\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><p>Há ainda uma segunda pergunta, sobre o próprio uso do modelo:</p><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ 1/\theta=0 \\ &\quad \text{(não há superdispersão; a } \\ &\quad \text{Poisson basta)} \\ H_1&:\ 1/\theta&gt;0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}P(Y &= y) \\ &= \frac{\Gamma(y+\theta)}{\Gamma(\theta)\,y!}\left(\frac{\theta}{\theta+\mu}\right)^{\theta}\left(\frac{\mu}{\theta+\mu}\right)^{y},\end{aligned}\]\[y=0,1,2,\ldots\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[G=2\left(\ell_{BN}-\ell_{Poisson}\right),\]\[\text{valor-p}=\tfrac12\,P\!\left(\chi^2_1\geq G\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mu\)</dt><dd>contagem média esperada</dd></div><div><dt>\(\theta\)</dt><dd>parâmetro de dispersão (também escrito \(k\) ou \(1/\alpha\)); valores grandes indicam pouca dispersão extra</dd></div><div><dt>\(\Gamma(\cdot)\)</dt><dd>função gama, que generaliza o fatorial</dd></div><div><dt>\(\ell\)</dt><dd>log-verossimilhança de cada modelo</dd></div><div><dt>\(G\)</dt><dd>estatística da razão de verossimilhanças</dd></div><div><dt>\(e^{b_j}\)</dt><dd>razão de taxas, com a mesma leitura da Poisson</dd></div></dl><div class="callout warn"><strong>Por que metade do valor-p</strong><p>Sob \(H_0\), o parâmetro \(1/\theta\) fica na <strong>fronteira</strong> do espaço de valores possíveis (não pode ser negativo). Nesse caso, a distribuição da estatística não é a qui-quadrado usual, e sim uma mistura; na prática, divide-se o valor-p por dois.</p></div><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha, \(\hat\theta=9{,}944\).</p><div class="worked"><strong>Variância prevista para uma média de 25 rupturas</strong><p>Poisson: \(\operatorname{Var}=\mu=25\) (desvio-padrão de 5).</p><p>Binomial negativa: \(\operatorname{Var}=25+\dfrac{25^2}{9{,}944}=25+62{,}85=87{,}85\) (desvio-padrão de 9,4).</p><p>Como o erro-padrão dos coeficientes cresce aproximadamente com a raiz da variância, é essa diferença que quase dobra os erros-padrão do modelo.</p></div><h3>Propriedades</h3><ul class="checklist"><li>A variância é sempre maior que a média, de modo que o modelo só acomoda superdispersão, nunca subdispersão.</li><li>Quando \(\theta\to\infty\), a distribuição converge para a Poisson com a mesma média.</li><li>As estimativas dos coeficientes mudam pouco em relação à Poisson; o que muda substancialmente são os erros-padrão.</li><li>Por ser um modelo de verossimilhança completo, admite AIC, BIC e testes de razão de verossimilhanças.</li><li>O parâmetro \(\theta\) é estimado dos dados, junto com os coeficientes, e tem seu próprio erro-padrão.</li><li>Aceita <em>offset</em> da mesma forma que a Poisson, para modelar taxas por unidade de exposição.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>exp(b)</td><td>Razão de taxas, como na Poisson.</td><td>Mesma interpretação multiplicativa.</td></tr><tr><td>θ estimado</td><td>Grau de dispersão extra.</td><td>θ pequeno indica muita heterogeneidade; θ grande aproxima a Poisson.</td></tr><tr><td>Erro-padrão de θ</td><td>Precisão da estimativa de dispersão.</td><td>Costuma ser impreciso em amostras pequenas.</td></tr><tr><td>AIC em relação à Poisson</td><td>Qual modelo descreve melhor os dados.</td><td>Queda grande indica superdispersão relevante.</td></tr><tr><td>Valores-p</td><td>Agora com a incerteza correta.</td><td>Efeitos que pareciam fortes na Poisson podem enfraquecer.</td></tr></tbody></table></div><p>Reporte θ com seu erro-padrão, as razões de taxas com intervalos de confiança e a comparação de AIC com o modelo de Poisson.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>glm.nb()</code> pertence ao pacote <code>MASS</code>, que acompanha a instalação padrão do R: basta <code>library(MASS)</code>. A sintaxe é a do <code>glm()</code>, sem o argumento <code>family</code>, porque a função já estima \(\theta\) junto com os coeficientes. Para um \(\theta\) fixado, use <code>glm(..., family = negative.binomial(theta))</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-nb-min" type="button">Copiar código</button></div><pre id="code-nb-min"><code>library(MASS)
+modelo &lt;- glm.nb(breaks ~ wool + tension, data = warpbreaks)
+summary(modelo)
+exp(coef(modelo))
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, as bibliotecas <code>statsmodels</code> e <code>lifelines</code>, também disponíveis no Google Colab, oferecem esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Retomamos o conjunto <code>warpbreaks</code>, usado na ficha de <a href="poisson.html">regressão de Poisson</a>, em que o modelo apresentou superdispersão forte (φ = 4,26). A pergunta agora é o que muda ao substituir a distribuição de Poisson pela binomial negativa.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-nb" type="button">Copiar código</button></div><pre id="code-nb"><code># Regressão binomial negativa: exemplo completo ----
+# Pacote: MASS (acompanha a instalação padrão do R)
 library(MASS)
-ajuste &lt;- glm.nb(breaks ~ tension + wool, data = warpbreaks)
-print(summary(ajuste))
-print(exp(cbind(razao_medias = coef(ajuste),
-                confint.default(ajuste))))
-print(ajuste$theta)
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, xlab = "Tensão", ylab = "Quebras de fios")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: warpbreaks (54 teares; rupturas do fio por tipo de lã e tensão)
+c(media = mean(warpbreaks$breaks), variancia = var(warpbreaks$breaks),
+  razao = var(warpbreaks$breaks) / mean(warpbreaks$breaks))
 
+# 2. Modelo de Poisson (referência) e diagnóstico de superdispersão
+mp &lt;- glm(breaks ~ wool + tension, data = warpbreaks, family = poisson)
+phi &lt;- sum(residuals(mp, type = "pearson")^2) / df.residual(mp)
+c(phi = phi, AIC = AIC(mp))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="poisson.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão de Poisson
-    </a>
-<a href="cox.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão de Cox
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. Modelo binomial negativa
+mn &lt;- glm.nb(breaks ~ wool + tension, data = warpbreaks)
+summary(mn)
+c(theta = mn$theta, erro_padrao_theta = mn$SE.theta, AIC = AIC(mn))
+
+# 4. Razões de taxas e intervalos de confiança de 95%
+exp(cbind(razao_de_taxas = coef(mn), confint(mn)))
+
+# 5. Comparação dos dois modelos
+# theta = 0 está na fronteira do espaço de parâmetros: o valor-p é metade do usual
+G &lt;- 2 * (logLik(mn) - logLik(mp))
+c(G = as.numeric(G), valor_p = 0.5 * pchisq(as.numeric(G), 1, lower.tail = FALSE))
+
+# 6. Efeito sobre os erros-padrão
+cbind(poisson = summary(mp)$coefficients[, 2],
+      binomial_negativa = summary(mn)$coefficients[, 2])
+
+# 7. Variância implícita por cada modelo
+mu &lt;- c(15, 25, 35, 45)
+cbind(mu, var_poisson = mu, var_bn = mu + mu^2 / mn$theta)
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+hist(warpbreaks$breaks, breaks = 12, col = "gray85", main = "", xlab = "Rupturas")
+curve(x, 5, 60, xlab = "Média prevista", ylab = "Variância", col = "darkgreen", lwd = 2)
+curve(x + x^2 / mn$theta, add = TRUE, col = "red", lwd = 2)
+legend("topleft", c("Poisson", "Binomial negativa"), col = c("darkgreen", "red"), lwd = 2, bty = "n")
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-nb" type="button">Copiar código</button></div><pre id="code-py-nb"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+from scipy.special import gammaln, digamma
+
+def glm_poisson(X, y, nomes, theta=None):
+    """GLM com ligação log por mínimos quadrados ponderados iterativos.
+    theta = None: família Poisson. theta numérico: binomial negativa com esse parâmetro."""
+    b = np.zeros(X.shape[1]); b[0] = np.log(y.mean())
+    for _ in range(100):
+        mu = np.exp(X @ b)
+        W = mu if theta is None else mu / (1 + mu / theta)
+        z = X @ b + (y - mu) / mu
+        b_novo = np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (W * z))
+        if np.max(np.abs(b_novo - b)) &lt; 1e-10: b = b_novo; break
+        b = b_novo
+    mu = np.exp(X @ b)
+    W = mu if theta is None else mu / (1 + mu / theta)
+    cov = np.linalg.inv(X.T @ (X * W[:, None])); ep = np.sqrt(np.diag(cov))
+    zv = b / ep; pv = 2 * stats.norm.sf(np.abs(zv)); zc = stats.norm.ppf(0.975)
+    print(f"{'Termo':&lt;14}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;8}{'p-valor':&gt;11}{'exp(b)':&gt;9}{'IC 95% de exp(b)':&gt;24}")
+    for nm, bi, ei, zi, pi in zip(nomes, b, ep, zv, pv):
+        print(f"{nm:&lt;14}{bi:&gt;11.4f}{ei:&gt;13.4f}{zi:&gt;8.3f}{pi:&gt;11.2e}{np.exp(bi):&gt;9.3f}   [{np.exp(bi-zc*ei):&gt;7.3f}; {np.exp(bi+zc*ei):&gt;7.3f}]")
+    if theta is None:
+        logv = np.sum(y * np.log(mu) - mu - gammaln(y + 1))
+    else:
+        logv = np.sum(gammaln(y + theta) - gammaln(theta) - gammaln(y + 1)
+                      + theta * np.log(theta / (theta + mu)) + y * np.log(mu / (theta + mu)))
+    return dict(b=b, ep=ep, mu=mu, cov=cov, logv=logv, p=X.shape[1])
+
+def estima_theta(X, y, tol=1e-8):
+    """Alterna entre estimar os coeficientes (dado theta) e theta (dados os coeficientes)."""
+    theta = 1.0
+    for _ in range(50):
+        b = np.zeros(X.shape[1]); b[0] = np.log(y.mean())
+        for _ in range(100):
+            mu = np.exp(X @ b); W = mu / (1 + mu / theta)
+            z = X @ b + (y - mu) / mu
+            b = np.linalg.solve(X.T @ (X * W[:, None]), X.T @ (W * z))
+        mu = np.exp(X @ b)
+        f = lambda th: -np.sum(gammaln(y + th) - gammaln(th) - gammaln(y + 1)
+                               + th * np.log(th / (th + mu)) + y * np.log(mu / (th + mu)))
+        novo = optimize.minimize_scalar(f, bounds=(0.05, 500), method="bounded",
+                                        options={"xatol": 1e-9}).x
+        if abs(novo - theta) &lt; tol: theta = novo; break
+        theta = novo
+    # Erro-padrão de theta pela segunda derivada numérica da log-verossimilhança
+    h = 1e-4 * theta
+    d2 = (f(theta + h) - 2 * f(theta) + f(theta - h)) / h**2
+    return theta, 1 / np.sqrt(d2)
+
+# Dados do conjunto warpbreaks: 54 teares; número de rupturas do fio
+quebras = np.array([26, 30, 54, 25, 70, 52, 51, 26, 67, 18, 21, 29, 17, 12, 18, 35, 30, 36,
+                    36, 21, 24, 18, 10, 43, 28, 15, 26, 27, 14, 29, 19, 29, 31, 41, 20, 44,
+                    42, 26, 19, 16, 39, 28, 21, 39, 29, 20, 21, 24, 17, 13, 15, 15, 16, 28])
+la      = np.repeat([0, 1], 27)                     # tipo de lã: 0 = A, 1 = B
+tensao  = np.tile(np.repeat([0, 1, 2], 9), 2)       # tensão: 0 = baixa (L), 1 = média (M), 2 = alta (H)
+# Matriz do modelo: intercepto, lã B, tensão média, tensão alta (níveis de referência: lã A e tensão baixa)
+X = np.column_stack([np.ones(54), la, (tensao == 1) * 1.0, (tensao == 2) * 1.0])
+nomes = ["(Intercepto)", "la B", "tensao M", "tensao H"]
+
+n = len(quebras)
+
+# 1. Superdispersão: na Poisson, variância = média
+print(f"Média = {quebras.mean():.3f} | variância = {quebras.var(ddof=1):.3f} | razão = {quebras.var(ddof=1)/quebras.mean():.3f}")
+
+# 2. Modelo de Poisson (referência)
+print("\nModelo de Poisson:")
+mp = glm_poisson(X, quebras, nomes)
+X2 = np.sum((quebras - mp["mu"])**2 / mp["mu"])
+print(f"Qui-quadrado de Pearson / gl = {X2 / (n - 4):.3f} | AIC = {-2*mp['logv'] + 2*4:.2f}")
+
+# 3. Modelo binomial negativa
+theta, ep_theta = estima_theta(X, quebras)
+print(f"\nModelo binomial negativa (theta estimado = {theta:.4f}, erro-padrão = {ep_theta:.4f}):")
+mn = glm_poisson(X, quebras, nomes, theta=theta)
+print(f"AIC = {-2*mn['logv'] + 2*5:.2f} (um parâmetro a mais: theta)")
+
+# 4. Comparação dos dois modelos pela razão de verossimilhanças
+G = 2 * (mn["logv"] - mp["logv"])
+print(f"\nlog-verossimilhança: Poisson = {mp['logv']:.3f} | binomial negativa = {mn['logv']:.3f}")
+print(f"G = {G:.3f}; como theta = 0 está na fronteira do espaço de parâmetros,")
+print(f"o valor-p é metade do da qui-quadrado com 1 gl: p = {0.5 * stats.chi2.sf(G, 1):.3e}")
+
+# 5. Variância implícita pelos dois modelos
+print("\nPrevisto    var (Poisson)   var (binomial negativa)")
+for mu0 in [15, 25, 35, 45]:
+    print(f"{mu0:&gt;8}  {mu0:&gt;13}   {mu0 + mu0**2 / theta:&gt;22.1f}")
+
+# 6. Efeito sobre os erros-padrão
+print("\nTermo           EP Poisson   EP binomial negativa   razão")
+for nm, e1, e2 in zip(nomes, mp["ep"], mn["ep"]):
+    print(f"{nm:&lt;14}{e1:&gt;11.4f}{e2:&gt;23.4f}{e2/e1:&gt;8.2f}")
+
+# 7. Exemplo numérico do texto: variância prevista para mu = 25
+print(f"\nPara mu = 25: variância Poisson = 25 | binomial negativa = 25 + 25²/{theta:.3f} = {25 + 625/theta:.2f}")
+
+# 8. Gráfico: contagens observadas e variância pelos dois modelos
+mu_grid = np.linspace(5, 60, 100)
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+ax[0].hist(quebras, bins=12, color="lightgray", edgecolor="white")
+ax[0].set_xlabel("Rupturas"); ax[0].set_ylabel("Frequência")
+ax[1].plot(mu_grid, mu_grid, label="Poisson")
+ax[1].plot(mu_grid, mu_grid + mu_grid**2 / theta, label="Binomial negativa")
+ax[1].set_xlabel("Média prevista"); ax[1].set_ylabel("Variância"); ax[1].legend()
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Média = 28.148 | variância = 174.204 | razão = 6.189
+
+Modelo de Poisson:
+Termo          Estimativa  Erro-padrão       z    p-valor   exp(b)        IC 95% de exp(b)
+(Intercepto)       3.6920       0.0454  81.301   0.00e+00   40.124   [ 36.707;  43.858]
+la B              -0.2060       0.0516  -3.994   6.49e-05    0.814   [  0.736;   0.900]
+tensao M          -0.3213       0.0603  -5.332   9.73e-08    0.725   [  0.644;   0.816]
+tensao H          -0.5185       0.0640  -8.107   5.21e-16    0.595   [  0.525;   0.675]
+Qui-quadrado de Pearson / gl = 4.262 | AIC = 493.06
+
+Modelo binomial negativa (theta estimado = 9.9444, erro-padrão = 2.5613):
+Termo          Estimativa  Erro-padrão       z    p-valor   exp(b)        IC 95% de exp(b)
+(Intercepto)       3.6734       0.0979  37.520  4.29e-308   39.384   [ 32.507;  47.715]
+la B              -0.1862       0.1010  -1.844   6.51e-02    0.830   [  0.681;   1.012]
+tensao M          -0.2992       0.1217  -2.458   1.40e-02    0.741   [  0.584;   0.941]
+tensao H          -0.5114       0.1237  -4.133   3.58e-05    0.600   [  0.471;   0.764]
+AIC = 408.76 (um parâmetro a mais: theta)
+
+log-verossimilhança: Poisson = -242.528 | binomial negativa = -199.382
+G = 86.292; como theta = 0 está na fronteira do espaço de parâmetros,
+o valor-p é metade do da qui-quadrado com 1 gl: p = 7.761e-21
+
+Previsto    var (Poisson)   var (binomial negativa)
+      15             15                     37.6
+      25             25                     87.8
+      35             35                    158.2
+      45             45                    248.6
+
+Termo           EP Poisson   EP binomial negativa   razão
+(Intercepto)       0.0454                 0.0979    2.16
+la B               0.0516                 0.1010    1.96
+tensao M           0.0603                 0.1217    2.02
+tensao H           0.0640                 0.1237    1.93
+
+Para mu = 25: variância Poisson = 25 | binomial negativa = 25 + 25²/9.944 = 87.85</pre></div><figure class="fig"><img src="../assets/resultados/nb.png" alt="Ajuste das duas distribuições e comparação dos intervalos de confiança" loading="lazy"/><figcaption><strong>O que muda com a binomial negativa.</strong> À esquerda, a distribuição observada das rupturas e as frequências esperadas por cada modelo: a binomial negativa acompanha melhor as contagens baixas e as altas. À direita, os coeficientes com seus intervalos de 95%: as estimativas quase não se movem, mas os intervalos quase dobram de largura, e o da lã B passa a incluir o zero. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Comparação dos dois modelos</caption><thead><tr><th>Termo</th><th>Poisson: estimativa (EP)</th><th>Binomial negativa: estimativa (EP)</th><th>Razão entre os EP</th></tr></thead><tbody><tr><td>(Intercepto)</td><td>3,6920 (0,0454)</td><td>3,6734 (0,0979)</td><td>2,16</td></tr><tr><td>lã B</td><td>−0,2060 (0,0516)</td><td>−0,1862 (0,1010)</td><td>1,96</td></tr><tr><td>tensão média</td><td>−0,3213 (0,0603)</td><td>−0,2992 (0,1217)</td><td>2,02</td></tr><tr><td>tensão alta</td><td>−0,5185 (0,0640)</td><td>−0,5114 (0,1237)</td><td>1,93</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Ajuste</caption><thead><tr><th>Elemento</th><th>Poisson</th><th>Binomial negativa</th></tr></thead><tbody><tr><td>Log-verossimilhança</td><td>−242,53</td><td>−199,38</td></tr><tr><td>AIC</td><td>493,06</td><td>408,76</td></tr><tr><td>Parâmetro de dispersão</td><td>φ = 4,26</td><td>θ = 9,944 (EP 2,561)</td></tr><tr><td>Valor-p da lã B</td><td>0,000065</td><td>0,0651</td></tr><tr><td>Valor-p da tensão alta</td><td>5,2 × 10⁻¹⁶</td><td>3,6 × 10⁻⁵</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Variância prevista</caption><thead><tr><th>Média prevista</th><th>Poisson</th><th>Binomial negativa</th></tr></thead><tbody><tr><td>15</td><td>15</td><td>37,6</td></tr><tr><td>25</td><td>25</td><td>87,8</td></tr><tr><td>35</td><td>35</td><td>158,2</td></tr><tr><td>45</td><td>45</td><td>248,6</td></tr></tbody></table></div><p><strong>Leitura:</strong> a comparação dos modelos é decisiva: G = 86,29, com valor-p da ordem de 10⁻²¹, e o AIC cai de 493 para 409. As razões de taxas praticamente não se alteram (a tensão alta continua reduzindo as rupturas em cerca de 40%), mas os erros-padrão quase dobram. A consequência prática aparece no tipo de lã: na Poisson, o efeito parecia fortemente significativo (p = 0,000065); na binomial negativa, fica no limite (p = 0,065). O modelo de Poisson não estava errado quanto ao sentido dos efeitos, mas exagerava a confiança neles.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a binomial negativa sem verificar se há superdispersão</td><td>Sem ela, a Poisson é mais eficiente; compare por AIC.</td></tr><tr><td>Confundir θ com φ</td><td>θ é o parâmetro da distribuição; φ é o fator de escala da quase-Poisson.</td></tr><tr><td>Trocar a convenção de θ</td><td>Alguns programas usam α = 1/θ; confira a documentação.</td></tr><tr><td>Tratar superdispersão quando o problema é excesso de zeros</td><td>Compare zeros observados e previstos; considere modelos com inflação de zeros.</td></tr><tr><td>Usar a binomial negativa para subdispersão</td><td>A variância do modelo é sempre maior que a média; considere modelos Conway–Maxwell–Poisson.</td></tr><tr><td>Esquecer que a dependência entre observações também gera superdispersão aparente</td><td>Modelos mistos ou <a href="gee.html">GEE</a> tratam a estrutura, não só a variância.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="poisson.html">Poisson</a></td><td>Sem superdispersão.</td></tr><tr><td>Quase-Poisson</td><td>Superdispersão proporcional à média; não se deseja supor uma distribuição.</td></tr><tr><td>Modelos com inflação de zeros ou com barreira</td><td>Zeros em excesso.</td></tr><tr><td>Binomial negativa tipo 1 (variância φμ dentro da família)</td><td>A dispersão cresce linearmente com a média.</td></tr><tr><td>Modelos mistos de Poisson</td><td>A heterogeneidade vem de agrupamentos identificáveis.</td></tr><tr><td><a href="cart-reg.html">Árvores</a> e <a href="randomforest.html">florestas</a></td><td>Foco em previsão, com relações complexas.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste primeiro a Poisson e calcule φ.</li><li>Se φ for bem maior que 1, ajuste a binomial negativa.</li><li>Compare por AIC e pela razão de verossimilhanças (com o valor-p pela metade).</li><li>Verifique zeros e resíduos.</li><li>Interprete por razões de taxas, agora com a incerteza correta.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>HILBE, Joseph M. <em>Negative binomial regression.</em> 2. ed. Cambridge: Cambridge University Press, 2011.</li><li>CAMERON, A. Colin; TRIVEDI, Pravin K. <em>Regression analysis of count data.</em> 2. ed. Cambridge: Cambridge University Press, 2013.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacote <code>MASS</code>.)</li><li>LAWLESS, Jerald F. Negative binomial and mixed Poisson regression. <em>The Canadian Journal of Statistics</em>, v. 15, n. 3, p. 209-225, 1987.</li><li>VER HOEF, Jay M.; BOVENG, Peter L. Quasi-Poisson vs. negative binomial regression: how should we model overdispersed count data? <em>Ecology</em>, v. 88, n. 11, p. 2766-2772, 2007.</li><li>TIPPETT, Leonard H. C. <em>The methods of statistics.</em> 4. ed. London: Williams and Norgate, 1950. (Conjunto de dados <code>warpbreaks</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta de contagem, observações independentes, superdispersão e linearidade na escala logarítmica.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>MASS</code> (<code>glm.nb</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="poisson.html"><span>← ANTERIOR</span>Regressão de Poisson</a><a href="cox.html"><span>PRÓXIMO →</span>Regressão de Cox</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

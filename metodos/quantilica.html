@@ -4,306 +4,186 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão quantílica: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão quantílica | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão quantílica: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão quantílica | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão quantílica
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão quantílica
-    </h1>
-<p class="detail-lead">
-     Examina como fatores explicativos afetam diferentes níveis de uma resposta, como sua mediana.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/quantilica.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Examina como fatores explicativos afetam diferentes níveis de uma resposta, como sua mediana.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência quando usada inferência padrão.</li><li>Modelo quantílico especificado corretamente.</li><li>Avaliar distribuição de resíduos, heterocedasticidade e sensibilidade a.</li><li>Normalidade não é exigida.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j(\tau)=0\\ H_1&amp;:\ \beta_j(\tau)\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat{\boldsymbol\beta}_{\tau}=\underset{\boldsymbol\beta}{\operatorname{argmin}}\sum_{i=1}^n\rho_\tau\left(y_i-\mathbf x_i^\top\boldsymbol\beta\right)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) para \(\beta_{j}\) ( \(\tau\) ) sugere efeito no quantil estudado; \(IC_{95\%}\) específico do quantil.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Distância mediana de frenagem por velocidade de veículo (cars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-quantilica" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-quantilica"><code># Regressão quantílica ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("quantreg", quietly = TRUE)) install.packages("quantreg")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão quantílica</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão quantílica</h1><p class="detail-lead">Examina como os preditores afetam diferentes quantis da resposta, como a mediana ou os extremos, e não apenas a média.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/quantilica.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/quantilica.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A regressão linear responde a uma pergunta sobre a <strong>média</strong>: quanto aumenta o gasto médio quando a renda sobe? Mas a média pode esconder o que mais interessa. Entre famílias de mesma renda, algumas gastam pouco e outras muito, e essa dispersão pode crescer com a renda. A regressão quantílica permite perguntar sobre a mediana, sobre os 10% que menos gastam ou sobre os 10% que mais gastam, cada um com sua própria reta.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão quantílica" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modela quantis da resposta,</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">não a média</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Minimiza perda assimétrica</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">por programação linear</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Sem forma para os erros</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Linearidade no quantil</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Um coeficiente por quantil</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Retas que podem se abrir</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">quantreg::rq()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Mínimos quadrados</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Regressão robusta</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">WLS e GAMLSS</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão quantílica</text></svg><figcaption>Visão geral da regressão quantílica. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que é um quantil</strong><p>O quantil de ordem \(\tau\) é o valor abaixo do qual está a proporção \(\tau\) das observações. A mediana é o quantil 0,50; o primeiro quartil, o quantil 0,25. Modelar o quantil 0,90 do gasto significa descrever o comportamento das famílias que mais gastam, e não de uma família típica.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q_Y(\tau\mid\mathbf x) &= \beta_0(\tau)+\beta_1(\tau)x_1+\cdots \\ &\quad +\beta_p(\tau)x_p\end{aligned}\]</div><p>Para cada quantil \(\tau\) escolhido há um conjunto próprio de coeficientes. A estimação não usa mínimos quadrados: minimiza-se a soma de uma <strong>perda assimétrica</strong>, que penaliza de forma diferente os resíduos positivos e os negativos. Para \(\tau=0{,}5\) os dois lados pesam igual, e o resultado é a reta da mediana; para \(\tau=0{,}9\), subestimar custa nove vezes mais que superestimar, e a reta sobe.</p><figure class="fig"><img src="../assets/resultados/quantilica-didatica.png" alt="Função de perda assimétrica e retas quantílicas em dados heterocedásticos" loading="lazy"/><figcaption><strong>A perda assimétrica e o que ela produz.</strong> À esquerda, a função de perda para três quantis: a inclinação de cada braço define o quantil estimado. À direita, dados em que a variabilidade cresce com x: as retas dos quantis extremos se afastam, algo que uma única reta de mínimos quadrados não consegue descrever. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Condição da inferência.</td><td>Delineamento do estudo.</td></tr><tr><td>Linearidade do quantil em relação aos preditores</td><td>O modelo supõe que o quantil, não a média, é linear.</td><td>Gráfico de dispersão com as retas sobrepostas; resíduos.</td></tr><tr><td>Resposta contínua</td><td>Quantis de variáveis muito discretas são mal definidos.</td><td>Número de valores distintos da resposta.</td></tr><tr><td>Amostra suficiente nas caudas</td><td>Estimar o quantil 0,95 com n = 40 é pedir demais.</td><td>Como referência, pelo menos 10 a 20 observações além do quantil de interesse.</td></tr><tr><td>Normalidade e variância constante</td><td><strong>Não</strong> são exigidas: é justamente a vantagem do método.</td><td>—</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j(\tau)=0 \\ &\quad \text{(o preditor não desloca o } \\ &\quad \text{quantil } \tau) \\ H_1&:\ \beta_j(\tau)\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat{\boldsymbol\beta}(\tau)=\arg\min_{\boldsymbol\beta}\sum_{i=1}^{n}\rho_{\tau}\!\left(y_i-\mathbf x_i^{\top}\boldsymbol\beta\right),\]\[\begin{aligned}\rho_{\tau}(u)&=u\left[\tau-\mathbb 1(u&lt;0)\right]\\ &=\begin{cases}\tau\,u,&u\geq0\\ (\tau-1)\,u,&u&lt;0\end{cases}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\tau\)</dt><dd>quantil de interesse, entre 0 e 1</dd></div><div><dt>\(\rho_{\tau}\)</dt><dd>função de perda (chamada <em>check function</em> ou perda pinball)</dd></div><div><dt>\(u\)</dt><dd>resíduo: \(y_i-\mathbf x_i^{\top}\boldsymbol\beta\)</dd></div><div><dt>\(\mathbb 1(u&lt;0)\)</dt><dd>vale 1 quando o resíduo é negativo e 0 caso contrário</dd></div><div><dt>\(\beta_j(\tau)\)</dt><dd>coeficiente do preditor \(x_j\) para o quantil \(\tau\)</dd></div><div><dt>\(Q_Y(\tau\mid\mathbf x)\)</dt><dd>quantil \(\tau\) da resposta, dado o perfil de covariáveis</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Suponha resíduos de \(+2\) e \(-2\) e considere dois quantis.</p><div class="table-wrap"><table class="method-table"><caption>Custo de cada resíduo</caption><thead><tr><th>Resíduo</th><th>Perda com τ = 0,50</th><th>Perda com τ = 0,90</th></tr></thead><tbody><tr><td>+2 (modelo subestimou)</td><td>0,50 × 2 = 1,0</td><td>0,90 × 2 = 1,8</td></tr><tr><td>−2 (modelo superestimou)</td><td>0,50 × 2 = 1,0</td><td>0,10 × 2 = 0,2</td></tr></tbody></table></div><div class="worked"><strong>O que isso produz</strong><p>Com \(\tau=0{,}5\), os dois erros custam o mesmo: a reta que minimiza o total deixa metade dos pontos acima e metade abaixo — é a mediana condicional.</p><p>Com \(\tau=0{,}9\), ficar abaixo do ponto custa nove vezes mais: compensa subir a reta até que apenas 10% dos pontos fiquem acima dela.</p><p>O problema é resolvido por programação linear. O R usa o algoritmo simplex de Barrodale–Roberts (ou o de pontos interiores em amostras grandes); a solução é exata, não iterativa como nos modelos de verossimilhança.</p></div><h3>Inferência</h3><div class="table-wrap"><table class="method-table"><caption>Como obter erros-padrão</caption><thead><tr><th>Método</th><th>Quando usar</th><th>No R</th></tr></thead><tbody><tr><td>Inversão do teste de postos</td><td>Padrão; bom para amostras pequenas</td><td><code>summary(modelo)</code></td></tr><tr><td>Bootstrap de pares</td><td>Geral, inclusive sob heterocedasticidade</td><td><code>summary(modelo, se = "boot")</code></td></tr><tr><td>Matriz sanduíche</td><td>Amostras grandes</td><td><code>summary(modelo, se = "nid")</code></td></tr><tr><td>Teste de igualdade entre quantis</td><td>Comparar dois quantis</td><td><code>anova(modelo_tau1, modelo_tau2)</code></td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>É robusta a valores extremos na resposta: deslocar um ponto para muito longe não altera a reta da mediana, desde que ele permaneça do mesmo lado.</li><li>É invariante a transformações monotônicas: o quantil do logaritmo é o logaritmo do quantil, o que não vale para a média.</li><li>Não exige nenhuma suposição sobre a distribuição dos erros.</li><li>As retas de quantis diferentes podem, em princípio, se cruzar dentro da faixa dos dados; isso é sinal de modelo mal especificado ou de pouca informação.</li><li>Com \(\tau=0{,}5\) e sem preditores, a estimativa é a mediana amostral, assim como os mínimos quadrados devolvem a média.</li><li>Estimar muitos quantis dá um retrato completo de como a distribuição da resposta muda com os preditores.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Situação</th><th>Leitura</th></tr></thead><tbody><tr><td>Inclinações parecidas em todos os quantis</td><td>O preditor desloca a distribuição inteira; os mínimos quadrados bastariam.</td></tr><tr><td>Inclinação crescente com τ</td><td>O preditor aumenta também a dispersão: as diferenças entre unidades se ampliam.</td></tr><tr><td>Inclinação significativa só em alguns quantis</td><td>O efeito existe em parte da distribuição; a média pode escondê-lo.</td></tr><tr><td>Retas que se cruzam</td><td>Modelo mal especificado ou amostra pequena nas caudas.</td></tr></tbody></table></div><p>Reporte os coeficientes de cada quantil com seus intervalos de confiança, o método usado para obtê-los e, de preferência, o gráfico do coeficiente em função de τ.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>rq()</code> pertence ao pacote <code>quantreg</code> (KOENKER). Instale uma única vez com <code>install.packages("quantreg")</code> e carregue com <code>library(quantreg)</code>. O argumento <code>tau</code> aceita um valor ou um vetor de quantis. O <code>summary()</code> usa, por padrão, intervalos por inversão de teste de postos; <code>se = "boot"</code> produz erros-padrão por bootstrap.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-quantilica-min" type="button">Copiar código</button></div><pre id="code-quantilica-min"><code># install.packages("quantreg")
 library(quantreg)
-ajuste &lt;- rq(dist ~ speed, tau = 0.5, data = cars)
-print(summary(ajuste, se = "nid"))
-plot(dist ~ speed, data = cars)
-abline(ajuste, col = "red", lwd = 2)
+modelo &lt;- rq(gasto ~ renda, tau = c(0.10, 0.50, 0.90), data = dados)
+summary(modelo, se = "boot")
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, as bibliotecas <code>statsmodels</code> e <code>lifelines</code>, também disponíveis no Google Colab, oferecem esses modelos prontos.</p><p>A execução do bloco completo leva cerca de 15 segundos, por causa das reamostragens de bootstrap.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Sessenta domicílios tiveram registradas a renda mensal e o gasto com alimentação, ambos em milhares de reais. Sabe-se desde Engel (1857) que o gasto com alimentação cresce com a renda, mas menos que proporcionalmente. A pergunta aqui é outra: esse crescimento é o mesmo para quem gasta pouco e para quem gasta muito? Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-quantilica" type="button">Copiar código</button></div><pre id="code-quantilica"><code># Regressão quantílica: exemplo completo ----
+# Pacote: quantreg. Instale uma única vez: install.packages("quantreg")
+library(quantreg)
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: 60 domicílios; renda mensal e gasto com alimentação, em R$ mil (dados fictícios)
+dados &lt;- data.frame(
+  renda = c(1.2, 1.4, 1.4, 1.7, 1.7, 1.8, 1.9, 1.9, 2.1, 2.8, 3.4, 3.7, 3.7, 3.7, 3.8,
+            3.8, 4.1, 4.3, 4.6, 4.7, 4.7, 5.2, 5.3, 5.4, 5.5, 5.6, 5.9, 5.9, 6.0, 6.5,
+            6.6, 6.7, 6.7, 6.8, 7.2, 7.2, 8.2, 8.5, 8.5, 8.5, 8.7, 8.8, 9.2, 9.8, 9.8,
+            9.9, 9.9, 9.9, 10.3, 10.3, 10.6, 10.6, 10.7, 10.9, 10.9, 11.3, 11.3, 11.5, 11.7, 12.0),
+  gasto = c(0.74, 0.73, 0.57, 0.56, 0.66, 0.87, 0.95, 0.89, 1.01, 1.27, 1.07, 0.92, 1.76, 0.95, 0.62,
+            1.16, 1.25, 1.36, 1.75, 0.94, 1.21, 1.63, 1.32, 1.66, 1.24, 1.58, 1.68, 2.35, 2.28, 2.24,
+            0.83, 1.46, 1.24, 2.19, 1.72, 0.65, 0.41, 2.29, 1.92, 1.56, 1.32, 1.69, 2.47, 1.80, 2.46,
+            1.19, 2.88, 1.91, 2.04, 2.30, 2.12, 2.22, 1.33, 3.18, 1.64, 1.52, 2.37, 1.76, 2.66, 2.76))
 
+# 2. Mínimos quadrados (referência): modela a média
+mq &lt;- lm(gasto ~ renda, data = dados)
+summary(mq)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="cox.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão de Cox
-    </a>
-<a href="wls.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Mínimos quadrados ponderados (WLS)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. Heterocedasticidade: a variabilidade cresce com a renda
+metade &lt;- dados$renda &lt;= median(dados$renda)
+c(dp_rendas_baixas = sd(residuals(mq)[metade]), dp_rendas_altas = sd(residuals(mq)[!metade]))
+
+# 4. Regressão quantílica em cinco quantis
+modelo &lt;- rq(gasto ~ renda, tau = c(0.10, 0.25, 0.50, 0.75, 0.90), data = dados)
+modelo
+summary(modelo, se = "boot", R = 1000)
+
+# 5. As inclinações diferem entre os quantis?
+anova(rq(gasto ~ renda, tau = 0.10, data = dados),
+      rq(gasto ~ renda, tau = 0.90, data = dados))
+
+# 6. Robustez: efeito de um valor atípico
+dados2 &lt;- dados; dados2$gasto[60] &lt;- 9.00
+c(mq_antes = coef(mq)[2], mq_depois = coef(lm(gasto ~ renda, data = dados2))[2],
+  mediana_antes = coef(rq(gasto ~ renda, tau = 0.5, data = dados))[2],
+  mediana_depois = coef(rq(gasto ~ renda, tau = 0.5, data = dados2))[2])
+
+# 7. Gráficos
+plot(gasto ~ renda, data = dados, pch = 19, col = "gray50",
+     xlab = "Renda mensal (R$ mil)", ylab = "Gasto com alimentação (R$ mil)")
+for (t in c(0.10, 0.25, 0.50, 0.75, 0.90)) abline(rq(gasto ~ renda, tau = t, data = dados), col = "darkgreen")
+abline(mq, col = "red", lwd = 2, lty = 2)
+
+# Como a inclinação varia ao longo dos quantis
+plot(summary(rq(gasto ~ renda, tau = seq(0.05, 0.95, 0.05), data = dados)))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-quantilica" type="button">Copiar código</button></div><pre id="code-py-quantilica"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+
+def rq(X, y, tau):
+    """Regressão quantílica por programação linear:
+    minimiza a soma de tau*|resíduo positivo| + (1-tau)*|resíduo negativo|."""
+    n, p = X.shape
+    custo = np.r_[np.zeros(2 * p), tau * np.ones(n), (1 - tau) * np.ones(n)]
+    A = np.c_[X, -X, np.eye(n), -np.eye(n)]
+    res = optimize.linprog(custo, A_eq=A, b_eq=y, bounds=[(0, None)] * (2 * p + 2 * n), method="highs")
+    return res.x[:p] - res.x[p:2 * p]
+
+def rq_boot(X, y, tau, B=1000, semente=2026):
+    """Erro-padrão e IC de 95% por bootstrap de pares."""
+    rng = np.random.default_rng(semente); n = len(y)
+    saida = np.array([rq(X[i := rng.integers(0, n, n)], y[i], tau) for _ in range(B)])
+    return saida.std(axis=0, ddof=1), np.percentile(saida, [2.5, 97.5], axis=0)
+
+# 1. Dados: 60 domicílios; renda mensal e gasto com alimentação, em R$ mil (dados fictícios)
+renda = np.array([1.2, 1.4, 1.4, 1.7, 1.7, 1.8, 1.9, 1.9, 2.1, 2.8, 3.4, 3.7, 3.7, 3.7, 3.8,
+                  3.8, 4.1, 4.3, 4.6, 4.7, 4.7, 5.2, 5.3, 5.4, 5.5, 5.6, 5.9, 5.9, 6.0, 6.5,
+                  6.6, 6.7, 6.7, 6.8, 7.2, 7.2, 8.2, 8.5, 8.5, 8.5, 8.7, 8.8, 9.2, 9.8, 9.8,
+                  9.9, 9.9, 9.9, 10.3, 10.3, 10.6, 10.6, 10.7, 10.9, 10.9, 11.3, 11.3, 11.5, 11.7, 12.0])
+gasto = np.array([0.74, 0.73, 0.57, 0.56, 0.66, 0.87, 0.95, 0.89, 1.01, 1.27, 1.07, 0.92, 1.76, 0.95, 0.62,
+                  1.16, 1.25, 1.36, 1.75, 0.94, 1.21, 1.63, 1.32, 1.66, 1.24, 1.58, 1.68, 2.35, 2.28, 2.24,
+                  0.83, 1.46, 1.24, 2.19, 1.72, 0.65, 0.41, 2.29, 1.92, 1.56, 1.32, 1.69, 2.47, 1.80, 2.46,
+                  1.19, 2.88, 1.91, 2.04, 2.30, 2.12, 2.22, 1.33, 3.18, 1.64, 1.52, 2.37, 1.76, 2.66, 2.76])
+n = len(renda); X = np.column_stack([np.ones(n), renda])
+print(f"n = {n} | renda de {renda.min()} a {renda.max()} mil | gasto de {gasto.min()} a {gasto.max()} mil")
+
+# 2. Mínimos quadrados (referência): modela a média
+b_mq = np.linalg.solve(X.T @ X, X.T @ gasto)
+res = gasto - X @ b_mq; s2 = res @ res / (n - 2)
+ep_mq = np.sqrt(s2 * np.diag(np.linalg.inv(X.T @ X)))
+print(f"\nMínimos quadrados: intercepto = {b_mq[0]:.4f} ({ep_mq[0]:.4f}) | inclinação = {b_mq[1]:.4f} ({ep_mq[1]:.4f})")
+
+# 3. Heterocedasticidade: variabilidade cresce com a renda
+metade = renda &lt;= np.median(renda)
+print(f"DP dos resíduos: rendas baixas = {res[metade].std(ddof=1):.4f} | rendas altas = {res[~metade].std(ddof=1):.4f}")
+
+# 4. Regressão quantílica em cinco quantis
+print("\n  tau   intercepto   inclinação   EP (bootstrap)        IC 95% da inclinação")
+resultados = {}
+for tau in [0.10, 0.25, 0.50, 0.75, 0.90]:
+    b = rq(X, gasto, tau); ep, ic = rq_boot(X, gasto, tau)
+    resultados[tau] = (b, ep, ic)
+    print(f"{tau:5.2f}   {b[0]:&gt;9.4f}   {b[1]:&gt;10.4f}   {ep[1]:&gt;13.4f}        [{ic[0,1]:.4f}; {ic[1,1]:.4f}]")
+
+# 5. Teste informal: as inclinações de tau = 0,10 e tau = 0,90 diferem?
+b10, b90 = resultados[0.10][0][1], resultados[0.90][0][1]
+rng = np.random.default_rng(7)
+dif = np.array([(lambda i: rq(X[i], gasto[i], 0.90)[1] - rq(X[i], gasto[i], 0.10)[1])(rng.integers(0, n, n)) for _ in range(500)])
+print(f"\nDiferença entre as inclinações (0,90 − 0,10) = {b90 - b10:.4f}")
+print(f"IC 95% por bootstrap = [{np.percentile(dif, 2.5):.4f}; {np.percentile(dif, 97.5):.4f}]")
+
+# 6. Mediana comparada à média: efeito de um valor extremo
+gasto2 = gasto.copy(); gasto2[59] = 9.00        # erro de digitação na última observação
+b_mq2 = np.linalg.solve(X.T @ X, X.T @ gasto2)
+print(f"\nCom um valor atípico (última observação: 2,76 -&gt; 9,00 mil):")
+print(f"  mínimos quadrados: inclinação {b_mq[1]:.4f} -&gt; {b_mq2[1]:.4f}")
+print(f"  mediana (tau = 0,50): inclinação {resultados[0.50][0][1]:.4f} -&gt; {rq(X, gasto2, 0.50)[1]:.4f}")
+
+# 7. Previsão: gasto em cada quantil para uma renda de R$ 8 mil
+print("\nRenda de R$ 8 mil: gasto previsto em cada quantil")
+for tau in [0.10, 0.25, 0.50, 0.75, 0.90]:
+    b = resultados[tau][0]
+    print(f"  tau = {tau:.2f}: R$ {b[0] + b[1] * 8:.3f} mil")
+
+# 8. Gráfico: retas quantílicas
+plt.scatter(renda, gasto, color="gray")
+grade = np.linspace(1, 12.5, 50)
+for tau in [0.10, 0.25, 0.50, 0.75, 0.90]:
+    b = resultados[tau][0]
+    plt.plot(grade, b[0] + b[1] * grade, label=f"tau = {tau:.2f}")
+plt.plot(grade, b_mq[0] + b_mq[1] * grade, "k--", label="mínimos quadrados")
+plt.xlabel("Renda mensal (R$ mil)"); plt.ylabel("Gasto com alimentação (R$ mil)"); plt.legend()
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 60 | renda de 1.2 a 12.0 mil | gasto de 0.41 a 3.18 mil
+
+Mínimos quadrados: intercepto = 0.6274 (0.1394) | inclinação = 0.1398 (0.0189)
+DP dos resíduos: rendas baixas = 0.3440 | rendas altas = 0.5677
+
+  tau   intercepto   inclinação   EP (bootstrap)        IC 95% da inclinação
+ 0.10      0.4146       0.0856          0.0274        [0.0138; 0.1224]
+ 0.25      0.5215       0.1077          0.0243        [0.0740; 0.1641]
+ 0.50      0.6143       0.1420          0.0177        [0.1143; 0.1853]
+ 0.75      0.6388       0.1768          0.0242        [0.1314; 0.2347]
+ 0.90      0.7692       0.2132          0.0444        [0.0945; 0.2478]
+
+Diferença entre as inclinações (0,90 − 0,10) = 0.1277
+IC 95% por bootstrap = [0.0140; 0.1915]
+
+Com um valor atípico (última observação: 2,76 -&gt; 9,00 mil):
+  mínimos quadrados: inclinação 0.1398 -&gt; 0.1927
+  mediana (tau = 0,50): inclinação 0.1420 -&gt; 0.1420
+
+Renda de R$ 8 mil: gasto previsto em cada quantil
+  tau = 0.10: R$ 1.099 mil
+  tau = 0.25: R$ 1.383 mil
+  tau = 0.50: R$ 1.751 mil
+  tau = 0.75: R$ 2.053 mil
+  tau = 0.90: R$ 2.475 mil</pre></div><figure class="fig"><img src="../assets/resultados/quantilica.png" alt="Retas de cinco quantis e inclinação em função do quantil" loading="lazy"/><figcaption><strong>O que só a regressão quantílica mostra.</strong> À esquerda, as cinco retas quantílicas e a reta de mínimos quadrados (tracejada): elas não são paralelas, e a distância entre a reta de 0,90 e a de 0,10 cresce com a renda. À direita, a inclinação estimada para cada quantil de 0,05 a 0,95: ela sobe de forma sistemática, cruzando a estimativa de mínimos quadrados por volta do quantil 0,45. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados por quantil</caption><thead><tr><th>τ</th><th>Intercepto</th><th>Inclinação</th><th>Erro-padrão (bootstrap)</th><th>IC 95% da inclinação</th></tr></thead><tbody><tr><td>0,10</td><td>0,4146</td><td>0,0856</td><td>0,0274</td><td>[0,0138; 0,1224]</td></tr><tr><td>0,25</td><td>0,5215</td><td>0,1077</td><td>0,0243</td><td>[0,0740; 0,1641]</td></tr><tr><td>0,50</td><td>0,6143</td><td>0,1420</td><td>0,0177</td><td>[0,1143; 0,1853]</td></tr><tr><td>0,75</td><td>0,6388</td><td>0,1768</td><td>0,0242</td><td>[0,1314; 0,2347]</td></tr><tr><td>0,90</td><td>0,7692</td><td>0,2132</td><td>0,0444</td><td>[0,0945; 0,2478]</td></tr><tr><td>Mínimos quadrados</td><td>0,6274</td><td>0,1398</td><td>0,0189</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Outros resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>DP dos resíduos (rendas baixas / altas)</td><td>0,344 / 0,568</td><td>Heterocedasticidade clara.</td></tr><tr><td>Diferença entre as inclinações 0,90 e 0,10</td><td>0,128; IC 95% [0,014; 0,192]</td><td>O intervalo não contém zero.</td></tr><tr><td>Efeito de um valor atípico sobre a inclinação</td><td>Mínimos quadrados: 0,1398 → 0,1927</td><td>Aumento de 38%.</td></tr><tr><td>O mesmo, pela mediana</td><td>0,1420 → 0,1420</td><td>Sem alteração.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Gasto previsto para uma renda de R$ 8 mil</caption><thead><tr><th>τ</th><th>Gasto previsto</th></tr></thead><tbody><tr><td>0,10</td><td>R$ 1,099 mil</td></tr><tr><td>0,25</td><td>R$ 1,383 mil</td></tr><tr><td>0,50</td><td>R$ 1,751 mil</td></tr><tr><td>0,75</td><td>R$ 2,053 mil</td></tr><tr><td>0,90</td><td>R$ 2,475 mil</td></tr></tbody></table></div><p><strong>Leitura:</strong> cada R$ 1000 a mais de renda aumentam o gasto com alimentação em R$ 86 entre os domicílios que menos gastam e em R$ 213 entre os que mais gastam. A reta de mínimos quadrados (R$ 140) fica no meio e, sozinha, sugeriria um efeito único para todos. O intervalo da diferença entre os quantis extremos não contém zero, de modo que a abertura das retas não é apenas ruído amostral.</p><p>A última comparação ilustra a robustez do método. Ao trocar o gasto da última observação de 2,76 para 9,00 mil, como um erro de digitação, a inclinação de mínimos quadrados salta de 0,140 para 0,193, enquanto a da mediana permanece exatamente em 0,142: o ponto alterado continua sendo apenas “um valor acima da reta”, e sua distância não entra na conta.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Estimar quantis extremos com amostra pequena</td><td>Com n = 60, o quantil 0,99 é inestimável; fique entre 0,1 e 0,9.</td></tr><tr><td>Interpretar como “o efeito nas famílias pobres”</td><td>O quantil é da resposta condicional, não um subgrupo fixo de unidades.</td></tr><tr><td>Reportar só a mediana</td><td>O ganho do método está em comparar vários quantis.</td></tr><tr><td>Ignorar o cruzamento das retas</td><td>Indica modelo mal especificado na faixa observada.</td></tr><tr><td>Usar erros-padrão de mínimos quadrados</td><td>Use inversão de postos ou bootstrap.</td></tr><tr><td>Aplicar a respostas muito discretas</td><td>Quantis de contagens pequenas são mal definidos; considere outros modelos.</td></tr><tr><td>Comparar R² com o da regressão linear</td><td>A medida de ajuste da regressão quantílica é outra (pseudo-R² de Koenker–Machado).</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="linear-simples.html">Mínimos quadrados</a></td><td>Interesse na média e erros aproximadamente homocedásticos.</td></tr><tr><td><a href="wls.html">Mínimos quadrados ponderados</a></td><td>Heterocedasticidade com forma conhecida e interesse na média.</td></tr><tr><td>Regressão robusta (M-estimadores, <code>MASS::rlm</code>)</td><td>Valores extremos, mas interesse ainda na parte central.</td></tr><tr><td>Transformação da resposta (log)</td><td>A relação é multiplicativa; lembre que o quantil é invariante à transformação.</td></tr><tr><td>Regressão quantílica não paramétrica ou aditiva</td><td>A relação com o preditor é curva.</td></tr><tr><td>GAMLSS</td><td>Modelar simultaneamente locação, escala e forma.</td></tr><tr><td><a href="bootstrap.html">Bootstrap</a></td><td>Quantificar a incerteza de qualquer uma dessas estimativas.</td></tr></tbody></table></div><ol class="steps"><li>Faça o diagrama de dispersão e observe se a dispersão muda com o preditor.</li><li>Ajuste os mínimos quadrados como referência.</li><li>Estime vários quantis (0,1 a 0,9).</li><li>Represente o coeficiente em função de τ.</li><li>Teste se os quantis extremos diferem.</li><li>Interprete cada quantil no contexto do problema.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>KOENKER, Roger; BASSETT JR., Gilbert. Regression quantiles. <em>Econometrica</em>, v. 46, n. 1, p. 33-50, 1978.</li><li>KOENKER, Roger. <em>Quantile regression.</em> Cambridge: Cambridge University Press, 2005.</li><li>KOENKER, Roger; HALLOCK, Kevin F. Quantile regression. <em>Journal of Economic Perspectives</em>, v. 15, n. 4, p. 143-156, 2001.</li><li>KOENKER, Roger. <em>quantreg: quantile regression.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=quantreg" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=quantreg</a>.</li><li>KOENKER, Roger; MACHADO, José A. F. Goodness of fit and related inference processes for quantile regression. <em>Journal of the American Statistical Association</em>, v. 94, n. 448, p. 1296-1310, 1999.</li><li>CADE, Brian S.; NOON, Barry R. A gentle introduction to quantile regression for ecologists. <em>Frontiers in Ecology and the Environment</em>, v. 1, n. 8, p. 412-420, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta contínua, observações independentes e linearidade do quantil nos preditores; não exige normalidade nem variância constante.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>quantreg</code> (<code>rq</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="cox.html"><span>← ANTERIOR</span>Regressão de Cox</a><a href="wls.html"><span>PRÓXIMO →</span>Mínimos quadrados ponderados (WLS)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

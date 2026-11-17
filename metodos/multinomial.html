@@ -4,307 +4,199 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão logística multinomial: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão logística multinomial | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão logística multinomial: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão logística multinomial | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão logística multinomial
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão logística multinomial
-    </h1>
-<p class="detail-lead">
-     Estima as probabilidades de três ou mais classes sem ordem natural.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/multinomial.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima as probabilidades de três ou mais classes sem ordem natural.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Categorias mutuamente exclusivas.</li><li>Observações independentes.</li><li>Especificação linear dos logits, sem separação, amostra suficiente para parâmetros.</li><li>A hipótese de independência das alternativas irrelevantes exige justificativa conforme o problema.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_{jk}=0\\H_1&amp;:\ \beta_{jk}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\log\frac{\Pr(Y=k\mid\mathbf x)}{\Pr(Y=K\mid\mathbf x)}=\beta_{0k}+\mathbf x^\top\boldsymbol\beta_k\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) indica evidência de efeito no logito relativo; \(\exp(\beta)\) não é aumento direto de probabilidade de uma categoria.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Previsão do número de cilindros (4, 6, 8) a partir da massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-multinomial" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-multinomial"><code># Regressão logística multinomial ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("nnet", quietly = TRUE)) install.packages("nnet")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão logística multinomial</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão logística multinomial</h1><p class="detail-lead">Estima as probabilidades de três ou mais categorias sem ordem natural a partir de um ou mais preditores.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/multinomial.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/multinomial.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="logistica.html">regressão logística binária</a> trata de respostas com dois resultados. E quando há três ou mais, <strong>sem ordem natural</strong> entre eles? Qual espécie é esta flor? Qual meio de transporte a pessoa escolheu? Qual tipo de defeito ocorreu? A logística multinomial responde a essas perguntas estimando, para cada categoria, a probabilidade de ela ser a escolhida.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Multinomial" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Probabilidade de 3 ou mais</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">categorias sem ordem</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Uma categoria de referência</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Um logit para cada outra</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Categorias exclusivas</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Sem separação perfeita</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">OR em relação à referência</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Probabilidades previstas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">nnet::multinom()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Logística ordinal</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">LDA</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Árvores e florestas</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Multinomial</text></svg><figcaption>Visão geral da regressão logística multinomial. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>Quando a resposta tem ordem</strong><p>Se as categorias forem ordenadas (baixo, médio, alto), a <a href="ordinal.html">logística ordinal</a> usa essa informação e estima menos parâmetros. Use a multinomial quando a ordem não existir ou não for razoável supô-la.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><p>Escolhe-se uma categoria como <strong>referência</strong> (aqui, a categoria 1). Para cada uma das outras \(K-1\) categorias ajusta-se uma equação linear para o logaritmo da razão entre a probabilidade daquela categoria e a da referência:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\ln\!\left(\frac{P(Y=k)}{P(Y=1)}\right) \\ &= \beta_{0k}+\beta_{1k}x_1+\cdots+\beta_{pk}x_p,\end{aligned}\]\[k=2,\ldots,K\]</div><p>As probabilidades são recuperadas de modo que somem 1. Com três categorias há duas equações; com cinco, quatro. É por isso que o modelo cresce rápido: cada categoria adicional traz um conjunto completo de coeficientes.</p><figure class="fig"><img src="../assets/resultados/multinomial-didatica.png" alt="Probabilidades empilhadas e logits lineares em relação à referência" loading="lazy"/><figcaption><strong>Duas formas de ver o mesmo modelo.</strong> À esquerda, as três probabilidades em cada ponto somam 1: é a soma das faixas. À direita, as duas equações do modelo: retas para o logaritmo da razão entre cada espécie e a referência. A referência tem logit zero por definição. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta categórica com categorias exclusivas e exaustivas</td><td>Cada unidade pertence a uma e só uma categoria.</td><td><code>table(y)</code>.</td></tr><tr><td>Observações independentes</td><td>Dependência distorce erros-padrão.</td><td>Delineamento; para escolhas repetidas pela mesma pessoa, use modelos mistos.</td></tr><tr><td>Linearidade no logit para preditores quantitativos</td><td>O efeito de x é constante na escala do logit.</td><td>Proporções observadas por faixas de x; termos quadráticos ou splines.</td></tr><tr><td>Ausência de separação perfeita</td><td>Se um preditor separa completamente uma categoria, os coeficientes divergem.</td><td>Coeficientes e erros-padrão muito grandes; avisos de convergência.</td></tr><tr><td>Número suficiente de casos em cada categoria</td><td>Cada equação consome parâmetros.</td><td>Referência usual: ao menos 10 casos por parâmetro na categoria menos frequente.</td></tr><tr><td>Independência de alternativas irrelevantes (IIA)</td><td>A razão entre duas categorias não deveria mudar se uma terceira for retirada.</td><td>Teste de Hausman–McFadden; em dados de escolha, considere o logit aninhado.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_{jk}=0 \\ &\quad \text{(o preditor } x_j \text{ } \\ &\quad \text{não altera a } \\ &\quad \text{chance da } \\ &\quad \text{categoria } k \text{ frente à referência)} \\ H_1&:\ \beta_{jk}\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[P(Y=k\mid \mathbf x)=\frac{e^{\eta_k}}{\sum_{m=1}^{K}e^{\eta_m}},\]\[\eta_1=0,\]\[\eta_k=\beta_{0k}+\sum_{j=1}^{p}\beta_{jk}x_j\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[z=\frac{b_{jk}}{EP(b_{jk})}\ \overset{\text{aprox.}}{\sim}\ \mathcal N(0,1),\]\[\begin{aligned}G &= 2\left(\ell_{modelo}-\ell_{nulo}\right)\ \\ &\overset{\text{aprox.}}{\sim} \ \chi^2_{p(K-1)}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(K\)</dt><dd>número de categorias da resposta</dd></div><div><dt>\(p\)</dt><dd>número de preditores</dd></div><div><dt>\(\eta_k\)</dt><dd>preditor linear da categoria k; o da referência é fixado em zero</dd></div><div><dt>\(b_{jk}\)</dt><dd>estimativa de máxima verossimilhança do coeficiente de \(x_j\) na equação da categoria k</dd></div><div><dt>\(\ell\)</dt><dd>log-verossimilhança</dd></div><div><dt>\(G\)</dt><dd>estatística da razão de verossimilhanças, com \(p(K-1)\) graus de liberdade</dd></div><div><dt>\(e^{b_{jk}}\)</dt><dd>razão de chances: fator que multiplica a chance da categoria k frente à referência quando \(x_j\) aumenta uma unidade</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha (\(K=3\), um preditor), os coeficientes são \(\eta_{versicolor}=-26{,}082+4{,}816x\) e \(\eta_{virginica}=-38{,}759+6{,}846x\), com \(x\) = comprimento da sépala.</p><div class="worked"><strong>Probabilidades para uma sépala de 6,0 cm</strong><p>\(\eta_{setosa}=0\) (referência); \(\eta_{versicolor}=-26{,}082+4{,}816(6)=2{,}814\); \(\eta_{virginica}=-38{,}759+6{,}846(6)=2{,}317\).</p><p>Exponenciais: \(e^0=1\); \(e^{2{,}814}=16{,}68\); \(e^{2{,}317}=10{,}15\). Soma \(=27{,}83\).</p><p>Probabilidades: \(1/27{,}83=0{,}036\); \(16{,}68/27{,}83=0{,}599\); \(10{,}15/27{,}83=0{,}365\) — a classificação prevista é versicolor.</p><p>Razão de chances da versicolor por \(+1\) cm: \(e^{4{,}816}=123{,}4\).</p></div><h3>Propriedades</h3><ul class="checklist"><li>As probabilidades estimadas são sempre positivas e somam 1.</li><li>A escolha da categoria de referência não muda as probabilidades previstas nem o ajuste do modelo; muda apenas a leitura dos coeficientes.</li><li>Com \(K=2\), o modelo é exatamente a <a href="logistica.html">regressão logística binária</a>.</li><li>Razões de chances entre duas categorias não referência saem da diferença dos coeficientes: \(e^{b_{jk}-b_{jm}}\).</li><li>O modelo não supõe ordem: permutar os rótulos das categorias produz o mesmo ajuste.</li><li>Os coeficientes são estimados por máxima verossimilhança, de forma conjunta para todas as equações.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficiente b</td><td>Efeito no logit da categoria <em>frente à referência</em>.</td><td>Não é o efeito sobre a probabilidade daquela categoria.</td></tr><tr><td>exp(b)</td><td>Razão de chances frente à referência.</td><td>Muda se a referência mudar.</td></tr><tr><td>Valor-p de Wald</td><td>Contribuição do preditor naquela equação.</td><td>Com amostras pequenas, prefira o teste da razão de verossimilhanças.</td></tr><tr><td>Probabilidades previstas</td><td>A tradução mais útil do modelo.</td><td>Reporte-as em valores relevantes dos preditores.</td></tr><tr><td>Matriz de confusão</td><td>Capacidade de classificar.</td><td>Calculada nos dados do ajuste, é otimista.</td></tr></tbody></table></div><div class="callout warn"><strong>Probabilidade não acompanha o coeficiente</strong><p>Um coeficiente positivo aumenta a chance <em>daquela</em> categoria frente à referência, mas a probabilidade final depende de todas as equações: ela pode até cair se outra categoria crescer mais depressa.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>multinom()</code> pertence ao pacote <code>nnet</code> (VENABLES; RIPLEY, 2002), que acompanha a instalação padrão do R e só precisa ser carregado com <code>library(nnet)</code>. A resposta deve ser um fator; o primeiro nível é a referência, e <code>relevel()</code> permite trocá-la. O <code>summary()</code> não imprime valores-p: eles são calculados a partir dos coeficientes e dos erros-padrão.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-multinomial-min" type="button">Copiar código</button></div><pre id="code-multinomial-min"><code>library(nnet)
+modelo &lt;- multinom(Species ~ Sepal.Length, data = iris)
+summary(modelo)
+exp(coef(modelo))
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>O conjunto <code>iris</code> traz quatro medidas de 150 flores de três espécies. Usamos apenas o comprimento da sépala para prever a espécie. A escolha é proposital: as medidas da pétala separariam as espécies quase perfeitamente, e com isso o modelo não convergiria, situação discutida ao final.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-multinomial" type="button">Copiar código</button></div><pre id="code-multinomial"><code># Regressão logística multinomial: exemplo completo ----
+# Pacote: nnet. Instale uma única vez: install.packages("nnet")
 library(nnet)
-d &lt;- transform(mtcars, cyl = factor(cyl))
-ajuste &lt;- multinom(cyl ~ wt + hp, data = d, trace = FALSE)
-print(summary(ajuste))
-print(head(predict(ajuste, type = "probs")))
-print(table(real = d$cyl, previsto = predict(ajuste)))
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 1. Dados: iris (150 flores de 3 espécies); preditor = comprimento da sépala
+dados &lt;- iris[, c("Sepal.Length", "Species")]
+aggregate(Sepal.Length ~ Species, data = dados, FUN = function(v) c(n = length(v), media = mean(v), dp = sd(v)))
 
+# 2. Ajuste (a primeira categoria do fator, setosa, é a referência)
+modelo &lt;- multinom(Species ~ Sepal.Length, data = dados)
+summary(modelo)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="logistica.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão logística binária
-    </a>
-<a href="ordinal.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão logística ordinal
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 3. Testes de Wald (o multinom não imprime os valores-p)
+z &lt;- summary(modelo)$coefficients / summary(modelo)$standard.errors
+round(2 * pnorm(abs(z), lower.tail = FALSE), 5)
+
+# 4. Razões de chances e intervalos de confiança de 95%
+exp(coef(modelo))
+exp(confint(modelo))
+
+# 5. Teste da razão de verossimilhanças contra o modelo nulo
+nulo &lt;- multinom(Species ~ 1, data = dados)
+anova(nulo, modelo)
+
+# 6. Probabilidades estimadas
+novo &lt;- data.frame(Sepal.Length = c(4.5, 5.0, 5.5, 6.0, 6.5, 7.5))
+cbind(novo, round(predict(modelo, novo, type = "probs"), 3))
+
+# 7. Classificação nos próprios dados (medida otimista)
+tabela &lt;- table(observado = dados$Species, previsto = predict(modelo))
+tabela; sum(diag(tabela)) / sum(tabela)
+
+# 8. Separação perfeita: com o comprimento da pétala as estimativas divergem
+# multinom(Species ~ Petal.Length, data = iris)   # observe a magnitude dos coeficientes
+
+# 9. Gráfico: probabilidades estimadas
+grade &lt;- data.frame(Sepal.Length = seq(4, 8.2, length.out = 200))
+P &lt;- predict(modelo, grade, type = "probs")
+matplot(grade$Sepal.Length, P, type = "l", lty = 1, lwd = 2,
+        xlab = "Comprimento da sépala (cm)", ylab = "Probabilidade estimada")
+legend("left", legend = levels(iris$Species), col = 1:3, lty = 1, lwd = 2, bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-multinomial" type="button">Copiar código</button></div><pre id="code-py-multinomial"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+
+def multinom(X, y, K, nomes):
+    """Logística multinomial por máxima verossimilhança; a classe 0 é a referência."""
+    n = len(y); Xd = np.column_stack([np.ones(n), X]); q = Xd.shape[1]
+    def menos_logv(b):
+        B = np.vstack([np.zeros(q), b.reshape(K - 1, q)])
+        eta = Xd @ B.T; m = eta.max(axis=1, keepdims=True)
+        return -np.sum(eta[np.arange(n), y] - m.ravel() - np.log(np.exp(eta - m).sum(axis=1)))
+    res = optimize.minimize(menos_logv, np.zeros((K - 1) * q), method="BFGS")
+    H = hessiana(menos_logv, res.x); ep = np.sqrt(np.diag(np.linalg.inv(H)))
+    b = res.x; z = b / ep; p = 2 * stats.norm.sf(np.abs(z))
+    print(f"{'Equação':&lt;26}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;8}{'p-valor':&gt;10}{'OR':&gt;9}")
+    for i, nm in enumerate(nomes):
+        for j, termo in enumerate(["(Intercepto)"] + [f"x{j}" for j in range(1, q)]):
+            k = i * q + j
+            print(f"{nm + ': ' + termo:&lt;26}{b[k]:&gt;11.4f}{ep[k]:&gt;13.4f}{z[k]:&gt;8.3f}{p[k]:&gt;10.4f}{np.exp(b[k]):&gt;9.3f}")
+    return dict(b=b, ep=ep, logv=-res.fun, q=q, K=K, Xd=Xd)
+
+def hessiana(f, x, h=1e-4):
+    """Matriz hessiana por diferenças finitas centrais."""
+    p = len(x); H = np.zeros((p, p))
+    for i in range(p):
+        for j in range(p):
+            e1 = np.zeros(p); e2 = np.zeros(p); e1[i] = h; e2[j] = h
+            H[i, j] = (f(x+e1+e2) - f(x+e1-e2) - f(x-e1+e2) + f(x-e1-e2)) / (4 * h * h)
+    return H
+
+def probs(m, X):
+    Xd = np.column_stack([np.ones(len(X)), X])
+    B = np.vstack([np.zeros(m["q"]), m["b"].reshape(m["K"] - 1, m["q"])])
+    eta = Xd @ B.T; e = np.exp(eta - eta.max(axis=1, keepdims=True))
+    return e / e.sum(axis=1, keepdims=True)
+
+# 1. Dados: iris (150 flores de 3 espécies); preditor = comprimento da sépala (cm)
+iris = load_iris(); especies = list(iris.target_names)
+x = iris.data[:, 0]; y = iris.target; n = len(y)
+for j, nome in enumerate(especies):
+    print(f"{nome:&lt;11} n = {np.sum(y == j)} | média = {x[y == j].mean():.3f} | DP = {x[y == j].std(ddof=1):.3f} | faixa = {x[y == j].min()}-{x[y == j].max()}")
+
+# 2. Ajuste: setosa é a categoria de referência
+m = multinom(x[:, None], y, 3, ["versicolor", "virginica"])
+print(f"\nLog-verossimilhança = {m['logv']:.4f} | AIC = {-2 * m['logv'] + 2 * len(m['b']):.3f}")
+
+# 3. Modelo nulo e teste da razão de verossimilhanças
+props = np.bincount(y) / n
+logv0 = np.sum(np.bincount(y) * np.log(props))
+G = 2 * (m["logv"] - logv0)
+print(f"Modelo nulo: log-verossimilhança = {logv0:.4f} | G = {G:.3f}, gl = 2, p-valor = {stats.chi2.sf(G, 2):.3e}")
+print(f"Pseudo-R² de McFadden = {1 - m['logv'] / logv0:.4f}")
+
+# 4. Probabilidades estimadas em alguns comprimentos
+print("\nComprimento   setosa  versicolor  virginica")
+for x0 in [4.5, 5.0, 5.5, 6.0, 6.5, 7.5]:
+    p = probs(m, np.array([[x0]]))[0]
+    print(f"{x0:&gt;9.1f} cm {p[0]:&gt;8.3f} {p[1]:&gt;11.3f} {p[2]:&gt;10.3f}")
+
+# 5. Classificação (nos próprios dados do ajuste: medida otimista)
+P = probs(m, x[:, None]); pred = P.argmax(axis=1)
+print("\nMatriz de confusão (linhas = observado, colunas = previsto):")
+conf = np.array([[np.sum((y == i) &amp; (pred == j)) for j in range(3)] for i in range(3)])
+print(conf); print(f"Acurácia = {np.mean(pred == y):.4f} | acerto esperado ao acaso = 0.3333")
+
+# 6. Razão de chances para um aumento de 1 cm
+print("\nOR (chance da espécie em relação à setosa, por +1 cm de sépala):")
+zc = stats.norm.ppf(0.975)
+for i, nome in enumerate(["versicolor", "virginica"]):
+    k = i * m["q"] + 1
+    print(f"{nome:&lt;11} OR = {np.exp(m['b'][k]):8.3f}   IC 95% = [{np.exp(m['b'][k] - zc*m['ep'][k]):.3f}; {np.exp(m['b'][k] + zc*m['ep'][k]):.3f}]")
+
+# 7. O que acontece com separação perfeita (o comprimento da pétala separa a setosa)
+Xp = np.column_stack([np.ones(n), iris.data[:, 2]])
+def menos_logv_petala(b):
+    B = np.vstack([np.zeros(2), b.reshape(2, 2)]); eta = Xp @ B.T
+    m_ = eta.max(axis=1, keepdims=True)
+    return -np.sum(eta[np.arange(n), y] - m_.ravel() - np.log(np.exp(eta - m_).sum(axis=1)))
+rp = optimize.minimize(menos_logv_petala, np.zeros(4), method="BFGS")
+print(f"\nCom o comprimento da pétala: maior coeficiente em valor absoluto = {np.abs(rp.x).max():.1f}")
+print("As estimativas crescem sem limite a cada iteração: é o sintoma de separação perfeita.")
+
+# 8. Gráfico: probabilidades estimadas de cada espécie
+grade = np.linspace(4, 8.2, 200)
+P = probs(m, grade[:, None])
+for j, nome in enumerate(especies): plt.plot(grade, P[:, j], label=nome)
+plt.xlabel("Comprimento da sépala (cm)"); plt.ylabel("Probabilidade estimada"); plt.legend(); plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">setosa      n = 50 | média = 5.006 | DP = 0.352 | faixa = 4.3-5.8
+versicolor  n = 50 | média = 5.936 | DP = 0.516 | faixa = 4.9-7.0
+virginica   n = 50 | média = 6.588 | DP = 0.636 | faixa = 4.9-7.9
+Equação                    Estimativa  Erro-padrão       z   p-valor       OR
+versicolor: (Intercepto)     -26.0819       4.8893  -5.335    0.0000    0.000
+versicolor: x1                 4.8157       0.9068   5.310    0.0000  123.432
+virginica: (Intercepto)      -38.7590       5.6907  -6.811    0.0000    0.000
+virginica: x1                  6.8464       1.0222   6.698    0.0000  940.485
+
+Log-verossimilhança = -91.0340 | AIC = 190.068
+Modelo nulo: log-verossimilhança = -164.7918 | G = 147.516, gl = 2, p-valor = 9.276e-33
+Pseudo-R² de McFadden = 0.4476
+
+Comprimento   setosa  versicolor  virginica
+      4.5 cm    0.988       0.012      0.000
+      5.0 cm    0.873       0.118      0.009
+      5.5 cm    0.353       0.529      0.117
+      6.0 cm    0.036       0.598      0.366
+      6.5 cm    0.002       0.372      0.626
+      7.5 cm    0.000       0.072      0.928
+
+Matriz de confusão (linhas = observado, colunas = previsto):
+[[45  5  0]
+ [ 6 30 14]
+ [ 1 12 37]]
+Acurácia = 0.7467 | acerto esperado ao acaso = 0.3333
+
+OR (chance da espécie em relação à setosa, por +1 cm de sépala):
+versicolor  OR =  123.432   IC 95% = [20.870; 730.014]
+virginica   OR =  940.485   IC 95% = [126.833; 6973.839]
+
+Com o comprimento da pétala: maior coeficiente em valor absoluto = 232.9
+Log-verossimilhança = -16.7160 (tende a zero) -&gt; separação perfeita: as estimativas divergem.</pre></div><figure class="fig"><img src="../assets/resultados/multinomial.png" alt="Curvas de probabilidade por espécie e matriz de confusão" loading="lazy"/><figcaption><strong>Probabilidades estimadas e desempenho da classificação.</strong> À esquerda, a probabilidade de cada espécie ao longo do comprimento da sépala; os pontos na base mostram os dados observados de cada espécie. A versicolor nunca chega a 65% de probabilidade: ela ocupa a faixa intermediária e é a mais difícil de distinguir. À direita, a matriz de confusão. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Coeficientes (referência: setosa)</caption><thead><tr><th>Equação</th><th>Estimativa</th><th>Erro-padrão</th><th>z</th><th>Valor-p</th><th>OR</th></tr></thead><tbody><tr><td>versicolor: intercepto</td><td>−26,082</td><td>4,889</td><td>−5,335</td><td>&lt; 0,0001</td><td>—</td></tr><tr><td>versicolor: sépala</td><td>4,816</td><td>0,907</td><td>5,310</td><td>&lt; 0,0001</td><td>123,4</td></tr><tr><td>virginica: intercepto</td><td>−38,759</td><td>5,691</td><td>−6,811</td><td>&lt; 0,0001</td><td>—</td></tr><tr><td>virginica: sépala</td><td>6,846</td><td>1,022</td><td>6,698</td><td>&lt; 0,0001</td><td>940,5</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resumo do ajuste</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Log-verossimilhança</td><td>−91,034</td><td>Modelo nulo: −164,792.</td></tr><tr><td>Teste da razão de verossimilhanças</td><td>G = 147,52; 2 g.l.; p = 9,3 × 10⁻³³</td><td>O comprimento da sépala informa muito sobre a espécie.</td></tr><tr><td>AIC</td><td>190,07</td><td></td></tr><tr><td>Pseudo-R² de McFadden</td><td>0,448</td><td></td></tr><tr><td>OR da versicolor por +1 cm</td><td>123,4 [20,9; 730,0]</td><td>Intervalo largo: um preditor só, e muito informativo.</td></tr><tr><td>OR da virginica por +1 cm</td><td>940,5 [126,8; 6973,8]</td><td></td></tr><tr><td>Acurácia</td><td>74,7%</td><td>Contra 33,3% esperados ao acaso.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Probabilidades estimadas</caption><thead><tr><th>Comprimento da sépala</th><th>setosa</th><th>versicolor</th><th>virginica</th></tr></thead><tbody><tr><td>4,5 cm</td><td>0,988</td><td>0,012</td><td>0,000</td></tr><tr><td>5,0 cm</td><td>0,873</td><td>0,118</td><td>0,009</td></tr><tr><td>5,5 cm</td><td>0,353</td><td>0,529</td><td>0,117</td></tr><tr><td>6,0 cm</td><td>0,036</td><td>0,598</td><td>0,366</td></tr><tr><td>6,5 cm</td><td>0,002</td><td>0,372</td><td>0,626</td></tr><tr><td>7,5 cm</td><td>0,000</td><td>0,072</td><td>0,928</td></tr></tbody></table></div><p><strong>Leitura:</strong> sépalas curtas indicam setosa; longas, virginica; a faixa intermediária é ambígua, e é ali que estão quase todos os erros de classificação (14 virginicas previstas como versicolor e 12 no sentido contrário). As razões de chances são enormes porque 1 cm é uma variação grande para esta variável, cujo desvio-padrão é cerca de 0,8 cm.</p><p>Ao repetir o ajuste com o comprimento da pétala, o maior coeficiente em valor absoluto passa de 39 para 233 e continua crescendo a cada iteração: é o sintoma de <strong>separação perfeita</strong>. Nenhuma flor setosa tem pétala maior que 1,9 cm e nenhuma das outras espécies tem menos de 3,0 cm, de modo que a verossimilhança não tem máximo finito. O modelo acerta tudo e, ainda assim, não deve ser usado: os erros-padrão não existem.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a multinomial com resposta ordenada</td><td>Perde informação e estima parâmetros demais; use a <a href="ordinal.html">logística ordinal</a>.</td></tr><tr><td>Esquecer qual é a categoria de referência</td><td>Todo coeficiente é relativo a ela; informe-a sempre.</td></tr><tr><td>Ler o coeficiente como efeito sobre a probabilidade</td><td>O efeito é sobre a chance frente à referência.</td></tr><tr><td>Ignorar avisos de convergência</td><td>Em geral indicam separação perfeita ou categoria muito rara.</td></tr><tr><td>Muitas categorias e poucos dados</td><td>Agrupe categorias raras antes de ajustar.</td></tr><tr><td>Avaliar a acurácia nos dados do ajuste</td><td>Use <a href="holdout.html">treino–teste</a> ou <a href="kfold.html">validação cruzada</a>.</td></tr><tr><td>Supor a independência de alternativas irrelevantes sem pensar</td><td>Em dados de escolha com alternativas parecidas, o pressuposto costuma falhar.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="ordinal.html">Logística ordinal</a></td><td>Categorias com ordem natural.</td></tr><tr><td><a href="logistica.html">Logística binária</a></td><td>Apenas duas categorias, ou agrupamento em duas.</td></tr><tr><td><a href="lda.html">Análise discriminante linear</a> / <a href="qda.html">quadrática</a></td><td>Preditores aproximadamente normais em cada grupo; amostras pequenas.</td></tr><tr><td><a href="cart-class.html">Árvores</a> e <a href="randomforest.html">random forests</a></td><td>Relações complexas e foco em previsão.</td></tr><tr><td><a href="naive-bayes.html">Naive Bayes</a></td><td>Muitos preditores e amostra pequena.</td></tr><tr><td>Logit aninhado ou condicional</td><td>Dados de escolha discreta com alternativas correlacionadas.</td></tr></tbody></table></div><ol class="steps"><li>Verifique a frequência de cada categoria e escolha a referência.</li><li>Explore a relação de cada preditor com as categorias.</li><li>Ajuste o modelo e cheque a convergência.</li><li>Interprete por probabilidades previstas, não só por coeficientes.</li><li>Avalie a classificação em dados não usados no ajuste.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>HOSMER, David W.; LEMESHOW, Stanley; STURDIVANT, Rodney X. <em>Applied logistic regression.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacotes <code>nnet</code> e <code>MASS</code>.)</li><li>McFADDEN, Daniel. Conditional logit analysis of qualitative choice behavior. In: ZAREMBKA, Paul (ed.). <em>Frontiers in econometrics.</em> New York: Academic Press, 1974. p. 105-142.</li><li>ALBERT, Adelin; ANDERSON, J. A. On the existence of maximum likelihood estimates in logistic regression models. <em>Biometrika</em>, v. 71, n. 1, p. 1-10, 1984. (Separação perfeita.)</li><li>FISHER, Ronald A. The use of multiple measurements in taxonomic problems. <em>Annals of Eugenics</em>, v. 7, n. 2, p. 179-188, 1936. (Conjunto de dados <code>iris</code>, pacote <code>datasets</code> do R.)</li><li>ANDERSON, Edgar. The irises of the Gaspé Peninsula. <em>Bulletin of the American Iris Society</em>, v. 59, p. 2-5, 1935.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta categórica com três ou mais categorias sem ordem, observações independentes, linearidade no logit e ausência de separação perfeita.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>nnet</code> (<code>multinom</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="logistica.html"><span>← ANTERIOR</span>Regressão logística binária</a><a href="ordinal.html"><span>PRÓXIMO →</span>Regressão logística ordinal</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

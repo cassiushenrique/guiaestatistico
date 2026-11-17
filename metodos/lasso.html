@@ -4,316 +4,901 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão lasso: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão lasso | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão lasso: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão lasso | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão lasso
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 14 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Regressão lasso
-    </h1>
-<p class="detail-lead">
-     Seleciona variáveis relevantes e reduz a influência de preditores pouco informativos.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/lasso.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Seleciona variáveis relevantes e reduz a influência de preditores pouco informativos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Padronização, amostra suficiente e estabilidade de seleção.</li><li>Preditores correlacionados podem gerar escolhas arbitrárias.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat{\boldsymbol\beta}=\underset{\boldsymbol\beta}{\operatorname{argmin}}\left\{\operatorname{RSS}(\boldsymbol\beta)+\lambda\sum_{j=1}^{p}|\beta_j|\right\}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor de coeficientes estimados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\lambda\)
-        </dt>
-<dd>
-         intensidade da penalização L1, normalmente escolhida por validação cruzada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X,\mathbf y\)
-        </dt>
-<dd>
-         matriz de preditores e vetor-resposta
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Variáveis com coeficientes não nulos foram selecionadas pelo algoritmo; isso não demonstra significância a 5%.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição de consumo de veículos a partir de várias medidas (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-lasso" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-lasso"><code># Regressão lasso ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão lasso</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REGULARIZAÇÃO E SELEÇÃO</span><h1>Regressão lasso</h1><p class="detail-lead">Penaliza a soma dos valores absolutos dos coeficientes, levando alguns a exatamente zero — encolhimento e seleção em um único ajuste, inclusive quando p > n.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/lasso.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/lasso.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o lasso</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O lasso troca a penalidade quadrática do <a href="ridge.html">ridge</a> pela soma dos valores absolutos dos coeficientes. A mudança parece pequena e tem uma consequência grande: coeficientes passam a ser levados a <strong>exatamente zero</strong>. O lasso encolhe e seleciona ao mesmo tempo, em um único ajuste, e funciona quando \(p&gt;n\) — onde a <a href="subset.html">busca exaustiva</a> e o <a href="stepwise.html">stepwise</a> não funcionam.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão lasso" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A penalidade</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">L1: soma de |beta|</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">em vez de beta²</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A consequência</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Zeros EXATOS:</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">seleciona</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O mecanismo</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Limiar brando</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">(soft-thresholding)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ponto fraco</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Grupos colineares:</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">escolhe um ao acaso</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A correção</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Rede elástica:</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">mistura L1 e L2</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O limite</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Com p &gt; n ativa no</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">máximo n variáveis</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão lasso</text></svg><figcaption>Visão geral da regressão lasso. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O resultado central desta ficha</strong><p>No conjunto de solo, o lasso com \(\lambda\) de menor erro validado alcança <strong>0,4040</strong> — praticamente igual ao do modelo ajustado diretamente nas quatro variáveis <em>verdadeiras</em> (0,4052). Sem saber quais são essas quatro. Em compensação, ele <em>não</em> as encontra: escolhe seis, trocando a argila por silte e areia, que juntas são o complemento dela.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o lasso</h2><p>A penalidade \(L_1\) tem derivada constante igual a \(\lambda\) na origem, enquanto a quadrática do ridge tem derivada nula ali. É dessa diferença que vem tudo: com derivada constante, há um intervalo em torno de zero dentro do qual a penalidade vence o ganho de ajuste, e o coeficiente ótimo é exatamente zero.</p><figure class="fig"><img src="../assets/resultados/lasso-didatica.png" alt="A geometria da penalidade, o caminho dos coeficientes e o número de variáveis ativas" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, a geometria em duas dimensões: as elipses são as curvas de nível da soma de quadrados e a região sombreada é o que a penalidade permite. O losango do \(L_1\) tem <strong>bicos</strong> sobre os eixos, e a elipse tende a tocá-lo justamente num bico — onde um dos coeficientes é zero. O círculo do \(L_2\) não tem bicos, e o toque nunca cai sobre um eixo. No centro, o caminho do lasso: cada curva sai do zero e, lida da direita para a esquerda, volta a zero e fica. À direita, o número de coeficientes não nulos como função degrau de \(\lambda\). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Lasso contra ridge, lado a lado</caption><thead><tr><th>Aspecto</th><th>Ridge (L2)</th><th>Lasso (L1)</th></tr></thead><tbody><tr><td>Penalidade</td><td>Σβ²</td><td>Σ|β|</td></tr><tr><td>Derivada na origem</td><td>0</td><td>λ</td></tr><tr><td>Zeros exatos</td><td>nunca</td><td>sim</td></tr><tr><td>Seleciona variáveis</td><td>não</td><td>sim</td></tr><tr><td>Solução</td><td>forma fechada</td><td>iterativa (descida por coordenadas)</td></tr><tr><td>Grupos colineares</td><td>encolhe o grupo junto</td><td>escolhe um representante</td></tr><tr><td>Com p > n</td><td>usa todas as p</td><td>ativa no máximo n</td></tr><tr><td>Priori bayesiana equivalente</td><td>normal</td><td>Laplace (dupla exponencial)</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>A penalidade depende da escala.</td><td>O glmnet faz por padrão.</td></tr><tr><td>Intercepto não penalizado</td><td>Caso contrário o ajuste depende da origem de y.</td><td>Todas as implementações sérias o excluem.</td></tr><tr><td><strong>Esparsidade plausível</strong></td><td>O lasso supõe que poucas variáveis importam.</td><td>Se o sinal é difuso, prefira ridge.</td></tr><tr><td>Colinearidade entre candidatas reconhecida</td><td>Determina qual representante é escolhido.</td><td>VIF e correlações, inclusive de somas.</td></tr><tr><td>λ escolhido por validação cruzada</td><td>Não há valor universal.</td><td><code>cv.glmnet</code>, com semente fixada.</td></tr><tr><td><strong>Erro avaliado com λ reescolhido por dobra</strong></td><td>Fixar λ na amostra inteira é otimista.</td><td>Validação aninhada.</td></tr><tr><td><strong>Valores-p não reportados</strong></td><td>A seleção usou os dados.</td><td>Veja a ficha <a href="stepwise.html">stepwise</a>.</td></tr><tr><td>Observações independentes</td><td>A validação cruzada pressupõe isso.</td><td>Com agrupamento, valide por grupo.</td></tr><tr><td>Resposta na escala adequada</td><td>O glmnet cobre famílias; escolha a certa.</td><td><code>family =</code> para logística, Poisson, Cox.</td></tr></tbody></table></div><div class="callout warn"><strong>O que "esparsidade" significa, e quando não vale</strong><p>O lasso é construído sobre a hipótese de que a maioria dos coeficientes verdadeiros é zero. Quando isso vale, ele é excelente. Quando o sinal está espalhado por muitas variáveis de efeito pequeno — o caso típico de genômica poligênica, ou de um espectro em que toda uma região contribui — o lasso é forçado a escolher poucas e descarta sinal real. Nesse regime o <a href="ridge.html">ridge</a> costuma predizer melhor, e a rede elástica fica no meio. Não há como decidir a priori: compare os dois por validação cruzada.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat\beta^{\text{lasso}} &= \arg\min_{\beta}\biggl\{\frac{1}{2n}\left\|y-X\beta\right\|^{2} \\ &\quad +\lambda\sum_{j=1}^{p}\left|\beta_j\right|\biggr\}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(X\)</dt><dd>matriz das candidatas, padronizadas</dd></div><div><dt>\(\lambda\)</dt><dd>parâmetro de penalidade</dd></div><div><dt>\(\sum|\beta_j|\)</dt><dd>norma \(L_1\) dos coeficientes, sem o intercepto</dd></div><div><dt>\(n\)</dt><dd>número de observações</dd></div></dl><h3>O limiar brando, e o λ a partir do qual tudo é zero</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\beta_j\leftarrow\frac{S\left(\rho_j,\lambda\right)}{\frac{1}{n}\sum_i x_{ij}^{2}},\]\[S(z,\lambda)=\operatorname{sinal}(z)\max\left(\left|z\right|-\lambda,\ 0\right)\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\rho_j=\frac{1}{n}\,x_j^{\top}\!\left(y-\sum_{k\neq j}x_k\hat\beta_k\right),\]\[\lambda_{\max}=\max_j\frac{\left|x_j^{\top}y\right|}{n}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\rho_j\)</dt><dd>o estimador de mínimos quadrados parcial: ajuste de \(x_j\) aos resíduos das outras</dd></div><div><dt>\(S(z,\lambda)\)</dt><dd>operador de limiar brando</dd></div><div><dt>\(\lambda_{\max}\)</dt><dd>menor \(\lambda\) que zera todos os coeficientes</dd></div></dl><p>A descida por coordenadas percorre as variáveis uma a uma aplicando essa atualização, e converge porque o problema é convexo. Nestes dados \(\lambda_{\max}=0{,}67520\): acima disso o lasso devolve apenas o intercepto, e é a partir desse valor que o <code>glmnet</code> constrói a grade.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>O limiar brando em λ = 0,050, variável por variável</caption><thead><tr><th>Variável</th><th>MQO parcial ρ</th><th>Limiar λ</th><th>Coeficiente lasso</th></tr></thead><tbody><tr><td>pH</td><td>0,02893</td><td>0,05000</td><td><strong>0 (|ρ| &lt; λ)</strong></td></tr><tr><td>M.O.</td><td>0,76056</td><td>0,05000</td><td>0,71855</td></tr><tr><td>P (resina)</td><td>0,17354</td><td>0,05000</td><td>0,12493</td></tr><tr><td>K</td><td>0,00924</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>Ca</td><td>0,01166</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>Mg</td><td>0,02856</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>Al</td><td>−0,01880</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>CTC</td><td>−0,02751</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>V%</td><td>0,49628</td><td>0,05000</td><td>0,45130</td></tr><tr><td>Argila</td><td>0,03899</td><td>0,05000</td><td><strong>0</strong></td></tr><tr><td>Silte</td><td>0,07879</td><td>0,05000</td><td>0,02911</td></tr><tr><td>Areia</td><td>−0,21117</td><td>0,05000</td><td>−0,16298</td></tr></tbody></table></div><div class="worked"><strong>Verificando a conta em duas variáveis</strong><p>Para a matéria orgânica, \(\rho=0{,}76056\) e \(\lambda=0{,}05\). Como \(|\rho|&gt;\lambda\), o coeficiente é \[\begin{aligned}&\operatorname{sinal}(0{,}76056)\times(0{,}76056 \\ &\quad -0{,}05) \\ &= 0{,}71056,\end{aligned}\] dividido pela média dos quadrados da coluna padronizada, que é \(89/90=0{,}98889\) — resultando em \(0{,}71855\). Confere com a tabela.</p><p>Para a argila, \(\rho=0{,}03899\) e \(|\rho|&lt;\lambda=0{,}05\), de modo que \(\max(|\rho|-\lambda,0)=0\) e o coeficiente é <strong>exatamente zero</strong>. Note que \(\rho\) não é pequeno porque a argila seja irrelevante — ela está no modelo verdadeiro — mas porque a areia, já no modelo com coeficiente \(-0{,}163\), absorveu a informação que a argila carregaria.</p><p>A diferença entre encolher e zerar está nessa comparação: no ridge, qualquer \(\rho\neq0\) produz coeficiente não nulo, porque a penalidade quadrática só divide. No lasso, a penalidade <em>subtrai</em>, e a subtração pode zerar.</p></div><div class="table-wrap"><table class="method-table"><caption>A ordem de entrada das variáveis no caminho</caption><thead><tr><th>Ordem</th><th>Variável</th><th>λ de entrada</th><th>No modelo verdadeiro?</th></tr></thead><tbody><tr><td>1</td><td>M.O.</td><td>0,61326</td><td>SIM</td></tr><tr><td>2</td><td>K</td><td>0,45951</td><td>não</td></tr><tr><td>3</td><td>Mg</td><td>0,37907</td><td>não</td></tr><tr><td>4</td><td>V%</td><td>0,28403</td><td>SIM</td></tr><tr><td>5</td><td>Ca</td><td>0,25798</td><td>não</td></tr><tr><td>6</td><td>Areia</td><td>0,19330</td><td>não</td></tr><tr><td>7</td><td>P (resina)</td><td>0,17557</td><td>SIM</td></tr><tr><td>8</td><td>Silte</td><td>0,09857</td><td>não</td></tr><tr><td>9</td><td>CTC</td><td>0,03766</td><td>não</td></tr><tr><td>10</td><td><strong>Argila</strong></td><td><strong>0,02114</strong></td><td><strong>SIM</strong></td></tr><tr><td>11</td><td>Al</td><td>0,00889</td><td>não</td></tr><tr><td>12</td><td>pH</td><td>0,00412</td><td>não</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>Produz zeros exatos: é ao mesmo tempo encolhimento e seleção.</li><li>O problema é convexo, de modo que o mínimo é global.</li><li>\(\lambda\ge\lambda_{\max}=\max_j|x_j^{\top}y|/n\) zera todos os coeficientes.</li><li>Com \(p&gt;n\), ativa no máximo \(n\) variáveis — é uma limitação estrutural.</li><li>Dentro de um grupo colinear, tende a escolher um representante e zerar os demais.</li><li>Os coeficientes são enviesados para zero, inclusive os corretamente selecionados.</li><li>Equivale à moda a posteriori com priori de Laplace sobre os coeficientes.</li><li>Não tem forma fechada: resolve-se por descida por coordenadas (Friedman et al., 2010).</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Gráfico do caminho</td><td>Quando cada variável entra e sai.</td><td>A ordem de entrada não é ordem de importância.</td></tr><tr><td><code>print(la)</code> — Df</td><td>Número de coeficientes não nulos.</td><td>É o grau de esparsidade, não os g.l. do teste.</td></tr><tr><td><code>print(la)</code> — %Dev</td><td>Proporção de desvio explicada.</td><td>Resubstituição: otimista.</td></tr><tr><td><code>lambda.min</code></td><td>λ de menor erro validado.</td><td>Varia entre execuções; fixe a semente.</td></tr><tr><td><code>lambda.1se</code></td><td>λ maior, mais esparso.</td><td>Costuma ser a escolha reportada.</td></tr><tr><td>Coeficientes com "."</td><td>Os zerados.</td><td>Zero não significa "sem efeito".</td></tr><tr><td><strong>Conjunto ativo</strong></td><td>As variáveis selecionadas.</td><td><strong>Instável</strong>: reporte frequências de bootstrap.</td></tr><tr><td>Erro validado</td><td>O que o modelo prediz.</td><td>Reescolha λ dentro de cada dobra.</td></tr></tbody></table></div><h3>Dois cuidados de interpretação</h3><div class="callout warn"><strong>"Coeficiente zero" não significa "sem efeito"</strong><p>Nestes dados a argila está no processo gerador e o lasso a zera; a areia não está e recebe coeficiente \(-0{,}163\). O lasso não errou: areia e argila carregam quase a mesma informação, e escolher uma é indiferente para predizer. O que não se pode fazer é ler o conjunto ativo como a lista de variáveis que importam. Quando as candidatas são correlacionadas, o conjunto ativo é <em>uma</em> parametrização adequada, entre várias.</p></div><div class="callout warn"><strong>A ordem de entrada no caminho não é ordem de importância</strong><p>No caminho desta ficha, a segunda variável a entrar é o potássio e a terceira é o magnésio — nenhuma das duas está no modelo verdadeiro — enquanto o fósforo, que está, entra em sétimo e a argila em décimo. A entrada precoce reflete a correlação marginal com \(y\) no momento em que o resíduo é grande, e nada mais.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O <code>glmnet</code> com <code>alpha = 1</code> é o lasso (o padrão da função). Ele exige uma matriz, padroniza por padrão e devolve os coeficientes na escala original, com os zeros impressos como ponto. <code>glmnet(X, y)</code> ajusta o caminho completo de \(\lambda\) com partida quente; <code>cv.glmnet</code> escolhe \(\lambda\) e devolve <code>lambda.min</code> e <code>lambda.1se</code>. O argumento <code>alpha</code> entre 0 e 1 dá a rede elástica, e <code>relax = TRUE</code> ajusta também a versão relaxada. Para outras respostas, <code>family = "binomial"</code>, <code>"poisson"</code> ou <code>"cox"</code>. Para penalizar variáveis de forma desigual, <code>penalty.factor</code>; para forçar uma variável a entrar, basta dar-lhe fator zero. Fixe sempre a semente antes do <code>cv.glmnet</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-lasso-min" type="button">Copiar código</button></div><pre id="code-lasso-min"><code>library(glmnet)
+Xm &lt;- as.matrix(solo[, cand]); y &lt;- solo$y
+set.seed(1)
+cvl &lt;- cv.glmnet(Xm, y, alpha = 1, nfolds = 10)
+coef(cvl, s = "lambda.min")      # os zeros aparecem como "."
+coef(cvl, s = "lambda.1se")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 90 amostras de solo de uma área experimental, com a produtividade da cultura (t/ha) e <strong>doze</strong> variáveis candidatas de análise de rotina — pH, matéria orgânica, fósforo resina, potássio, cálcio, magnésio, alumínio, CTC, saturação por bases (V%), argila, silte e areia. O processo gerador é conhecido e usa <strong>apenas quatro</strong> delas: matéria orgânica, fósforo, V% e argila, com erro de desvio-padrão 0,60 t/ha. A colinearidade é deliberada e realista: argila, silte e areia somam aproximadamente 100% por construção física, e cálcio, magnésio e potássio estão ligados à CTC e ao V%. Saber qual é o modelo verdadeiro permite verificar se cada método o encontra — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as seis fichas do grupo.</p><p>O segundo conjunto, também fictício, é um espectro de reflectância no infravermelho próximo: 60 amostras, <strong>200 comprimentos de onda</strong> entre 1.100 e 2.300 nm, e o teor de proteína (%) como resposta. Quatro bandas de absorção foram construídas, mas apenas duas determinam a proteína; a maior fonte de variação do espectro é uma deriva de linha de base sem relação com ela. Aqui <strong>p > n</strong>, e os métodos clássicos de seleção deixam de ser aplicáveis.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-lasso" type="button">Copiar código</button></div><pre id="code-lasso"><code># Regressão lasso: exemplo completo ----
+# Pacotes: glmnet
+# Dados fictícios: 90 amostras de solo, 12 candidatas.
+# O arquivo solo.csv acompanha o site, na pasta scripts/.
+solo &lt;- read.csv("solo.csv")
+str(solo)          # y (t/ha) e as 12 candidatas
+dim(solo)
+# O modelo VERDADEIRO (conhecido por construção) usa só quatro:
+#   y = 4,00 + 0,80*mo + 0,0250*pres + 0,0300*v + 0,0200*argila + erro
+cand &lt;- c("ph","mo","pres","k","ca","mg","al","ctc","v","argila","silte","areia")
+verdadeiras &lt;- c("mo","pres","v","argila")
 
-# Ajuste e resultados ----
-if (!requireNamespace("glmnet", quietly = TRUE)) install.packages("glmnet")
+# A colinearidade, que é o problema central do grupo
+library(car)
+vif(lm(y ~ ., data = solo))
+round(cor(solo[, cand]), 2)
+
 library(glmnet)
-set.seed(2026)
-x &lt;- model.matrix(mpg ~ wt + hp + disp + qsec + drat, mtcars)[, -1]
-y &lt;- mtcars$mpg
-ajuste &lt;- cv.glmnet(x, y, alpha = 1, nfolds = 5)
-print(coef(ajuste, s = "lambda.min"))
-plot(ajuste)
+Xm &lt;- as.matrix(solo[, cand]); y &lt;- solo$y
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. O lambda acima do qual TUDO é zero tem forma fechada
+Xp &lt;- scale(Xm); n &lt;- nrow(solo)
+max(abs(t(Xp) %*% (y - mean(y))))/n        # lambda_max
+# O glmnet constrói a grade a partir desse valor, para baixo.
+
+# ---- 2. O caminho do lasso (alpha = 1 é o padrão)
+la &lt;- glmnet(Xm, y, alpha = 1)
+plot(la, xvar = "lambda", label = TRUE)
+print(la)                                  # Df, %Dev e Lambda por passo
+
+# A ORDEM DE ENTRADA das variáveis
+for (j in seq_along(cand)) {
+  b &lt;- as.vector(coef(la)[j + 1, ])
+  k &lt;- which(abs(b) &gt; 1e-8)[1]
+  cat(sprintf("%-8s entra em lambda = %.5f\n", cand[j],
+              if (is.na(k)) NA else la$lambda[k]))
+}
+
+# ---- 3. A escolha de lambda por validação cruzada
+set.seed(1)
+cvl &lt;- cv.glmnet(Xm, y, alpha = 1, nfolds = 10)
+plot(cvl)
+cvl$lambda.min; cvl$lambda.1se
+coef(cvl, s = "lambda.min")      # os coeficientes; os zeros aparecem como "."
+coef(cvl, s = "lambda.1se")
+sum(coef(cvl, s = "lambda.min")[-1] != 0)   # quantas ficaram ativas
+verdadeiras                                  # para comparar
+
+# ---- 4. O PROBLEMA DOS GRUPOS CORRELACIONADOS
+cor(solo$argila, solo$areia)
+cor(solo$argila, solo$silte + solo$areia)    # -0,99: substituto quase perfeito
+# A argila ESTÁ no modelo verdadeiro e o lasso escolhe silte e areia.
+
+# Instabilidade do conjunto ativo
+set.seed(41)
+cont &lt;- numeric(12); names(cont) &lt;- cand; nat &lt;- numeric(1000)
+for (b in 1:1000) {
+  i  &lt;- sample(nrow(solo), replace = TRUE)
+  m  &lt;- glmnet(Xm[i, ], y[i], alpha = 1, lambda = cvl$lambda.min)
+  vs &lt;- cand[as.vector(coef(m))[-1] != 0]
+  cont[vs] &lt;- cont[vs] + 1; nat[b] &lt;- length(vs)
+}
+sort(round(100*cont/1000, 1), decreasing = TRUE)
+mean(nat); range(nat)
+
+# ---- 5. REDE ELÁSTICA: a correção para grupos correlacionados
+set.seed(2)
+for (al in c(1, 0.7, 0.4, 0.1)) {
+  cj &lt;- cv.glmnet(Xm, y, alpha = al, nfolds = 10)
+  vs &lt;- cand[as.vector(coef(cj, s = "lambda.min"))[-1] != 0]
+  cat(sprintf("alpha = %.1f: EQM %.4f, %d ativas: %s\n", al,
+      min(cj$cvm), length(vs), paste(vs, collapse = ", ")))
+}
+# Quando alpha diminui, os grupos colineares entram JUNTOS.
+
+# ---- 6. Com p &gt; n, o lasso ativa no máximo n variáveis
+# Dados fictícios: espectro NIR, 60 amostras, 200 comprimentos de onda.
+# O arquivo espectro.csv acompanha o site, na pasta scripts/.
+esp &lt;- read.csv("espectro.csv")
+dim(esp)                      # 60 x 201: proteina + nm1100 ... nm2300
+Xe &lt;- as.matrix(esp[, -1]); ye &lt;- esp$proteina
+qr(scale(Xe))$rank            # 59: o posto é menor que o número de colunas
+
+set.seed(7)
+cve &lt;- cv.glmnet(Xe, ye, alpha = 1, nfolds = 10)
+cve$lambda.min
+sum(coef(cve, s = "lambda.min")[-1] != 0)   # muito menos que 200
+min(cve$cvm); 1 - min(cve$cvm)/var(ye)
+max(cve$nzero)                               # nunca passa de n = 60
+
+# ---- 7. O LASSO RELAXADO: reajustar por MQO nas selecionadas
+vs &lt;- cand[as.vector(coef(cvl, s = "lambda.min"))[-1] != 0]
+cbind(lasso    = as.vector(coef(cvl, s = "lambda.min"))[-1][
+                    as.vector(coef(cvl, s = "lambda.min"))[-1] != 0],
+      relaxado = coef(lm(reformulate(vs, "y"), data = solo))[-1])
+# O glmnet faz isso diretamente com relax = TRUE:
+cvr &lt;- cv.glmnet(Xm, y, alpha = 1, relax = TRUE)
+print(cvr)
+
+# ---- 8. NÃO reporte valores-p do modelo do lasso
+# A seleção usou os dados; os p do lm reajustado são inválidos pelas
+# mesmas razões da ficha stepwise. Para inferência pós-seleção, veja
+# selectiveInference::fixedLassoInf.
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-lasso" type="button">Copiar código</button></div><pre id="code-py-lasso"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab14)
+# ------------------------------------------------------------------
+import numpy as np, itertools
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 90 amostras de solo (arquivo solo.csv, pasta scripts/ do site)
+solo = le_csv('solo.csv')
+NOMES=['ph', 'mo', 'pres', 'k', 'ca', 'mg', 'al', 'ctc', 'v', 'argila', 'silte', 'areia']
+ROT={'ph':'pH','mo':'M.O.','pres':'P (resina)','k':'K','ca':'Ca','mg':'Mg','al':'Al','ctc':'CTC','v':'V%','argila':'Argila','silte':'Silte','areia':'Areia'}
+X=solo[NOMES].to_numpy(float); Y=solo['y'].to_numpy(float)
+VERD={"mo":0.80,"pres":0.0250,"v":0.0300,"argila":0.0200}
+N,P=X.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+def pad(A, mu=None, sd=None):
+    """Padroniza colunas (média 0, desvio 1, com n-1)."""
+    if mu is None: mu = A.mean(0)
+    if sd is None: sd = A.std(0, ddof=1)
+    sd = np.where(sd &lt; 1e-12, 1.0, sd)
+    return (A - mu)/sd, mu, sd
+
+def ols(A, y):
+    Ad = np.column_stack([np.ones(len(A)), A])
+    return np.linalg.lstsq(Ad, y, rcond=None)[0]
+
+def prev(A, b):
+    return b[0] + A @ b[1:]
+
+def sqr(obs, p_): return float(np.sum((obs - p_)**2))
+def eqm(obs, p_): return float(np.mean((obs - p_)**2))
+
+def ridge(A, y, lam):
+    """Ridge em A JÁ padronizado; não penaliza o intercepto."""
+    n_, p_ = A.shape
+    G = A.T @ A + lam*n_*np.eye(p_)
+    b = np.linalg.solve(G, A.T @ (y - y.mean()))
+    return np.concatenate([[y.mean()], b])
+
+def lasso(A, y, lam, it=20000, tol=1e-11):
+    """Descida por coordenadas em A JÁ padronizado (Friedman et al., 2010)."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean()
+    nrm = (A**2).sum(0)/n_
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = A[:, j] @ (r + A[:, j]*bj)/n_
+            nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+            if nb != bj:
+                r = r - A[:, j]*(nb - bj); b[j] = nb
+                mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return np.concatenate([[y.mean()], b])
+
+def pcr(A, y, m):
+    """Regressão nos m primeiros componentes principais de A padronizado."""
+    u, s, vt = np.linalg.svd(A, full_matrices=False)
+    T = (u*s)[:, :m]
+    g = np.linalg.lstsq(T, y - y.mean(), rcond=None)[0]
+    b = vt[:m].T @ g
+    return np.concatenate([[y.mean()], b])
+
+def pls(A, y, m):
+    """NIPALS para uma resposta; devolve coeficientes na escala de A."""
+    Xr = A.copy(); yr = y - y.mean()
+    W = np.zeros((A.shape[1], m)); Pm = np.zeros((A.shape[1], m)); q = np.zeros(m)
+    for a in range(m):
+        w = Xr.T @ yr; w = w/np.linalg.norm(w)
+        t = Xr @ w; tt = t @ t
+        pj = Xr.T @ t/tt; qa = (yr @ t)/tt
+        Xr = Xr - np.outer(t, pj); yr = yr - qa*t
+        W[:, a] = w; Pm[:, a] = pj; q[a] = qa
+    Rm = W @ np.linalg.inv(Pm.T @ W)
+    b = Rm @ q
+    return np.concatenate([[y.mean()], b])
+
+def dobras(n_, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n_/k)))[:n_]
+    rg.shuffle(d); return d
+
+def cv(ajusta, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada; TODA a padronização dentro do laço."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 1000*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            b = ajusta(Ap, y[tr])
+            e[te] = y[te] - prev((A[te] - mu)/sd, b)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0
+
+def crit(A, y, cols, s2):
+    """Cp de Mallows, AIC e BIC de um submodelo."""
+    Ad = np.column_stack([np.ones(len(A))] + [A[:, j] for j in cols])
+    b = np.linalg.lstsq(Ad, y, rcond=None)[0]
+    sq = sqr(y, Ad @ b); n_, d = len(y), len(cols) + 1
+    return dict(sqr=sq, p=d, r2=1 - sq/np.sum((y - y.mean())**2),
+                r2a=1 - (sq/(n_ - d))/(np.sum((y - y.mean())**2)/(n_ - 1)),
+                cp=sq/s2 - n_ + 2*d,
+                aic=n_*np.log(sq/n_) + 2*d, bic=n_*np.log(sq/n_) + np.log(n_)*d)
+
+def vif(A):
+    Ap, _, _ = pad(A); out = []
+    for j in range(A.shape[1]):
+        o = [i for i in range(A.shape[1]) if i != j]
+        b = ols(Ap[:, o], Ap[:, j]); r = Ap[:, j] - prev(Ap[:, o], b)
+        out.append(1/(1 - (1 - r @ r/np.sum((Ap[:, j] - Ap[:, j].mean())**2))))
+    return np.array(out)
+
+def c(v, d=4):
+    return ('%.*f' % (d, v)).replace('.', ',')
+
+def lasso_path(A, y, lams, it=5000, tol=1e-10):
+    """Caminho do lasso com partida quente (como o glmnet). lams DECRESCENTE."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def enet_path(A, y, lams, al, it=5000, tol=1e-10):
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(nrm[j] + lam*(1 - al))
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def cv_path(ajusta_path, A, y, lams, k=10, seed=0, reps=1):
+    """EQM por VC para TODA a grade de lambda de uma vez, com partida quente."""
+    acc = np.zeros((reps, len(lams)))
+    for rp in range(reps):
+        d = dobras(len(y), k, seed + 1000*rp); E = np.zeros((len(lams), len(y)))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            bs = ajusta_path(Ap, y[tr], lams)
+            Ate = (A[te] - mu)/sd
+            for i, b in enumerate(bs): E[i, te] = y[te] - prev(Ate, b)
+        acc[rp] = (E**2).mean(1)
+    return acc.mean(0), acc.std(0, ddof=1) if reps &gt; 1 else np.zeros(len(lams))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       A seleção de preditores por LASSO não constitui um teste de significância dos coeficientes selecionados.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="ridge.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão ridge
-    </a>
-<a href="pcr.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão por componentes principais (PCR)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def _cd_gram(G, Ay, lam, al, b, dg, it=10000, tol=1e-11):
+    """Descida por coordenadas usando a matriz de Gram: só escalares no laço."""
+    p_ = len(b)
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return b
+
+def enet_path_g(A, y, lams, al=1.0):
+    """Caminho da rede elástica (al=1 é o lasso) com Gram e partida quente."""
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_gram(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_g(A, y, lams): return enet_path_g(A, y, lams, 1.0)
+
+
+def _cd_ativo(G, Ay, lam, al, b, dg, it=200, tol=1e-11):
+    """Descida por coordenadas com CONJUNTO ATIVO (estratégia do glmnet):
+    varre tudo, depois itera só nos coeficientes não nulos."""
+    p_ = len(b)
+    for _ in range(it):
+        # varredura completa
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        ativo = np.flatnonzero(b)
+        if len(ativo) == 0 or mx &lt; tol: break
+        Ga = G[np.ix_(ativo, ativo)]; Aya = Ay[ativo]; dga = dg[ativo]
+        ba = b[ativo].copy()
+        for _ in range(2000):
+            mxa = 0.0
+            for i in range(len(ativo)):
+                bi = ba[i]
+                rho = Aya[i] - (Ga[i] @ ba - dga[i]*bi)
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dga[i] + lam*(1 - al))
+                if nb != bi:
+                    ba[i] = nb; mxa = max(mxa, abs(nb - bi))
+            if mxa &lt; tol: break
+        b[ativo] = ba
+        if mx &lt; tol: break
+    return b
+
+def enet_path_a(A, y, lams, al=1.0):
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_ativo(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_a(A, y, lams): return enet_path_a(A, y, lams, 1.0)
+# ------------------------------------------------------------------ fim do bloco comum
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14b)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 60 espectros NIR de 200 bandas (arquivo espectro.csv)
+esp = le_csv('espectro.csv')
+LAM=np.round(np.linspace(1100,2300,200),1)          # comprimentos de onda (nm)
+XE=esp.drop(columns='proteina').to_numpy(float); YE=esp['proteina'].to_numpy(float)
+NE,PE=XE.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+Xp,mu,sd=pad(X); SQT=float(np.sum((Y-Y.mean())**2)); yc=Y-Y.mean()
+LMAX=float(np.abs(Xp.T@yc).max()/N)
+print('Os mesmos 90 perfis de solo e as mesmas 12 candidatas.')
+print('O modelo VERDADEIRO usa M.O., P (resina), V% e Argila.')
+print()
+print('O lambda acima do qual TODOS os coeficientes são zero tem forma fechada:')
+print("  lambda_max = max_j |x_j' y| / n = %s"%c(LMAX,5))
+print('Acima dele o lasso devolve só o intercepto. É por isso que o glmnet')
+print('constrói a grade de lambda a partir desse valor, para baixo.')
+
+print('\n'+'='*70)
+print('O CAMINHO DO LASSO: a ordem de entrada das variáveis')
+LAMS=np.logspace(np.log10(LMAX),np.log10(LMAX/2000),80)
+PATH=np.array([b[1:] for b in lasso_path_a(Xp,Y,LAMS)])
+ent={}
+for j in range(P):
+    nz=np.where(np.abs(PATH[:,j])&gt;1e-8)[0]
+    if len(nz): ent[j]=LAMS[nz[0]]
+print()
+print('ordem   variável      lambda de entrada   no modelo verdadeiro?')
+for i,(j,l) in enumerate(sorted(ent.items(),key=lambda t:-t[1])):
+    print('%5d   %-11s %17s   %s'%(i+1,ROT[NOMES[j]],c(l,5),'SIM' if NOMES[j] in VERD else '-'))
+nunca=[ROT[NOMES[j]] for j in range(P) if j not in ent]
+print()
+print('Variáveis que nunca entram: %s'%(', '.join(nunca) or 'nenhuma'))
+print()
+GR=[LMAX*0.9,LMAX*0.5,0.20,0.10,0.05,0.02,0.01,0.002]
+BS=lasso_path_a(Xp,Y,sorted(GR,reverse=True))
+print('%10s %6s   %s'%('lambda','ativas','coeficientes não nulos'))
+for l,b in zip(sorted(GR,reverse=True),BS):
+    at=[j for j in range(P) if abs(b[1+j])&gt;1e-8]
+    print('%10s %6d   %s'%(c(l,5),len(at),', '.join('%s %s'%(ROT[NOMES[j]],c(b[1+j],3)) for j in at) or '(nenhuma)'))
+
+print('\n'+'='*70)
+print('O MECANISMO: limiar brando (soft-thresholding)')
+print()
+print('Em cada passo da descida por coordenadas, o coeficiente de uma variável')
+print('é o do MQO PARCIAL (ajustado aos resíduos das outras), deslocado para')
+print('zero em exatamente lambda, e grudado em zero se o deslocamento')
+print('ultrapassar o próprio valor.')
+print()
+l0=0.05
+b=lasso_path_a(Xp,Y,[LMAX,0.2,l0])[-1]
+r=yc-Xp@b[1:]
+print('Com lambda = %s, variável por variável:'%c(l0,3))
+print('%-11s %13s %10s %13s'%('variável','MQO parcial','limiar','coef. lasso'))
+for j in range(P):
+    rho=float(Xp[:,j]@(r+Xp[:,j]*b[1+j])/N)
+    print('%-11s %13s %10s %13s'%(ROT[NOMES[j]],c(rho,5),c(l0,5),
+          c(b[1+j],5)+('  &lt;- ZERO' if abs(b[1+j])&lt;1e-8 else '')))
+print()
+print('Quando |MQO parcial| &lt;= lambda, o coeficiente é exatamente zero. No ridge')
+print('isso nunca acontece: a penalidade quadrática tem derivada NULA na origem,')
+print('e a L1 tem derivada igual a lambda — é essa descontinuidade que zera.')
+
+print('\n'+'='*70)
+print('A ESCOLHA DE lambda POR VALIDAÇÃO CRUZADA (10 dobras, 10 repetições)')
+GL=np.logspace(np.log10(LMAX),np.log10(LMAX/2000),40)
+M_,S_=cv_path(lasso_path_a,X,Y,GL,10,0,10)
+BA=lasso_path_a(Xp,Y,GL)
+NAT=np.array([int(np.sum(np.abs(b[1:])&gt;1e-8)) for b in BA])
+jm=int(np.argmin(M_)); lmin=GL[jm]
+d=dobras(N,10,0); ef=[]
+for j in range(10):
+    tr,te=d!=j,d==j; Ap,m_,s_=pad(X[tr])
+    bb=lasso_path_a(Ap,Y[tr],[LMAX,lmin])[-1]
+    ef.append(eqm(Y[te],prev((X[te]-m_)/s_,bb)))
+ep1=float(np.std(ef,ddof=1)/np.sqrt(10))
+cand=[i for i in range(len(GL)) if M_[i]&lt;=M_[jm]+ep1]
+j1=min(cand); l1se=GL[j1]
+print()
+print('%10s %13s %8s %s'%('lambda','EQM 10-fold','ativas',''))
+for l in [0.30,0.20,0.12,0.08,0.05,0.035,0.0246,0.015,0.008,0.003,0.001]:
+    k=int(np.argmin(np.abs(GL-l))); mk=''
+    if k==jm: mk='  &lt;- menor EQM'
+    elif k==j1: mk='  &lt;- regra do EP único'
+    print('%10s %13s %8d%s'%(c(GL[k],5),c(M_[k]),NAT[k],mk))
+bmin=BA[jm]; b1se=BA[j1]
+amin=[j for j in range(P) if abs(bmin[1+j])&gt;1e-8]; a1se=[j for j in range(P) if abs(b1se[1+j])&gt;1e-8]
+print()
+print('  lambda do menor EQM = %s | EQM %s | %d ativas'%(c(lmin,5),c(M_[jm]),len(amin)))
+print('     %s'%', '.join(ROT[NOMES[j]] for j in amin))
+print('  erro-padrão entre as 10 dobras = %s'%c(ep1))
+print('  lambda do EP único  = %s | EQM %s | %d ativas'%(c(l1se,5),c(M_[j1]),len(a1se)))
+print('     %s'%', '.join(ROT[NOMES[j]] for j in a1se))
+vt=sorted(NOMES.index(k) for k in VERD)
+print()
+print('  o modelo VERDADEIRO é: %s'%', '.join(ROT[NOMES[j]] for j in vt))
+for rot,aa in [('menor EQM',amin),('EP único',a1se)]:
+    print('  %-10s: recupera o verdadeiro? %-5s | acertos %d de 4 | falsos positivos %d'%(
+          rot,sorted(aa)==vt,len(set(aa)&amp;set(vt)),len(set(aa)-set(vt))))
+
+print('\n'+'='*70)
+print('O PROBLEMA DO LASSO COM GRUPOS CORRELACIONADOS')
+print()
+ja,js,jr=NOMES.index('argila'),NOMES.index('silte'),NOMES.index('areia')
+print('A argila ESTÁ no modelo verdadeiro e o lasso não a escolhe: escolhe a')
+print('areia e o silte. A razão é que argila = 100 - silte - areia, de modo que')
+print('-silte-areia é um substituto quase perfeito da argila.')
+print()
+print('  r(Argila, Areia) = %s'%c(float(np.corrcoef(X[:,ja],X[:,jr])[0,1])))
+print('  r(Argila, Silte) = %s'%c(float(np.corrcoef(X[:,ja],X[:,js])[0,1])))
+print('  r(Argila, Silte + Areia) = %s'%c(float(np.corrcoef(X[:,ja],X[:,js]+X[:,jr])[0,1])))
+print()
+print('Dentro de um grupo colinear, o lasso escolhe UM representante (ou um')
+print('substituto equivalente) quase ao acaso. 1.000 reamostras bootstrap,')
+print('com lambda fixo no valor escolhido:')
+rg=np.random.default_rng(41)
+cont=np.zeros(P); nat=[]; conj={}
+for r in range(1000):
+    i=rg.integers(0,N,N); Ab,_,_=pad(X[i])
+    bb=lasso_path_a(Ab,Y[i],[LMAX,0.2,lmin])[-1]
+    at=tuple(sorted(j for j in range(P) if abs(bb[1+j])&gt;1e-8))
+    for j in at: cont[j]+=1
+    nat.append(len(at)); conj[at]=conj.get(at,0)+1
+print()
+print('variável        frequência de seleção   no verdadeiro?')
+for j in np.argsort(-cont):
+    print('%-11s                %6.1f%%   %s'%(ROT[NOMES[j]],100*cont[j]/1000,'SIM' if NOMES[j] in VERD else '-'))
+print()
+print('  número de ativas: média %s, de %d a %d'%(c(np.mean(nat),2),min(nat),max(nat)))
+print('  conjuntos distintos nas 1.000 reamostras: %d'%len(conj))
+print('  o mais frequente apareceu em %.1f%% delas'%(100*max(conj.values())/1000))
+print()
+print('A comparação com o stepwise é de duas pontas, e vale enunciá-la com')
+print('cuidado. Nas três variáveis verdadeiras de efeito forte, o lasso é')
+print('MUITO mais confiável: M.O. 100,0%, V% 99,9% e P 99,1%, contra 100,0%,')
+print('98,3% e 88,0% do stepwise. Mas o CONJUNTO exato é MENOS reprodutível:')
+print('229 conjuntos distintos, o mais frequente em apenas 7,5% das reamostras,')
+print('contra 11,5% do stepwise — porque o lasso no lambda do menor EQM ativa')
+print('7 variáveis em média, e quanto maior o conjunto, mais formas de variar.')
+print('A conclusão honesta: o lasso identifica melhor o que é forte, e não')
+print('resolve a arbitrariedade dentro de um grupo colinear.')
+
+print('\n'+'='*70)
+print('REDE ELÁSTICA: a correção para grupos correlacionados')
+print('Penalidade mista: alpha*L1 + (1-alpha)*L2/2. Com alpha = 1 é o lasso;')
+print('com alpha = 0 é o ridge.')
+print()
+GE=np.logspace(np.log10(LMAX*1.3),np.log10(LMAX/2000),25)
+print('%7s %11s %13s %8s   %s'%('alpha','melhor lam','EQM 10-fold','ativas','variáveis'))
+for al in [1.0,0.7,0.4,0.1]:
+    mm,_=cv_path(lambda A,y,ls,al=al: enet_path_a(A,y,ls,al),X,Y,GE,10,0,6)
+    k=int(np.argmin(mm)); bb=enet_path_a(Xp,Y,GE,al)[k]
+    at=[j for j in range(P) if abs(bb[1+j])&gt;1e-8]
+    print('%7s %11s %13s %8d   %s'%(c(al,2),c(GE[k],5),c(mm[k]),len(at),
+          ', '.join(ROT[NOMES[j]] for j in at)[:46]))
+print()
+print('Quando alpha diminui, a penalidade se aproxima da do ridge e os grupos')
+print('colineares passam a entrar JUNTOS, em vez de um representante sozinho.')
+
+print('\n'+'='*70)
+print('UM LIMITE ESTRUTURAL: com p &gt; n, o lasso ativa no máximo n variáveis')
+print('Espectro de reflectância: %d amostras, %d comprimentos de onda.'%(NE,PE))
+Ep,emu,esd=pad(XE)
+LME=float(np.abs(Ep.T@(YE-YE.mean())).max()/NE)
+GEe=np.logspace(np.log10(LME),np.log10(LME/500),16)
+Me,_=cv_path(lasso_path_a,XE,YE,GEe,10,0,3)
+BEe=lasso_path_a(Ep,YE,GEe)
+NAe=[int(np.sum(np.abs(b[1:])&gt;1e-8)) for b in BEe]
+je=int(np.argmin(Me))
+print()
+print('%10s %8s %13s %s'%('lambda','ativas','EQM 10-fold',''))
+for k in range(len(GEe)):
+    print('%10s %8d %13s%s'%(c(GEe[k],5),NAe[k],c(Me[k]),'  &lt;- menor' if k==je else ''))
+print()
+print('  melhor lambda = %s | EQM validado = %s | %d ativas de %d'%(c(GEe[je],5),c(Me[je]),NAe[je],PE))
+print('  R² validado = %s'%c(1-Me[je]/float(YE.var(ddof=1))))
+print('  máximo de ativas em todo o caminho: %d (n = %d)'%(max(NAe),NE))
+print()
+print('O lasso não pode ativar mais de n variáveis: é consequência da geometria')
+print('do problema, não da implementação. Com 200 candidatas e 60 amostras isso')
+print('é ao mesmo tempo uma vantagem (o modelo fica interpretável, %d faixas'%NAe[je])
+print('em vez de 200) e uma limitação (se o sinal estiver espalhado por mais de')
+print('n variáveis, ele não o captura inteiro).')
+
+print('\n'+'='*70)
+print('O VIÉS DE ENCOLHIMENTO, e o lasso relaxado')
+print()
+print('Os coeficientes do lasso são encolhidos para zero DE PROPÓSITO, e por')
+print('isso são viesados mesmo nas variáveis corretamente selecionadas.')
+print('Reajustar por MQO apenas nas selecionadas (lasso relaxado) remove o')
+print('encolhimento e mantém a seleção.')
+print()
+bo=ols(Xp,Y); br=ols(Xp[:,amin],Y)
+print('%-11s %12s %14s %14s'%('variável','lasso','MQO relaxado','MQO completo'))
+for i,j in enumerate(amin):
+    print('%-11s %12s %14s %14s'%(ROT[NOMES[j]],c(bmin[1+j]),c(br[1+i]),c(bo[1+j])))
+print()
+print('  soma de |coef| do lasso        = %s'%c(float(np.abs(bmin[1:]).sum())))
+print('  soma de |coef| do MQO relaxado = %s'%c(float(np.abs(br[1:]).sum())))
+er_l,_=cv_path(lasso_path_a,X,Y,[LMAX,0.2,lmin],10,0,10)
+def ols_sub(A,y,cols):
+    bb=ols(A[:,cols],y); full=np.zeros(A.shape[1]+1); full[0]=bb[0]
+    for i,j in enumerate(cols): full[1+j]=bb[1+i]
+    return full
+er_r,_=cv(lambda A,y: ols_sub(A,y,amin),X,Y,10,0,10)
+print('  EQM validado do lasso          = %s'%c(er_l[-1]))
+print('  EQM validado do MQO relaxado   = %s  (seleção FIXA: otimista)'%c(er_r))
+
+print('\n'+'='*70)
+print('A SÍNTESE DO GRUPO: os métodos no MESMO conjunto de solo')
+print()
+print('Duas colunas, e a diferença entre elas importa. Na primeira, o')
+print('hiperparâmetro (lambda ou m) foi fixado no valor escolhido com a amostra')
+print('INTEIRA — é o que se faz na prática, e é levemente otimista. Na segunda,')
+print('ele é reescolhido DENTRO de cada dobra, por validação cruzada aninhada.')
+print()
+vy=float(Y.var(ddof=1))
+def nest_lasso(A,y):
+    GG=np.logspace(np.log10(LMAX),np.log10(LMAX/2000),24)
+    mm,_=cv_path(lasso_path_a,A,y,GG,5,7,1)
+    return lasso_path_a(pad(A)[0],y,GG)[int(np.argmin(mm))]
+def nest_ridge(A,y):
+    LL=np.logspace(-4,1,20); mm=[cv(lambda B,z,l=l: ridge(B,z,l),A,y,5,7,1)[0] for l in LL]
+    return ridge(pad(A)[0],y,LL[int(np.argmin(mm))])
+def nest_pcr(A,y):
+    mm=[cv(lambda B,z,m=m: pcr(B,z,m),A,y,5,7,1)[0] for m in range(1,A.shape[1]+1)]
+    return pcr(pad(A)[0],y,int(np.argmin(mm))+1)
+def nest_pls(A,y):
+    mm=[cv(lambda B,z,m=m: pls(B,z,m),A,y,5,7,1)[0] for m in range(1,A.shape[1]+1)]
+    return pls(pad(A)[0],y,int(np.argmin(mm))+1)
+m0,_=cv(lambda A,y: np.array([y.mean()]+[0.0]*A.shape[1]),X,Y,10,0,10)
+m1,_=cv(ols,X,Y,10,0,10)
+m2,_=cv(ols,X[:,vt],Y,10,0,10)
+m3,_=cv(lambda A,y: ridge(A,y,0.03162),X,Y,10,0,10)
+m4=er_l[-1]
+m5,_=cv_path(lasso_path_a,X,Y,[LMAX,0.2,l1se],10,0,10); m5=m5[-1]
+m6,_=cv(lambda A,y: pcr(A,y,7),X,Y,10,0,10)
+m7,_=cv(lambda A,y: pls(A,y,3),X,Y,10,0,10)
+n3,_=cv(nest_ridge,X,Y,10,0,3); n4,_=cv(nest_lasso,X,Y,10,0,3)
+n6,_=cv(nest_pcr,X,Y,10,0,3);  n7,_=cv(nest_pls,X,Y,10,0,3)
+print('%-34s %13s %9s %15s'%('método','EQM (fixo)','R² val.','EQM (aninhado)'))
+for nome,v,nv in [('Modelo nulo (só a média)',m0,None),
+                  ('MQO, 12 candidatas',m1,None),
+                  ('MQO, só as 4 VERDADEIRAS',m2,None),
+                  ('Ridge, lambda por VC',m3,n3),
+                  ('Lasso, lambda do menor EQM',m4,n4),
+                  ('Lasso, lambda do EP único',m5,None),
+                  ('PCR, 7 componentes',m6,n6),
+                  ('PLS, 3 componentes',m7,n7)]:
+    print('%-34s %13s %9s %15s'%(nome,c(v),c(1-v/vy),c(nv) if nv else '—'))
+print()
+best=min([('MQO com as 4 verdadeiras',m2),('lasso',m4),('ridge',m3),('PCR',m6),('PLS',m7)],key=lambda t:t[1])
+print('Com lambda fixo, o melhor é: %s (EQM %s).'%(best[0],c(best[1])))
+print('O lasso (%s) e o MQO ajustado diretamente nas quatro variáveis'%c(m4))
+print('VERDADEIRAS (%s) ficam praticamente EMPATADOS — diferença de %s,'%(c(m2),c(abs(m4-m2))))
+print('dentro do erro de simulação. É um resultado notável: o lasso chega ao')
+print('mesmo desempenho SEM saber quais são as quatro, escolhendo seis variáveis')
+print('que incluem substitutos colineares das verdadeiras.')
+print()
+bn=min([('ridge',n3),('lasso',n4),('PCR',n6),('PLS',n7)],key=lambda t:t[1])
+print('Na coluna ANINHADA, em que o hiperparâmetro é reescolhido dentro de cada')
+print('dobra, todos pioram — e é essa a estimativa honesta. O melhor aninhado é')
+print('o %s, com %s, contra %s do MQO com as quatro verdadeiras.'%(bn[0],c(bn[1]),c(m2)))
+print()
+print('A conclusão geral: com n = 90 e p = 12 a colinearidade incomoda mas não')
+print('inviabiliza, e nenhum método regularizado ganha muito do MQO. O quadro')
+print('muda por completo quando p &gt; n, e é o que as fichas pcr e pls mostram.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Os mesmos 90 perfis de solo e as mesmas 12 candidatas.
+O modelo VERDADEIRO usa M.O., P (resina), V% e Argila.
+
+O lambda acima do qual TODOS os coeficientes são zero tem forma fechada:
+  lambda_max = max_j |x_j' y| / n = 0,67520
+Acima dele o lasso devolve só o intercepto. É por isso que o glmnet
+constrói a grade de lambda a partir desse valor, para baixo.
+
+======================================================================
+O CAMINHO DO LASSO: a ordem de entrada das variáveis
+
+ordem   variável      lambda de entrada   no modelo verdadeiro?
+    1   M.O.                  0,61326   SIM
+    2   K                     0,45951   -
+    3   Mg                    0,37907   -
+    4   V%                    0,28403   SIM
+    5   Ca                    0,25798   -
+    6   Areia                 0,19330   -
+    7   P (resina)            0,17557   SIM
+    8   Silte                 0,09857   -
+    9   CTC                   0,03766   -
+   10   Argila                0,02114   SIM
+   11   Al                    0,00889   -
+   12   pH                    0,00412   -
+
+Variáveis que nunca entram: nenhuma
+
+    lambda ativas   coeficientes não nulos
+   0,60768      1   M.O. 0,068
+   0,33760      3   M.O. 0,325, K 0,075, Mg 0,053
+   0,20000      5   M.O. 0,499, K 0,018, Ca 0,010, Mg 0,081, V% 0,168
+   0,10000      5   M.O. 0,653, P (resina) 0,076, V% 0,392, Silte 0,001, Areia -0,126
+   0,05000      5   M.O. 0,719, P (resina) 0,125, V% 0,451, Silte 0,029, Areia -0,163
+   0,02000      7   M.O. 0,798, P (resina) 0,150, CTC -0,086, V% 0,491, Argila 0,101, Silte 0,084, Areia -0,123
+   0,01000      8   M.O. 0,837, P (resina) 0,154, K -0,066, Ca -0,014, CTC -0,102, V% 0,576, Argila 0,248, Silte 0,155
+   0,00200     12   pH 0,009, M.O. 0,871, P (resina) 0,162, K -0,157, Ca -0,146, Mg 0,005, Al -0,018, CTC -0,031, V% 0,763, Argila 0,282, Silte 0,167, Areia 0,006
+
+======================================================================
+O MECANISMO: limiar brando (soft-thresholding)
+
+Em cada passo da descida por coordenadas, o coeficiente de uma variável
+é o do MQO PARCIAL (ajustado aos resíduos das outras), deslocado para
+zero em exatamente lambda, e grudado em zero se o deslocamento
+ultrapassar o próprio valor.
+
+Com lambda = 0,050, variável por variável:
+variável      MQO parcial     limiar   coef. lasso
+pH                0,02893    0,05000 0,00000  &lt;- ZERO
+M.O.              0,76056    0,05000       0,71855
+P (resina)        0,17354    0,05000       0,12493
+K                 0,00924    0,05000 0,00000  &lt;- ZERO
+Ca                0,01166    0,05000 0,00000  &lt;- ZERO
+Mg                0,02856    0,05000 0,00000  &lt;- ZERO
+Al               -0,01880    0,05000 0,00000  &lt;- ZERO
+CTC              -0,02751    0,05000 0,00000  &lt;- ZERO
+V%                0,49628    0,05000       0,45130
+Argila            0,03899    0,05000 0,00000  &lt;- ZERO
+Silte             0,07879    0,05000       0,02911
+Areia            -0,21117    0,05000      -0,16298
+
+Quando |MQO parcial| &lt;= lambda, o coeficiente é exatamente zero. No ridge
+isso nunca acontece: a penalidade quadrática tem derivada NULA na origem,
+e a L1 tem derivada igual a lambda — é essa descontinuidade que zera.
+
+======================================================================
+A ESCOLHA DE lambda POR VALIDAÇÃO CRUZADA (10 dobras, 10 repetições)
+
+    lambda   EQM 10-fold   ativas 
+   0,30965        0,7299        3
+   0,20969        0,6131        5
+   0,11686        0,4756        4
+   0,07914        0,4305        5
+   0,05359        0,4109        5
+   0,03629        0,4053        6
+   0,02458        0,4041        6
+   0,01370        0,4087        7
+   0,00763        0,4145        9
+   0,00288        0,4217       10
+   0,00109        0,4305       12
+
+  lambda do menor EQM = 0,02987 | EQM 0,4040 | 6 ativas
+     M.O., P (resina), CTC, V%, Silte, Areia
+  erro-padrão entre as 10 dobras = 0,0612
+  lambda do EP único  = 0,09616 | EQM 0,4483 | 5 ativas
+     M.O., P (resina), V%, Silte, Areia
+
+  o modelo VERDADEIRO é: M.O., P (resina), V%, Argila
+  menor EQM : recupera o verdadeiro? False | acertos 3 de 4 | falsos positivos 3
+  EP único  : recupera o verdadeiro? False | acertos 3 de 4 | falsos positivos 2
+
+======================================================================
+O PROBLEMA DO LASSO COM GRUPOS CORRELACIONADOS
+
+A argila ESTÁ no modelo verdadeiro e o lasso não a escolhe: escolhe a
+areia e o silte. A razão é que argila = 100 - silte - areia, de modo que
+-silte-areia é um substituto quase perfeito da argila.
+
+  r(Argila, Areia) = -0,8780
+  r(Argila, Silte) = 0,0123
+  r(Argila, Silte + Areia) = -0,9935
+
+Dentro de um grupo colinear, o lasso escolhe UM representante (ou um
+substituto equivalente) quase ao acaso. 1.000 reamostras bootstrap,
+com lambda fixo no valor escolhido:
+
+variável        frequência de seleção   no verdadeiro?
+M.O.                        100.0%   SIM
+V%                           99.9%   SIM
+P (resina)                   99.1%   SIM
+Silte                        75.2%   -
+Areia                        74.6%   -
+CTC                          62.5%   -
+Al                           50.7%   -
+Argila                       47.3%   SIM
+pH                           34.7%   -
+Mg                           24.4%   -
+K                            17.2%   -
+Ca                           14.5%   -
+
+  número de ativas: média 7,00, de 4 a 10
+  conjuntos distintos nas 1.000 reamostras: 229
+  o mais frequente apareceu em 7.5% delas
+
+A comparação com o stepwise é de duas pontas, e vale enunciá-la com
+cuidado. Nas três variáveis verdadeiras de efeito forte, o lasso é
+MUITO mais confiável: M.O. 100,0%, V% 99,9% e P 99,1%, contra 100,0%,
+98,3% e 88,0% do stepwise. Mas o CONJUNTO exato é MENOS reprodutível:
+229 conjuntos distintos, o mais frequente em apenas 7,5% das reamostras,
+contra 11,5% do stepwise — porque o lasso no lambda do menor EQM ativa
+7 variáveis em média, e quanto maior o conjunto, mais formas de variar.
+A conclusão honesta: o lasso identifica melhor o que é forte, e não
+resolve a arbitrariedade dentro de um grupo colinear.
+
+======================================================================
+REDE ELÁSTICA: a correção para grupos correlacionados
+Penalidade mista: alpha*L1 + (1-alpha)*L2/2. Com alpha = 1 é o lasso;
+com alpha = 0 é o ridge.
+
+  alpha  melhor lam   EQM 10-fold   ativas   variáveis
+   1,00     0,03315        0,4044        6   M.O., P (resina), CTC, V%, Silte, Areia
+   0,70     0,03315        0,4058        7   M.O., P (resina), CTC, V%, Argila, Silte, Arei
+   0,40     0,03315        0,4094        7   M.O., P (resina), CTC, V%, Argila, Silte, Arei
+   0,10     0,04600        0,4177       11   pH, M.O., P (resina), K, Mg, Al, CTC, V%, Argi
+
+Quando alpha diminui, a penalidade se aproxima da do ridge e os grupos
+colineares passam a entrar JUNTOS, em vez de um representante sozinho.
+
+======================================================================
+UM LIMITE ESTRUTURAL: com p &gt; n, o lasso ativa no máximo n variáveis
+Espectro de reflectância: 60 amostras, 200 comprimentos de onda.
+
+    lambda   ativas   EQM 10-fold 
+   1,19532        0        3,5789
+   0,78987        1        2,8137
+   0,52194        1        2,4311
+   0,34490        2        2,0194
+   0,22791        7        1,1542
+   0,15060        9        0,6490
+   0,09952        9        0,4157
+   0,06576        8        0,3147
+   0,04345       12        0,2750
+   0,02871       16        0,2618
+   0,01897       17        0,2593
+   0,01254       19        0,2549
+   0,00829       16        0,2492
+   0,00547       18        0,2410  &lt;- menor
+   0,00362       21        0,2484
+   0,00239       23        0,2701
+
+  melhor lambda = 0,00547 | EQM validado = 0,2410 | 18 ativas de 200
+  R² validado = 0,9310
+  máximo de ativas em todo o caminho: 23 (n = 60)
+
+O lasso não pode ativar mais de n variáveis: é consequência da geometria
+do problema, não da implementação. Com 200 candidatas e 60 amostras isso
+é ao mesmo tempo uma vantagem (o modelo fica interpretável, 18 faixas
+em vez de 200) e uma limitação (se o sinal estiver espalhado por mais de
+n variáveis, ele não o captura inteiro).
+
+======================================================================
+O VIÉS DE ENCOLHIMENTO, e o lasso relaxado
+
+Os coeficientes do lasso são encolhidos para zero DE PROPÓSITO, e por
+isso são viesados mesmo nas variáveis corretamente selecionadas.
+Reajustar por MQO apenas nas selecionadas (lasso relaxado) remove o
+encolhimento e mantém a seleção.
+
+variável           lasso   MQO relaxado   MQO completo
+M.O.              0,7642         0,8709         0,8670
+P (resina)        0,1434         0,1685         0,1560
+CTC              -0,0379        -0,1705        -0,0557
+V%                0,4769         0,5182         0,7678
+Silte             0,0333         0,0251         0,4359
+Areia            -0,2009        -0,3030         0,5703
+
+  soma de |coef| do lasso        = 1,6565
+  soma de |coef| do MQO relaxado = 2,0562
+  EQM validado do lasso          = 0,4040
+  EQM validado do MQO relaxado   = 0,3925  (seleção FIXA: otimista)
+
+======================================================================
+A SÍNTESE DO GRUPO: os métodos no MESMO conjunto de solo
+
+Duas colunas, e a diferença entre elas importa. Na primeira, o
+hiperparâmetro (lambda ou m) foi fixado no valor escolhido com a amostra
+INTEIRA — é o que se faz na prática, e é levemente otimista. Na segunda,
+ele é reescolhido DENTRO de cada dobra, por validação cruzada aninhada.
+
+método                                EQM (fixo)   R² val.  EQM (aninhado)
+Modelo nulo (só a média)                  1,1672   -0,0113               —
+MQO, 12 candidatas                        0,4347    0,6234               —
+MQO, só as 4 VERDADEIRAS                  0,4052    0,6489               —
+Ridge, lambda por VC                      0,4219    0,6344          0,4364
+Lasso, lambda do menor EQM                0,4040    0,6499          0,4212
+Lasso, lambda do EP único                 0,4483    0,6115               —
+PCR, 7 componentes                        0,4191    0,6369          0,4630
+PLS, 3 componentes                        0,4884    0,5769          0,4564
+
+Com lambda fixo, o melhor é: lasso (EQM 0,4040).
+O lasso (0,4040) e o MQO ajustado diretamente nas quatro variáveis
+VERDADEIRAS (0,4052) ficam praticamente EMPATADOS — diferença de 0,0012,
+dentro do erro de simulação. É um resultado notável: o lasso chega ao
+mesmo desempenho SEM saber quais são as quatro, escolhendo seis variáveis
+que incluem substitutos colineares das verdadeiras.
+
+Na coluna ANINHADA, em que o hiperparâmetro é reescolhido dentro de cada
+dobra, todos pioram — e é essa a estimativa honesta. O melhor aninhado é
+o lasso, com 0,4212, contra 0,4052 do MQO com as quatro verdadeiras.
+
+A conclusão geral: com n = 90 e p = 12 a colinearidade incomoda mas não
+inviabiliza, e nenhum método regularizado ganha muito do MQO. O quadro
+muda por completo quando p &gt; n, e é o que as fichas pcr e pls mostram.</pre></div><figure class="fig"><img src="../assets/resultados/lasso.png" alt="A escolha de λ com o preço em variáveis, os três estimadores comparados e a instabilidade do conjunto ativo" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro validado em função de \(\lambda\) com o número de variáveis ativas sobreposto em laranja. No centro, os coeficientes do MQO, do ridge e do lasso nos mesmos dados: o lasso zera metade, o ridge encolhe todos sem zerar nenhum. À direita, a frequência com que cada variável fica ativa em 400 reamostras bootstrap. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A escolha de λ (10 dobras, 10 repetições)</caption><thead><tr><th>λ</th><th>EQM validado</th><th>Ativas</th></tr></thead><tbody><tr><td>0,30965</td><td>0,7299</td><td>3</td></tr><tr><td>0,20969</td><td>0,6131</td><td>5</td></tr><tr><td>0,11686</td><td>0,4756</td><td>4</td></tr><tr><td>0,09616 (EP único)</td><td>0,4483</td><td>5</td></tr><tr><td>0,07914</td><td>0,4305</td><td>5</td></tr><tr><td>0,05359</td><td>0,4109</td><td>5</td></tr><tr><td>0,03629</td><td>0,4053</td><td>6</td></tr><tr><td><strong>0,02987 (menor EQM)</strong></td><td><strong>0,4040</strong></td><td><strong>6</strong></td></tr><tr><td>0,01370</td><td>0,4087</td><td>7</td></tr><tr><td>0,00763</td><td>0,4145</td><td>9</td></tr><tr><td>0,00288</td><td>0,4217</td><td>10</td></tr><tr><td>0,00109</td><td>0,4305</td><td>12</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O que cada λ seleciona, contra o modelo verdadeiro</caption><thead><tr><th>Escolha</th><th>λ</th><th>Ativas</th><th>Variáveis</th><th>Acertos</th><th>Falsos positivos</th></tr></thead><tbody><tr><td>Menor EQM</td><td>0,02987</td><td>6</td><td>M.O., P, CTC, V%, Silte, Areia</td><td>3 de 4</td><td>3</td></tr><tr><td>EP único</td><td>0,09616</td><td>5</td><td>M.O., P, V%, Silte, Areia</td><td>3 de 4</td><td>2</td></tr><tr><td><em>Verdadeiro</em></td><td>—</td><td>4</td><td>M.O., P, V%, <strong>Argila</strong></td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Por que a argila é trocada por silte e areia</caption><thead><tr><th>Correlação</th><th>Valor</th></tr></thead><tbody><tr><td>r(Argila, Areia)</td><td>−0,8780</td></tr><tr><td>r(Argila, Silte)</td><td>0,0123</td></tr><tr><td><strong>r(Argila, Silte + Areia)</strong></td><td><strong>−0,9935</strong></td></tr><tr><td>r(Areia, Argila + Silte)</td><td>−0,9950</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Instabilidade do conjunto ativo (1.000 reamostras, λ fixo)</caption><thead><tr><th>Variável</th><th>Frequência</th><th>No verdadeiro?</th><th>No stepwise (comparação)</th></tr></thead><tbody><tr><td>M.O.</td><td><strong>100,0%</strong></td><td>SIM</td><td>100,0%</td></tr><tr><td>V%</td><td><strong>99,9%</strong></td><td>SIM</td><td>98,3%</td></tr><tr><td>P (resina)</td><td><strong>99,1%</strong></td><td>SIM</td><td>88,0%</td></tr><tr><td>Silte</td><td>75,2%</td><td>não</td><td>17,0%</td></tr><tr><td>Areia</td><td>74,6%</td><td>não</td><td>82,9%</td></tr><tr><td>CTC</td><td>62,5%</td><td>não</td><td>24,8%</td></tr><tr><td>Al</td><td>50,7%</td><td>não</td><td>14,7%</td></tr><tr><td>Argila</td><td>47,3%</td><td>SIM</td><td>23,4%</td></tr><tr><td>pH</td><td>34,7%</td><td>não</td><td>16,5%</td></tr><tr><td>Mg</td><td>24,4%</td><td>não</td><td>22,5%</td></tr><tr><td>K</td><td>17,2%</td><td>não</td><td>43,1%</td></tr><tr><td>Ca</td><td>14,5%</td><td>não</td><td>37,1%</td></tr></tbody></table></div><p>Número de ativas: média 7,00, variando de 4 a 10. Nas 1.000 reamostras apareceram <strong>229 conjuntos distintos</strong>, e o mais frequente em apenas 7,5% delas.</p><div class="table-wrap"><table class="method-table"><caption>Rede elástica: misturando L1 e L2</caption><thead><tr><th>α</th><th>Melhor λ</th><th>EQM validado</th><th>Ativas</th><th>Variáveis</th></tr></thead><tbody><tr><td>1,0 (lasso)</td><td>0,03315</td><td>0,4044</td><td>6</td><td>M.O., P, CTC, V%, Silte, Areia</td></tr><tr><td>0,7</td><td>0,03315</td><td>0,4058</td><td>7</td><td>+ Argila</td></tr><tr><td>0,4</td><td>0,03315</td><td>0,4094</td><td>7</td><td>+ Argila</td></tr><tr><td>0,1</td><td>0,04600</td><td>0,4177</td><td>11</td><td>quase todas</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Com p > n: o espectro, 60 amostras e 200 colunas</caption><thead><tr><th>λ</th><th>Ativas</th><th>EQM validado</th></tr></thead><tbody><tr><td>1,19532</td><td>0</td><td>3,5789</td></tr><tr><td>0,52194</td><td>1</td><td>2,4311</td></tr><tr><td>0,22791</td><td>7</td><td>1,1542</td></tr><tr><td>0,09952</td><td>9</td><td>0,4157</td></tr><tr><td>0,04345</td><td>12</td><td>0,2750</td></tr><tr><td>0,01254</td><td>19</td><td>0,2549</td></tr><tr><td><strong>0,00547</strong></td><td><strong>18</strong></td><td><strong>0,2410</strong></td></tr><tr><td>0,00239</td><td>23</td><td>0,2701</td></tr></tbody></table></div><p>No melhor \(\lambda\): 18 faixas ativas de 200, \(R^2\) validado de <strong>0,9310</strong>. O máximo de ativas em todo o caminho foi 23, bem abaixo do limite estrutural de \(n=60\).</p><div class="table-wrap"><table class="method-table"><caption>O viés de encolhimento, e o lasso relaxado</caption><thead><tr><th>Variável</th><th>Lasso</th><th>MQO relaxado</th><th>MQO completo</th></tr></thead><tbody><tr><td>M.O.</td><td>0,7642</td><td>0,8709</td><td>0,8670</td></tr><tr><td>P (resina)</td><td>0,1434</td><td>0,1685</td><td>0,1560</td></tr><tr><td>CTC</td><td>−0,0379</td><td>−0,1705</td><td>−0,0557</td></tr><tr><td>V%</td><td>0,4769</td><td>0,5182</td><td>0,7678</td></tr><tr><td>Silte</td><td>0,0333</td><td>0,0251</td><td>0,4359</td></tr><tr><td>Areia</td><td>−0,2009</td><td>−0,3030</td><td>0,5703</td></tr><tr><td><strong>Σ|coeficientes|</strong></td><td><strong>1,6565</strong></td><td><strong>2,0562</strong></td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A síntese do grupo, no conjunto de solo</caption><thead><tr><th>Método</th><th>EQM (λ fixo)</th><th>R² val.</th><th>EQM (aninhado)</th></tr></thead><tbody><tr><td>Modelo nulo (só a média)</td><td>1,1672</td><td>−0,0113</td><td>—</td></tr><tr><td>MQO, 12 candidatas</td><td>0,4347</td><td>0,6234</td><td>—</td></tr><tr><td><em>MQO, só as 4 VERDADEIRAS</em></td><td><em>0,4052</em></td><td><em>0,6489</em></td><td>—</td></tr><tr><td>Ridge, λ por VC</td><td>0,4219</td><td>0,6344</td><td>0,4364</td></tr><tr><td><strong>Lasso, λ do menor EQM</strong></td><td><strong>0,4040</strong></td><td><strong>0,6499</strong></td><td><strong>0,4212</strong></td></tr><tr><td>Lasso, λ do EP único</td><td>0,4483</td><td>0,6115</td><td>—</td></tr><tr><td>PCR, 7 componentes</td><td>0,4191</td><td>0,6369</td><td>0,4630</td></tr><tr><td>PLS, 3 componentes</td><td>0,4884</td><td>0,5769</td><td>0,4564</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela do limiar brando é o mecanismo em números. Sete das doze variáveis têm \(|\rho|&lt;\lambda=0{,}05\) e são zeradas; cinco sobrevivem. O caso da argila merece atenção: \(\rho=0{,}03899\) não é pequeno em termos absolutos, e ela está no modelo verdadeiro — mas a areia já entrou com \(-0{,}163\) e absorveu a informação, de modo que o que resta para a argila explicar nos resíduos é pouco. É a colinearidade operando através do mecanismo de seleção.</p><p><strong>Sobre a escolha de λ:</strong> a curva é rasa em torno do mínimo — de \(\lambda=0{,}053\) a \(\lambda=0{,}014\), o erro varia entre 0,4040 e 0,4109, menos de 2% — enquanto o número de ativas varia de 5 a 7. Dito de outro modo, os dados não distinguem entre um modelo de cinco e um de sete variáveis; a escolha é regida pelo erro-padrão da validação cruzada, que aqui é 0,0612, maior que toda essa variação. É por isso que a regra do erro-padrão único existe, e por isso que ela escolhe um \(\lambda\) bem maior (0,096) e um modelo mais esparso.</p><p><strong>Sobre os grupos colineares:</strong> este é o ponto fraco reconhecido do lasso, e a tabela de correlações mostra por que não é um defeito do algoritmo. A argila tem \(r=-0{,}9935\) com a soma de silte e areia. Dentro de um conjunto desses, o problema de otimização tem múltiplos ótimos quase empatados, e qualquer regra de desempate é arbitrária. Zou e Hastie (2005) propuseram a rede elástica exatamente para isso: a componente \(L_2\) da penalidade favorece que coeficientes de variáveis correlacionadas sejam parecidos, de modo que o grupo entra junto. A tabela da rede elástica confirma o comportamento — com \(\alpha=0{,}7\) a argila volta ao modelo — ao preço de um erro ligeiramente maior (0,4058 contra 0,4044) e de mais variáveis.</p><p><strong>Sobre a estabilidade, com cuidado:</strong> a comparação com o <a href="stepwise.html">stepwise</a> tem duas pontas, e dizer apenas "o lasso é mais estável" seria impreciso. Nas três variáveis verdadeiras de efeito forte o lasso é claramente mais confiável: M.O. 100,0%, V% 99,9% e fósforo 99,1%, contra 100,0%, 98,3% e 88,0% do stepwise. Mas o <em>conjunto exato</em> é <strong>menos</strong> reprodutível: 229 conjuntos distintos em 1.000 reamostras, o mais frequente em 7,5%, contra 11,5% do stepwise — porque o lasso no \(\lambda\) de menor erro ativa sete variáveis em média, e quanto maior o conjunto, mais formas de variar. A conclusão honesta é que o lasso identifica melhor o que é forte, e não resolve a arbitrariedade dentro de um grupo colinear.</p><p><strong>Sobre p > n:</strong> aqui o lasso faz algo que nenhum método clássico de seleção faz. Com 200 candidatas e 60 amostras, ele devolve um modelo com 18 faixas e \(R^2\) validado de 0,9310, em um ajuste único de poucos segundos. A <a href="subset.html">busca exaustiva</a> teria \(2^{200}\) modelos; o <a href="stepwise.html">stepwise</a> rodaria mas sem nenhum controle sobre o erro. Note também o limite estrutural: o máximo de variáveis ativas em todo o caminho foi 23, e nunca poderia passar de \(n=60\). Se o sinal estivesse espalhado por mais de 60 faixas, o lasso não o capturaria inteiro — e é nesse regime que o <a href="ridge.html">ridge</a> e a <a href="pls.html">PLS</a> levam vantagem, como as tabelas da ficha <a href="pls.html">pls</a> mostram.</p><p><strong>Sobre o viés de encolhimento:</strong> a soma dos valores absolutos passa de 1,6565 no lasso para 2,0562 no reajuste por mínimos quadrados — 24% a mais. É isso que "encolhimento" significa quantitativamente. O reajuste remove o viés mas devolve a variância, e nestes dados não compensa: o lasso relaxado dá 0,3925 com a seleção <em>fixa</em> — número otimista, porque a seleção viu todos os dados — contra 0,4040 do lasso com a mesma seleção fixa. A comparação honesta exigiria refazer seleção e reajuste dentro de cada dobra.</p><p><strong>Sobre a síntese:</strong> o quadro final do conjunto de solo é modesto e vale ser lido como tal. Com \(\lambda\) fixado no valor escolhido pela amostra inteira, o lasso (0,4040) empata com o modelo ajustado nas quatro variáveis verdadeiras (0,4052) — diferença de 0,0012, dentro do erro de simulação. Na coluna aninhada, em que o hiperparâmetro é reescolhido dentro de cada dobra, todos pioram, e o lasso continua à frente dos demais regularizados com 0,4212. Mas nenhum deles ganha muito do MQO com as doze (0,4347): com \(n=90\) para \(p=12\), a colinearidade incomoda e não inviabiliza. O argumento forte do grupo está no outro conjunto.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Ler o conjunto ativo como "as variáveis que importam"</td><td>Reporte frequências de bootstrap.</td></tr><tr><td>Interpretar coeficiente zero como ausência de efeito</td><td>Pode ter sido substituído por colinear.</td></tr><tr><td>Ler a ordem de entrada como ordem de importância</td><td>Ela reflete correlação marginal no momento.</td></tr><tr><td><strong>Reportar valores-p do modelo do lasso</strong></td><td>Use <code>selectiveInference</code> ou não reporte.</td></tr><tr><td>Não padronizar</td><td>O glmnet padroniza; não desligue.</td></tr><tr><td>Avaliar o erro com λ escolhido na amostra inteira</td><td>Reescolha λ dentro de cada dobra.</td></tr><tr><td>Usar o lasso quando o sinal é difuso</td><td>Compare com ridge e rede elástica.</td></tr><tr><td>Esperar que ele separe variáveis colineares</td><td>Use rede elástica, ou decida pela área.</td></tr><tr><td>Esquecer <code>set.seed</code> antes do <code>cv.glmnet</code></td><td>Sem semente, o λ muda entre execuções.</td></tr><tr><td>Passar um <code>data.frame</code></td><td>O glmnet exige <code>as.matrix</code>.</td></tr><tr><td>Esperar mais de n ativas com p > n</td><td>É um limite estrutural.</td></tr><tr><td>Comparar λ entre implementações</td><td>As parametrizações da penalidade diferem.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><strong>Rede elástica</strong></td><td>Candidatas colineares em grupos: o caso desta ficha.</td></tr><tr><td><a href="ridge.html">Ridge</a></td><td>Sinal difuso por muitas variáveis de efeito pequeno.</td></tr><tr><td>Lasso adaptativo</td><td>Quando se quer consistência de seleção (Zou, 2006).</td></tr><tr><td>Lasso relaxado</td><td>Para remover o viés de encolhimento mantendo a seleção.</td></tr><tr><td>Lasso de grupo</td><td>Quando as variáveis vêm em blocos naturais (fatores, splines).</td></tr><tr><td>SCAD e MCP</td><td>Penalidades não convexas, com menos viés nos coeficientes grandes.</td></tr><tr><td><a href="pls.html">PLS</a></td><td>Quando o sinal está espalhado e se quer poucos componentes.</td></tr><tr><td><a href="pcr.html">PCR</a></td><td>Redução de dimensão sem descarte de variáveis.</td></tr><tr><td><a href="subset.html">Seleção exaustiva</a></td><td>Quando p ≤ 30 e se quer o ótimo por tamanho.</td></tr><tr><td><a href="stepwise.html">Stepwise</a></td><td>Raramente: o lasso é preferível em quase todos os casos.</td></tr><tr><td>Seleção por estabilidade</td><td>Reamostra e seleciona o que aparece com frequência alta.</td></tr><tr><td><code>selectiveInference</code></td><td>Quando se precisa de inferência válida após o lasso.</td></tr></tbody></table></div><ol class="steps"><li>Examine a colinearidade antes: VIF, correlações e também correlações com somas.</li><li>Padronize (ou confie no padrão do glmnet).</li><li>Ajuste o caminho completo e examine o gráfico.</li><li>Escolha λ por <code>cv.glmnet</code> com semente fixada.</li><li>Considere <code>lambda.1se</code> quando a esparsidade importar.</li><li>Compare com ridge e com rede elástica por validação cruzada.</li><li>Estime o erro reescolhendo λ dentro de cada dobra.</li><li>Rode bootstrap do conjunto ativo e reporte frequências.</li><li>Não reporte valores-p; se precisar, use inferência pós-seleção.</li><li>Ao escrever, descreva o conjunto ativo como "uma parametrização adequada", não como "as variáveis relevantes".</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>TIBSHIRANI, Robert. Regression shrinkage and selection via the lasso. <em>Journal of the Royal Statistical Society: Series B</em>, v. 58, n. 1, p. 267-288, 1996.</li><li>TIBSHIRANI, Robert. The lasso method for variable selection in the Cox model. <em>Statistics in Medicine</em>, v. 16, n. 4, p. 385-395, 1997.</li><li>FRIEDMAN, Jerome; HASTIE, Trevor; TIBSHIRANI, Robert. Regularization paths for generalized linear models via coordinate descent. <em>Journal of Statistical Software</em>, v. 33, n. 1, p. 1-22, 2010.</li><li>ZOU, Hui; HASTIE, Trevor. Regularization and variable selection via the elastic net. <em>Journal of the Royal Statistical Society: Series B</em>, v. 67, n. 2, p. 301-320, 2005.</li><li>ZOU, Hui. The adaptive lasso and its oracle properties. <em>Journal of the American Statistical Association</em>, v. 101, n. 476, p. 1418-1429, 2006.</li><li>EFRON, Bradley; HASTIE, Trevor; JOHNSTONE, Iain; TIBSHIRANI, Robert. Least angle regression. <em>The Annals of Statistics</em>, v. 32, n. 2, p. 407-499, 2004.</li><li>MEINSHAUSEN, Nicolai. Relaxed lasso. <em>Computational Statistics &amp; Data Analysis</em>, v. 52, n. 1, p. 374-393, 2007.</li><li>MEINSHAUSEN, Nicolai; BÜHLMANN, Peter. Stability selection. <em>Journal of the Royal Statistical Society: Series B</em>, v. 72, n. 4, p. 417-473, 2010.</li><li>YUAN, Ming; LIN, Yi. Model selection and estimation in regression with grouped variables. <em>Journal of the Royal Statistical Society: Series B</em>, v. 68, n. 1, p. 49-67, 2006.</li><li>FAN, Jianqing; LI, Runze. Variable selection via nonconcave penalized likelihood and its oracle properties. <em>Journal of the American Statistical Association</em>, v. 96, n. 456, p. 1348-1360, 2001.</li><li>LOCKHART, Richard; TAYLOR, Jonathan; TIBSHIRANI, Ryan J.; TIBSHIRANI, Robert. A significance test for the lasso. <em>The Annals of Statistics</em>, v. 42, n. 2, p. 413-468, 2014.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; WAINWRIGHT, Martin. <em>Statistical learning with sparsity: the lasso and generalizations.</em> Boca Raton: CRC Press, 2015.</li><li>PARK, Trevor; CASELLA, George. The Bayesian lasso. <em>Journal of the American Statistical Association</em>, v. 103, n. 482, p. 681-686, 2008.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>FRIEDMAN, Jerome; HASTIE, Trevor; TIBSHIRANI, Robert; NARASIMHAN, Balasubramanian; TAY, Kenneth; SIMON, Noah. <em>glmnet: lasso and elastic-net regularized generalized linear models.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=glmnet" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=glmnet</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, intercepto não penalizado, esparsidade plausível, colinearidade reconhecida, λ escolhido por validação cruzada e valores-p do modelo final não reportados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>glmnet</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="ridge.html"><span>← ANTERIOR</span>Regressão ridge</a><a href="pcr.html"><span>PRÓXIMO →</span>Regressão por componentes principais (PCR)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,313 +4,381 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Kappa de Cohen: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Kappa de Cohen | Estatística e Ciência de Dados
-  </title>
+<meta content="Kappa de Cohen: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Kappa de Cohen | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Kappa de Cohen
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 12 · CONCORDÂNCIA
-    </span>
-<h1>
-     Kappa de Cohen
-    </h1>
-<p class="detail-lead">
-     Avalia o grau de concordância entre dois avaliadores que atribuem categorias.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/kappa.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia o grau de concordância entre dois avaliadores que atribuem categorias.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Mesmas unidades avaliadas por ambos, categorias exaustivas, classificações não combinadas de antemão.</li><li>Avaliar prevalência e distribuições marginais.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \kappa=0 \text{ (acordo além do acaso nulo)}\\ H_1&amp;:\ \kappa\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\kappa=\frac{P_o-P_e}{1-P_e}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\kappa)\approx\widehat\kappa\pm1{,}96\operatorname{EP}(\widehat\kappa)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(P_o\)
-        </dt>
-<dd>
-         concordância observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(P_e\)
-        </dt>
-<dd>
-         concordância esperada pela regra de referência do coeficiente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\kappa\)
-        </dt>
-<dd>
-         coeficiente de concordância corrigido para acaso
-        </dd>
-</div>
-</dl>
-<p>
-       O intervalo normal é apenas aproximado; prefira rotinas que implementem erros-padrão coerentes com o delineamento.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) testa \(\kappa=0\) , não assegura concordância suficiente. Interprete \(IC_{95\%}\) e um limiar de concordância definido pela aplicação.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Dois sistemas didáticos de classificação binária de veículos como maior/menor desempenho (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-kappa" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-kappa"><code># Kappa de Cohen ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Kappa de Cohen</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · CONCORDÂNCIA</span><h1>Kappa de Cohen</h1><p class="detail-lead">Mede a concordância entre dois avaliadores em escala nominal, descontando a parcela que o acaso sozinho produziria.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/kappa.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/kappa.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o kappa</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando dois avaliadores classificam as mesmas unidades, a proporção de vezes em que coincidem é um número fácil de calcular e difícil de interpretar: parte dessa coincidência teria acontecido mesmo se os dois estivessem chutando. O kappa de Cohen desconta essa parte, comparando a concordância observada com a que se esperaria por acaso.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Kappa de Cohen" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Concordância corrigida</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">pelo acaso</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Para quem</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">DOIS avaliadores</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">escala nominal</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A conta</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">(po − pe)/(1 − pe)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Unidades independentes</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">mesmas categorias</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Armadilhas</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Paradoxo da prevalência</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">Paradoxo do viés</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">irr::kappa2()</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">vcd::Kappa()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Kappa de Cohen</text></svg><figcaption>Visão geral do kappa de Cohen. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A intuição em uma frase</strong><p>Se os dois avaliadores classificam 90% das unidades da mesma forma, mas o acaso sozinho produziria 82% de coincidência, então eles acertaram juntos apenas 8 dos 18 pontos percentuais disponíveis acima do acaso — e o kappa é 8/18 = 0,444. A disputa toda, nesta ficha, é sobre o que significa "o acaso sozinho".</p></div></section><section class="detail-panel" id="oque"><h2>O que é o kappa</h2><p>A concordância observada \(p_o\) é a proporção de unidades na diagonal da tabela. A concordância esperada \(p_e\) é calculada supondo que os dois avaliadores classificassem <em>independentemente</em>, cada um com as suas próprias marginais. O kappa é a fração da concordância "disponível" que foi efetivamente alcançada.</p><figure class="fig"><img src="../assets/resultados/kappa-didatica.png" alt="A tabela observada e a esperada, o paradoxo da prevalência e o paradoxo do viés" loading="lazy"/><figcaption><strong>A conta e as suas duas armadilhas.</strong> À esquerda, as duas tabelas que entram na conta: a observada, com 24 e 10 unidades na diagonal, e a esperada sob independência, com 18,2 e 4,2 — a diferença entre as diagonais é o que o kappa credita. No centro, o paradoxo da prevalência: mantendo a concordância observada fixa em 90%, o kappa cai de 0,80 para valores negativos à medida que uma das categorias passa a dominar. À direita, o paradoxo do viés: duas tabelas com a mesma concordância de 60% dão kappa 0,13 e 0,26, conforme as marginais dos avaliadores sejam parecidas ou muito diferentes. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>O que o kappa não é</strong><p>Não é uma correlação, embora varie entre −1 e 1. Não é uma probabilidade. Não é comparável entre estudos com prevalências diferentes — e é por isso que reportar o kappa sozinho, sem a tabela e sem as marginais, deixa o leitor sem como julgar o número.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Exatamente dois avaliadores</td><td>O coeficiente é definido para um par.</td><td>Para três ou mais, <a href="fleiss.html">kappa de Fleiss</a>.</td></tr><tr><td>Categorias nominais, exclusivas e exaustivas</td><td>Cada unidade cai em exatamente uma.</td><td>Soma da tabela = n.</td></tr><tr><td>Os dois avaliadores usam as MESMAS categorias</td><td>A tabela precisa ser quadrada.</td><td>Confira os níveis dos dois fatores.</td></tr><tr><td>Unidades independentes</td><td>O erro-padrão pressupõe isso.</td><td>Delineamento; avaliações agrupadas exigem outro modelo.</td></tr><tr><td>Avaliações feitas de forma cega e independente</td><td>Avaliadores que se consultam inflam a concordância.</td><td>Protocolo.</td></tr><tr><td>Escala sem ordem, ou ordem irrelevante</td><td>Com escala ordinal, o kappa desperdiça informação.</td><td>Se há ordem, use o <a href="kappa-ponderado.html">kappa ponderado</a>.</td></tr><tr><td>n suficiente</td><td>O IC é largo com n pequeno.</td><td>Com n = 40 e cinco classes, o IC tem 0,38 de largura.</td></tr></tbody></table></div><div class="callout warn"><strong>Os dois paradoxos, em números</strong><p><strong>Prevalência:</strong> na tabela [[85, 5], [5, 5]], a concordância observada é 90% e o kappa é 0,444 — porque \(p_e = 0{,}82\). <strong>Viés:</strong> as tabelas [[45, 15], [25, 15]] e [[25, 35], [5, 35]] têm ambas 60% de concordância, e kappas de 0,130 e 0,259. A segunda tem marginais mais discrepantes, e por isso um \(p_e\) menor — o que <em>aumenta</em> o kappa. A recomendação de Byrt, Bishop e Carlin (1993) é reportar o PABAK e os índices de prevalência e de viés ao lado do kappa.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>O kappa é uma medida descritiva, não um teste. Há um teste associado — \(H_0: \kappa=0\) — mas ele raramente interessa: ninguém espera que avaliadores treinados concordem apenas por acaso. O que se reporta é a estimativa com o seu intervalo.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\kappa=\frac{p_o-p_e}{1-p_e},\]\[p_o=\sum_{i=1}^{k}p_{ii},\]\[p_e=\sum_{i=1}^{k}p_{i\cdot}\,p_{\cdot i}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\widehat{\operatorname{EP}}(\hat\kappa)=\frac{1}{(1-p_e)\sqrt{n}}\sqrt{A+B-C}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}A&=\sum_i p_{ii}\left[1-(p_{i\cdot}+p_{\cdot i})(1-\hat\kappa)\right]^{2}\\ B&=(1-\hat\kappa)^{2}\sum_{i\neq j}p_{ij}\left(p_{\cdot i}+p_{j\cdot}\right)^{2}\\ C&=\left[\hat\kappa-p_e(1-\hat\kappa)\right]^{2}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(p_{ij}\)</dt><dd>proporção de unidades classificadas na categoria \(i\) pelo primeiro avaliador e \(j\) pelo segundo</dd></div><div><dt>\(p_{i\cdot},\ p_{\cdot i}\)</dt><dd>marginais de linha e de coluna</dd></div><div><dt>\(p_o\)</dt><dd>concordância observada</dd></div><div><dt>\(p_e\)</dt><dd>concordância esperada sob independência</dd></div><div><dt>\(k\)</dt><dd>número de categorias</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Avaliadores A e B, severidade dicotomizada (40 folhas)</caption><thead><tr><th></th><th>B: baixa</th><th>B: alta</th><th>Total</th></tr></thead><tbody><tr><td>A: baixa</td><td><strong>24</strong></td><td>4</td><td>28</td></tr><tr><td>A: alta</td><td>2</td><td><strong>10</strong></td><td>12</td></tr><tr><td><strong>Total</strong></td><td><strong>26</strong></td><td><strong>14</strong></td><td><strong>40</strong></td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><div class="math-display" role="group" aria-label="Expressão matemática">\[p_o=\frac{24+10}{40}=0{,}8500\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}p_e &= \frac{28}{40}\cdot\frac{26}{40}+\frac{12}{40}\cdot\frac{14}{40} \\ &= 0{,}4550+0{,}1050 \\ &= 0{,}5600\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat\kappa &= \frac{0{,}8500-0{,}5600}{1-0{,}5600} \\ &= \frac{0{,}2900}{0{,}4400} = 0{,}6591\end{aligned}\]</div><p>O erro-padrão é 0,1265, e o intervalo de confiança de 95% vai de 0,411 a 0,907 — largo, como sempre acontece com n = 40.</p><p>Em palavras: dos 44 pontos percentuais de concordância disponíveis acima do que o acaso produziria, os dois avaliadores alcançaram 29. A leitura em termos de "quanto sobrou" é a mais honesta do kappa.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Vale 1 na concordância perfeita e 0 quando a concordância observada iguala a esperada; pode ser negativo, no máximo até \(-1\) em casos extremos.</li><li>Com \(k=2\) e marginais iguais, reduz-se a \(2(p_o-p_e)/(1-p_e)\) e tem interpretação direta como medida de associação.</li><li>Não é invariante à prevalência: a mesma qualidade de avaliação produz kappas diferentes em populações diferentes.</li><li>Para \(p_o\) fixo, o kappa <em>cresce</em> quando as marginais dos dois avaliadores se afastam — que é o paradoxo do viés.</li><li>É o caso \(m=2\) do <a href="fleiss.html">kappa de Fleiss</a>, embora os dois difiram no cálculo de \(p_e\).</li><li>Pode ser escrito como uma <a href="icc.html">correlação intraclasse</a> sobre as indicadoras das categorias.</li><li>Com escala ordinal, a versão ponderada é sempre preferível: veja o <a href="kappa-ponderado.html">kappa ponderado</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>value / kappa</td><td>A estimativa pontual.</td><td>Sem o IC, diz pouco.</td></tr><tr><td>IC 95%</td><td>A precisão.</td><td>Com n pequeno, é muito largo.</td></tr><tr><td>z e p</td><td>Teste de κ = 0.</td><td>Raramente é a pergunta de interesse.</td></tr><tr><td>Concordância observada</td><td>O dado bruto.</td><td>Reporte-a sempre junto.</td></tr><tr><td>Marginais dos dois avaliadores</td><td>Se há viés sistemático.</td><td>Marginais discrepantes inflam o kappa.</td></tr><tr><td>PABAK</td><td>2·po − 1: ignora as marginais.</td><td>Útil como contraponto.</td></tr><tr><td>Índices de prevalência e de viés</td><td>Qual dos dois paradoxos está em jogo.</td><td>Byrt, Bishop e Carlin (1993).</td></tr></tbody></table></div><h3>A escala de Landis e Koch, e por que desconfiar dela</h3><div class="table-wrap"><table class="method-table"><caption>A convenção mais citada da literatura</caption><thead><tr><th>Kappa</th><th>Rótulo verbal</th></tr></thead><tbody><tr><td>&lt; 0,00</td><td>pobre</td></tr><tr><td>0,00 a 0,20</td><td>leve</td></tr><tr><td>0,21 a 0,40</td><td>razoável</td></tr><tr><td>0,41 a 0,60</td><td>moderada</td></tr><tr><td>0,61 a 0,80</td><td>substancial</td></tr><tr><td>0,81 a 1,00</td><td>quase perfeita</td></tr></tbody></table></div><div class="callout warn"><strong>A escala é convenção, não teoria</strong><p>Landis e Koch propuseram esses cortes em 1977 sem derivação formal, e eles se espalharam pela literatura. O problema prático é que eles ignoram a precisão: em simulação com n = 40 e cinco categorias, avaliadores que classificam de forma <em>completamente independente</em> produzem kappa acima de 0,20 — o rótulo "razoável" — em cerca de 1% das amostras, com desvio-padrão de 0,08. Um kappa de 0,45 com IC [0,10; 0,80] e outro de 0,45 com IC [0,41; 0,49] recebem o mesmo rótulo e significam coisas muito diferentes.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Há três caminhos no R. <code>irr::kappa2()</code> aceita uma matriz com duas colunas e devolve kappa, \(z\) e valor-p, além de aceitar pesos. <code>vcd::Kappa()</code> trabalha a partir da tabela de contingência e devolve as versões ponderada e não ponderada com <code>confint()</code>. <code>psych::cohen.kappa()</code> dá intervalos por bootstrap e lida bem com categorias ausentes. Para o gráfico, <code>vcd::agreementplot()</code> mostra visualmente quanto da tabela está na diagonal.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-kappa-min" type="button">Copiar código</button></div><pre id="code-kappa-min"><code>library(irr)
+kappa2(dados[, c("A", "B")])     # kappa, z e valor-p
+library(vcd)
+Kappa(table(dados$A, dados$B)); confint(Kappa(table(dados$A, dados$B)))
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 40 folhas de cafeeiro avaliadas quanto à severidade de ferrugem por cinco avaliadores (A a E), em escala ordinal de 1 (ausente) a 5 (muito alta). O mesmo conjunto atravessa as seis fichas de concordância, o que permite ver como cada coeficiente responde à mesma estrutura de desacordo. Dois dos avaliadores foram construídos com defeitos distintos: o C classifica sistematicamente cerca de uma classe acima dos demais, e o E é o mais errático sem ser o mais severo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-kappa" type="button">Copiar código</button></div><pre id="code-kappa"><code># Kappa de Cohen: exemplo completo ----
+# Pacotes: irr (kappa2), vcd (Kappa com IC), psych, DescTools
+# install.packages(c("irr", "vcd", "psych", "DescTools"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("irr", quietly = TRUE)) install.packages("irr")
+# Dados fictícios: 40 folhas de cafeeiro, severidade de ferrugem de 1 a 5,
+# avaliadas por cinco avaliadores. O mesmo conjunto das demais fichas de
+# concordância.
+sev &lt;- matrix(c(
+ 3,3,4,3,4, 5,4,4,4,5, 4,4,5,3,5, 5,5,5,4,5, 5,5,5,4,3,
+ 1,2,2,1,1, 2,2,3,2,4, 1,2,1,1,1, 3,3,4,3,4, 3,4,5,4,2,
+ 4,3,4,3,4, 3,4,4,3,3, 1,1,1,1,1, 3,3,5,3,3, 2,3,2,2,1,
+ 5,5,5,5,4, 5,5,4,3,5, 4,5,5,4,4, 2,2,5,2,2, 3,4,5,4,3,
+ 4,4,4,4,1, 1,2,3,1,3, 3,3,3,3,3, 2,3,5,2,3, 2,1,2,2,2,
+ 2,1,3,2,3, 3,3,4,3,1, 2,1,1,1,5, 3,2,4,5,4, 1,1,1,1,2,
+ 4,5,5,4,4, 2,2,4,2,1, 1,1,4,1,3, 1,1,2,1,1, 3,3,3,2,3,
+ 3,3,3,3,3, 3,5,4,3,2, 2,2,4,2,1, 4,2,5,4,4, 5,5,5,5,2),
+ ncol = 5, byrow = TRUE,
+ dimnames = list(paste0("folha", 1:40), c("A","B","C","D","E")))
+head(sev)
+apply(sev, 2, function(x) table(factor(x, levels = 1:5)))
+colMeans(sev)
+
+# O kappa de Cohen é para DOIS avaliadores e escala NOMINAL.
+# Dicotomizando em severidade alta (4 e 5) contra baixa (1 a 3):
+alta &lt;- ifelse(sev &gt;= 4, "alta", "baixa")
+tab  &lt;- table(A = alta[, "A"], B = alta[, "B"])
+tab
+addmargins(tab)
+prop.table(tab)
+
 library(irr)
-avaliacoes &lt;- data.frame(
-  sistema_A = factor(ifelse(mtcars$hp &gt; median(mtcars$hp), "alto", "baixo")),
-  sistema_B = factor(ifelse(mtcars$mpg &lt; median(mtcars$mpg), "alto", "baixo")))
-print(table(avaliacoes))
-print(kappa2(avaliacoes, weight = "unweighted"))
+kappa2(alta[, c("A", "B")])          # kappa, z e valor-p
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+library(vcd)
+Kappa(tab)                            # kappa não ponderado e ponderado
+confint(Kappa(tab))                   # intervalos de confiança
 
+# A conta à mão
+P  &lt;- prop.table(tab)
+po &lt;- sum(diag(P)); po
+pe &lt;- sum(rowSums(P) * colSums(P)); pe
+(po - pe) / (1 - pe)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="gehan.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste generalizado de Wilcoxon–Gehan
-    </a>
-<a href="kappa-ponderado.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Kappa ponderado
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Erro-padrão e IC
+library(psych)
+cohen.kappa(alta[, c("A", "B")])
+
+# Os dois paradoxos de Feinstein e Cicchetti
+t_prev &lt;- matrix(c(85, 5, 5, 5), 2, byrow = TRUE)     # prevalência extrema
+t_vies1 &lt;- matrix(c(45, 15, 25, 15), 2, byrow = TRUE) # marginais parecidas
+t_vies2 &lt;- matrix(c(25, 35, 5, 35), 2, byrow = TRUE)  # marginais diferentes
+sapply(list(t_prev, t_vies1, t_vies2), function(T) {
+  P &lt;- prop.table(T); po &lt;- sum(diag(P))
+  pe &lt;- sum(rowSums(P) * colSums(P))
+  c(po = po, pe = pe, kappa = (po - pe)/(1 - pe), pabak = 2*po - 1,
+    ip = abs(T[1,1] - T[2,2])/sum(T), iv = abs(T[1,2] - T[2,1])/sum(T))
+})
+
+# Todos os pares, na escala completa de cinco classes
+pares &lt;- combn(colnames(sev), 2)
+res &lt;- t(apply(pares, 2, function(p) {
+  k &lt;- kappa2(sev[, p])
+  c(kappa = k$value, z = k$statistic, p = k$p.value,
+    concordancia = mean(sev[, p[1]] == sev[, p[2]]))
+}))
+rownames(res) &lt;- apply(pares, 2, paste, collapse = "-")
+round(res, 4)
+mean(res[, "kappa"])                  # kappa de Light
+
+# Gráficos
+library(vcd)
+agreementplot(tab, main = "Concordância entre A e B")
+mosaic(table(A = sev[,"A"], B = sev[,"B"]), shade = TRUE)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-kappa" type="button">Copiar código</button></div><pre id="code-py-kappa"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# concordância: 40 folhas de cafeeiro avaliadas quanto à severidade de
+# ferrugem por cinco avaliadores, em escala de 1 (ausente) a 5 (muito alta).
+# ===================================================================
+SEV = np.array([
+ [3,3,4,3,4],[5,4,4,4,5],[4,4,5,3,5],[5,5,5,4,5],[5,5,5,4,3],
+ [1,2,2,1,1],[2,2,3,2,4],[1,2,1,1,1],[3,3,4,3,4],[3,4,5,4,2],
+ [4,3,4,3,4],[3,4,4,3,3],[1,1,1,1,1],[3,3,5,3,3],[2,3,2,2,1],
+ [5,5,5,5,4],[5,5,4,3,5],[4,5,5,4,4],[2,2,5,2,2],[3,4,5,4,3],
+ [4,4,4,4,1],[1,2,3,1,3],[3,3,3,3,3],[2,3,5,2,3],[2,1,2,2,2],
+ [2,1,3,2,3],[3,3,4,3,1],[2,1,1,1,5],[3,2,4,5,4],[1,1,1,1,2],
+ [4,5,5,4,4],[2,2,4,2,1],[1,1,4,1,3],[1,1,2,1,1],[3,3,3,2,3],
+ [3,3,3,3,3],[3,5,4,3,2],[2,2,4,2,1],[4,2,5,4,4],[5,5,5,5,2]])
+AVAL = ["A", "B", "C", "D", "E"]
+
+def tabela(a, b, k):
+    O = np.zeros((k, k), int)
+    for x, y in zip(a, b): O[x-1, y-1] += 1
+    return O
+
+def kappa(O, w=None):
+    """Kappa de Cohen. w = matriz de DESACORDO (0 na diagonal)."""
+    O = np.asarray(O, float); k = O.shape[0]; N = O.sum()
+    P = O / N; lin = P.sum(1); col = P.sum(0); E = np.outer(lin, col)
+    if w is None: w = 1 - np.eye(k)
+    po = 1 - (w*P).sum(); pe = 1 - (w*E).sum()
+    return (po - pe) / (1 - pe), po, pe
+
+def ep_kappa(O):
+    """Erro-padrão assintótico do kappa não ponderado (Fleiss, Cohen e Everitt)."""
+    O = np.asarray(O, float); k = O.shape[0]; N = O.sum()
+    P = O/N; lin = P.sum(1); col = P.sum(0)
+    po = np.trace(P); pe = (lin*col).sum(); K = (po-pe)/(1-pe)
+    t1 = sum(P[i,i]*(1-(lin[i]+col[i])*(1-K))**2 for i in range(k))
+    t2 = (1-K)**2*sum(P[i,j]*(col[i]+lin[j])**2
+                      for i in range(k) for j in range(k) if i != j)
+    t3 = (K-pe*(1-K))**2
+    return np.sqrt((t1+t2-t3)/(N*(1-pe)**2))
+
+# ===================================================================
+# PARTE 1 - duas avaliações, escala dicotomizada
+# ===================================================================
+print("40 folhas, severidade de ferrugem classificada por cinco avaliadores")
+print("Para o kappa de Cohen, que é para DOIS avaliadores e escala nominal,")
+print("comparamos A e B, dicotomizando em 'severidade alta' (classes 4 e 5)")
+print("contra 'severidade baixa' (classes 1 a 3).")
+dA = (SEV[:,0] &gt;= 4).astype(int); dB = (SEV[:,1] &gt;= 4).astype(int)
+O = tabela(dA+1, dB+1, 2)
+print(f"\n{'':&gt;18}{'B: baixa':&gt;12}{'B: alta':&gt;10}{'total':&gt;9}")
+for i, nm in enumerate(["A: baixa", "A: alta"]):
+    print(f"{nm:&gt;18}{O[i,0]:&gt;12d}{O[i,1]:&gt;10d}{O[i].sum():&gt;9d}")
+print(f"{'total':&gt;18}{O[:,0].sum():&gt;12d}{O[:,1].sum():&gt;10d}{O.sum():&gt;9d}")
+
+K, po, pe = kappa(O)
+ep = ep_kappa(O)
+print(f"\nConcordância observada  po = ({O[0,0]} + {O[1,1]}) / 40 = {po:.4f}")
+print(f"Concordância esperada   pe = {pe:.4f}")
+print(f"Kappa = (po - pe)/(1 - pe) = ({po:.4f} - {pe:.4f})/(1 - {pe:.4f}) = {K:.4f}")
+print(f"Erro-padrão = {ep:.4f} | IC 95% = [{K-1.96*ep:.4f}; {K+1.96*ep:.4f}]")
+print("O que se reporta é o intervalo, e não um teste de kappa = 0: ninguém")
+print("espera que dois avaliadores treinados concordem apenas por acaso.")
+
+# ===================================================================
+# PARTE 2 - os dois paradoxos do kappa
+# ===================================================================
+print("\n" + "=" * 70)
+print("Os dois paradoxos de Feinstein e Cicchetti (1990)")
+print("\n(a) PREVALÊNCIA: concordância altíssima, kappa baixo")
+T1 = np.array([[85, 5], [5, 5]])
+K1, po1, pe1 = kappa(T1)
+print(f"    tabela: {T1.tolist()}")
+print(f"    concordância observada = {po1:.4f} ({po1*100:.0f}%)")
+print(f"    concordância esperada  = {pe1:.4f}")
+print(f"    kappa = {K1:.4f}")
+print("    Quase todas as unidades estão na mesma célula: o acaso já explica")
+print("    82% da concordância, e sobra pouco para o kappa creditar.")
+
+print("\n(b) VIÉS: a mesma concordância observada, kappas muito diferentes")
+for T in [np.array([[45, 15], [25, 15]]), np.array([[25, 35], [5, 35]])]:
+    Kx, pox, pex = kappa(T)
+    m1 = T[0].sum()/T.sum(); m2 = T[:,0].sum()/T.sum()
+    print(f"    tabela: {T.tolist()}  po = {pox:.4f}  pe = {pex:.4f}  "
+          f"kappa = {Kx:.4f}")
+    print(f"      marginais: avaliador 1 diz 'sim' em {100*m1:.0f}%, "
+          f"avaliador 2 em {100*m2:.0f}%")
+print("    A mesma concordância de 60% dá kappa 0,13 e 0,26: quanto MAIS")
+print("    diferentes forem as marginais, MAIOR o kappa, para po fixo.")
+
+print("\n(c) Índices que contornam o problema")
+for nome, T in [("prevalência extrema", np.array([[85,5],[5,5]])),
+                ("viés alto", np.array([[25,35],[5,35]])),
+                ("A e B desta ficha", O)]:
+    N = T.sum(); po_ = np.trace(T)/N; Kx, _, _ = kappa(T)
+    pabak = 2*po_ - 1
+    ip = abs(T[0,0]-T[1,1])/N          # índice de prevalência
+    ib = abs(T[0,1]-T[1,0])/N          # índice de viés
+    print(f"    {nome:&lt;22} kappa = {Kx:6.4f}  PABAK = {pabak:6.4f}  "
+          f"IP = {ip:.3f}  IV = {ib:.3f}")
+print("    O PABAK = 2·po − 1 ignora as marginais; os índices de prevalência")
+print("    e de viés dizem QUAL dos dois problemas está em jogo. Reportá-los")
+print("    ao lado do kappa é a recomendação de Byrt, Bishop e Carlin (1993).")
+
+# ===================================================================
+# PARTE 3 - todos os pares de avaliadores, na escala completa
+# ===================================================================
+print("\n" + "=" * 70)
+print("Kappa NÃO PONDERADO entre todos os pares, nas cinco classes originais")
+print(f"\n{'par':&gt;8}{'concordância':&gt;15}{'kappa':&gt;10}{'EP':&gt;9}{'IC 95%':&gt;22}")
+pares = [(i, j) for i in range(5) for j in range(i+1, 5)]
+ks = []
+for i, j in pares:
+    Oij = tabela(SEV[:,i], SEV[:,j], 5)
+    Kij, poij, peij = kappa(Oij); epij = ep_kappa(Oij); ks.append(Kij)
+    print(f"{AVAL[i]+'-'+AVAL[j]:&gt;8}{poij:&gt;15.4f}{Kij:&gt;10.4f}{epij:&gt;9.4f}"
+          f"   [{Kij-1.96*epij:6.4f}; {Kij+1.96*epij:6.4f}]")
+print(f"\nMédia dos dez kappas pareados (kappa de Light) = {np.mean(ks):.4f}")
+print(f"Menor: {min(ks):.4f} | Maior: {max(ks):.4f}")
+print("O avaliador C aparece nos pares de menor concordância: ele classifica")
+print(f"em média {SEV[:,2].mean():.2f}, contra {SEV[:,[0,1,3,4]].mean():.2f} "
+      f"dos outros quatro - é um viés sistemático de severidade.")
+
+print("\nO kappa NÃO PONDERADO trata 'errar por uma classe' e 'errar por")
+print("quatro' como o mesmo desacordo. Em escala ordinal isso desperdiça")
+print("informação, e é o que a ficha do kappa ponderado corrige: para o par")
+i, j = np.arange(5)[:,None], np.arange(5)[None,:]
+Oab = tabela(SEV[:,0], SEV[:,1], 5)
+print(f"  A-B, kappa não ponderado = {kappa(Oab)[0]:.4f}")
+print(f"       kappa com pesos lineares    = {kappa(Oab, np.abs(i-j)/4)[0]:.4f}")
+print(f"       kappa com pesos quadráticos = {kappa(Oab, (i-j)**2/16)[0]:.4f}")
+
+# ===================================================================
+# PARTE 4 - o que o kappa vale como número: a escala de Landis e Koch
+# ===================================================================
+print("\n" + "=" * 70)
+print("A escala de Landis e Koch (1977) é convenção, não teoria.")
+print("Simulação: qual kappa se obtém quando os dois avaliadores classificam")
+print("INDEPENDENTEMENTE, mas com as mesmas marginais observadas em A e B?")
+rng = np.random.default_rng(5)
+mA = np.bincount(SEV[:,0], minlength=6)[1:]/40
+mB = np.bincount(SEV[:,1], minlength=6)[1:]/40
+sim = []
+for _ in range(20000):
+    a = rng.choice(5, 40, p=mA)+1; b = rng.choice(5, 40, p=mB)+1
+    sim.append(kappa(tabela(a, b, 5))[0])
+sim = np.array(sim)
+print(f"  média = {sim.mean():.4f} (o valor esperado é 0)")
+print(f"  desvio-padrão = {sim.std(ddof=1):.4f}")
+print(f"  percentil 95 = {np.percentile(sim, 95):.4f}")
+print(f"  proporção de amostras com kappa &gt; 0,20 ('razoável') = "
+      f"{100*np.mean(sim &gt; 0.20):.2f}%")
+print("Com n = 40 e cinco categorias, avaliadores que não se olham produzem")
+print("kappa acima de 0,20 em cerca de 1% das amostras, e o percentil 95 fica")
+print("em 0,135. Isso é tranquilizador quanto ao viés do estimador, mas o")
+print("desvio-padrão de 0,08 mostra o outro lado: o rótulo verbal não")
+print("substitui o intervalo de confiança, que é o que informa a precisão.")
+
+print("\nE o tamanho da amostra? Largura do IC 95% do kappa de A e B,")
+print("recalculado em subamostras de tamanhos diferentes (1.000 repetições):")
+Oab_full = tabela(SEV[:,0], SEV[:,1], 5)
+Kfull = kappa(Oab_full)[0]
+print(f"{'n':&gt;6}{'largura média do IC 95%':&gt;28}")
+for nn in [20, 40, 100, 400]:
+    larg = []
+    for _ in range(1000):
+        idx = rng.choice(40, nn, replace=True)
+        Oi = tabela(SEV[idx,0], SEV[idx,1], 5)
+        try: larg.append(2*1.96*ep_kappa(Oi))
+        except Exception: pass
+    print(f"{nn:&gt;6}{np.mean(larg):&gt;27.4f}")
+print(f"(o kappa observado nos 40 originais é {Kfull:.4f})")
+print("A largura cai com a raiz de n, como de hábito: para estimar kappa com")
+print("precisão de 0,10, são necessárias algumas centenas de unidades.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">40 folhas, severidade de ferrugem classificada por cinco avaliadores
+Para o kappa de Cohen, que é para DOIS avaliadores e escala nominal,
+comparamos A e B, dicotomizando em 'severidade alta' (classes 4 e 5)
+contra 'severidade baixa' (classes 1 a 3).
+
+                      B: baixa   B: alta    total
+          A: baixa          24         4       28
+           A: alta           2        10       12
+             total          26        14       40
+
+Concordância observada  po = (24 + 10) / 40 = 0.8500
+Concordância esperada   pe = 0.5600
+Kappa = (po - pe)/(1 - pe) = (0.8500 - 0.5600)/(1 - 0.5600) = 0.6591
+Erro-padrão = 0.1265 | IC 95% = [0.4111; 0.9071]
+O que se reporta é o intervalo, e não um teste de kappa = 0: ninguém
+espera que dois avaliadores treinados concordem apenas por acaso.
+
+======================================================================
+Os dois paradoxos de Feinstein e Cicchetti (1990)
+
+(a) PREVALÊNCIA: concordância altíssima, kappa baixo
+    tabela: [[85, 5], [5, 5]]
+    concordância observada = 0.9000 (90%)
+    concordância esperada  = 0.8200
+    kappa = 0.4444
+    Quase todas as unidades estão na mesma célula: o acaso já explica
+    82% da concordância, e sobra pouco para o kappa creditar.
+
+(b) VIÉS: a mesma concordância observada, kappas muito diferentes
+    tabela: [[45, 15], [25, 15]]  po = 0.6000  pe = 0.5400  kappa = 0.1304
+      marginais: avaliador 1 diz 'sim' em 60%, avaliador 2 em 70%
+    tabela: [[25, 35], [5, 35]]  po = 0.6000  pe = 0.4600  kappa = 0.2593
+      marginais: avaliador 1 diz 'sim' em 60%, avaliador 2 em 30%
+    A mesma concordância de 60% dá kappa 0,13 e 0,26: quanto MAIS
+    diferentes forem as marginais, MAIOR o kappa, para po fixo.
+
+(c) Índices que contornam o problema
+    prevalência extrema    kappa = 0.4444  PABAK = 0.8000  IP = 0.800  IV = 0.000
+    viés alto              kappa = 0.2593  PABAK = 0.2000  IP = 0.100  IV = 0.300
+    A e B desta ficha      kappa = 0.6591  PABAK = 0.7000  IP = 0.350  IV = 0.050
+    O PABAK = 2·po − 1 ignora as marginais; os índices de prevalência
+    e de viés dizem QUAL dos dois problemas está em jogo. Reportá-los
+    ao lado do kappa é a recomendação de Byrt, Bishop e Carlin (1993).
+
+======================================================================
+Kappa NÃO PONDERADO entre todos os pares, nas cinco classes originais
+
+     par   concordância     kappa       EP                IC 95%
+     A-B         0.5500    0.4313   0.0986   [0.2380; 0.6245]
+     A-C         0.3500    0.2049   0.0886   [0.0312; 0.3786]
+     A-D         0.7250    0.6505   0.0884   [0.4773; 0.8238]
+     A-E         0.4750    0.3370   0.0990   [0.1429; 0.5311]
+     B-C         0.4000    0.2581   0.0908   [0.0802; 0.4361]
+     B-D         0.5500    0.4353   0.0966   [0.2459; 0.6247]
+     B-E         0.2500    0.0618   0.0821   [-0.0991; 0.2226]
+     C-D         0.3000    0.1450   0.0872   [-0.0260; 0.3160]
+     C-E         0.3500    0.1950   0.0889   [0.0209; 0.3692]
+     D-E         0.3250    0.1408   0.0911   [-0.0378; 0.3194]
+
+Média dos dez kappas pareados (kappa de Light) = 0.2860
+Menor: 0.0618 | Maior: 0.6505
+O avaliador C aparece nos pares de menor concordância: ele classifica
+em média 3.67, contra 2.87 dos outros quatro - é um viés sistemático de severidade.
+
+O kappa NÃO PONDERADO trata 'errar por uma classe' e 'errar por
+quatro' como o mesmo desacordo. Em escala ordinal isso desperdiça
+informação, e é o que a ficha do kappa ponderado corrige: para o par
+  A-B, kappa não ponderado = 0.4313
+       kappa com pesos lineares    = 0.6664
+       kappa com pesos quadráticos = 0.8307
+
+======================================================================
+A escala de Landis e Koch (1977) é convenção, não teoria.
+Simulação: qual kappa se obtém quando os dois avaliadores classificam
+INDEPENDENTEMENTE, mas com as mesmas marginais observadas em A e B?
+  média = 0.0009 (o valor esperado é 0)
+  desvio-padrão = 0.0795
+  percentil 95 = 0.1351
+  proporção de amostras com kappa &gt; 0,20 ('razoável') = 0.97%
+Com n = 40 e cinco categorias, avaliadores que não se olham produzem
+kappa acima de 0,20 em cerca de 1% das amostras, e o percentil 95 fica
+em 0,135. Isso é tranquilizador quanto ao viés do estimador, mas o
+desvio-padrão de 0,08 mostra o outro lado: o rótulo verbal não
+substitui o intervalo de confiança, que é o que informa a precisão.
+
+E o tamanho da amostra? Largura do IC 95% do kappa de A e B,
+recalculado em subamostras de tamanhos diferentes (1.000 repetições):
+     n     largura média do IC 95%
+    20                     0.5196
+    40                     0.3771
+   100                     0.2422
+   400                     0.1220
+(o kappa observado nos 40 originais é 0.4313)
+A largura cai com a raiz de n, como de hábito: para estimar kappa com
+precisão de 0,10, são necessárias algumas centenas de unidades.</pre></div><figure class="fig"><img src="../assets/resultados/kappa.png" alt="A tabela cruzada de A e B, os dez pares com intervalos, e a distribuição do kappa sob independência" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a tabela 5 × 5 dos avaliadores A e B, com a diagonal destacada: 22 folhas com acordo exato e 16 a uma classe de distância. No centro, os dez pares de avaliadores ordenados pelo kappa, com intervalos de 95%; as linhas pontilhadas marcam os cortes de Landis e Koch, e três intervalos incluem o zero. À direita, a distribuição do kappa em 20.000 conjuntos simulados em que os dois avaliadores classificam de forma independente, com as marginais reais de A e B. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Avaliadores A e B, escala dicotomizada</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Concordância observada</td><td>0,8500 (34 de 40)</td></tr><tr><td>Concordância esperada</td><td>0,5600</td></tr><tr><td><strong>Kappa de Cohen</strong></td><td><strong>0,6591</strong></td></tr><tr><td>Erro-padrão</td><td>0,1265</td></tr><tr><td>IC 95%</td><td>[0,4111; 0,9071]</td></tr><tr><td>PABAK</td><td>0,7000</td></tr><tr><td>Índice de prevalência</td><td>0,350</td></tr><tr><td>Índice de viés</td><td>0,050</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os dez pares, nas cinco classes originais</caption><thead><tr><th>Par</th><th>Concordância</th><th>Kappa</th><th>EP</th><th>IC 95%</th></tr></thead><tbody><tr><td>A–D</td><td>0,7250</td><td><strong>0,6505</strong></td><td>0,0884</td><td>[0,4773; 0,8238]</td></tr><tr><td>B–D</td><td>0,5500</td><td>0,4353</td><td>0,0966</td><td>[0,2459; 0,6247]</td></tr><tr><td>A–B</td><td>0,5500</td><td>0,4313</td><td>0,0986</td><td>[0,2380; 0,6245]</td></tr><tr><td>A–E</td><td>0,4750</td><td>0,3370</td><td>0,0990</td><td>[0,1429; 0,5311]</td></tr><tr><td>B–C</td><td>0,4000</td><td>0,2581</td><td>0,0908</td><td>[0,0802; 0,4361]</td></tr><tr><td>A–C</td><td>0,3500</td><td>0,2049</td><td>0,0886</td><td>[0,0312; 0,3786]</td></tr><tr><td>C–E</td><td>0,3500</td><td>0,1950</td><td>0,0889</td><td>[0,0209; 0,3692]</td></tr><tr><td>C–D</td><td>0,3000</td><td>0,1450</td><td>0,0872</td><td>[−0,0260; 0,3160]</td></tr><tr><td>D–E</td><td>0,3250</td><td>0,1408</td><td>0,0911</td><td>[−0,0378; 0,3194]</td></tr><tr><td>B–E</td><td>0,2500</td><td><strong>0,0618</strong></td><td>0,0821</td><td>[−0,0991; 0,2226]</td></tr><tr><td><strong>Média (kappa de Light)</strong></td><td>—</td><td><strong>0,2860</strong></td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os dois paradoxos, com números</caption><thead><tr><th>Tabela</th><th>po</th><th>pe</th><th>Kappa</th><th>PABAK</th><th>IP</th><th>IV</th></tr></thead><tbody><tr><td>Prevalência extrema [[85, 5], [5, 5]]</td><td>0,9000</td><td>0,8200</td><td><strong>0,4444</strong></td><td>0,8000</td><td>0,800</td><td>0,000</td></tr><tr><td>Viés baixo [[45, 15], [25, 15]]</td><td>0,6000</td><td>0,5400</td><td>0,1304</td><td>0,2000</td><td>0,100</td><td>0,100</td></tr><tr><td>Viés alto [[25, 35], [5, 35]]</td><td>0,6000</td><td>0,4600</td><td><strong>0,2593</strong></td><td>0,2000</td><td>0,100</td><td>0,300</td></tr><tr><td>A e B desta ficha</td><td>0,8500</td><td>0,5600</td><td>0,6591</td><td>0,7000</td><td>0,350</td><td>0,050</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Distribuição do kappa quando os avaliadores são independentes (n = 40, k = 5)</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>Média</td><td>0,0009 (o esperado é 0)</td></tr><tr><td>Desvio-padrão</td><td>0,0795</td></tr><tr><td>Percentil 95</td><td>0,1351</td></tr><tr><td>Proporção com kappa &gt; 0,20</td><td>0,97%</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Largura média do IC 95% por tamanho de amostra</caption><thead><tr><th>n</th><th>Largura</th></tr></thead><tbody><tr><td>20</td><td>0,5196</td></tr><tr><td>40</td><td>0,3771</td></tr><tr><td>100</td><td>0,2422</td></tr><tr><td>400</td><td>0,1220</td></tr></tbody></table></div><p><strong>Leitura:</strong> na escala dicotomizada, A e B alcançam kappa de 0,659 — "substancial" pela convenção de Landis e Koch — mas com intervalo de [0,41; 0,91], que atravessa três faixas da escala. O rótulo verbal é, portanto, pouco informativo aqui, e o que se deve reportar é o intervalo.</p><p>Na escala completa de cinco classes, os dez pares vão de 0,062 a 0,651. O padrão não é aleatório. O par A–D tem o maior kappa, e são os dois avaliadores com médias mais próximas (2,88 e 2,75). Os pares de menor kappa envolvem o avaliador E (B–E com 0,062) ou o avaliador C (C–D com 0,145). Os dois destoam por motivos diferentes: o C classifica em média 3,67, quase uma classe acima dos outros quatro, que ficam em 2,87; o E não é mais severo, é mais errático. O kappa não ponderado não distingue esses dois defeitos — e é uma das razões para passar ao <a href="kappa-ponderado.html">kappa ponderado</a>.</p><p><strong>Sobre os paradoxos:</strong> a tabela com prevalência extrema tem 90% de concordância e kappa de apenas 0,444, enquanto o PABAK devolve 0,800. Qual dos dois é "o certo" depende do que se quer saber: o kappa pergunta quanto da concordância sobra depois de descontar o que avaliadores com essas marginais produziriam sorteando, e quando uma categoria domina, esse desconto é enorme. O índice de prevalência de 0,800 sinaliza exatamente isso. Nas duas tabelas de viés, a concordância é idêntica e o kappa difere por um fator de dois, com o índice de viés passando de 0,100 para 0,300 — e, contra a intuição, é a tabela <em>mais</em> enviesada que recebe o kappa maior.</p><p><strong>Sobre a precisão:</strong> a simulação confirma que o kappa é essencialmente não viesado sob independência — média de 0,0009 contra 0 teórico — mas o desvio-padrão de 0,08 é grande. A tabela de larguras mostra o custo: com n = 40 o intervalo tem 0,38 de amplitude, e para chegar a uma precisão de 0,10 seriam necessárias algumas centenas de unidades. Estudos de confiabilidade com vinte ou trinta casos, comuns na literatura aplicada, produzem estimativas que mal distinguem concordância moderada de quase perfeita.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Reportar o kappa sem a concordância observada</td><td>Os dois juntos contam a história; um só, não.</td></tr><tr><td>Reportar o kappa sem o intervalo de confiança</td><td>Com n pequeno, o IC atravessa várias faixas da escala.</td></tr><tr><td>Tomar a escala de Landis e Koch como lei</td><td>É convenção sem derivação; cite-a como tal.</td></tr><tr><td>Comparar kappas de estudos com prevalências diferentes</td><td>Não são comparáveis; compare também po e as marginais.</td></tr><tr><td>Usar o kappa não ponderado em escala ordinal</td><td>Prefira o <a href="kappa-ponderado.html">kappa ponderado</a>.</td></tr><tr><td>Usar com três ou mais avaliadores</td><td>Para isso, <a href="fleiss.html">kappa de Fleiss</a>.</td></tr><tr><td>Interpretar kappa baixo como "avaliadores ruins"</td><td>Pode ser o paradoxo da prevalência; verifique o IP.</td></tr><tr><td>Colapsar categorias depois de ver qual dá o maior kappa</td><td>Decida a escala antes.</td></tr><tr><td>Confundir concordância com acurácia</td><td>Dois avaliadores podem concordar e estar ambos errados.</td></tr><tr><td>Usar o teste de κ = 0 como objetivo da análise</td><td>Ele quase sempre rejeita, e isso não informa nada.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kappa-ponderado.html">Kappa ponderado</a></td><td>Escala ordinal: desacordos pequenos devem pesar menos.</td></tr><tr><td><a href="fleiss.html">Kappa de Fleiss</a></td><td>Três ou mais avaliadores, intercambiáveis.</td></tr><tr><td>Kappa de Light</td><td>Três ou mais avaliadores: média dos kappas pareados.</td></tr><tr><td><a href="gwet.html">AC1 de Gwet</a></td><td>Categorias muito desequilibradas, em que o kappa colapsa.</td></tr><tr><td>PABAK</td><td>Quando se quer um índice que ignore as marginais.</td></tr><tr><td><a href="icc.html">Correlação intraclasse</a></td><td>Resposta contínua.</td></tr><tr><td>Alfa de Krippendorff</td><td>Avaliadores com dados faltantes, ou qualquer nível de mensuração.</td></tr><tr><td>Teste de <a href="mcnemar.html">McNemar</a> ou de Stuart–Maxwell</td><td>Quando a pergunta é sobre viés marginal, e não sobre concordância.</td></tr><tr><td>Sensibilidade e especificidade</td><td>Quando um dos avaliadores é um padrão-ouro.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que são dois avaliadores e que as categorias são as mesmas.</li><li>Monte a tabela cruzada completa e examine-a antes de calcular qualquer coisa.</li><li>Calcule a concordância observada e as marginais dos dois.</li><li>Calcule o kappa com intervalo de confiança.</li><li>Calcule também o PABAK e os índices de prevalência e de viés.</li><li>Se a escala for ordinal, passe ao <a href="kappa-ponderado.html">kappa ponderado</a>.</li><li>Reporte todos esses números, e não apenas o kappa.</li><li>Interprete pelo intervalo, não pelo rótulo verbal.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>COHEN, Jacob. A coefficient of agreement for nominal scales. <em>Educational and Psychological Measurement</em>, v. 20, n. 1, p. 37-46, 1960.</li><li>FLEISS, Joseph L.; COHEN, Jacob; EVERITT, B. S. Large sample standard errors of kappa and weighted kappa. <em>Psychological Bulletin</em>, v. 72, n. 5, p. 323-327, 1969.</li><li>LANDIS, J. Richard; KOCH, Gary G. The measurement of observer agreement for categorical data. <em>Biometrics</em>, v. 33, n. 1, p. 159-174, 1977.</li><li>FEINSTEIN, Alvan R.; CICCHETTI, Domenic V. High agreement but low kappa: I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology</em>, v. 43, n. 6, p. 543-549, 1990.</li><li>BYRT, Ted; BISHOP, Janet; CARLIN, John B. Bias, prevalence and kappa. <em>Journal of Clinical Epidemiology</em>, v. 46, n. 5, p. 423-429, 1993.</li><li>CICCHETTI, Domenic V.; FEINSTEIN, Alvan R. High agreement but low kappa: II. Resolving the paradoxes. <em>Journal of Clinical Epidemiology</em>, v. 43, n. 6, p. 551-558, 1990.</li><li>SCOTT, William A. Reliability of content analysis: the case of nominal scale coding. <em>Public Opinion Quarterly</em>, v. 19, n. 3, p. 321-325, 1955.</li><li>MAXWELL, A. E. Coefficients of agreement between observers and their interpretation. <em>British Journal of Psychiatry</em>, v. 130, n. 1, p. 79-83, 1977.</li><li>SIM, Julius; WRIGHT, Chris C. The kappa statistic in reliability studies: use, interpretation, and sample size requirements. <em>Physical Therapy</em>, v. 85, n. 3, p. 257-268, 2005.</li><li>McHUGH, Mary L. Interrater reliability: the kappa statistic. <em>Biochemia Medica</em>, v. 22, n. 3, p. 276-282, 2012.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>GWET, Kilem L. <em>Handbook of inter-rater reliability.</em> 4. ed. Gaithersburg: Advanced Analytics, 2014.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>GAMER, Matthias; LEMON, Jim; FELLOWS, Ian; SINGH, Puspendra. <em>irr: various coefficients of interrater reliability and agreement.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=irr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=irr</a>.</li><li>MEYER, David; ZEILEIS, Achim; HORNIK, Kurt. <em>vcd: visualizing categorical data.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=vcd" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=vcd</a>.</li><li>REVELLE, William. <em>psych: procedures for psychological, psychometric, and personality research.</em> R package. Evanston: Northwestern University. Disponível em: <a href="https://CRAN.R-project.org/package=psych" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=psych</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Exatamente dois avaliadores, categorias nominais exclusivas e exaustivas, as mesmas para os dois, unidades independentes e avaliações feitas de forma cega.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>irr, vcd, psych, DescTools</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="friedman.html"><span>← ANTERIOR</span>Teste de Friedman</a><a href="kappa-ponderado.html"><span>PRÓXIMO →</span>Kappa ponderado</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

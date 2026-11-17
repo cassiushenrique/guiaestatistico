@@ -4,318 +4,214 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANOVA de um fator: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANOVA de um fator | Estatística e Ciência de Dados
-  </title>
+<meta content="ANOVA de um fator: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANOVA de um fator | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANOVA de um fator
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANOVA de um fator
-    </h1>
-<p class="detail-lead">
-     Verifica se há diferença entre as médias de três ou mais grupos independentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/aov1.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se há diferença entre as médias de três ou mais grupos independentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes (confira aleatorização, repetição e ausência de pseudorreplicação).</li><li>Resíduos aproximadamente normais em cada grupo (gráfico Q–Q dos resíduos).</li><li>Variâncias aproximadamente homogêneas (gráficos de resíduos por grupo; teste de Levene, se necessário).</li><li>Ausência de observações excessivamente influentes (gráficos de resíduos e diagnóstico de influência).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_1=\cdots=\mu_k\\ H_1&amp;:\ \exists\,i\neq j:\mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[F=\frac{QM_{\mathrm{entre}}}{QM_{\mathrm{residual}}},\qquad gl=(k-1,n-k)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(QM_{\mathrm{entre}}\)
-        </dt>
-<dd>
-         soma de quadrados entre grupos dividida por k-1
-        </dd>
-</div>
-<div>
-<dt>
-         \(QM_{\mathrm{residual}}\)
-        </dt>
-<dd>
-         soma de quadrados dentro dos grupos dividida por n-k
-        </dd>
-</div>
-<div>
-<dt>
-         \(k\)
-        </dt>
-<dd>
-         número de grupos
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         número total de observações
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         razão entre quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : rejeite igualdade global; o F não informa quais pares diferem. Use pós-teste com ajuste e IC simultâneos.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em warpbreaks, breaks é o número de quebras de fios e tension assume três níveis: baixo, médio e alto.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Determinar se a quantidade média de quebras difere entre os três níveis de tensão.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-aov1" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-aov1"><code># ANOVA de um fator ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANOVA de um fator</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANOVA de um fator</h1><p class="detail-lead">Compara as médias de três ou mais grupos independentes confrontando a variação entre os grupos com a variação dentro deles.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/aov1.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/aov1.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a ANOVA</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Com dois grupos, a comparação de médias é o <a href="t2.html">teste t</a>. Com três, a tentação é fazer três testes t — e aí mora o problema: cada teste tem 5% de chance de um falso positivo, e três testes elevam esse risco para cerca de 14%. A análise de variância resolve isso com uma única pergunta: <em>a variação entre as médias dos grupos é grande demais para ser explicada pela variação que já existe dentro deles?</em></p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: ANOVA de um fator" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara k médias</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">com um único teste</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Variação entre grupos</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">sobre variação dentro</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade dos resíduos</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Variâncias homogêneas</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Depois</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Tukey, Dunnett</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">ou contrastes</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">aov(y ~ grupo)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">TukeyHSD()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Welch</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Kruskal–Wallis</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Permutação</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">ANOVA de um fator</text></svg><figcaption>Visão geral da ANOVA de um fator. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O nome engana</strong><p>A análise de <em>variância</em> compara <em>médias</em>. O nome vem do método: a comparação é feita confrontando duas estimativas da variância — uma construída a partir das diferenças entre as médias dos grupos, outra a partir da dispersão interna de cada grupo.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a ANOVA</h2><p>A variação total dos dados é separada em duas parcelas que, somadas, a reconstituem por inteiro: a variação <strong>entre</strong> os grupos e a variação <strong>dentro</strong> deles. Se a hipótese nula for verdadeira, as duas parcelas, divididas por seus graus de liberdade, estimam a mesma variância populacional \(\sigma^2\), e a razão entre elas fica perto de 1. Quando os grupos realmente diferem, a parcela de cima cresce e a razão sobe.</p><figure class="fig"><img src="../assets/resultados/aov1-didatica.png" alt="Mesmos três centros, com pouca e com muita dispersão interna" loading="lazy"/><figcaption><strong>A mesma diferença de médias, duas conclusões.</strong> Nos dois painéis os três grupos têm exatamente as mesmas médias: 8,0, 9,5 e 11,5. O que muda é a dispersão interna. À esquerda ela é pequena, as médias se destacam com clareza e F = 58,94. À direita a dispersão é mais de três vezes maior, os grupos se misturam e F cai para 5,58. A ANOVA nunca julga a diferença de médias isoladamente: julga-a em relação ao ruído de fundo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que não vários testes t</strong><p>Com \(k\) grupos há \(k(k-1)/2\) comparações. Para \(k=3\) são três testes, e a probabilidade de ao menos um falso positivo sobe de 5% para cerca de 14%; com \(k=5\) são dez testes e o risco chega a 40%. A ANOVA faz uma pergunta só, com o erro controlado em 5%.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Sem isso, a estimativa do erro é inválida e nada funciona.</td><td>Delineamento; para medidas repetidas use <a href="aovrepetida.html">ANOVA de medidas repetidas</a>.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Garante a distribuição F da estatística.</td><td><code>shapiro.test(residuals(modelo))</code>; gráfico Q-Q. Verifique nos <strong>resíduos</strong>, não nos dados brutos.</td></tr><tr><td>Variâncias homogêneas entre os grupos</td><td>O denominador de F é uma variância comum a todos.</td><td>Levene e Brown-Forsythe (<code>car::leveneTest</code>); razão entre a maior e a menor variância abaixo de 4.</td></tr><tr><td>Resposta quantitativa contínua</td><td>A média precisa fazer sentido.</td><td>Natureza da variável.</td></tr><tr><td>Ausência de observações muito influentes</td><td>Um só valor extremo pode inflar o QM do resíduo.</td><td>Gráfico de resíduos contra valores ajustados; distância de Cook.</td></tr></tbody></table></div><div class="callout "><strong>Robustez</strong><p>Com grupos de tamanhos iguais, a ANOVA tolera bem desvios moderados de normalidade e de homogeneidade. Com tamanhos desiguais, a heterogeneidade de variâncias é grave: veja a ficha da <a href="aovwelch.html">ANOVA de Welch</a>, que mostra a taxa de erro real nesse caso.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu_1=\mu_2=\cdots=\mu_k \\ H_1&:\ \text{ao menos uma média difere } \\ &\quad \text{das demais}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}SQ_{\text{total}} &= \underbrace{\sum_{i=1}^{k}n_i\left(\bar{y}_i-\bar{y}\right)^{2}}_{SQ_{\text{entre}}} \\ &\quad +\underbrace{\sum_{i=1}^{k}\sum_{j=1}^{n_i}\left(y_{ij}-\bar{y}_i\right)^{2}}_{SQ_{\text{dentro}}}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}F &= \frac{QM_{\text{entre}}}{QM_{\text{dentro}}} \\ &= \frac{SQ_{\text{entre}}/(k-1)}{SQ_{\text{dentro}}/(N-k)}\ \\ &\sim \ F_{\,k-1,\;N-k}\end{aligned}\]\[\text{sob }H_0\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(k\)</dt><dd>número de grupos</dd></div><div><dt>\(n_i\)</dt><dd>tamanho do grupo i</dd></div><div><dt>\(N\)</dt><dd>soma dos n_i</dd></div><div><dt>\(y_{ij}\)</dt><dd>observação j do grupo i</dd></div><div><dt>\(\bar{y}_i\)</dt><dd>média do grupo i</dd></div><div><dt>\(\bar{y}\)</dt><dd>média geral</dd></div><div><dt>\(QM\)</dt><dd>quadrado médio: soma de quadrados dividida pelos graus de liberdade</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Com os dados de <code>PlantGrowth</code> (três grupos, dez plantas cada, média geral 5,073 g):</p><div class="table-wrap"><table class="method-table"><caption>Descrição dos grupos</caption><thead><tr><th>Grupo</th><th>n</th><th>Média (g)</th><th>Desvio-padrão</th><th>Variância</th></tr></thead><tbody><tr><td>ctrl</td><td>10</td><td>5,032</td><td>0,583</td><td>0,340</td></tr><tr><td>trt1</td><td>10</td><td>4,661</td><td>0,794</td><td>0,630</td></tr><tr><td>trt2</td><td>10</td><td>5,526</td><td>0,443</td><td>0,196</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>\[\begin{aligned}SQ_{\text{entre}} &= 10\bigl[(5{,}032-5{,}073)^2 \\ &\quad +(4{,}661-5{,}073)^2 \\ &\quad +(5{,}526-5{,}073)^2\bigr] \\ &= 3{,}7663,\end{aligned}\] com \(k-1=2\) graus de liberdade.</p><p>\[\begin{aligned}SQ_{\text{dentro}} &= 9\times(0{,}340+0{,}630 \\ &\quad +0{,}196) \\ &= 10{,}4921,\end{aligned}\] com \(N-k=27\) graus de liberdade.</p><p>\(QM_{\text{entre}}=3{,}7663/2=1{,}8832\) e \(QM_{\text{dentro}}=10{,}4921/27=0{,}3886\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F=\frac{1{,}8832}{0{,}3886}=4{,}846,\]\[\begin{aligned}p &= P\!\left(F_{2,27}&gt;4{,}846\right) \\ &= 0{,}0159.\end{aligned}\]</div><p>Confira a soma: \(3{,}7663+10{,}4921=14{,}2584=SQ_{\text{total}}\). A decomposição é exata, não aproximada.</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(QM_{\text{dentro}}\) estima \(\sigma^2\) seja \(H_0\) verdadeira ou falsa; \(QM_{\text{entre}}\) só estima \(\sigma^2\) sob \(H_0\).</li><li>Com k = 2, \(F=t^2\): a ANOVA reproduz exatamente o <a href="t2.html">teste t</a> de variâncias iguais.</li><li>O teste é sempre unilateral à direita, embora a hipótese alternativa seja bilateral: só valores grandes de F contradizem H₀.</li><li>A raiz de \(QM_{\text{dentro}}\) é o desvio-padrão residual, na unidade da resposta.</li><li>Tamanho de efeito: \(\eta^2=SQ_{\text{entre}}/SQ_{\text{total}}\) (enviesado para cima) e \(\omega^2\) (corrigido). Referências de Cohen: 0,01 pequeno, 0,06 médio, 0,14 grande.</li><li>Rejeitar H₀ não identifica os grupos responsáveis: isso exige comparações múltiplas ou contrastes.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura da tabela de ANOVA</caption><thead><tr><th>Coluna</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Df</td><td>Graus de liberdade: k − 1 e N − k.</td><td>Confira se batem com o delineamento.</td></tr><tr><td>Sum Sq</td><td>Somas de quadrados.</td><td>A soma das duas é a variação total.</td></tr><tr><td>Mean Sq</td><td>Somas divididas pelos graus de liberdade.</td><td>O QM do resíduo estima σ².</td></tr><tr><td>F value</td><td>Razão entre os dois quadrados médios.</td><td>Perto de 1 não há sinal.</td></tr><tr><td>Pr(>F)</td><td>Valor-p.</td><td>Diz que <em>existe</em> diferença, não <em>onde</em>.</td></tr><tr><td>η² ou ω²</td><td>Proporção da variação explicada.</td><td>Reporte sempre junto com o valor-p.</td></tr></tbody></table></div><h3>Depois de rejeitar: comparações múltiplas e contrastes</h3><div class="table-wrap"><table class="method-table"><caption>Qual procedimento usar</caption><thead><tr><th>Procedimento</th><th>Quando usar</th></tr></thead><tbody><tr><td>Tukey (HSD)</td><td>Todas as comparações duas a duas, grupos de tamanhos iguais ou próximos.</td></tr><tr><td>Dunnett</td><td>Todos os tratamentos contra um controle, apenas.</td></tr><tr><td>Contrastes planejados</td><td>Perguntas definidas antes de ver os dados (controle contra a média dos tratamentos, por exemplo).</td></tr><tr><td>Bonferroni ou Holm</td><td>Poucas comparações escolhidas de antemão.</td></tr><tr><td>Scheffé</td><td>Qualquer contraste decidido depois de ver os dados; o mais conservador.</td></tr><tr><td>Games–Howell</td><td>Variâncias heterogêneas (ver <a href="aovwelch.html">ANOVA de Welch</a>).</td></tr></tbody></table></div><p>Reporte: F com os dois graus de liberdade, valor-p, o quadrado médio do resíduo, o tamanho de efeito e o resultado das comparações múltiplas com as médias de cada grupo.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>aov()</code> e <code>TukeyHSD()</code> pertencem ao pacote <code>stats</code>, já instalado com o R. <code>car::leveneTest()</code> fornece Levene e Brown-Forsythe; <code>multcomp::glht()</code> permite contrastes arbitrários e o procedimento de Dunnett; <code>effectsize</code> calcula η² e ω². Note que <code>aov()</code> exige que a variável de grupo seja um fator.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-aov1-min" type="button">Copiar código</button></div><pre id="code-aov1-min"><code>modelo &lt;- aov(weight ~ group, data = PlantGrowth)
+summary(modelo)
+TukeyHSD(modelo)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>PlantGrowth</code> registra o peso seco de 30 plantas distribuídas em três condições: um controle e dois tratamentos. É um experimento inteiramente casualizado, balanceado, com dez plantas por condição.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-aov1" type="button">Copiar código</button></div><pre id="code-aov1"><code># ANOVA de um fator: exemplo completo ----
+# Pacotes: stats (base), car (Levene/Brown-Forsythe), multcomp (comparações múltiplas)
+# install.packages(c("car", "multcomp"))
+library(car)
 
-# Ajuste e resultados ----
-ajuste &lt;- aov(breaks ~ tension, data = warpbreaks)
-print(summary(ajuste))
-print(TukeyHSD(ajuste, conf.level = 0.95))
-plot(ajuste, which = 1)
+# 1. Dados: PlantGrowth, peso seco de plantas sob controle e dois tratamentos
+data(PlantGrowth)
+str(PlantGrowth)
+aggregate(weight ~ group, data = PlantGrowth,
+          FUN = function(x) c(n = length(x), media = mean(x), dp = sd(x), var = var(x)))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, warpbreaks, main = "Quebras por nível de tensão", ylab = "Quebras")
-plot(ajuste, which = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="friedman.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste de Friedman
-    </a>
-<a href="aovwelch.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANOVA de Welch
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 2. Ajuste do modelo
+modelo &lt;- aov(weight ~ group, data = PlantGrowth)
+summary(modelo)
+
+# 3. Pressupostos, examinados nos RESÍDUOS do modelo
+par(mfrow = c(2, 2)); plot(modelo); par(mfrow = c(1, 1))
+shapiro.test(residuals(modelo))
+leveneTest(weight ~ group, data = PlantGrowth, center = mean)     # Levene
+leveneTest(weight ~ group, data = PlantGrowth, center = median)   # Brown-Forsythe
+bartlett.test(weight ~ group, data = PlantGrowth)
+
+# 4. Tamanho de efeito
+tab &lt;- summary(modelo)[[1]]
+SQ_entre &lt;- tab[1, "Sum Sq"]; SQ_dentro &lt;- tab[2, "Sum Sq"]
+QM_dentro &lt;- tab[2, "Mean Sq"]; gl_entre &lt;- tab[1, "Df"]
+SQ_entre / (SQ_entre + SQ_dentro)                                  # eta ao quadrado
+(SQ_entre - gl_entre * QM_dentro) / (SQ_entre + SQ_dentro + QM_dentro)   # omega ao quadrado
+# equivalente: effectsize::eta_squared(modelo); effectsize::omega_squared(modelo)
+
+# 5. Comparações múltiplas de Tukey
+TukeyHSD(modelo)
+plot(TukeyHSD(modelo))
+# equivalente, com mais recursos:
+# library(multcomp); summary(glht(modelo, linfct = mcp(group = "Tukey")))
+
+# 6. Contraste planejado: controle contra a média dos dois tratamentos
+contrastes &lt;- matrix(c(1, -0.5, -0.5), nrow = 1,
+                     dimnames = list("ctrl vs trts", levels(PlantGrowth$group)))
+summary(glht(modelo, linfct = mcp(group = contrastes)))
+
+# 7. Alternativas, para comparar
+oneway.test(weight ~ group, data = PlantGrowth, var.equal = FALSE)   # ANOVA de Welch
+kruskal.test(weight ~ group, data = PlantGrowth)                     # Kruskal-Wallis
+
+# 8. Gráficos
+par(mfrow = c(1, 2))
+boxplot(weight ~ group, data = PlantGrowth, col = "gray85",
+        xlab = "Tratamento", ylab = "Peso seco (g)")
+points(jitter(as.numeric(PlantGrowth$group), 0.5), PlantGrowth$weight, pch = 19, col = "gray40")
+plot(TukeyHSD(modelo))
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-aov1" type="button">Copiar código</button></div><pre id="code-py-aov1"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: PlantGrowth (R). Peso seco de plantas sob controle e dois tratamentos.
+ctrl = np.array([4.17, 5.58, 5.18, 6.11, 4.50, 4.61, 5.17, 4.53, 5.33, 5.14])
+trt1 = np.array([4.81, 4.17, 4.41, 3.59, 5.87, 3.83, 6.03, 4.89, 4.32, 4.69])
+trt2 = np.array([6.31, 5.12, 5.54, 5.50, 5.37, 5.29, 4.92, 6.15, 5.80, 5.26])
+grupos = [ctrl, trt1, trt2]
+nomes = ["ctrl", "trt1", "trt2"]
+k = len(grupos)
+N = sum(len(g) for g in grupos)
+todos = np.concatenate(grupos)
+
+print("grupo   n   média    DP    variância")
+for nm, g in zip(nomes, grupos):
+    print(f" {nm}   {len(g):2d}  {g.mean():.3f}  {g.std(ddof=1):.3f}    {g.var(ddof=1):.3f}")
+print(f"Média geral = {todos.mean():.4f} | N = {N}")
+
+# 1. Pressupostos
+residuos = np.concatenate([g - g.mean() for g in grupos])
+W, pW = stats.shapiro(residuos)
+print(f"\nShapiro-Wilk dos resíduos: W = {W:.4f}, p-valor = {pW:.4f}")
+print(f"Levene (centro = média):   W = {stats.levene(*grupos, center='mean')[0]:.4f}, "
+      f"p-valor = {stats.levene(*grupos, center='mean')[1]:.4f}")
+print(f"Brown-Forsythe (mediana):  W = {stats.levene(*grupos, center='median')[0]:.4f}, "
+      f"p-valor = {stats.levene(*grupos, center='median')[1]:.4f}")
+print(f"Bartlett: qui-quadrado = {stats.bartlett(*grupos)[0]:.4f}, p-valor = {stats.bartlett(*grupos)[1]:.4f}")
+vs = [g.var(ddof=1) for g in grupos]
+print(f"Razão entre a maior e a menor variância = {max(vs)/min(vs):.3f}")
+
+# 2. Decomposição da soma de quadrados, feita à mão
+SQ_total = ((todos - todos.mean())**2).sum()
+SQ_entre = sum(len(g) * (g.mean() - todos.mean())**2 for g in grupos)
+SQ_dentro = sum(((g - g.mean())**2).sum() for g in grupos)
+gl_entre, gl_dentro = k - 1, N - k
+QM_entre, QM_dentro = SQ_entre / gl_entre, SQ_dentro / gl_dentro
+F = QM_entre / QM_dentro
+p = stats.f.sf(F, gl_entre, gl_dentro)
+print(f"\nSQ total = {SQ_total:.4f} = SQ entre ({SQ_entre:.4f}) + SQ dentro ({SQ_dentro:.4f})")
+print("\nFonte         GL      SQ      QM       F     p-valor")
+print(f"Tratamento  {gl_entre:3d}  {SQ_entre:7.4f}  {QM_entre:.4f}  {F:.4f}  {p:.5f}")
+print(f"Resíduo     {gl_dentro:3d}  {SQ_dentro:7.4f}  {QM_dentro:.4f}")
+print(f"Total       {N-1:3d}  {SQ_total:7.4f}")
+print(f"scipy: {stats.f_oneway(*grupos)}")
+
+# 3. Tamanho de efeito
+eta2 = SQ_entre / SQ_total
+omega2 = (SQ_entre - gl_entre * QM_dentro) / (SQ_total + QM_dentro)
+f_cohen = np.sqrt(eta2 / (1 - eta2))
+print(f"\neta² = {eta2:.4f} | omega² = {omega2:.4f} | f de Cohen = {f_cohen:.4f}")
+
+# 4. Tukey HSD: comparações múltiplas com a amplitude estudentizada
+print("\nTukey HSD (todas as comparações):")
+qcrit = stats.studentized_range.ppf(0.95, k, gl_dentro)
+print(f"q crítico (5%, k = {k}, gl = {gl_dentro}) = {qcrit:.4f}")
+for i, j in itertools.combinations(range(k), 2):
+    dif = grupos[j].mean() - grupos[i].mean()
+    ep = np.sqrt(QM_dentro / 2 * (1/len(grupos[i]) + 1/len(grupos[j])))
+    q = abs(dif) / ep
+    pa = stats.studentized_range.sf(q, k, gl_dentro)
+    margem = qcrit * ep
+    print(f"  {nomes[j]} - {nomes[i]}: diferença = {dif:+.4f} | IC 95% = "
+          f"[{dif-margem:+.4f}; {dif+margem:+.4f}] | q = {q:.4f} | p ajustado = {pa:.4f}"
+          + ("  *" if pa &lt; 0.05 else ""))
+print(f"(confere com TukeyHSD do R: a mesma estatística q e o mesmo IC)")
+
+# 5. Contraste planejado: controle contra a média dos dois tratamentos
+coef = np.array([1.0, -0.5, -0.5])
+medias = np.array([g.mean() for g in grupos])
+ns = np.array([len(g) for g in grupos], dtype=float)
+L = coef @ medias
+ep_L = np.sqrt(QM_dentro * np.sum(coef**2 / ns))
+t_L = L / ep_L
+p_L = 2 * stats.t.sf(abs(t_L), gl_dentro)
+print(f"\nContraste ctrl - (trt1 + trt2)/2 = {L:+.4f} | EP = {ep_L:.4f} | "
+      f"t = {t_L:+.4f} | p-valor = {p_L:.4f}")
+print(f"SQ do contraste = {L**2 / np.sum(coef**2 / ns):.4f} (de um total de {SQ_entre:.4f} entre tratamentos)")
+
+# 6. Alternativas para comparação
+print("")
+# Welch calculado à mão
+w = ns / np.array(vs)
+mu_w = np.sum(w * medias) / np.sum(w)
+A = np.sum(w * (medias - mu_w)**2) / (k - 1)
+B = 1 + 2*(k-2)/(k**2-1) * np.sum((1 - w/np.sum(w))**2 / (ns - 1))
+Fw = A / B
+glw = (k**2 - 1) / (3 * np.sum((1 - w/np.sum(w))**2 / (ns - 1)))
+print(f"ANOVA de Welch:    F = {Fw:.4f}, gl = ({k-1}; {glw:.3f}), p-valor = {stats.f.sf(Fw, k-1, glw):.5f}")
+H, pH = stats.kruskal(*grupos)
+print(f"Kruskal-Wallis:    H = {H:.4f}, p-valor = {pH:.5f}")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">grupo   n   média    DP    variância
+ ctrl   10  5.032  0.583    0.340
+ trt1   10  4.661  0.794    0.630
+ trt2   10  5.526  0.443    0.196
+Média geral = 5.0730 | N = 30
+
+Shapiro-Wilk dos resíduos: W = 0.9661, p-valor = 0.4379
+Levene (centro = média):   W = 1.2370, p-valor = 0.3062
+Brown-Forsythe (mediana):  W = 1.1192, p-valor = 0.3412
+Bartlett: qui-quadrado = 2.8786, p-valor = 0.2371
+Razão entre a maior e a menor variância = 3.216
+
+SQ total = 14.2584 = SQ entre (3.7663) + SQ dentro (10.4921)
+
+Fonte         GL      SQ      QM       F     p-valor
+Tratamento    2   3.7663  1.8832  4.8461  0.01591
+Resíduo      27  10.4921  0.3886
+Total        29  14.2584
+scipy: F_onewayResult(statistic=np.float64(4.846087862380135), pvalue=np.float64(0.015909958325622912))
+
+eta² = 0.2641 | omega² = 0.2041 | f de Cohen = 0.5991
+
+Tukey HSD (todas as comparações):
+q crítico (5%, k = 3, gl = 27) = 3.5064
+  trt1 - ctrl: diferença = -0.3710 | IC 95% = [-1.0622; +0.3202] | q = 1.8820 | p ajustado = 0.3909
+  trt2 - ctrl: diferença = +0.4940 | IC 95% = [-0.1972; +1.1852] | q = 2.5060 | p ajustado = 0.1980
+  trt2 - trt1: diferença = +0.8650 | IC 95% = [+0.1738; +1.5562] | q = 4.3880 | p ajustado = 0.0120  *
+(confere com TukeyHSD do R: a mesma estatística q e o mesmo IC)
+
+Contraste ctrl - (trt1 + trt2)/2 = -0.0615 | EP = 0.2414 | t = -0.2547 | p-valor = 0.8009
+SQ do contraste = 0.0252 (de um total de 3.7663 entre tratamentos)
+
+ANOVA de Welch:    F = 4.8461 (clássica)
+ANOVA de Welch:    F = 5.1810, gl = (2; 17.128), p-valor = 0.01739
+Kruskal-Wallis:    H = 7.9882, p-valor = 0.01842</pre></div><figure class="fig"><img src="../assets/resultados/aov1.png" alt="Boxplots dos três grupos e intervalos de confiança de Tukey" loading="lazy"/><figcaption><strong>Os dados e as comparações.</strong> À esquerda, a distribuição de cada grupo com as observações sobrepostas; a linha vermelha é a mediana e a ocre, a média. À direita, os intervalos de confiança simultâneos de Tukey para as três diferenças: apenas o de trt2 − trt1 não contém o zero. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>F(2; 27)</td><td>4,846</td><td>Com p = 0,0159.</td></tr><tr><td>QM do resíduo</td><td>0,3886</td><td>Desvio-padrão residual = 0,623 g.</td></tr><tr><td>η²</td><td>0,264</td><td>26,4% da variação é atribuída ao tratamento.</td></tr><tr><td>ω²</td><td>0,204</td><td>Estimativa menos enviesada.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,966; p = 0,438</td><td>Normalidade aceitável.</td></tr><tr><td>Brown–Forsythe</td><td>W = 1,119; p = 0,341</td><td>Variâncias homogêneas.</td></tr><tr><td>Razão entre variâncias</td><td>3,22</td><td>Abaixo do limite usual de 4.</td></tr><tr><td>Tukey trt2 − trt1</td><td>+0,865 g; IC [+0,174; +1,556]; p = 0,0120</td><td>A única diferença significativa.</td></tr><tr><td>Tukey trt2 − ctrl</td><td>+0,494 g; p = 0,1980</td><td>Não significativa.</td></tr><tr><td>Tukey trt1 − ctrl</td><td>−0,371 g; p = 0,3909</td><td>Não significativa.</td></tr><tr><td>Contraste ctrl − (trt1+trt2)/2</td><td>−0,062 g; p = 0,8009</td><td>O controle está na média dos dois tratamentos.</td></tr><tr><td>ANOVA de Welch</td><td>F = 5,181; p = 0,0174</td><td>Mesma conclusão.</td></tr><tr><td>Kruskal–Wallis</td><td>H = 7,988; p = 0,0184</td><td>Mesma conclusão.</td></tr></tbody></table></div><p><strong>Leitura:</strong> existe diferença entre as condições (p = 0,016), mas o teste de Tukey mostra que ela está entre os <em>dois tratamentos</em>, não entre cada tratamento e o controle. O tratamento 1 reduziu o peso em relação ao tratamento 2 em 0,865 g, com intervalo de 0,17 a 1,56 g. Em relação ao controle, nenhum dos dois se distingue.</p><p>Esse padrão é instrutivo. Um resultado global significativo pode não corresponder à comparação que mais interessa ao pesquisador: se a pergunta original era “os tratamentos superam o controle?”, a resposta é não. O contraste planejado deixa isso explícito — a média dos dois tratamentos é praticamente igual à do controle (diferença de 0,06 g, p = 0,80), porque um tratamento sobe e o outro desce. Comparações múltiplas feitas depois do teste global e contrastes definidos antes dele respondem a perguntas diferentes, e convém saber qual delas se está fazendo.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Testar normalidade nos dados brutos de cada grupo</td><td>O pressuposto é sobre os <strong>resíduos</strong> do modelo.</td></tr><tr><td>Parar no valor-p global</td><td>Rejeitar H₀ não diz quais grupos diferem.</td></tr><tr><td>Fazer todos os testes t depois, sem ajuste</td><td>Use Tukey, Dunnett, Holm ou um contraste planejado.</td></tr><tr><td>Concluir que “todas as médias são diferentes”</td><td>H₁ diz que <em>ao menos uma</em> difere.</td></tr><tr><td>Aceitar H₀ como prova de igualdade</td><td>Ausência de evidência não é evidência de ausência; reporte o intervalo de confiança.</td></tr><tr><td>Usar em medidas repetidas</td><td>Veja <a href="aovrepetida.html">ANOVA de medidas repetidas</a>.</td></tr><tr><td>Ignorar variâncias muito desiguais com n desiguais</td><td>Passe para a <a href="aovwelch.html">ANOVA de Welch</a>.</td></tr><tr><td>Esquecer a casualização</td><td>A ANOVA testa diferenças; só o delineamento autoriza falar em causa.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aovwelch.html">ANOVA de Welch</a></td><td>Variâncias heterogêneas, sobretudo com n desiguais.</td></tr><tr><td><a href="kruskal.html">Kruskal–Wallis</a></td><td>Resposta ordinal ou distribuições muito assimétricas.</td></tr><tr><td>ANOVA de médias aparadas (<code>WRS2::t1way</code>)</td><td>Caudas pesadas, com interesse na parte central (ver <a href="yuen.html">Yuen</a>).</td></tr><tr><td>Teste de permutação</td><td>Amostras pequenas; interesse nas médias originais.</td></tr><tr><td><a href="linear-multipla.html">Regressão linear com variáveis indicadoras</a></td><td>Mesma análise, com covariáveis e previsão.</td></tr><tr><td><a href="ancova.html">ANCOVA</a></td><td>Há uma covariável contínua a controlar.</td></tr><tr><td><a href="aovfatorial.html">ANOVA fatorial</a></td><td>Dois ou mais fatores e sua interação.</td></tr><tr><td><a href="glm.html">Modelo linear generalizado</a></td><td>A resposta é contagem, proporção ou tempo.</td></tr></tbody></table></div><ol class="steps"><li>Confirme o delineamento: grupos independentes, um único fator.</li><li>Descreva: n, média, desvio-padrão e boxplots por grupo.</li><li>Ajuste o modelo e examine os resíduos (normalidade, homogeneidade, valores influentes).</li><li>Leia a tabela de ANOVA e reporte F, graus de liberdade e valor-p.</li><li>Calcule o tamanho de efeito.</li><li>Se rejeitar, faça as comparações múltiplas adequadas à sua pergunta.</li><li>Apresente as médias com intervalos de confiança, não apenas as letras de significância.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FISHER, Ronald A. <em>Statistical methods for research workers.</em> Edinburgh: Oliver and Boyd, 1925.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>KUTNER, Michael H. et al. <em>Applied linear statistical models.</em> 5. ed. Boston: McGraw-Hill Irwin, 2005.</li><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>TUKEY, John W. <em>The problem of multiple comparisons.</em> Princeton: Princeton University, 1953. Manuscrito reproduzido em: <em>The collected works of John W. Tukey</em>, v. 8. New York: Chapman and Hall, 1994.</li><li>COHEN, Jacob. <em>Statistical power analysis for the behavioral sciences.</em> 2. ed. Hillsdale: Lawrence Erlbaum, 1988.</li><li>OLEJNIK, Stephen; ALGINA, James. Generalized eta and omega squared statistics: measures of effect size for some common research designs. <em>Psychological Methods</em>, v. 8, n. 4, p. 434-447, 2003.</li><li>DOBSON, Annette J. <em>An introduction to statistical modelling.</em> London: Chapman and Hall, 1983. (Fonte original dos dados <code>PlantGrowth</code>.)</li><li>LEVENE, Howard. Robust tests for equality of variances. In: OLKIN, Ingram (ed.). <em>Contributions to probability and statistics.</em> Stanford: Stanford University Press, 1960. p. 278-292.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>aov</code>, <code>TukeyHSD</code> e <code>oneway.test</code>, pacote <code>stats</code>.)</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>, função <code>leveneTest</code>.)</li><li>HOTHORN, Torsten; BRETZ, Frank; WESTFALL, Peter. Simultaneous inference in general parametric models. <em>Biometrical Journal</em>, v. 50, n. 3, p. 346-363, 2008. (Pacote <code>multcomp</code>, função <code>glht</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, resíduos aproximadamente normais e variâncias homogêneas entre os grupos.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>car, multcomp</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="yuen-pareado.html"><span>← ANTERIOR</span>Teste de Yuen robusto pareado (Yuend)</a><a href="aovwelch.html"><span>PRÓXIMO →</span>ANOVA de Welch</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

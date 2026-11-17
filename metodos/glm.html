@@ -4,308 +4,232 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Modelos lineares generalizados (GLM): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Modelos lineares generalizados (GLM) | Estatística e Ciência de Dados
-  </title>
+<meta content="Modelos lineares generalizados (GLM): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Modelos lineares generalizados (GLM) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Modelos lineares generalizados (GLM)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Modelos lineares generalizados (GLM)
-    </h1>
-<p class="detail-lead">
-     Modela respostas contínuas, binárias ou contagens de acordo com sua distribuição.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/glm.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Modela respostas contínuas, binárias ou contagens de acordo com sua distribuição.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência nas formulações usuais.</li><li>Família e ligação apropriadas.</li><li>Média condicional especificada.</li><li>Inspeção de resíduos, dispersão e observações influentes.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\\H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[g(\mu_i)=\mathbf x_i^\top\boldsymbol\beta,\qquad \operatorname{Var}(Y_i\mid\mathbf x_i)=\phi V(\mu_i)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta da unidade i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x_i\)
-        </dt>
-<dd>
-         vetor de preditores
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         parâmetros estimados pelo modelo
-        </dd>
-</div>
-</dl>
-<p>
-       Wald z/t, teste escore ou diferença de desvios/razão de verossimilhanças, conforme a família.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) evidência de contribuição condicional; coeficientes devem ser interpretados na escala da função de ligação, não automaticamente na escala de Y.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O exemplo apresenta um conjunto de observações com características adequadas ao método.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Volume de árvores (proxy de biomassa/estoque de material florestal) por diâmetro e altura, usando GLM gama de resposta positiva (trees).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-glm" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-glm"><code># Modelos lineares generalizados (GLM) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Modelos lineares generalizados (GLM)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Modelos lineares generalizados (GLM)</h1><p class="detail-lead">Estrutura comum aos modelos de regressão: escolhe-se a distribuição da resposta e a função que a liga ao preditor linear.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/glm.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/glm.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Até aqui, cada tipo de resposta pediu um modelo diferente: <a href="linear-simples.html">regressão linear</a> para medidas contínuas, <a href="logistica.html">logística</a> para respostas binárias, <a href="poisson.html">Poisson</a> para contagens. Os modelos lineares generalizados mostram que os três são o mesmo modelo, montado com peças diferentes. Entender essa estrutura comum economiza esforço e evita erros: a sintaxe, o diagnóstico e a lógica da inferência passam a ser os mesmos.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: GLM" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Estrutura comum a linear,</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">logística, Poisson e outros</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Três peças</text><text x="208" y="204.0" text-anchor="end" font-size="10.8" fill="#3d5042">Distribuição da resposta</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">Preditor linear</text><text x="208" y="234.0" text-anchor="end" font-size="10.8" fill="#3d5042">Função de ligação</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Distribuição adequada</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Ligação correta</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Depende da ligação</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Deviance e AIC</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">glm(y ~ x, family = ...)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">GAM</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Quase-verossimilhança</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos mistos e GEE</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">GLM</text></svg><figcaption>Visão geral dos modelos lineares generalizados. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>O artigo de Nelder e Wedderburn (1972) não propôs um modelo novo: mostrou que vários modelos já existentes eram casos particulares de uma mesma família, estimável por um único algoritmo. Essa unificação está por trás da função <code>glm()</code>, que atende a todos eles com a mesma sintaxe.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><p>Um GLM tem três componentes. Trocando um deles, obtém-se um modelo diferente.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\underbrace{Y_i\sim\mathcal F(\mu_i,\phi)}_{\text{componente aleatório}},\]\[\underbrace{\eta_i=\beta_0+\beta_1x_{i1}+\cdots+\beta_px_{ip}}_{\text{componente sistemático}},\]\[\underbrace{g(\mu_i)=\eta_i}_{\text{função de ligação}}\]</div><figure class="fig"><img src="../assets/resultados/glm-didatica.png" alt="Três funções de ligação, funções de variância e as três partes de um GLM" loading="lazy"/><figcaption><strong>A estrutura de um GLM.</strong> À esquerda, três ligações para a família binomial: logit e probit são simétricas e quase coincidem, enquanto o cloglog sobe devagar e termina rápido. No centro, a variância de cada família em função da média. À direita, as três peças que compõem qualquer GLM. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As famílias mais usadas</caption><thead><tr><th>Resposta</th><th>Família</th><th>Ligação canônica</th><th>Variância</th><th>Ficha</th></tr></thead><tbody><tr><td>Contínua, simétrica</td><td>Normal (gaussiana)</td><td>identidade</td><td>constante</td><td><a href="linear-multipla.html">Regressão linear</a></td></tr><tr><td>Binária ou proporção</td><td>Binomial</td><td>logit</td><td>μ(1 − μ)/n</td><td><a href="logistica.html">Regressão logística</a></td></tr><tr><td>Contagem</td><td>Poisson</td><td>log</td><td>μ</td><td><a href="poisson.html">Regressão de Poisson</a></td></tr><tr><td>Contagem com superdispersão</td><td>Binomial negativa</td><td>log</td><td>μ + μ²/θ</td><td><a href="nb.html">Binomial negativa</a></td></tr><tr><td>Contínua positiva e assimétrica</td><td>Gama</td><td>inversa</td><td>μ²</td><td>—</td></tr><tr><td>Contínua positiva com zeros</td><td>Tweedie</td><td>log</td><td>μ^p</td><td>—</td></tr></tbody></table></div><div class="callout try"><strong>Ligação canônica não é obrigação</strong><p>Cada família tem uma ligação <strong>canônica</strong>, que simplifica a matemática, mas outras são permitidas. Para a binomial, logit é a canônica; probit e cloglog são alternativas legítimas, e às vezes melhores, como mostra o exemplo desta ficha.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Condição dos erros-padrão.</td><td>Delineamento; para dados agrupados, use <a href="gee.html">GEE</a> ou modelos mistos.</td></tr><tr><td>Distribuição adequada à resposta</td><td>Define a função de variância.</td><td>Natureza da resposta; comparar variância observada e prevista.</td></tr><tr><td>Função de ligação correta</td><td>Uma ligação inadequada distorce todo o ajuste.</td><td>Comparar deviances e AIC de ligações alternativas; resíduos contra o preditor linear.</td></tr><tr><td>Preditor linear correto na escala da ligação</td><td>O efeito de x é linear em g(μ), não em μ.</td><td>Resíduos parciais; termos quadráticos ou splines.</td></tr><tr><td>Dispersão compatível com a família</td><td>Superdispersão invalida os erros-padrão.</td><td>Deviance ou qui-quadrado de Pearson dividido pelos graus de liberdade.</td></tr><tr><td>Ausência de observações muito influentes</td><td>Poucos pontos podem dominar o ajuste.</td><td>Distância de Cook e alavancagem.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0\\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[D=2\left[\ell_{saturado}-\ell_{modelo}\right],\]\[z=\frac{b_j}{EP(b_j)}\ \overset{\text{aprox.}}{\sim}\ \mathcal N(0,1),\]\[\text{AIC}=-2\ell+2p\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\mathbf b^{(t+1)}=\left(\mathbf X^{\top}\mathbf W\mathbf X\right)^{-1}\mathbf X^{\top}\mathbf W\mathbf z,\]\[z_i=\eta_i+\frac{y_i-\mu_i}{\partial\mu_i/\partial\eta_i}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\mathcal F\)</dt><dd>família da distribuição da resposta</dd></div><div><dt>\(\mu_i\)</dt><dd>média da resposta na observação i</dd></div><div><dt>\(\eta_i\)</dt><dd>preditor linear</dd></div><div><dt>\(g\)</dt><dd>função de ligação; \(g^{-1}\) devolve a média</dd></div><div><dt>\(\phi\)</dt><dd>parâmetro de dispersão (fixo em 1 na binomial e na Poisson)</dd></div><div><dt>\(D\)</dt><dd>deviance: duas vezes a diferença de log-verossimilhança em relação ao modelo saturado</dd></div><div><dt>\(\mathbf W\)</dt><dd>matriz de pesos da iteração, que depende da família e da ligação</dd></div><div><dt>\(z_i\)</dt><dd>variável de trabalho do algoritmo de mínimos quadrados ponderados iterativos</dd></div></dl><p>A última expressão é o algoritmo usado em todos os GLM: ajusta-se repetidamente uma regressão ponderada a uma variável transformada, até a convergência. É por isso que uma única função atende a todas as famílias.</p><h3>Exemplo numérico, passo a passo</h3><p>No exemplo desta ficha, o modelo com ligação cloglog tem \(b_0=-39{,}572\) e \(b_1=22{,}041\), com \(x=\log_{10}\) da dose.</p><div class="worked"><strong>Da equação à proporção prevista</strong><p>Para \(x=1{,}7842\): \[\begin{aligned}\eta &= -39{,}572 \\ &\quad +22{,}041\times1{,}7842 \\ &= -0{,}2494.\end{aligned}\]</p><p>Ligação cloglog: \[\begin{aligned}\mu &= 1-\exp\!\left(-e^{\eta}\right) \\ &= 1-\exp(-0{,}7793) \\ &= 0{,}5414.\end{aligned}\]</p><p>Com 56 besouros expostos, isso corresponde a \(56\times0{,}5414=30{,}3\) mortos; observaram-se 28.</p><p>Dose letal 50%: resolve-se \(1-\exp(-e^{\eta})=0{,}5\), isto é, \(\eta=\ln(-\ln 0{,}5)=-0{,}3665\); logo \(x=(-0{,}3665+39{,}572)/22{,}041=1{,}7788\), ou \(10^{1{,}7788}=60{,}1\) mg/l.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Os coeficientes são estimados por máxima verossimilhança, com o mesmo algoritmo para todas as famílias.</li><li>A deviance generaliza a soma de quadrados residual: na família normal, as duas coincidem.</li><li>Modelos encaixados são comparados pela diferença de deviances, que segue aproximadamente uma qui-quadrado.</li><li>O AIC permite comparar modelos não encaixados da mesma família, inclusive com ligações diferentes.</li><li>A escala em que o efeito é linear é a da ligação; na escala da resposta, o efeito não é constante.</li><li>Resíduos de deviance e de Pearson substituem os resíduos comuns no diagnóstico.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>O coeficiente, conforme a ligação</caption><thead><tr><th>Ligação</th><th>exp(b) ou b significa</th></tr></thead><tbody><tr><td>identidade</td><td>Variação da média por unidade do preditor.</td></tr><tr><td>log</td><td>Fator multiplicativo da média: exp(b) é uma razão de taxas.</td></tr><tr><td>logit</td><td>exp(b) é uma razão de chances.</td></tr><tr><td>probit</td><td>Variação em desvios-padrão da variável latente normal.</td></tr><tr><td>cloglog</td><td>exp(b) é uma razão de riscos acumulados.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Diagnóstico do ajuste</caption><thead><tr><th>Elemento</th><th>Leitura</th></tr></thead><tbody><tr><td>Deviance / graus de liberdade</td><td>Próximo de 1 indica ajuste compatível com a família.</td></tr><tr><td>Valor-p da deviance</td><td>Pequeno indica falta de ajuste (ligação, preditores ou dispersão).</td></tr><tr><td>AIC</td><td>Menor é melhor; compare modelos ajustados aos mesmos dados.</td></tr><tr><td>Resíduos de deviance</td><td>Devem ficar sem padrão quando plotados contra o preditor linear.</td></tr></tbody></table></div><p>Reporte a família, a ligação, os coeficientes com intervalos de confiança, a deviance com os graus de liberdade e o AIC.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>glm()</code> pertence ao pacote <code>stats</code>, já instalado com o R. A família é escolhida em <code>family=</code>, e a ligação dentro dela, como em <code>binomial(link = "cloglog")</code>. Para resposta binomial agrupada, a resposta é uma matriz de duas colunas: <code>cbind(sucessos, fracassos)</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-glm-min" type="button">Copiar código</button></div><pre id="code-glm-min"><code>modelo &lt;- glm(cbind(mortos, expostos - mortos) ~ ldose,
+              data = dados, family = binomial(link = "cloglog"))
+summary(modelo)
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, a biblioteca <code>statsmodels</code>, também disponível no Google Colab, oferece esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Em um ensaio clássico de toxicologia (BLISS, 1935), grupos de besouros foram expostos a oito concentrações de dissulfeto de carbono, e registrou-se quantos morreram em cada grupo. A resposta é uma proporção baseada em um número conhecido de indivíduos: o caso típico da família binomial com dados agrupados. A pergunta é qual ligação descreve melhor a curva de dose-resposta.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-glm" type="button">Copiar código</button></div><pre id="code-glm"><code># Modelos lineares generalizados: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R).
 
-# Ajuste e resultados ----
-ajuste &lt;- glm(Volume ~ Girth + Height, data = trees,
-              family = Gamma(link = "log"))
-print(summary(ajuste))
-print(exp(coef(ajuste)))
-plot(fitted(ajuste), residuals(ajuste, type = "deviance"),
-     xlab = "Volume ajustado", ylab = "Resíduos deviance")
+# 1. Dados: besouros expostos a dissulfeto de carbono (Bliss, 1935)
+dados &lt;- data.frame(
+  ldose    = c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839),
+  expostos = c(59, 60, 62, 56, 63, 59, 62, 60),
+  mortos   = c(6, 13, 18, 28, 52, 53, 61, 60))
+dados$proporcao &lt;- dados$mortos / dados$expostos
+dados
 
-# Visualização e diagnóstico ----
-plot(Volume ~ Girth, data = trees, pch = 19, xlab = "Diâmetro", ylab = "Volume")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Resposta binomial agrupada: cbind(sucessos, fracassos)
+resposta &lt;- cbind(dados$mortos, dados$expostos - dados$mortos)
 
+# 3. A mesma família com três ligações diferentes
+m_logit   &lt;- glm(resposta ~ ldose, data = dados, family = binomial(link = "logit"))
+m_probit  &lt;- glm(resposta ~ ldose, data = dados, family = binomial(link = "probit"))
+m_cloglog &lt;- glm(resposta ~ ldose, data = dados, family = binomial(link = "cloglog"))
+summary(m_logit)
+summary(m_cloglog)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="wls.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Mínimos quadrados ponderados (WLS)
-    </a>
-<a href="gee.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Equações de estimação generalizadas (GEE)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Comparação dos ajustes pela deviance e pelo AIC
+sapply(list(logit = m_logit, probit = m_probit, cloglog = m_cloglog),
+       function(m) c(deviance = deviance(m), gl = df.residual(m), AIC = AIC(m)))
+
+# 5. Teste de ajuste: a deviance segue aproximadamente uma qui-quadrado
+pchisq(deviance(m_cloglog), df.residual(m_cloglog), lower.tail = FALSE)
+
+# 6. Dose letal 50% (log10 e na escala original)
+b &lt;- coef(m_cloglog)
+ld50 &lt;- (log(-log(0.5)) - b[1]) / b[2]
+c(log10_LD50 = ld50, LD50 = 10^ld50)
+
+# 7. Outras famílias usam exatamente a mesma sintaxe
+# glm(y ~ x, family = gaussian)                   # regressão linear
+# glm(y ~ x, family = poisson)                    # contagens
+# glm(y ~ x, family = Gamma(link = "log"))        # resposta contínua positiva e assimétrica
+# glm(cbind(s, f) ~ x, family = binomial)         # proporções
+
+# 8. Diagnóstico
+par(mfrow = c(2, 2)); plot(m_cloglog); par(mfrow = c(1, 1))
+
+# 9. Gráfico: as três curvas sobre os dados
+plot(proporcao ~ ldose, data = dados, pch = 19, ylim = c(0, 1),
+     xlab = "log10 da dose", ylab = "Proporção de mortos")
+grade &lt;- data.frame(ldose = seq(1.65, 1.92, length.out = 200))
+lines(grade$ldose, predict(m_logit, grade, type = "response"), col = "darkgreen", lwd = 2)
+lines(grade$ldose, predict(m_probit, grade, type = "response"), col = "orange", lwd = 2)
+lines(grade$ldose, predict(m_cloglog, grade, type = "response"), col = "red", lwd = 2)
+legend("topleft", c("logit", "probit", "cloglog"),
+       col = c("darkgreen", "orange", "red"), lwd = 2, bty = "n")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-glm" type="button">Copiar código</button></div><pre id="code-py-glm"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+
+# Dados: besouros expostos a dissulfeto de carbono (Bliss, 1935)
+# ldose = log10 da dose (mg/l) | expostos | mortos
+ldose    = np.array([1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839])
+expostos = np.array([59, 60, 62, 56, 63, 59, 62, 60.])
+mortos   = np.array([6, 13, 18, 28, 52, 53, 61, 60.])
+X = np.column_stack([np.ones(8), ldose])
+
+ligacoes = {
+    "logit":   (lambda e: 1 / (1 + np.exp(-e)),       lambda p: np.log(p / (1 - p))),
+    "probit":  (lambda e: stats.norm.cdf(e),          lambda p: stats.norm.ppf(p)),
+    "cloglog": (lambda e: 1 - np.exp(-np.exp(e)),     lambda p: np.log(-np.log(1 - p))),
+}
+
+def hessiana(f, x, h=1e-5):
+    p = len(x); H = np.zeros((p, p))
+    for i in range(p):
+        for j in range(p):
+            e1 = np.zeros(p); e2 = np.zeros(p); e1[i] = h; e2[j] = h
+            H[i, j] = (f(x+e1+e2) - f(x+e1-e2) - f(x-e1+e2) + f(x-e1-e2)) / (4 * h * h)
+    return H
+
+def glm_binomial(X, n, y, ligacao, nomes):
+    """GLM com resposta binomial agrupada (y sucessos em n ensaios)."""
+    inversa = ligacoes[ligacao][0]
+    def menos_logv(b):
+        p = np.clip(inversa(X @ b), 1e-12, 1 - 1e-12)
+        return -np.sum(y * np.log(p) + (n - y) * np.log(1 - p))
+    res = optimize.minimize(menos_logv, np.array([-40.0, 22.0]), method="BFGS")
+    b = res.x; ep = np.sqrt(np.diag(np.linalg.inv(hessiana(menos_logv, b))))
+    z = b / ep; pv = 2 * stats.norm.sf(np.abs(z))
+    mu = n * inversa(X @ b)
+    termo1 = np.where(y &gt; 0, y * np.log(np.where(y &gt; 0, y, 1) / mu), 0.0)
+    termo2 = np.where(n - y &gt; 0, (n - y) * np.log(np.where(n - y &gt; 0, n - y, 1) / (n - mu)), 0.0)
+    dev = 2 * np.sum(termo1 + termo2)
+    print(f"  {'Termo':&lt;14}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;9}{'p-valor':&gt;11}")
+    for nm, bi, ei, zi, pi in zip(nomes, b, ep, z, pv):
+        print(f"  {nm:&lt;14}{bi:&gt;11.4f}{ei:&gt;13.4f}{zi:&gt;9.3f}{pi:&gt;11.2e}")
+    print(f"  Deviance = {dev:.4f} em {len(y) - X.shape[1]} gl | p-valor do ajuste = {stats.chi2.sf(dev, len(y)-X.shape[1]):.4f}"
+          f" | AIC = {2*res.fun + 2*X.shape[1]:.2f}")
+    return dict(b=b, ep=ep, dev=dev, logv=-res.fun, mu=mu)
+
+# 1. Dados observados
+print("ldose   expostos  mortos  proporção")
+for a, b_, c in zip(ldose, expostos, mortos):
+    print(f"{a:.4f}  {int(b_):&gt;7}  {int(c):&gt;6}  {c/b_:&gt;9.3f}")
+
+# 2. Três ligações para a mesma família (binomial)
+modelos = {}
+for lig in ["logit", "probit", "cloglog"]:
+    print(f"\nLigação {lig}:")
+    modelos[lig] = glm_binomial(X, expostos, mortos, lig, ["(Intercepto)", "ldose"])
+
+# 3. Comparação dos ajustes
+print("\nLigação     Deviance      AIC")
+for lig, m in modelos.items():
+    print(f"{lig:&lt;10}{m['dev']:&gt;10.4f}{2*(-m['logv']) + 4:&gt;9.2f}")
+
+# 4. Dose letal 50% pela melhor ligação
+for lig in ["logit", "cloglog"]:
+    b = modelos[lig]["b"]
+    alvo = ligacoes[lig][1](0.5)
+    ld50 = (alvo - b[0]) / b[1]
+    print(f"\n{lig}: dose letal 50% em log10 = {ld50:.4f}  -&gt;  {10**ld50:.3f} mg/l")
+
+# 5. Proporções previstas por cada ligação
+print("\nldose    observado    logit   probit  cloglog")
+for i in range(8):
+    linha = [modelos[l]["mu"][i] / expostos[i] for l in ["logit", "probit", "cloglog"]]
+    print(f"{ldose[i]:.4f}  {mortos[i]/expostos[i]:&gt;9.3f}  {linha[0]:&gt;7.3f} {linha[1]:&gt;8.3f} {linha[2]:&gt;8.3f}")
+
+# 6. A mesma estrutura em outras famílias: três exemplos de ligação canônica
+print("\nFamília          Resposta                Ligação canônica   Variância")
+print("Normal           contínua                identidade         constante")
+print("Binomial         sucesso/fracasso        logit              mu(1-mu)/n")
+print("Poisson          contagem                log                mu")
+print("Gama             contínua positiva       inversa            mu²")
+
+# 7. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+grade = np.linspace(1.65, 1.92, 200); Xg = np.column_stack([np.ones(200), grade])
+ax[0].scatter(ldose, mortos / expostos, s=40, zorder=3, label="observado")
+for lig in ["logit", "probit", "cloglog"]:
+    ax[0].plot(grade, ligacoes[lig][0](Xg @ modelos[lig]["b"]), label=lig)
+ax[0].set_xlabel("log10 da dose"); ax[0].set_ylabel("Proporção de mortos"); ax[0].legend()
+for lig in ["logit", "probit", "cloglog"]:
+    ax[1].scatter(ldose, mortos - modelos[lig]["mu"], label=lig)
+ax[1].axhline(0, color="black", lw=0.8)
+ax[1].set_xlabel("log10 da dose"); ax[1].set_ylabel("Observado - previsto (nº de mortos)"); ax[1].legend()
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ldose   expostos  mortos  proporção
+1.6907       59       6      0.102
+1.7242       60      13      0.217
+1.7552       62      18      0.290
+1.7842       56      28      0.500
+1.8113       63      52      0.825
+1.8369       59      53      0.898
+1.8610       62      61      0.984
+1.8839       60      60      1.000
+
+Ligação logit:
+  Termo          Estimativa  Erro-padrão        z    p-valor
+  (Intercepto)     -60.7175       5.1695  -11.745   7.47e-32
+  ldose             34.2703       2.9059   11.794   4.21e-32
+  Deviance = 11.2322 em 6 gl | p-valor do ajuste = 0.0815 | AIC = 376.47
+
+Ligação probit:
+  Termo          Estimativa  Erro-padrão        z    p-valor
+  (Intercepto)     -34.9352       2.6376  -13.245   4.81e-40
+  ldose             19.7279       1.4830   13.303   2.22e-40
+  Deviance = 10.1198 em 6 gl | p-valor do ajuste = 0.1197 | AIC = 375.36
+
+Ligação cloglog:
+  Termo          Estimativa  Erro-padrão        z    p-valor
+  (Intercepto)     -39.5723       3.2279  -12.259   1.50e-34
+  ldose             22.0412       1.7925   12.297   9.46e-35
+  Deviance = 3.4464 em 6 gl | p-valor do ajuste = 0.7511 | AIC = 368.69
+
+Ligação     Deviance      AIC
+logit        11.2322   376.47
+probit       10.1198   375.36
+cloglog       3.4464   368.69
+
+logit: dose letal 50% em log10 = 1.7717  -&gt;  59.118 mg/l
+
+cloglog: dose letal 50% em log10 = 1.7788  -&gt;  60.083 mg/l
+
+ldose    observado    logit   probit  cloglog
+1.6907      0.102    0.059    0.057    0.095
+1.7242      0.217    0.164    0.179    0.188
+1.7552      0.290    0.362    0.379    0.338
+1.7842      0.500    0.605    0.604    0.542
+1.8113      0.825    0.795    0.788    0.758
+1.8369      0.898    0.903    0.904    0.918
+1.8610      0.984    0.955    0.962    0.986
+1.8839      1.000    0.979    0.987    0.999
+
+Família          Resposta                Ligação canônica   Variância
+Normal           contínua                identidade         constante
+Binomial         sucesso/fracasso        logit              mu(1-mu)/n
+Poisson          contagem                log                mu
+Gama             contínua positiva       inversa            mu²</pre></div><figure class="fig"><img src="../assets/resultados/glm.png" alt="Curvas ajustadas pelas três ligações e resíduos por dose" loading="lazy"/><figcaption><strong>Mesma família, três ligações.</strong> À esquerda, as três curvas sobre os dados: logit e probit quase coincidem e ficam abaixo dos pontos nas doses baixas; o cloglog acompanha melhor as duas extremidades. À direita, a diferença entre mortos observados e previstos: as barras do cloglog são as menores na maior parte das doses. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Dados e proporções observadas</caption><thead><tr><th>log₁₀ da dose</th><th>Expostos</th><th>Mortos</th><th>Proporção</th></tr></thead><tbody><tr><td>1,6907</td><td>59</td><td>6</td><td>0,102</td></tr><tr><td>1,7242</td><td>60</td><td>13</td><td>0,217</td></tr><tr><td>1,7552</td><td>62</td><td>18</td><td>0,290</td></tr><tr><td>1,7842</td><td>56</td><td>28</td><td>0,500</td></tr><tr><td>1,8113</td><td>63</td><td>52</td><td>0,825</td></tr><tr><td>1,8369</td><td>59</td><td>53</td><td>0,898</td></tr><tr><td>1,8610</td><td>62</td><td>61</td><td>0,984</td></tr><tr><td>1,8839</td><td>60</td><td>60</td><td>1,000</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação das três ligações</caption><thead><tr><th>Ligação</th><th>Intercepto (EP)</th><th>Inclinação (EP)</th><th>Deviance (6 g.l.)</th><th>Valor-p do ajuste</th><th>AIC</th></tr></thead><tbody><tr><td>logit</td><td>−60,718 (5,170)</td><td>34,270 (2,906)</td><td>11,232</td><td>0,082</td><td>376,47</td></tr><tr><td>probit</td><td>−34,935 (2,638)</td><td>19,728 (1,483)</td><td>10,120</td><td>0,120</td><td>375,36</td></tr><tr><td>cloglog</td><td>−39,572 (3,228)</td><td>22,041 (1,793)</td><td>3,446</td><td>0,751</td><td>368,69</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Proporções previstas</caption><thead><tr><th>log₁₀ da dose</th><th>Observado</th><th>logit</th><th>probit</th><th>cloglog</th></tr></thead><tbody><tr><td>1,6907</td><td>0,102</td><td>0,059</td><td>0,057</td><td>0,095</td></tr><tr><td>1,7552</td><td>0,290</td><td>0,362</td><td>0,379</td><td>0,338</td></tr><tr><td>1,7842</td><td>0,500</td><td>0,605</td><td>0,604</td><td>0,542</td></tr><tr><td>1,8610</td><td>0,984</td><td>0,955</td><td>0,962</td><td>0,986</td></tr></tbody></table></div><p><strong>Leitura:</strong> a ligação cloglog descreve esses dados bem melhor que as outras duas. Sua deviance é 3,45 em 6 graus de liberdade (valor-p de 0,751, compatível com um bom ajuste), contra 11,23 do logit (valor-p de 0,082, no limite). O AIC confirma: 368,7 contra 376,5. Olhando as proporções previstas, o problema do logit aparece nos extremos: na menor dose ele prevê 5,9% de mortalidade onde se observaram 10,2%, e na maior prevê 95,5% onde morreram todos.</p><p>O motivo é a forma da curva. Logit e probit são simétricas em torno de 50%; o cloglog é assimétrico, com subida lenta no início e aproximação rápida de 100% no final — exatamente o padrão de muitos ensaios de dose-resposta. Pela ligação escolhida, a dose letal 50% é estimada em 60,1 mg/l (contra 59,1 mg/l pelo logit). O exemplo mostra que a escolha da ligação não é um detalhe: ela muda o ajuste, as previsões e as quantidades derivadas delas.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Escolher a família pelo hábito, e não pela resposta</td><td>A família define a função de variância; parta da natureza do dado.</td></tr><tr><td>Usar sempre a ligação canônica</td><td>Compare alternativas pela deviance e pelo AIC.</td></tr><tr><td>Interpretar o coeficiente na escala da resposta</td><td>O efeito é linear na escala da ligação.</td></tr><tr><td>Ignorar a dispersão</td><td>Deviance muito acima dos graus de liberdade invalida os erros-padrão.</td></tr><tr><td>Comparar AIC de famílias diferentes sem cuidado</td><td>Só vale quando a verossimilhança se refere aos mesmos dados e à mesma escala.</td></tr><tr><td>Usar resíduos comuns no diagnóstico</td><td>Use resíduos de deviance ou de Pearson.</td></tr><tr><td>Dar resposta binomial agrupada como proporção sem informar o total</td><td>Use <code>cbind(sucessos, fracassos)</code> ou o argumento <code>weights</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="gam.html">Modelos aditivos generalizados</a></td><td>O efeito do preditor é suave mas não linear na escala da ligação.</td></tr><tr><td>Quase-verossimilhança</td><td>Só a relação média-variância é especificada, sem distribuição completa.</td></tr><tr><td><a href="gee.html">GEE</a> / modelos mistos</td><td>Observações agrupadas ou repetidas.</td></tr><tr><td><a href="nb.html">Binomial negativa</a></td><td>Contagens com superdispersão.</td></tr><tr><td><a href="wls.html">Mínimos quadrados ponderados</a></td><td>Resposta contínua com variância conhecida e ligação identidade.</td></tr><tr><td>Modelos bayesianos (<code>brms</code>, <code>rstanarm</code>)</td><td>Amostras pequenas, separação ou informação prévia relevante.</td></tr></tbody></table></div><ol class="steps"><li>Classifique a resposta: contínua, binária, proporção, contagem, tempo.</li><li>Escolha a família correspondente.</li><li>Escolha a ligação e compare alternativas razoáveis.</li><li>Ajuste e examine deviance, dispersão e resíduos.</li><li>Interprete os coeficientes na escala correta.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>NELDER, John A.; WEDDERBURN, Robert W. M. Generalized linear models. <em>Journal of the Royal Statistical Society: Series A</em>, v. 135, n. 3, p. 370-384, 1972.</li><li>McCULLAGH, Peter; NELDER, John A. <em>Generalized linear models.</em> 2. ed. London: Chapman &amp; Hall, 1989.</li><li>DOBSON, Annette J.; BARNETT, Adrian G. <em>An introduction to generalized linear models.</em> 4. ed. Boca Raton: CRC Press, 2018.</li><li>BLISS, Chester I. The calculation of the dosage-mortality curve. <em>Annals of Applied Biology</em>, v. 22, n. 1, p. 134-167, 1935. (Fonte dos dados do exemplo.)</li><li>AGRESTI, Alan. <em>Foundations of linear and generalized linear models.</em> Hoboken: Wiley, 2015.</li><li>WEDDERBURN, Robert W. M. Quasi-likelihood functions, generalized linear models, and the Gauss-Newton method. <em>Biometrika</em>, v. 61, n. 3, p. 439-447, 1974.</li><li>COLLETT, David. <em>Modelling binary data.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>glm</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, distribuição da resposta compatível com a família escolhida e preditor linear correto na escala da ligação.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="wls.html"><span>← ANTERIOR</span>Mínimos quadrados ponderados (WLS)</a><a href="gee.html"><span>PRÓXIMO →</span>Equações de estimação generalizadas (GEE)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

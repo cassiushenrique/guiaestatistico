@@ -4,309 +4,373 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Análise discriminante quadrática (QDA): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Análise discriminante quadrática (QDA) | Estatística e Ciência de Dados
-  </title>
+<meta content="Análise discriminante quadrática (QDA): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Análise discriminante quadrática (QDA) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Análise discriminante quadrática (QDA)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 09 · CLASSIFICAÇÃO
-    </span>
-<h1>
-     Análise discriminante quadrática (QDA)
-    </h1>
-<p class="detail-lead">
-     Classifica observações permitindo que os grupos apresentem padrões de dispersão diferentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/qda.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Classifica observações permitindo que os grupos apresentem padrões de dispersão diferentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência.</li><li>Normalidade multivariada condicional.</li><li>Estimativa não singular de covariâncias por classe ( deve superar p de forma confortável).</li><li>Avaliar overfitting.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\delta_k(\mathbf x)=-\frac12\ln|\boldsymbol\Sigma_k|-\frac12(\mathbf x-\boldsymbol\mu_k)^\top\boldsymbol\Sigma_k^{-1}(\mathbf x-\boldsymbol\mu_k)+\ln\pi_k\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\mu_k\)
-        </dt>
-<dd>
-         vetor médio da classe k
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\Sigma\)
-        </dt>
-<dd>
-         matriz de covariâncias especificada pelo classificador
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Compare erros de classificação com LDA usando as mesmas partições. \(p&lt;0{,}05\) não substitui validação externa.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar veículos por cilindrada (4/6/8) usando massa e potência em mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-qda" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-qda"><code># Análise discriminante quadrática (QDA) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Análise discriminante quadrática (QDA)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ANÁLISE DISCRIMINANTE</span><h1>Análise discriminante quadrática (QDA)</h1><p class="detail-lead">Estima uma matriz de covariância por grupo, o que torna as fronteiras de classificação quadráticas em vez de lineares.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/qda.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/qda.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a análise discriminante quadrática</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="lda.html">análise discriminante linear</a> supõe que todos os grupos compartilham a mesma matriz de covariância. A quadrática abandona essa suposição e estima uma matriz por grupo. O ganho é flexibilidade: as fronteiras deixam de ser hiperplanos e passam a ser superfícies quadráticas. O custo é o número de parâmetros, e é esse custo que decide, na prática, qual das duas usar.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Análise discriminante quadrática" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A diferença</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Uma covariância POR GRUPO</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">em vez de uma agrupada</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A fronteira</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Quadrática: elipses,</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">parábolas, hipérboles</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ganho</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Capta dispersões</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">e orientações diferentes</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O custo</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">k·p(p+1)/2 parâmetros</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">contra p(p+1)/2</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando usar</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">M de Box rejeita E</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">n grande o bastante</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">MASS::qda()</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">klaR::rda()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Análise discriminante quadrática</text></svg><figcaption>Visão geral da análise discriminante quadrática. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>A pergunta não é "o pressuposto é verdadeiro?"</strong><p>Em <code>iris</code> o <a href="boxm.html">M de Box</a> rejeita com \(p=3{,}4\times10^{-20}\), e ainda assim a LDA classifica <em>melhor</em> que a QDA: 147 acertos contra 146. O pressuposto de covariâncias iguais é falso, e assumi-lo mesmo assim sai barato. A pergunta correta é se o ganho de flexibilidade compensa a variância extra das estimativas — e isso se responde por validação cruzada, não por teste de hipótese.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a análise discriminante quadrática</h2><p>A derivação é a mesma da LDA até o penúltimo passo. Supondo que o grupo \(i\) seja \(N_p(\mu_i,\Sigma_i)\), a regra de Bayes leva a comparar \(\ln\left[\pi_i f_i(x)\right]\). A diferença é que agora \(\Sigma_i\) varia com \(i\): o termo \(-\tfrac12\ln|\Sigma_i|\) deixa de ser constante e o termo quadrático \(x^{\top}\Sigma_i^{-1}x\) deixa de se cancelar entre os grupos. A fronteira entre dois grupos vira uma superfície de segundo grau.</p><figure class="fig"><img src="../assets/resultados/qda-didatica.png" alt="Fronteira linear com covariância agrupada, fronteira quadrática com covariância por grupo, e o crescimento do número de parâmetros" loading="lazy"/><figcaption><strong>A diferença, em três quadros.</strong> À esquerda, a LDA: ela impõe a mesma elipse de dispersão aos dois grupos (tracejadas, idênticas em forma e orientação) e produz uma fronteira reta. No centro, a QDA com os mesmos dados: cada grupo tem a sua elipse, com orientações opostas, e a fronteira resultante é uma hipérbole. À direita, o preço: o número de parâmetros de covariância a estimar cresce com o quadrado do número de variáveis, e é multiplicado pelo número de grupos. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>O que a QDA consegue e a LDA não</strong><p>Três situações exigem fronteira curva: grupos com <strong>dispersões</strong> diferentes (um compacto dentro de um disperso), grupos com <strong>orientações</strong> diferentes (correlações de sinais opostos, como na figura acima) e grupos com a <strong>mesma média</strong>, em que nenhuma fronteira linear pode funcionar. Nos três, a LDA fracassa por construção, e não por falta de dados.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Normalidade multivariada em cada grupo</td><td>A regra vem da densidade normal.</td><td><a href="mardia.html">Teste de Mardia</a> e <code>MVN::mvn()</code> por grupo; a QDA é mais sensível a desvios que a LDA.</td></tr><tr><td><strong>nᵢ &gt; p em cada grupo</strong></td><td>A covariância do grupo precisa ser invertível.</td><td>Conte as observações por grupo; o R recusa o ajuste se faltar.</td></tr><tr><td>nᵢ bem maior que p, na prática</td><td>Com nᵢ pouco acima de p a estimativa é instável.</td><td>Regra prática: ao menos 3 a 5 vezes p por grupo.</td></tr><tr><td>Observações independentes</td><td>Validação e erros-padrão pressupõem isso.</td><td>Delineamento.</td></tr><tr><td>Covariâncias realmente diferentes</td><td>Se forem iguais, a QDA só acrescenta variância.</td><td><a href="boxm.html">M de Box</a> como indício, validação cruzada como decisão.</td></tr><tr><td>Ausência de atípicos extremos</td><td>Covariâncias por grupo são muito sensíveis a eles.</td><td>Distâncias de Mahalanobis dentro de cada grupo.</td></tr></tbody></table></div><div class="callout "><strong>O critério prático</strong><p>Use a QDA quando as três condições se verificarem juntas: o <a href="boxm.html">M de Box</a> rejeita com folga, as determinantes das covariâncias diferem por ordens de grandeza, e cada grupo tem observações de sobra em relação ao número de variáveis. Faltando qualquer uma, compare as duas por validação cruzada e deixe o resultado decidir. A análise discriminante regularizada, que encolhe cada covariância de grupo em direção à agrupada, é a saída quando a resposta é "um pouco de cada".</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><h3>A regra de classificação</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\delta_i(x) &= -\tfrac{1}{2}\ln\lvert S_i\rvert \\ &\quad -\tfrac{1}{2}(x-\bar x_i)^{\top}S_i^{-1}(x-\bar x_i) \\ &\quad +\ln\pi_i,\end{aligned}\]\[\begin{aligned}&\text{classifica-se }x \\ &\quad \text{ no grupo de maior }\delta_i(x).\end{aligned}\]</div><p>O segundo termo é a distância de Mahalanobis ao quadrado, calculada com a covariância <em>daquele</em> grupo. Comparando dois grupos:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\delta_1(x)-\delta_2(x) &= -\tfrac12 x^{\top}\left(S_1^{-1}-S_2^{-1}\right)x \\ &\quad +x^{\top}\left(S_1^{-1}\bar x_1-S_2^{-1}\bar x_2\right) \\ &\quad +c,\end{aligned}\]</div><p>e o primeiro termo só desaparece quando \(S_1=S_2\) — caso em que a expressão se reduz à da <a href="lda.html">LDA</a>. A natureza da cônica resultante depende dos autovalores de \(S_1^{-1}-S_2^{-1}\): todos do mesmo sinal dão uma elipse, sinais mistos dão uma hipérbole.</p><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(S_i\)</dt><dd>covariância amostral do grupo \(i\), com \(n_i-1\) graus de liberdade</dd></div><div><dt>\(\lvert S_i\rvert\)</dt><dd>determinante: mede o "volume" da dispersão do grupo</dd></div><div><dt>\(\bar x_i\)</dt><dd>vetor de médias do grupo \(i\)</dd></div><div><dt>\(\pi_i\)</dt><dd>probabilidade a priori do grupo \(i\)</dd></div><div><dt>\(c\)</dt><dd>constante que não depende de \(x\)</dd></div></dl><h3>O número de parâmetros</h3><div class="table-wrap"><table class="method-table"><caption>Parâmetros de covariância a estimar</caption><thead><tr><th>p</th><th>LDA</th><th>QDA com k = 2</th><th>QDA com k = 3</th></tr></thead><tbody><tr><td>2</td><td>3</td><td>6</td><td>9</td></tr><tr><td>5</td><td>15</td><td>30</td><td>45</td></tr><tr><td>10</td><td>55</td><td>110</td><td>165</td></tr><tr><td>20</td><td>210</td><td>420</td><td>630</td></tr></tbody></table></div><p>É esta tabela que explica por que o pressuposto falso da LDA costuma sair barato: com 20 variáveis e três grupos, a QDA precisa estimar 630 covariâncias a partir dos mesmos dados com que a LDA estima 210.</p><h3>Exemplo numérico</h3><div class="table-wrap"><table class="method-table"><caption>iris: dispersão de cada espécie</caption><thead><tr><th>Espécie</th><th>Determinante de Sᵢ</th><th>Traço de Sᵢ</th></tr></thead><tbody><tr><td>setosa</td><td>2,113 × 10⁻⁶</td><td>0,3092</td></tr><tr><td>versicolor</td><td>1,894 × 10⁻⁵</td><td>0,6248</td></tr><tr><td>virginica</td><td>1,327 × 10⁻⁴</td><td>0,8884</td></tr><tr><td><strong>agrupada</strong></td><td><strong>4,732 × 10⁻⁵</strong></td><td><strong>0,6075</strong></td></tr></tbody></table></div><div class="worked"><strong>O que esses números dizem</strong><p>A determinante da virginica é 62,8 vezes a da setosa: as três espécies ocupam volumes muito diferentes no espaço das quatro medidas. O <a href="boxm.html">M de Box</a> formaliza a comparação:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[M^{*}=140{,}943,\]\[\begin{aligned}\text{gl} &= \frac{p(p+1)(k-1)}{2} \\ &= \frac{4\times5\times2}{2} = 20,\end{aligned}\]\[p=3{,}35\times10^{-20}.\]</div><p>O pressuposto da LDA é inequivocamente falso. E, apesar disso, a QDA classifica pior: 146 acertos contra 147 por validação cruzada, com as duas regras discordando em uma única flor. O motivo está na tabela de parâmetros: a QDA estima 3 × 10 = 30 covariâncias onde a LDA estima 10, a partir das mesmas 150 flores.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com \(S_1=S_2=\dots=S_k\), a QDA se reduz exatamente à <a href="lda.html">LDA</a>.</li><li>A fronteira entre dois grupos é uma superfície quadrática; em duas dimensões, uma cônica.</li><li>O método não produz eixos canônicos: não há projeção de dimensão reduzida análoga a LD1 e LD2.</li><li>Exige \(n_i&gt;p\) em cada grupo para que \(S_i\) seja invertível.</li><li>A análise discriminante regularizada de Friedman (1989) interpola entre as duas, com \(S_i(\lambda)=(1-\lambda)S_i+\lambda S_p\).</li><li>É invariante a transformações lineares não singulares das variáveis, como a LDA.</li><li>Com \(k=2\) e priores iguais, a regra equivale a comparar as distâncias de Mahalanobis corrigidas por \(\ln\lvert S_i\rvert\).</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Group means</td><td>Os centroides.</td><td>Iguais aos da LDA.</td></tr><tr><td>Covariâncias por grupo</td><td>A forma e o volume de cada nuvem.</td><td>Compare determinantes e traços.</td></tr><tr><td>posterior</td><td>Probabilidade de cada grupo.</td><td>Mais extremas que as da LDA, por causa do termo quadrático.</td></tr><tr><td>Matriz de confusão da validação cruzada</td><td>O desempenho real.</td><td>É o número a comparar com o da LDA.</td></tr><tr><td>Discordâncias LDA × QDA</td><td>Onde a flexibilidade mudou algo.</td><td>Em iris, uma única flor.</td></tr><tr><td>M de Box</td><td>Indício de que as covariâncias diferem.</td><td>Não é critério de escolha.</td></tr></tbody></table></div><div class="callout "><strong>Dois erros simétricos</strong><p>Um é usar a LDA sempre, ignorando que existem estruturas que nenhuma fronteira linear capta. O outro é usar a QDA sempre que o <a href="boxm.html">M de Box</a> rejeita — e ele rejeita quase sempre, porque é sensível ao tamanho da amostra. A decisão é empírica: ajuste as duas, compare por validação cruzada e relate a comparação.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>MASS::qda()</code>, com a mesma interface de <code>lda()</code>: fórmula, <code>CV = TRUE</code> para a validação cruzada deixa-um-de-fora e <code>predict()</code> para classe e probabilidades a posteriori. A diferença aparece no objeto devolvido, que guarda uma matriz de escalonamento por grupo. Para a versão regularizada, <code>klaR::rda()</code> estima os parâmetros de encolhimento por validação. O M de Box sai de <code>biotools::boxM()</code>, e <code>klaR::partimat()</code> desenha as fronteiras aos pares de variáveis.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-qda-min" type="button">Copiar código</button></div><pre id="code-qda-min"><code>library(MASS)
+mq  &lt;- qda(Species ~ ., data = iris)
+qcv &lt;- qda(Species ~ ., data = iris, CV = TRUE)
+lcv &lt;- lda(Species ~ ., data = iris, CV = TRUE)
+c(LDA = mean(lcv$class == iris$Species), QDA = mean(qcv$class == iris$Species))
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A ficha compara LDA e QDA em três situações: em <code>iris</code>, onde o pressuposto de covariâncias iguais é falso mas a LDA ainda assim ganha; em um conjunto fictício com a mesma média e dispersões muito diferentes, onde a LDA não tem como funcionar; e em uma simulação que localiza o ponto a partir do qual a QDA passa a compensar.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-qda" type="button">Copiar código</button></div><pre id="code-qda"><code># Análise discriminante quadrática: exemplo completo ----
+# Pacotes: MASS (qda), biotools (M de Box), klaR (fronteiras), caret
+# install.packages(c("MASS", "biotools", "klaR", "caret"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("MASS", quietly = TRUE)) install.packages("MASS")
+data(iris)
+
+# O pressuposto que distingue a QDA da LDA: covariâncias iguais ou não?
+by(iris[, 1:4], iris$Species, function(x) round(det(cov(x)), 8))
+library(biotools)
+boxM(iris[, 1:4], iris$Species)
+
+# Os dois ajustes, lado a lado
 library(MASS)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(cyl))
-# Treino estratificado para manter cada classe.
-i &lt;- unlist(lapply(split(seq_len(nrow(d)), d$classe),
-                  function(z) sample(z, max(5, length(z) - 2))))
-ajuste &lt;- qda(classe ~ wt + hp, data = d[i, ])
-prev &lt;- predict(ajuste, newdata = d[-i, ])
-print(table(real = d$classe[-i], previsto = prev$class))
+ml &lt;- lda(Species ~ ., data = iris)
+mq &lt;- qda(Species ~ ., data = iris)
+mq                       # priores e médias; as covariâncias ficam em mq$scaling
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# Reclassificação (otimista) e validação cruzada (a que se reporta)
+table(Real = iris$Species, Predita = predict(ml)$class)
+table(Real = iris$Species, Predita = predict(mq)$class)
+lcv &lt;- lda(Species ~ ., data = iris, CV = TRUE)
+qcv &lt;- qda(Species ~ ., data = iris, CV = TRUE)
+mean(lcv$class == iris$Species)
+mean(qcv$class == iris$Species)
+table(LDA = lcv$class, QDA = qcv$class)        # onde as duas discordam
+which(lcv$class != qcv$class)
 
+# Um caso em que a QDA é claramente superior: mesma média, dispersões
+# muito diferentes (dados fictícios)
+set.seed(7)
+A &lt;- MASS::mvrnorm(200, c(0, 0), diag(2))        # compacto
+B &lt;- MASS::mvrnorm(200, c(0, 0), 9 * diag(2))    # disperso
+dd &lt;- data.frame(x1 = c(A[,1], B[,1]), x2 = c(A[,2], B[,2]),
+                 g  = factor(rep(c("A", "B"), each = 200)))
+boxM(dd[, 1:2], dd$g)
+mean(lda(g ~ x1 + x2, data = dd, CV = TRUE)$class == dd$g)
+mean(qda(g ~ x1 + x2, data = dd, CV = TRUE)$class == dd$g)
+library(klaR)
+partimat(g ~ x1 + x2, data = dd, method = "lda")
+partimat(g ~ x1 + x2, data = dd, method = "qda")
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="lda.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Análise discriminante linear (LDA)
-    </a>
-<a href="kaplan.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Estimador Kaplan–Meier
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# Quando n é pequeno, a QDA pode PERDER mesmo com o modelo a favor dela
+# (a simulação completa está no código Python desta ficha)
+set.seed(11)
+sim &lt;- function(n, c_, rep = 200, p = 5) {
+  res &lt;- replicate(rep, {
+    Z &lt;- rbind(MASS::mvrnorm(n, rep(0, p), diag(p)),
+               MASS::mvrnorm(n, rep(0.7, p), c_ * diag(p)))
+    g &lt;- factor(rep(c("A", "B"), each = n))
+    Tt &lt;- rbind(MASS::mvrnorm(1500, rep(0, p), diag(p)),
+                MASS::mvrnorm(1500, rep(0.7, p), c_ * diag(p)))
+    gt &lt;- factor(rep(c("A", "B"), each = 1500))
+    d1 &lt;- data.frame(Z, g); d2 &lt;- data.frame(Tt)
+    names(d2) &lt;- names(d1)[1:p]
+    c(mean(predict(lda(g ~ ., data = d1), d2)$class != gt),
+      mean(predict(qda(g ~ ., data = d1), d2)$class != gt))
+  })
+  rowMeans(res)
+}
+# sim(20, 1.4); sim(100, 1.4); sim(20, 3.0)
+
+# Análise discriminante REGULARIZADA: interpola entre LDA e QDA
+library(klaR)
+rda(Species ~ ., data = iris)         # estima lambda e gamma por validação
+
+# Validação honesta com treino e teste
+library(caret)
+set.seed(1)
+idx &lt;- createDataPartition(iris$Species, p = 0.7, list = FALSE)
+confusionMatrix(predict(qda(Species ~ ., data = iris[idx, ]),
+                        iris[-idx, ])$class, iris[-idx, ]$Species)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-qda" type="button">Copiar código</button></div><pre id="code-py-qda"><code># Bibliotecas: numpy, scipy, matplotlib e scikit-learn (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+from sklearn.datasets import load_iris
+
+np.set_printoptions(suppress=True)
+
+# ===================================================================
+# LDA e QDA, implementadas do zero, para que a diferença fique visível
+# ===================================================================
+def ajusta(X, g):
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    medias = np.array([X[g == i].mean(axis=0) for i in niveis])
+    prior  = np.array([np.mean(g == i) for i in niveis])
+    Sg = [np.cov(X[g == i], rowvar=False) for i in niveis]          # por grupo
+    ni = np.array([np.sum(g == i) for i in niveis])
+    Sp = sum((ni[j]-1)*Sg[j] for j in range(k)) / (n - k)           # agrupada
+    return niveis, medias, np.array(Sg), Sp, prior, ni
+
+def escore_lda(X, medias, Sp, prior):
+    Si = np.linalg.inv(Sp)
+    return (np.asarray(X, float) @ Si @ medias.T
+            - 0.5*np.sum((medias @ Si)*medias, axis=1) + np.log(prior))
+
+def escore_qda(X, medias, Sg, prior):
+    """d_i(x) = -0,5 ln|S_i| - 0,5 (x-m_i)' S_i^-1 (x-m_i) + ln(pi_i)"""
+    X = np.asarray(X, float); out = np.empty((len(X), len(medias)))
+    for j in range(len(medias)):
+        Si = np.linalg.inv(Sg[j]); dif = X - medias[j]
+        out[:, j] = (-0.5*np.log(np.linalg.det(Sg[j]))
+                     - 0.5*np.sum((dif @ Si)*dif, axis=1) + np.log(prior[j]))
+    return out
+
+def valida_cruzada(X, g, metodo):
+    n = len(X); pred = np.empty(n, int)
+    for i in range(n):
+        m = np.ones(n, bool); m[i] = False
+        nv, me, Sg, Sp, pr, ni = ajusta(X[m], g[m])
+        pred[i] = (escore_qda(X[i:i+1], me, Sg, pr) if metodo == "qda"
+                   else escore_lda(X[i:i+1], me, Sp, pr)).argmax()
+    return pred
+
+def confusao(g, pred, k):
+    C = np.zeros((k, k), int)
+    for i in range(len(g)): C[g[i], pred[i]] += 1
+    return C
+
+def box_m(X, g):
+    """M de Box: testa a igualdade das matrizes de covariância."""
+    X = np.asarray(X, float); g = np.asarray(g)
+    niveis = np.unique(g); k = len(niveis); n, p = X.shape
+    ni = np.array([np.sum(g == i) for i in niveis])
+    Sg = [np.cov(X[g == i], rowvar=False) for i in niveis]
+    Sp = sum((ni[j]-1)*Sg[j] for j in range(k)) / (n - k)
+    M = (n-k)*np.log(np.linalg.det(Sp)) - sum((ni[j]-1)*np.log(np.linalg.det(Sg[j]))
+                                              for j in range(k))
+    c1 = (sum(1/(ni-1)) - 1/(n-k)) * (2*p*p + 3*p - 1)/(6*(p+1)*(k-1))
+    gl = p*(p+1)*(k-1)/2
+    return M*(1-c1), gl, stats.chi2.sf(M*(1-c1), gl)
+
+# ===================================================================
+# PARTE 1 - iris: a QDA onde a LDA já vai bem
+# ===================================================================
+d = load_iris(); X = d.data; g = d.target
+nomes = ["setosa", "versicolor", "virginica"]
+niveis, medias, Sg, Sp, prior, ni = ajusta(X, g)
+n, p = X.shape; k = 3
+
+print("iris: 150 flores, 4 medidas, 3 espécies")
+print("\nAs três matrizes de covariância NÃO são iguais")
+print(f"{'espécie':&lt;12}{'determinante':&gt;16}{'traço':&gt;12}")
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;12}{np.linalg.det(Sg[j]):&gt;16.3e}{np.trace(Sg[j]):&gt;12.4f}")
+print(f"{'agrupada':&lt;12}{np.linalg.det(Sp):&gt;16.3e}{np.trace(Sp):&gt;12.4f}")
+print(f"A maior determinante é {np.linalg.det(Sg[2])/np.linalg.det(Sg[0]):.1f} "
+      f"vezes a menor.")
+M, gl, pM = box_m(X, g)
+print(f"\nM de Box = {M:.4f} | gl = {gl:.0f} | p = {pM:.3e}")
+print("A igualdade das covariâncias é rejeitada, que é o pressuposto da LDA.")
+print("Em princípio, portanto, a QDA seria a escolha. Veja o que acontece.")
+
+pl = valida_cruzada(X, g, "lda"); pq = valida_cruzada(X, g, "qda")
+Cl = confusao(g, pl, k); Cq = confusao(g, pq, k)
+print("\nValidação cruzada deixa-um-de-fora")
+print(f"{'real \\ predito':&lt;16}" + "".join(f"{nm:&gt;12}" for nm in nomes) + "   | método")
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;16}" + "".join(f"{c:&gt;12d}" for c in Cl[j]) + "   | LDA")
+for j, nm in enumerate(nomes):
+    print(f"{nm:&lt;16}" + "".join(f"{c:&gt;12d}" for c in Cq[j]) + "   | QDA")
+print(f"LDA: {np.trace(Cl)}/{n} = {100*np.trace(Cl)/n:.2f}% de acerto "
+      f"({n-np.trace(Cl)} erros)")
+print(f"QDA: {np.trace(Cq)}/{n} = {100*np.trace(Cq)/n:.2f}% de acerto "
+      f"({n-np.trace(Cq)} erros)")
+dif = np.where(pl != pq)[0]
+print(f"As duas regras discordam em {len(dif)} das {n} flores: {dif+1}")
+print("\nO M de Box rejeita, mas a QDA não melhora o resultado. A razão é que a")
+print("QDA estima k matrizes de covariância em vez de uma: em iris são 3 x 10 =")
+print("30 parâmetros de covariância, contra 10 da LDA, com os mesmos 150 dados.")
+print("A variância extra das estimativas consome o ganho de flexibilidade.")
+
+# ===================================================================
+# PARTE 2 - um caso em que a QDA é claramente superior
+# ===================================================================
+print("\n" + "=" * 70)
+print("Dados fictícios em que a diferença aparece: dois grupos com a MESMA")
+print("média e dispersões muito diferentes (um compacto dentro de um disperso).")
+rng = np.random.default_rng(7)
+nA = nB = 200
+A = rng.multivariate_normal([0, 0], [[1.0, 0.0], [0.0, 1.0]], nA)       # compacto
+B = rng.multivariate_normal([0, 0], [[9.0, 0.0], [0.0, 9.0]], nB)       # disperso
+Y = np.vstack([A, B]); gy = np.r_[np.zeros(nA), np.ones(nB)].astype(int)
+nv2, me2, Sg2, Sp2, pr2, ni2 = ajusta(Y, gy)
+print(f"\nMédias: grupo A {np.round(me2[0],3)} | grupo B {np.round(me2[1],3)}")
+print(f"Determinantes: A {np.linalg.det(Sg2[0]):.4f} | B {np.linalg.det(Sg2[1]):.4f}")
+M2, gl2, pM2 = box_m(Y, gy)
+print(f"M de Box = {M2:.2f} | gl = {gl2:.0f} | p = {pM2:.3e}")
+pl2 = valida_cruzada(Y, gy, "lda"); pq2 = valida_cruzada(Y, gy, "qda")
+Cl2 = confusao(gy, pl2, 2); Cq2 = confusao(gy, pq2, 2)
+print(f"\n{'real \\ predito':&lt;16}{'A':&gt;8}{'B':&gt;8}   | método")
+for j, nm in enumerate(["A", "B"]):
+    print(f"{nm:&lt;16}{Cl2[j,0]:&gt;8d}{Cl2[j,1]:&gt;8d}   | LDA")
+for j, nm in enumerate(["A", "B"]):
+    print(f"{nm:&lt;16}{Cq2[j,0]:&gt;8d}{Cq2[j,1]:&gt;8d}   | QDA")
+print(f"LDA: {100*np.trace(Cl2)/len(gy):.2f}% de acerto")
+print(f"QDA: {100*np.trace(Cq2)/len(gy):.2f}% de acerto")
+print("As duas médias POPULACIONAIS são iguais (as amostrais diferem apenas por")
+print("flutuação), de modo que nenhuma fronteira LINEAR consegue separar os")
+print("grupos: a LDA fica perto do acaso, com 57,5% onde 50% é o chute. A QDA")
+print("desenha uma fronteira CIRCULAR em torno da origem, atribuindo ao grupo")
+print("compacto o que está perto do centro, e chega a 84,3%.")
+
+# ===================================================================
+# PARTE 3 - a troca entre viés e variância, em função de n
+# ===================================================================
+print("\n" + "=" * 70)
+print("Quando a QDA compensa? A resposta depende de n e do QUANTO as")
+print("covariâncias diferem. Dois grupos normais em p = 5 dimensões, médias")
+print("separadas por 0,7 em cada eixo, covariâncias I e c x I.")
+print("Erro medido em 3.000 observações novas, média de 300 repetições.")
+rng = np.random.default_rng(5)
+for c, rotulo in [(1.4, "diferença MODERADA (c = 1,4)"),
+                  (3.0, "diferença GRANDE (c = 3,0)")]:
+    print(f"\n{rotulo}")
+    print(f"{'n por grupo':&gt;12}{'erro LDA':&gt;12}{'erro QDA':&gt;12}{'vencedor':&gt;12}")
+    for nn in [12, 20, 40, 70, 100, 400]:
+        mu = np.zeros(5); mu2 = mu + 0.7
+        S1 = np.eye(5); S2 = c*np.eye(5)
+        el = []; eq = []
+        for _ in range(300):
+            Z = np.vstack([rng.multivariate_normal(mu, S1, nn),
+                           rng.multivariate_normal(mu2, S2, nn)])
+            gz = np.r_[np.zeros(nn), np.ones(nn)].astype(int)
+            T = np.vstack([rng.multivariate_normal(mu, S1, 1500),
+                           rng.multivariate_normal(mu2, S2, 1500)])
+            gt = np.r_[np.zeros(1500), np.ones(1500)].astype(int)
+            nv3, me3, Sg3, Sp3, pr3, ni3 = ajusta(Z, gz)
+            el.append(np.mean(escore_lda(T, me3, Sp3, pr3).argmax(axis=1) != gt))
+            eq.append(np.mean(escore_qda(T, me3, Sg3, pr3).argmax(axis=1) != gt))
+        a, b = 100*np.mean(el), 100*np.mean(eq)
+        print(f"{nn:&gt;12}{a:&gt;11.2f}%{b:&gt;11.2f}%{('QDA' if b &lt; a else 'LDA'):&gt;12}")
+print("\nCom diferença moderada entre as covariâncias, a LDA VENCE enquanto n é")
+print("pequeno, mesmo sabendo-se que o modelo dela é falso: estimar duas")
+print("matrizes de covariância em vez de uma custa variância, e esse custo supera")
+print("o viés do modelo errado. O ponto de virada fica entre n = 70 e n = 100 por")
+print("grupo. Com diferença grande, o viés da LDA é alto demais desde o início e")
+print("a QDA vence em toda a faixa.")
+print("\nParâmetros de covariância a estimar:")
+for pp in [2, 5, 10, 20]:
+    print(f"  p = {pp:&gt;2}: LDA {pp*(pp+1)//2:&gt;4}  |  QDA com k = 2: "
+          f"{2*pp*(pp+1)//2:&gt;4}  |  QDA com k = 3: {3*pp*(pp+1)//2:&gt;4}")
+print("O número cresce com p², e é por isso que o ponto de virada sobe depressa")
+print("com a dimensão. A análise discriminante REGULARIZADA interpola entre as")
+print("duas, encolhendo cada covariância de grupo em direção à agrupada.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">iris: 150 flores, 4 medidas, 3 espécies
+
+As três matrizes de covariância NÃO são iguais
+espécie         determinante       traço
+setosa             2.113e-06      0.3092
+versicolor         1.894e-05      0.6248
+virginica          1.327e-04      0.8884
+agrupada           4.732e-05      0.6075
+A maior determinante é 62.8 vezes a menor.
+
+M de Box = 140.9430 | gl = 20 | p = 3.352e-20
+A igualdade das covariâncias é rejeitada, que é o pressuposto da LDA.
+Em princípio, portanto, a QDA seria a escolha. Veja o que acontece.
+
+Validação cruzada deixa-um-de-fora
+real \ predito        setosa  versicolor   virginica   | método
+setosa                    50           0           0   | LDA
+versicolor                 0          48           2   | LDA
+virginica                  0           1          49   | LDA
+setosa                    50           0           0   | QDA
+versicolor                 0          47           3   | QDA
+virginica                  0           1          49   | QDA
+LDA: 147/150 = 98.00% de acerto (3 erros)
+QDA: 146/150 = 97.33% de acerto (4 erros)
+As duas regras discordam em 1 das 150 flores: [69]
+
+O M de Box rejeita, mas a QDA não melhora o resultado. A razão é que a
+QDA estima k matrizes de covariância em vez de uma: em iris são 3 x 10 =
+30 parâmetros de covariância, contra 10 da LDA, com os mesmos 150 dados.
+A variância extra das estimativas consome o ganho de flexibilidade.
+
+======================================================================
+Dados fictícios em que a diferença aparece: dois grupos com a MESMA
+média e dispersões muito diferentes (um compacto dentro de um disperso).
+
+Médias: grupo A [-0.113 -0.098] | grupo B [ 0.032 -0.67 ]
+Determinantes: A 0.7229 | B 68.9480
+M de Box = 431.04 | gl = 3 | p = 4.185e-93
+
+real \ predito         A       B   | método
+A                    125      75   | LDA
+B                     95     105   | LDA
+A                    180      20   | QDA
+B                     43     157   | QDA
+LDA: 57.50% de acerto
+QDA: 84.25% de acerto
+As duas médias POPULACIONAIS são iguais (as amostrais diferem apenas por
+flutuação), de modo que nenhuma fronteira LINEAR consegue separar os
+grupos: a LDA fica perto do acaso, com 57,5% onde 50% é o chute. A QDA
+desenha uma fronteira CIRCULAR em torno da origem, atribuindo ao grupo
+compacto o que está perto do centro, e chega a 84,3%.
+
+======================================================================
+Quando a QDA compensa? A resposta depende de n e do QUANTO as
+covariâncias diferem. Dois grupos normais em p = 5 dimensões, médias
+separadas por 0,7 em cada eixo, covariâncias I e c x I.
+Erro medido em 3.000 observações novas, média de 300 repetições.
+
+diferença MODERADA (c = 1,4)
+ n por grupo    erro LDA    erro QDA    vencedor
+          12      28.96%      34.72%         LDA
+          20      27.12%      30.76%         LDA
+          40      25.43%      26.83%         LDA
+          70      24.48%      24.86%         LDA
+         100      24.24%      24.06%         QDA
+         400      23.82%      22.92%         QDA
+
+diferença GRANDE (c = 3,0)
+ n por grupo    erro LDA    erro QDA    vencedor
+          12      33.15%      29.73%         QDA
+          20      31.27%      23.81%         QDA
+          40      29.17%      19.39%         QDA
+          70      28.29%      17.82%         QDA
+         100      28.01%      17.21%         QDA
+         400      27.30%      16.08%         QDA
+
+Com diferença moderada entre as covariâncias, a LDA VENCE enquanto n é
+pequeno, mesmo sabendo-se que o modelo dela é falso: estimar duas
+matrizes de covariância em vez de uma custa variância, e esse custo supera
+o viés do modelo errado. O ponto de virada fica entre n = 70 e n = 100 por
+grupo. Com diferença grande, o viés da LDA é alto demais desde o início e
+a QDA vence em toda a faixa.
+
+Parâmetros de covariância a estimar:
+  p =  2: LDA    3  |  QDA com k = 2:    6  |  QDA com k = 3:    9
+  p =  5: LDA   15  |  QDA com k = 2:   30  |  QDA com k = 3:   45
+  p = 10: LDA   55  |  QDA com k = 2:  110  |  QDA com k = 3:  165
+  p = 20: LDA  210  |  QDA com k = 2:  420  |  QDA com k = 3:  630
+O número cresce com p², e é por isso que o ponto de virada sobe depressa
+com a dimensão. A análise discriminante REGULARIZADA interpola entre as
+duas, encolhendo cada covariância de grupo em direção à agrupada.</pre></div><figure class="fig"><img src="../assets/resultados/qda.png" alt="Elipses por espécie em iris, a fronteira circular no caso de mesma média, e o ponto de virada entre LDA e QDA" loading="lazy"/><figcaption><strong>A comparação em três vistas.</strong> À esquerda, as duas medidas da pétala em <code>iris</code>: as elipses cheias são as covariâncias de cada espécie e as tracejadas, a agrupada que a LDA impõe às três. No centro, o caso fictício de mesma média: a QDA desenha uma fronteira circular em torno do grupo compacto e acerta 84,3%, enquanto a reta da LDA fica em 57,5%, pouco acima do acaso. À direita, o erro em dados novos em função do tamanho da amostra, para duas intensidades de diferença entre as covariâncias. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>iris: as duas regras, por validação cruzada</caption><thead><tr><th>Regra</th><th>Acertos</th><th>Erro</th></tr></thead><tbody><tr><td><strong>LDA</strong></td><td><strong>147 de 150 (98,00%)</strong></td><td>3 flores</td></tr><tr><td>QDA</td><td>146 de 150 (97,33%)</td><td>4 flores</td></tr><tr><td>Discordância entre as duas</td><td>1 flor (a de número 69)</td><td>—</td></tr><tr><td>M de Box</td><td>χ² = 140,94; gl = 20; p = 3,35 × 10⁻²⁰</td><td>Rejeita a igualdade.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Mesma média, dispersões muito diferentes (200 + 200 pontos fictícios)</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Determinante da covariância de A</td><td>0,7229</td></tr><tr><td>Determinante da covariância de B</td><td>68,9480</td></tr><tr><td>M de Box</td><td>χ² = 431,04; gl = 3; p = 4,2 × 10⁻⁹³</td></tr><tr><td>Acerto da LDA (validação cruzada)</td><td>57,50%</td></tr><tr><td><strong>Acerto da QDA (validação cruzada)</strong></td><td><strong>84,25%</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Erro em dados novos, p = 5, médias separadas por 0,7 em cada eixo</caption><thead><tr><th>n por grupo</th><th>LDA (c = 1,4)</th><th>QDA (c = 1,4)</th><th>LDA (c = 3,0)</th><th>QDA (c = 3,0)</th></tr></thead><tbody><tr><td>12</td><td>28,96%</td><td>34,72%</td><td>33,15%</td><td>29,73%</td></tr><tr><td>20</td><td>27,12%</td><td>30,76%</td><td>31,27%</td><td>23,81%</td></tr><tr><td>40</td><td>25,43%</td><td>26,83%</td><td>29,17%</td><td>19,39%</td></tr><tr><td>70</td><td>24,48%</td><td>24,86%</td><td>28,29%</td><td>17,82%</td></tr><tr><td>100</td><td><strong>24,24%</strong></td><td><strong>24,06%</strong></td><td>28,01%</td><td>17,21%</td></tr><tr><td>400</td><td>23,82%</td><td>22,92%</td><td>27,30%</td><td>16,08%</td></tr></tbody></table></div><p><strong>Leitura de iris:</strong> as três espécies têm dispersões muito diferentes — a determinante da virginica é 62,8 vezes a da setosa — e o M de Box rejeita a igualdade sem margem para dúvida. A conclusão automática seria usar a QDA. A validação cruzada diz o contrário: a QDA erra uma flor a mais. As duas regras discordam em uma única observação das 150, o que mostra que a flexibilidade extra praticamente não foi usada. Com quatro variáveis e três grupos, a QDA estima 30 covariâncias onde a LDA estima 10, e o ruído dessas estimativas anula o ganho.</p><p><strong>Leitura do caso fictício:</strong> aqui a LDA não tem como funcionar, e isso é uma questão de geometria, não de amostra. Os dois grupos têm a mesma média populacional, de modo que qualquer fronteira linear deixa metade de cada grupo de cada lado — a LDA fica em 57,5%, pouco acima dos 50% do chute. A QDA reconhece que um grupo é compacto e o outro disperso, desenha uma fronteira circular em torno da origem e chega a 84,3%. Nenhum volume de dados resolveria o problema da LDA: o modelo dela está errado quanto à forma, não quanto aos parâmetros.</p><p><strong>Leitura da simulação:</strong> as duas colunas da esquerda correspondem a uma diferença moderada entre as covariâncias. A LDA <em>vence</em> até cerca de n = 70 por grupo, mesmo sabendo-se de antemão que o modelo dela é falso — a economia de parâmetros compensa o viés. O ponto de virada fica entre 70 e 100, e a partir dali a QDA passa à frente, com vantagem crescente. As duas colunas da direita correspondem a uma diferença grande: aí o viés da LDA é alto demais desde o começo, e a QDA vence em toda a faixa, chegando a errar menos da metade.</p><p>A regra prática que se extrai disso tem três ingredientes: o quanto as covariâncias diferem, o tamanho da amostra por grupo e o número de variáveis. Como o número de parâmetros da QDA cresce com o quadrado de \(p\), o ponto de virada sobe depressa com a dimensão. Quando a resposta é ambígua, a análise discriminante regularizada evita a escolha binária, encolhendo cada covariância de grupo em direção à agrupada por um fator estimado nos próprios dados.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a QDA só porque o <a href="boxm.html">M de Box</a> rejeitou</td><td>Ele rejeita quase sempre com n grande; decida por validação cruzada.</td></tr><tr><td>Usar a QDA com nᵢ próximo de p</td><td>A covariância do grupo fica instável ou singular.</td></tr><tr><td>Reportar o acerto da reclassificação</td><td>A QDA infla mais que a LDA, por ter mais parâmetros.</td></tr><tr><td>Procurar eixos canônicos na QDA</td><td>Ela não os produz: não há LD1 nem LD2.</td></tr><tr><td>Ignorar observações atípicas</td><td>Covariâncias por grupo são muito sensíveis a elas.</td></tr><tr><td>Supor que mais flexibilidade é sempre melhor</td><td>Em iris a QDA erra mais que a LDA.</td></tr><tr><td>Esquecer a opção regularizada</td><td><code>klaR::rda()</code> interpola entre as duas.</td></tr><tr><td>Aplicar a dados fortemente não normais</td><td>A QDA é mais sensível à não normalidade que a LDA.</td></tr><tr><td>Comparar LDA e QDA pelo mesmo conjunto usado no ajuste</td><td>Use validação cruzada ou um conjunto de teste.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="lda.html">Análise discriminante linear</a></td><td>Covariâncias parecidas, ou n pequeno em relação a p.</td></tr><tr><td>Análise discriminante regularizada</td><td>Quando a escolha entre LDA e QDA é ambígua.</td></tr><tr><td>Naive Bayes gaussiano</td><td>p muito grande: supõe covariâncias diagonais por grupo.</td></tr><tr><td><a href="logistica.html">Regressão logística</a> com termos quadráticos</td><td>Fronteira curva sem supor normalidade.</td></tr><tr><td><a href="knn.html">k vizinhos mais próximos</a></td><td>Fronteiras muito irregulares e n grande.</td></tr><tr><td><a href="svm-rbf.html">SVM com núcleo radial</a></td><td>Fronteiras não lineares de forma arbitrária.</td></tr><tr><td><a href="randomforest.html">Florestas aleatórias</a></td><td>Interações complexas, variáveis mistas, sem pressupostos distribucionais.</td></tr><tr><td>Modelos de mistura (mclust)</td><td>Quando cada grupo pode ser, ele próprio, multimodal.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que cada grupo tem nᵢ bem maior que p.</li><li>Compare as determinantes e os traços das covariâncias por grupo.</li><li>Aplique o <a href="boxm.html">M de Box</a> como indício, não como decisão.</li><li>Verifique a normalidade multivariada dentro de cada grupo.</li><li>Ajuste LDA e QDA e compare por validação cruzada.</li><li>Se a diferença for pequena, prefira a mais simples ou use a regularizada.</li><li>Examine onde as duas regras discordam: é ali que a flexibilidade atuou.</li><li>Reporte a comparação, e não apenas o resultado do modelo escolhido.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>SMITH, Cedric A. B. Some examples of discrimination. <em>Annals of Eugenics</em>, v. 13, n. 1, p. 272-282, 1947.</li><li>WELCH, B. L. Note on discriminant functions. <em>Biometrika</em>, v. 31, n. 1-2, p. 218-220, 1939.</li><li>BOX, G. E. P. A general distribution theory for a class of likelihood criteria. <em>Biometrika</em>, v. 36, n. 3-4, p. 317-346, 1949.</li><li>MARKS, S.; DUNN, Olive Jean. Discriminant functions when covariance matrices are unequal. <em>Journal of the American Statistical Association</em>, v. 69, n. 346, p. 555-559, 1974.</li><li>FRIEDMAN, Jerome H. Regularized discriminant analysis. <em>Journal of the American Statistical Association</em>, v. 84, n. 405, p. 165-175, 1989.</li><li>BENSMAIL, Halima; CELEUX, Gilles. Regularized Gaussian discriminant analysis through eigenvalue decomposition. <em>Journal of the American Statistical Association</em>, v. 91, n. 436, p. 1743-1748, 1996.</li><li>LACHENBRUCH, Peter A.; MICKEY, M. Ray. Estimation of error rates in discriminant analysis. <em>Technometrics</em>, v. 10, n. 1, p. 1-11, 1968.</li><li>JOHNSON, Richard A.; WICHERN, Dean W. <em>Applied multivariate statistical analysis.</em> 6. ed. Upper Saddle River: Pearson, 2007.</li><li>MARDIA, Kanti V.; KENT, John T.; BIBBY, John M. <em>Multivariate analysis.</em> London: Academic Press, 1979.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>ANDERSON, Edgar. The species problem in Iris. <em>Annals of the Missouri Botanical Garden</em>, v. 23, n. 3, p. 457-509, 1936. (Conjunto de dados <code>iris</code>, pacote <code>datasets</code> do R.)</li><li>FISHER, Ronald A. The use of multiple measurements in taxonomic problems. <em>Annals of Eugenics</em>, v. 7, n. 2, p. 179-188, 1936.</li><li>VENABLES, William N.; RIPLEY, Brian D. <em>Modern applied statistics with S.</em> 4. ed. New York: Springer, 2002. (Pacote <code>MASS</code>, funções <code>lda</code> e <code>qda</code>.)</li><li>WEIHS, Claus; LIGGES, Uwe; LUEBKE, Karsten; RAABE, Nils. klaR: analyzing German business cycles. In: <em>Data analysis and decision support.</em> Berlin: Springer, 2005. p. 335-343. (Funções <code>rda</code> e <code>partimat</code>.)</li><li>DA SILVA, Anderson Rodrigo. <em>biotools: tools for biometry and applied statistics in agricultural science.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=biotools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=biotools</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Normalidade multivariada em cada grupo, nᵢ confortavelmente maior que o número de variáveis em cada grupo, e covariâncias realmente diferentes entre os grupos.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>MASS, klaR, biotools, caret</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="lda.html"><span>← ANTERIOR</span>Análise discriminante linear (LDA)</a><a href="kaplan.html"><span>PRÓXIMO →</span>Estimador Kaplan–Meier</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

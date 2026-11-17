@@ -4,316 +4,748 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Modelos aditivos generalizados (GAM): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Modelos aditivos generalizados (GAM) | Estatística e Ciência de Dados
-  </title>
+<meta content="Modelos aditivos generalizados (GAM): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Modelos aditivos generalizados (GAM) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Modelos aditivos generalizados (GAM)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 15 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Modelos aditivos generalizados (GAM)
-    </h1>
-<p class="detail-lead">
-     Estima efeitos não lineares de vários fatores sobre uma resposta.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/gam.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima efeitos não lineares de vários fatores sobre uma resposta.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Família e ligação corretas.</li><li>independência ou estrutura de correlação modelada.</li><li>regularização/suavização apropriadas e diagnóstico de resíduos.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ f_j(x)=0\quad\forall x\\H_1&amp;:\ \exists x:f_j(x)\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[g\{\mathbb E(Y\mid\mathbf x)\}=\beta_0+\sum_{j=1}^p f_j(x_j)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(g\)
-        </dt>
-<dd>
-         função de ligação
-        </dd>
-</div>
-<div>
-<dt>
-         \(\beta_0\)
-        </dt>
-<dd>
-         intercepto
-        </dd>
-</div>
-<div>
-<dt>
-         \(f_j\)
-        </dt>
-<dd>
-         função suave estimada do preditor j
-        </dd>
-</div>
-<div>
-<dt>
-         \(x_j\)
-        </dt>
-<dd>
-         valor do preditor j
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) sugere termo suavizado relevante no modelo aproximado; examine formato, IC e desempenho externo.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição não linear da autonomia por massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-gam" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-gam"><code># Modelos aditivos generalizados (GAM) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Modelos aditivos generalizados (GAM)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · RELAÇÕES NÃO LINEARES</span><h1>Modelos aditivos generalizados (GAM)</h1><p class="detail-lead">Soma uma função suave por preditora — a estrutura que torna a flexibilidade possível com várias variáveis, ao preço de excluir interações.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/gam.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/gam.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é um modelo aditivo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>As quatro fichas anteriores trataram <strong>uma</strong> preditora de cada vez. Esta junta as três, mantendo a flexibilidade de cada uma. O preço é uma hipótese: a de que os efeitos se <strong>somam</strong>.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}A &= \alpha+f_1(\text{PAR})+f_2(\text{temp}) \\ &\quad +f_3(\text{VPD})+\varepsilon\end{aligned}\]</div><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: GAM" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A estrutura</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Soma de funções</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">suaves, uma por preditora</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que se ganha</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Flexibilidade com</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">n razoável</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que se paga</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Sem interações</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O algoritmo</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Retroajuste, ou</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">penalidade conjunta</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A identificação</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Cada parcela</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">centrada em zero</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema novo</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Concurvidade: a</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">colinearidade suave</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">GAM</text></svg><figcaption>Visão geral dos modelos aditivos generalizados. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Por que a hipótese aditiva não é uma concessão menor</strong><p>Com três preditoras e flexibilidade de 10 graus de liberdade em cada, o modelo aditivo tem cerca de 30 parâmetros. Uma superfície totalmente flexível em três dimensões, com a mesma resolução, teria \(10^3=1\,000\). Com \(n=260\), o primeiro é estimável e o segundo não é. A aditividade é o que torna o problema <em>possível</em>, e é por isso que ela vale a pena mesmo sabendo que é falsa — porque toda hipótese de modelagem é falsa, e a pergunta é quanto custa.</p></div></section><section class="detail-panel" id="oque"><h2>O que é um modelo aditivo</h2><p>Cada preditora entra com uma função própria, estimada dos dados, e as contribuições se somam. É a generalização direta do modelo linear — nele, cada \(f_j\) é obrigada a ser uma reta — e a redução direta do modelo totalmente flexível, que permitiria qualquer superfície.</p><figure class="fig"><img src="../assets/resultados/gam-didatica.png" alt="As três parcelas estimadas, com banda de confiança, contra as funções verdadeiras" loading="lazy"/><figcaption><strong>O resultado central da ficha.</strong> Cada painel mostra uma parcela: a curva estimada em verde, a banda de 95% obtida por bootstrap, e a função verdadeira em tracejado vermelho. Os traços na base marcam onde há dados. As três são recuperadas com viés pequeno; a banda do VPD se abre acima de 1,5 kPa, onde estão apenas 1,5% das observações. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O que cada modelo pode representar</caption><thead><tr><th>Modelo</th><th>Forma de cada efeito</th><th>Interações</th><th>Parâmetros (3 preditoras, 10 g.l.)</th></tr></thead><tbody><tr><td>Linear</td><td>reta</td><td>não</td><td>4</td></tr><tr><td>Linear com produtos</td><td>reta</td><td>lineares</td><td>7</td></tr><tr><td><strong>Aditivo (GAM)</strong></td><td><strong>qualquer função suave</strong></td><td><strong>não</strong></td><td><strong>≈ 30</strong></td></tr><tr><td>GAM com um termo tensorial</td><td>suave</td><td>uma, suave</td><td>≈ 120</td></tr><tr><td>Totalmente flexível</td><td>qualquer superfície</td><td>todas</td><td>≈ 1 000</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Aditividade</strong></td><td>É a hipótese central.</td><td>Resíduo contra produtos; compare com <code>te(x1, x2)</code>.</td></tr><tr><td>Cada parcela centrada</td><td>Sem isso o intercepto não é identificável.</td><td>Automático; verifique que as médias são zero.</td></tr><tr><td>Erros independentes</td><td>A escolha da suavidade supõe isso.</td><td>Com séries ou grupos, use <code>gamm</code>.</td></tr><tr><td>Variância constante (ou família certa)</td><td>O "G" permite outras famílias.</td><td><code>gam.check</code>; escolha <code>family</code>.</td></tr><tr><td><strong>k suficiente em cada s()</strong></td><td>k limita a flexibilidade da base.</td><td><code>gam.check</code> avisa se o edf encosta em k−1.</td></tr><tr><td>Suavidade estimada, não arbitrada</td><td>REML ou GCV; não escolha a olho.</td><td><code>method = "REML"</code> é o recomendado.</td></tr><tr><td><strong>Concurvidade examinada</strong></td><td>Preditoras ligadas por relação suave.</td><td><code>concurvity(m)</code>; o VIF não a enxerga.</td></tr><tr><td>Dados em toda a faixa de cada preditora</td><td>A banda se abre onde faltam.</td><td>Traços de dados (<em>rug</em>) no gráfico de cada parcela.</td></tr></tbody></table></div><div class="callout warn"><strong>Concurvidade: a colinearidade que o VIF não vê</strong><p>Duas preditoras <em>colineares</em> tornam os coeficientes indeterminados. Duas preditoras ligadas por uma relação <strong>suave qualquer</strong> tornam as <em>parcelas</em> indeterminadas — e isso não aparece no fator de inflação de variância, que só mede associação linear. Nestes dados, a temperatura e o VPD têm \(r=0{,}5794\), o que não assusta; mas um suavizador da temperatura explica <strong>44,8%</strong> da variação do VPD, porque a relação física entre os dois é exponencial. É esse o número que importa, e a função <code>concurvity()</code> do <code>mgcv</code> o calcula.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[g\!\left(\mathbb{E}[y_i]\right)=\alpha+\sum_{j=1}^{p}f_j(x_{ij}),\]\[\mathbb{E}\!\left[f_j(X_j)\right]=0\ \ \forall j\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(g\)</dt><dd>função de ligação: identidade, logito, logaritmo</dd></div><div><dt>\(f_j\)</dt><dd>função suave da \(j\)-ésima preditora</dd></div><div><dt>\(\alpha\)</dt><dd>intercepto</dd></div><div><dt>\(\mathbb{E}[f_j]=0\)</dt><dd>a restrição de identificabilidade</dd></div></dl><p>A restrição de média zero é necessária: sem ela, somar uma constante a \(f_1\) e subtraí-la de \(f_2\) daria o mesmo ajuste, e nem o intercepto nem as parcelas seriam identificáveis. Verificado numericamente: após convergir, as três parcelas têm média \(0{,}0000000000\) e o intercepto vale 14,1245, exatamente a média de \(A\).</p><h3>O retroajuste (backfitting)</h3><p>Com \(\hat\alpha=\bar y\) e todas as parcelas inicializadas em zero, repete-se até convergir:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat f_j\leftarrow S_j\!\left[y-\hat\alpha-\sum_{k\neq j}\hat f_k\right],\]\[\hat f_j\leftarrow \hat f_j-\overline{\hat f_j}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(S_j\)</dt><dd>o suavizador da \(j\)-ésima preditora (spline, LOESS, o que for)</dd></div><div><dt>\(y-\hat\alpha-\sum_{k\neq j}\hat f_k\)</dt><dd>o resíduo PARCIAL: o que sobra para \(f_j\) explicar</dd></div></dl><p>É o algoritmo de Hastie e Tibshirani (1986), e a elegância dele está em que <em>qualquer</em> suavizador univariado serve. O <code>mgcv</code> de Wood usa outro caminho — representa todas as parcelas em bases penalizadas e resolve o sistema conjunto, estimando as penalidades por REML — que é mais rápido e permite inferência melhor, mas o retroajuste é o que torna a ideia transparente.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>O retroajuste convergindo (suavizadores com λ = 2 × 10⁻⁴)</caption><thead><tr><th>Rodada</th><th>Maior mudança em uma parcela</th><th>SQR</th></tr></thead><tbody><tr><td>1</td><td>1,885 × 10¹</td><td>446,0718</td></tr><tr><td>2</td><td>2,160</td><td>379,0075</td></tr><tr><td>3</td><td>3,765 × 10⁻¹</td><td>371,5735</td></tr><tr><td>5</td><td>3,109 × 10⁻¹</td><td>369,6566</td></tr><tr><td>8</td><td>2,546 × 10⁻¹</td><td>369,4501</td></tr><tr><td>12</td><td>1,994 × 10⁻¹</td><td>369,4090</td></tr><tr><td>20</td><td>1,203 × 10⁻¹</td><td>369,4173</td></tr><tr><td>30</td><td>6,391 × 10⁻²</td><td>369,4618</td></tr><tr><td>40</td><td>3,395 × 10⁻²</td><td>369,4984</td></tr></tbody></table></div><div class="worked"><strong>A convergência tem dois ritmos, e a diferença é informativa</strong><p>A <strong>soma de quadrados</strong> estabiliza depressa: da rodada 3 em diante ela muda na terceira casa decimal. As <strong>parcelas</strong>, porém, continuam se ajustando por muito mais tempo — a mudança máxima cai de 18,85 na primeira rodada para 0,034 na quadragésima, e ainda não é zero.</p><p>A razão é exatamente a concurvidade. A parte da variação que a temperatura e o VPD <em>compartilham</em> pode ser atribuída a qualquer um dos dois sem alterar o ajuste total, e o retroajuste a redistribui lentamente entre eles. O critério global não sente, porque a soma não muda; as parcelas individuais sentem.</p><p>A consequência prática: quando se quer o ajuste, bastam poucas rodadas; quando se quer <em>interpretar as parcelas</em>, convém rodar até a convergência estrita e verificar se as parcelas estão estáveis. É uma versão do mesmo aviso que aparece na ficha <a href="ridge.html">ridge</a> — a colinearidade não impede predizer, impede identificar.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Cada parcela é identificável só a menos de uma constante: daí a restrição de média zero.</li><li>Com todas as \(f_j\) lineares, recupera-se o modelo linear.</li><li>O retroajuste aceita qualquer suavizador univariado.</li><li>Os graus de liberdade totais são a soma dos de cada parcela, mais 1.</li><li>Não representa interações: elas sobram no resíduo.</li><li>Escala bem com o número de preditoras: \(p\) parcelas, não \(10^{p}\) células.</li><li>O "G" permite famílias não normais, com a mesma estrutura de ligação do GLM.</li><li>A concurvidade é a colinearidade da versão suave, e exige verificação própria.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Gráfico de cada parcela</td><td>A forma do efeito daquela preditora.</td><td>É o resultado principal; publique os três.</td></tr><tr><td><strong>edf</strong></td><td>Graus de liberdade efetivos da parcela.</td><td>edf ≈ 1 significa efeito LINEAR.</td></tr><tr><td>Teste F de cada termo suave</td><td>Se a parcela difere de zero.</td><td>Aproximado; supõe a suavidade estimada corretamente.</td></tr><tr><td>R² ajustado e deviance explicada</td><td>Ajuste global.</td><td>Resubstituição: otimista.</td></tr><tr><td><code>gam.check</code></td><td>Se k é suficiente e os resíduos se comportam.</td><td><strong>Rode sempre</strong>.</td></tr><tr><td><code>concurvity</code></td><td>Dependência suave entre preditoras.</td><td>O VIF não serve aqui.</td></tr><tr><td>Banda de confiança</td><td>A incerteza da forma.</td><td>Abre onde faltam dados; olhe os traços.</td></tr><tr><td>Intercepto</td><td>A média da resposta.</td><td>As parcelas são desvios em torno dele.</td></tr></tbody></table></div><h3>O que o edf diz</h3><p>O número de graus de liberdade efetivos de cada parcela é a informação mais útil da saída, porque responde diretamente à pergunta "esta preditora precisa de uma curva?". Um edf próximo de 1 significa que o suavizador decidiu que uma reta basta — e nesse caso convém substituir o termo suave por um termo linear, que é mais simples e dá inferência usual. Nos dados desta ficha, os edf são 12,53 para o PAR, 8,22 para a temperatura e 5,60 para o VPD: as três precisam de curvatura, e o PAR precisa de bastante.</p><div class="callout warn"><strong>O aviso que o gam.check dá, e por que ele importa</strong><p>No <code>mgcv</code>, o argumento <code>k</code> de <code>s(x, k = …)</code> não é o número de graus de liberdade usados: é o <strong>máximo</strong> que a base permite. A suavidade efetiva é escolhida pela penalidade, e normalmente fica bem abaixo de \(k\). Mas se o edf estimado encostar em \(k-1\), a base está limitando o ajuste, e o resultado é um efeito artificialmente suavizado. O <code>gam.check</code> testa exatamente isso e avisa; a resposta é aumentar \(k\) e reajustar. É o erro mais comum de quem começa a usar o pacote.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Há dois pacotes, com filosofias diferentes. O <code>mgcv</code>, de Simon Wood, é o padrão atual: <code>gam(A ~ s(par) + s(temp) + s(vpd), data = fot, method = "REML")</code> ajusta tudo e <strong>estima a suavidade sozinho</strong>, por REML — que é o método recomendado, mais estável que o GCV. O <code>summary</code> traz, para cada termo suave, o edf e um teste F aproximado; <code>plot(m, pages = 1, shade = TRUE)</code> desenha as parcelas com banda; <code>gam.check(m)</code> faz o diagnóstico e avisa se algum \(k\) está apertado. Para interações, <code>te(x1, x2)</code> (produto tensorial, para variáveis de unidades diferentes) ou <code>s(x1, x2)</code> (<em>thin plate</em>, para variáveis na mesma escala). Para outras famílias, <code>family = binomial</code>, <code>poisson</code>, e assim por diante. Para erros correlacionados ou efeitos aleatórios, <code>gamm</code>.</p><p>O <code>gam</code>, de Trevor Hastie, implementa o retroajuste clássico e exige que o usuário <em>dê</em> os graus de liberdade: <code>s(par, df = 12)</code>. É mais transparente para entender o algoritmo e aceita <code>lo()</code> para usar LOESS como suavizador. Os dois pacotes definem uma função chamada <code>gam</code>, de modo que convém chamá-las com <code>mgcv::gam</code> e <code>gam::gam</code> quando os dois estiverem carregados.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-gam-min" type="button">Copiar código</button></div><pre id="code-gam-min"><code>library(mgcv)
+m &lt;- gam(A ~ s(par) + s(temp) + s(vpd), data = fot, method = "REML")
+summary(m)                 # edf de cada parcela, e os testes F
+plot(m, pages = 1, shade = TRUE, residuals = TRUE)
+gam.check(m)               # k é suficiente?
+concurvity(m, full = FALSE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 260 medições de trocas gasosas em folhas de cafeeiro. A resposta é a <strong>fotossíntese líquida</strong> \(A\) (μmol CO₂ m⁻² s⁻¹) e as três preditoras são a <strong>radiação</strong> PAR (μmol m⁻² s⁻¹, de 57 a 1.998), a <strong>temperatura foliar</strong> (°C, de 11,3 a 38,3) e o <strong>déficit de pressão de vapor</strong> VPD (kPa, de 0,30 a 2,45). O processo gerador é conhecido: \[\begin{aligned}A &= \alpha+f_1(\text{PAR})+f_2(\text{temp}) \\ &\quad +f_3(\text{VPD})+\varepsilon,\end{aligned}\] com erro de desvio-padrão 1,30. A curva de luz \(f_1\) sobe depressa, satura e cai um pouco por fotoinibição acima de 1.000 μmol; \(f_2\) tem ótimo em 27 °C; \(f_3\) é um declínio convexo. Saber as funções verdadeiras permite medir o viés de cada método — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as cinco fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-gam" type="button">Copiar código</button></div><pre id="code-gam"><code># Modelos aditivos generalizados (GAM): exemplo completo ----
+# Pacotes: mgcv (Simon Wood) e gam (Trevor Hastie)
+# Dados fictícios: 260 medições de trocas gasosas em folhas de cafeeiro.
+# O arquivo fotossintese.csv acompanha o site, na pasta scripts/.
+fot &lt;- read.csv("fotossintese.csv")
+str(fot)            # A (umol CO2 m-2 s-1), par, temp, vpd
+summary(fot)
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680",
+     xlab = "PAR (umol m-2 s-1)", ylab = "A (umol CO2 m-2 s-1)")
 
-# Ajuste e resultados ----
-if (!requireNamespace("mgcv", quietly = TRUE)) install.packages("mgcv")
+# O ponto de partida: quanto o modelo LINEAR deixa na mesa
+summary(lm(A ~ par + temp + vpd, data = fot))$r.squared   # 0,6747
+# O processo gerador verdadeiro daria R² = 0,9514. É esse buraco que o
+# grupo inteiro de fichas tenta preencher.
+
+# ---- 1. O ponto de partida: quanto o modelo linear deixa na mesa
+m_lin &lt;- lm(A ~ par + temp + vpd, data = fot)
+summary(m_lin)$r.squared              # 0,6747
+
+# ---- 2. O GAM
 library(mgcv)
-ajuste &lt;- gam(mpg ~ s(wt, k = 5) + s(hp, k = 5),
-              data = mtcars, method = "REML")
-print(summary(ajuste))
-par(mfrow = c(1, 2)); plot(ajuste, shade = TRUE)
-par(mfrow = c(1, 1))
-gam.check(ajuste)
+m &lt;- gam(A ~ s(par) + s(temp) + s(vpd), data = fot, method = "REML")
+summary(m)
+# A tabela de termos suaves traz, para cada parcela, os graus de
+# liberdade efetivos (edf) e um teste F aproximado.
+plot(m, pages = 1, shade = TRUE, seWithMean = TRUE, residuals = TRUE)
+gam.check(m)        # diagnostico: k suficiente? residuos bem comportados?
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O mgcv escolhe a suavidade SOZINHO, por REML ou GCV. O argumento k de
+# s() e o numero MAXIMO de graus de liberdade da base, nao o usado:
+m2 &lt;- gam(A ~ s(par, k = 20) + s(temp, k = 20) + s(vpd, k = 20),
+          data = fot, method = "REML")
+cbind(k10 = summary(m)$edf, k20 = summary(m2)$edf)
+# Se o edf encostar em k-1, aumente k. E o que gam.check verifica.
+
+# ---- 3. O retroajuste, no pacote gam de Hastie
+library(gam)
+mh &lt;- gam::gam(A ~ s(par, df = 12) + s(temp, df = 8) + s(vpd, df = 6),
+               data = fot)
+summary(mh)
+# Aqui os g.l. sao DADOS pelo usuario; no mgcv sao estimados.
+
+# ---- 4. COMPARAÇÃO com os modelos mais simples
+AIC(m_lin, m)
+anova(m_lin, m, test = "F")
+# E por validacao cruzada, que e o criterio honesto:
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(fot)))
+er_l &lt;- er_g &lt;- numeric(nrow(fot))
+for (j in 1:10) {
+  tr &lt;- fot[d != j, ]; te &lt;- fot[d == j, ]
+  er_l[d == j] &lt;- te$A - predict(lm(A ~ par + temp + vpd, data = tr), newdata = te)
+  er_g[d == j] &lt;- te$A - predict(gam(A ~ s(par) + s(temp) + s(vpd),
+                                     data = tr, method = "REML"), newdata = te) }
+c(linear = mean(er_l^2), gam = mean(er_g^2))
+
+# ---- 5. CONCURVIDADE: a colinearidade dos modelos aditivos
+concurvity(m, full = TRUE)
+concurvity(m, full = FALSE)       # par a par
+# O VIF so enxerga relacoes LINEARES. A concurvidade mede o quanto uma
+# parcela pode ser aproximada pelas outras, por qualquer funcao suave.
+cor(fot$temp, fot$vpd)                                   # 0,5794
+summary(gam(vpd ~ s(temp), data = fot))$r.sq             # 0,4482
+
+# ---- 6. O QUE A HIPÓTESE ADITIVA EXCLUI: interações
+# Um termo de interacao suave em duas dimensoes:
+mi &lt;- gam(A ~ te(par, temp) + s(vpd), data = fot, method = "REML")
+AIC(m, mi)
+anova(m, mi, test = "F")
+# Diagnostico barato: o residuo do GAM aditivo guarda estrutura?
+res &lt;- residuals(m)
+cor(res, (fot$par - mean(fot$par))*(fot$temp - mean(fot$temp)))
+
+# ---- 7. Para outras famílias
+# O "G" de GAM e de generalizado: a mesma estrutura vale para resposta
+# binaria, de contagem, etc.
+#   gam(doente ~ s(idade) + s(dose), family = binomial, data = d)
+#   gam(n_insetos ~ s(temp) + s(umidade), family = poisson, data = d)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-gam" type="button">Copiar código</button></div><pre id="code-py-gam"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab15)
+# ------------------------------------------------------------------
+import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados15)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 260 medições de trocas gasosas (arquivo fotossintese.csv)
+fot = le_csv('fotossintese.csv')
+PAR=fot['par'].to_numpy(float); TEMP=fot['temp'].to_numpy(float)
+VPD=fot['vpd'].to_numpy(float); A=fot['A'].to_numpy(float)
+NG=len(A)
+SIG=1.30
+INT=14.0
+
+def f_par(x):
+    x=np.asarray(x,float)
+    return 26.0*(1-np.exp(-0.0024*x))-1.9e-6*np.maximum(x-1000,0)**2
+def f_temp(t): t=np.asarray(t,float); return -0.042*(t-27.0)**2
+def f_vpd(v):  v=np.asarray(v,float); return -2.9*v+0.33*v**2
+C1=19.9605909253; C2=-1.4311050277; C3=-2.0245067433
+def verdade(x,t,v): return INT+(f_par(x)-C1)+(f_temp(t)-C2)+(f_vpd(v)-C3)
+# ------------------------------------------------------------------ fim do bloco comum
+
+# ------------------------------------------------------------------ utilidades
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def sqr(o, p): return float(np.sum((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - sqr(o, p)/float(np.sum((np.asarray(o) - np.mean(o))**2))
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_uni(ajusta, x, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada para um suavizador univariado.
+    ajusta(xtr, ytr, xte) -&gt; predições em xte."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 991*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            e[te] = y[te] - ajusta(x[tr], y[tr], x[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+# ------------------------------------------------------------------ polinômios
+def poli(x, g, xr=None):
+    """Base polinomial ORTOGONAL (Legendre reescalada ao intervalo de xr)."""
+    x = np.asarray(x, float); xr = x if xr is None else np.asarray(xr, float)
+    a, b = xr.min(), xr.max()
+    z = 2*(x - a)/(b - a) - 1
+    return np.polynomial.legendre.legvander(z, g)
+
+def poli_cru(x, g):
+    x = np.asarray(x, float)
+    return np.column_stack([x**j for j in range(g+1)])
+
+# ------------------------------------------------------------------ B-splines
+def bspline(x, nos, grau=3):
+    """Base B-spline por Cox-de Boor. 'nos' = vetor de nós INTERNOS."""
+    x = np.asarray(x, float); nos = np.asarray(nos, float)
+    a, b = bspline.lim
+    t = np.concatenate([[a]*(grau+1), nos, [b]*(grau+1)])
+    m = len(t) - grau - 1
+    B = np.zeros((len(x), m))
+    for i in range(m):
+        B[:, i] = (x &gt;= t[i]) &amp; (x &lt; t[i+1])
+    B[np.isclose(x, b), m-1] = 1.0
+    for d in range(1, grau+1):
+        Bn = np.zeros((len(x), len(t) - d - 1))
+        for i in range(Bn.shape[1]):
+            den1 = t[i+d] - t[i]; den2 = t[i+d+1] - t[i+1]
+            a1 = (x - t[i])/den1*B[:, i] if den1 &gt; 0 else 0.0
+            a2 = (t[i+d+1] - x)/den2*B[:, i+1] if den2 &gt; 0 else 0.0
+            Bn[:, i] = a1 + a2
+        B = Bn
+    return B
+
+def base_bs(x, nos, grau=3, lim=None):
+    bspline.lim = lim if lim is not None else (float(np.min(x)), float(np.max(x)))
+    return bspline(x, nos, grau)
+
+def trunc_pot(x, nos, grau=3):
+    """Base de potências truncadas: 1, x, ..., x^g, (x-k)_+^g."""
+    x = np.asarray(x, float)
+    cols = [x**j for j in range(grau+1)]
+    for k in np.asarray(nos, float):
+        cols.append(np.maximum(x - k, 0.0)**grau)
+    return np.column_stack(cols)
+
+def natural_cs(x, nos, lim):
+    """Base de spline cúbica NATURAL (linear fora dos nós de fronteira)."""
+    x = np.asarray(x, float); K = np.concatenate([[lim[0]], np.asarray(nos, float), [lim[1]]])
+    k = len(K)
+    def d(j):
+        return (np.maximum(x - K[j], 0)**3 - np.maximum(x - K[k-1], 0)**3)/(K[k-1] - K[j])
+    cols = [np.ones_like(x), x] + [d(j) - d(k-2) for j in range(k-2)]
+    return np.column_stack(cols)
+
+def ajusta_base(B, y):
+    return np.linalg.lstsq(B, y, rcond=None)[0]
+
+# --------------------------------------------------- spline de suavização
+def suav_spline(x, y, lam, escala=True):
+    """Spline cúbica de suavização EXATA, pelo algoritmo de Reinsch
+    (Green e Silverman, 1994, cap. 2). Resolve o sistema BANDADO
+        (R + lam Q' W^-1 Q) gama = Q' ybar ,   ajustado = ybar - lam W^-1 Q gama
+    que é numericamente muito mais estável que inverter (W + lam K).
+    Com escala=True, x é levado a [0, 1] antes de penalizar, de modo que lambda
+    tenha o mesmo significado para variáveis de unidades diferentes — é o que o
+    smooth.spline faz por trás do argumento spar.
+    Devolve (ajustados, x únicos na escala original, contagens, médias, g.l. efetivos)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    a0, b0 = (x.min(), x.max()) if escala else (0.0, 1.0)
+    xs = (x - a0)/(b0 - a0) if escala else x
+    xo_s, inv = np.unique(np.round(xs, 12), return_inverse=True)
+    m = len(xo_s)
+    xo = xo_s*(b0 - a0) + a0 if escala else xo_s
+    cont = np.bincount(inv, minlength=m).astype(float)
+    ybar = np.bincount(inv, weights=y, minlength=m)/cont
+    h = np.diff(xo_s)
+    Q = np.zeros((m, m-2)); R = np.zeros((m-2, m-2))
+    for j in range(1, m-1):
+        Q[j-1, j-1] = 1/h[j-1]; Q[j, j-1] = -1/h[j-1] - 1/h[j]; Q[j+1, j-1] = 1/h[j]
+        R[j-1, j-1] = (h[j-1] + h[j])/3
+        if j &lt; m-2:
+            R[j-1, j] = h[j]/6; R[j, j-1] = h[j]/6
+    Winv = 1.0/cont
+    M = R + lam*(Q.T*Winv) @ Q
+    gama = np.linalg.solve(M, Q.T @ ybar)
+    aj = ybar - lam*Winv*(Q @ gama)
+    # g.l. efetivos = tr(S) = m - lam * tr( W^-1 Q M^-1 Q' )
+    tr = m - lam*float(np.sum(Winv*np.einsum('ij,ji-&gt;i', Q, np.linalg.solve(M, Q.T))))
+    return aj, xo, cont, ybar, tr
+
+def ss_edf(x, lam):
+    return suav_spline(x, np.zeros(len(x)), lam)[4]
+
+def ss_gcv(x, y, lam):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    n = len(y)
+    res = np.asarray(y, float) - np.interp(x, xo, aj)
+    return float(np.sum(res**2)/n)/((1 - tr/n)**2), tr
+
+def ss_prev(x, y, lam, xnovo):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    # extrapolação LINEAR fora do domínio, como manda a spline natural
+    d0 = (aj[1]-aj[0])/(xo[1]-xo[0]); d1 = (aj[-1]-aj[-2])/(xo[-1]-xo[-2])
+    xn = np.asarray(xnovo, float); out = np.interp(xn, xo, aj)
+    out = np.where(xn &lt; xo[0],  aj[0]  + d0*(xn - xo[0]),  out)
+    out = np.where(xn &gt; xo[-1], aj[-1] + d1*(xn - xo[-1]), out)
+    return out
+
+# ------------------------------------------------------------------ LOESS
+def tricubo(u): return (1 - np.abs(u)**3)**3
+
+def loess(x, y, xnovo, span=0.35, grau=1, iteracoes=0):
+    """Regressão local ponderada (Cleveland, 1979).
+    iteracoes &gt; 0 ativa a reponderação robusta bisquare: os pesos de robustez
+    são sempre calculados a partir dos resíduos NOS PONTOS DE AJUSTE x, e não
+    nos pontos onde se quer prever."""
+    x = np.asarray(x, float); y = np.asarray(y, float); xn = np.asarray(xnovo, float)
+    n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+
+    def ajusta_em(alvos, rob):
+        out = np.empty(len(alvos))
+        for i, x0 in enumerate(alvos):
+            dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+            dmax = dd[viz[-1]]
+            w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+            w = w*rob[viz]
+            Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+            WZ = Z*w[:, None]
+            try: b = np.linalg.solve(Z.T @ WZ, WZ.T @ y[viz])
+            except np.linalg.LinAlgError: b = np.linalg.lstsq(Z.T @ WZ, WZ.T @ y[viz], rcond=None)[0]
+            out[i] = b[0]
+        return out
+
+    rob = np.ones(n)
+    for _ in range(iteracoes):
+        aj = ajusta_em(x, rob)            # SEMPRE nos x de ajuste
+        res = y - aj
+        s = np.median(np.abs(res))
+        rob = np.clip(1 - (res/(6*s))**2, 0, None)**2 if s &gt; 0 else np.ones(n)
+    return ajusta_em(xn, rob)
+
+def loess_edf(x, span=0.35, grau=1):
+    """Graus de liberdade efetivos: traço da matriz suavizadora."""
+    x = np.asarray(x, float); n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+    tr = 0.0
+    for i, x0 in enumerate(x):
+        dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+        dmax = dd[viz[-1]]
+        w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+        Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+        WZ = Z*w[:, None]
+        try: li = np.linalg.solve(Z.T @ WZ, WZ.T)
+        except np.linalg.LinAlgError: li = np.linalg.lstsq(Z.T @ WZ, WZ.T, rcond=None)[0]
+        k = np.where(viz == i)[0]
+        if len(k): tr += li[0, k[0]]
+    return tr
+
+# ------------------------------------------------------------------ GAM
+def gam_backfit(Xs, y, suav, it=60, tol=1e-9):
+    """Retroajuste (backfitting) de Hastie e Tibshirani.
+    Xs: lista de vetores; suav[j](x, r) -&gt; parcela ajustada, centrada."""
+    y = np.asarray(y, float); p = len(Xs)
+    f = [np.zeros(len(y)) for _ in range(p)]; a0 = y.mean()
+    for _ in range(it):
+        maxd = 0.0
+        for j in range(p):
+            r = y - a0 - sum(f[k] for k in range(p) if k != j)
+            nv = suav[j](Xs[j], r); nv = nv - nv.mean()
+            maxd = max(maxd, float(np.max(np.abs(nv - f[j])))); f[j] = nv
+        if maxd &lt; tol: break
+    return a0, f
+# ------------------------------------------------------------------ fim do bloco comum
+
+X=[PAR.copy(),TEMP.copy(),VPD.copy()]; NOM=['PAR','Temperatura','VPD']
+y=A.copy()
+print('Agora as TRÊS preditoras ao mesmo tempo. As quatro fichas anteriores')
+print('trataram uma variável de cada vez; esta junta as três, mantendo a')
+print('flexibilidade de cada uma e supondo que os efeitos se SOMAM.')
+print()
+print('  A = alfa + f1(PAR) + f2(temperatura) + f3(VPD) + erro')
+print()
+print('Essa é a hipótese ADITIVA, e é o que se ganha e o que se paga: ganha-se')
+print('a possibilidade de estimar cada função separadamente, com n razoável;')
+print('paga-se a exclusão das interações.')
+
+print('\n'+'='*70)
+print('O PONTO DE PARTIDA: quanto o modelo linear deixa na mesa')
+Xd=np.column_stack([np.ones(NG)]+X); b=np.linalg.lstsq(Xd,y,rcond=None)[0]
+print()
+print('%16s %14s %14s'%('modelo','R² resub','EQM 10-fold'))
+def cvm_multi(aj,k=10,seed=1,reps=6):
+    tot=[]
+    for r in range(reps):
+        d=dobras(NG,k,seed+77*r); e=np.empty(NG)
+        for j in range(k):
+            tr,te=d!=j,d==j
+            e[te]=y[te]-aj(tr,te)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot))
+def aj_lin(tr,te):
+    Z=np.column_stack([np.ones(int(tr.sum()))]+[v[tr] for v in X])
+    bb=np.linalg.lstsq(Z,y[tr],rcond=None)[0]
+    Zt=np.column_stack([np.ones(int(te.sum()))]+[v[te] for v in X])
+    return Zt@bb
+print('%16s %14s %14s'%('linear',c(r2(y,Xd@b)),c(cvm_multi(aj_lin))))
+print('%16s %14s %14s'%('verdadeiro',c(r2(y,verdade(PAR,TEMP,VPD))),c(eqm(y,verdade(PAR,TEMP,VPD)))))
+print()
+print('  variância de A = %s | sigma² = %s'%(c(float(y.var(ddof=1))),c(SIG**2)))
+
+print('\n'+'='*70)
+print('O RETROAJUSTE (backfitting) de Hastie e Tibshirani')
+print('O algoritmo é simples: começa com todas as parcelas em zero e, em')
+print('rodadas, atualiza cada uma suavizando os RESÍDUOS PARCIAIS — o que')
+print('sobra de y depois de tirar o intercepto e as outras parcelas.')
+print()
+lam=[2e-4,2e-4,2e-4]
+suav=[(lambda xx,rr,l=lam[j]: ss_prev(xx,rr,l,xx)) for j in range(3)]
+# convergencia, rodada a rodada
+f=[np.zeros(NG) for _ in range(3)]; a0=y.mean()
+print('%8s %18s %16s'%('rodada','maior mudança','SQR'))
+hist=[]
+for it in range(1,41):
+    md=0.0
+    for j in range(3):
+        r=y-a0-sum(f[k] for k in range(3) if k!=j)
+        nv=suav[j](X[j],r); nv=nv-nv.mean()
+        md=max(md,float(np.max(np.abs(nv-f[j])))); f[j]=nv
+    sq=sqr(y,a0+sum(f)); hist.append((it,md,sq))
+    if it in (1,2,3,5,8,12,20,30,40):
+        print('%8d %18s %16s'%(it,'%.3e'%md,c(sq,4)))
+print()
+print()
+print('A convergência tem dois ritmos, e vale distinguir. A SOMA DE QUADRADOS')
+print('estabiliza depressa: da rodada 3 em diante ela muda na terceira casa.')
+print('As PARCELAS continuam se ajustando por mais tempo, porque a parte que')
+print('as preditoras compartilham é redistribuída entre elas lentamente —')
+print('a mudança máxima cai de %.1e na primeira rodada para %.1e na 40ª.'%(hist[0][1],hist[-1][1]))
+print('É a concurvidade em ação, e o assunto reaparece adiante nesta ficha.')
+print()
+print('Cada parcela é CENTRADA (média zero) a cada')
+print('passo: sem isso o intercepto e as parcelas não seriam identificáveis,')
+print('porque somar uma constante a f1 e tirá-la de f2 não mudaria nada.')
+print()
+for j in range(3):
+    print('  média de f%d após convergir = %s'%(j+1,c(float(f[j].mean()),10)))
+print('  intercepto = %s | média de A = %s'%(c(a0),c(float(y.mean()))))
+
+print('\n'+'='*70)
+print('A ESCOLHA DA SUAVIDADE DE CADA PARCELA')
+print('Cada f tem seu próprio lambda, e eles são escolhidos juntos.')
+print()
+GRADE=[1e-5,5e-5,2e-4,1e-3,5e-3]
+melhor=None
+print('%10s %10s %10s %14s %22s'%('lam1','lam2','lam3','EQM 10-fold','g.l. ef. (f1, f2, f3)'))
+for l1 in GRADE:
+    for l2 in GRADE:
+        for l3 in GRADE:
+            def ajg(tr,te,l1=l1,l2=l2,l3=l3):
+                sv=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in (l1,l2,l3)]
+                a,ff=gam_backfit([v[tr] for v in X],y[tr],sv,it=12)
+                return a+sum(ss_prev(X[j][tr],ff[j],[l1,l2,l3][j],X[j][te]) for j in range(3))
+            m=cvm_multi(ajg,reps=2)
+            if melhor is None or m&lt;melhor[0]: melhor=(m,l1,l2,l3)
+m,l1,l2,l3=melhor
+for lt in [(1e-5,1e-5,1e-5),(2e-4,2e-4,2e-4),(l1,l2,l3),(5e-3,5e-3,5e-3)]:
+    def ajg(tr,te,lt=lt):
+        sv=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in lt]
+        a,ff=gam_backfit([v[tr] for v in X],y[tr],sv,it=12)
+        return a+sum(ss_prev(X[j][tr],ff[j],lt[j],X[j][te]) for j in range(3))
+    mm=cvm_multi(ajg,reps=4)
+    gls=[ss_edf(X[j],lt[j]) for j in range(3)]
+    mk=' &lt;- melhor' if lt==(l1,l2,l3) else ''
+    print('%10s %10s %10s %14s %22s%s'%('%.0e'%lt[0],'%.0e'%lt[1],'%.0e'%lt[2],c(mm),
+          ', '.join(c(g,2) for g in gls),mk))
+print()
+print('  melhor combinação: lambda = (%.0e, %.0e, %.0e)'%(l1,l2,l3))
+print('  g.l. efetivos: f1 = %s, f2 = %s, f3 = %s'%(c(ss_edf(X[0],l1),2),c(ss_edf(X[1],l2),2),c(ss_edf(X[2],l3),2)))
+print('  EQM 10-fold = %s, contra %s do modelo linear'%(c(m),c(cvm_multi(aj_lin))))
+print('  redução de %s%% no erro de predição'%c(100*(1-m/cvm_multi(aj_lin)),1))
+
+print('\n'+'='*70)
+print('AS TRÊS PARCELAS ESTIMADAS, contra as VERDADEIRAS')
+sv=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in (l1,l2,l3)]
+a0,F=gam_backfit(X,y,sv,it=60)
+fv=[f_par(PAR),f_temp(TEMP),f_vpd(VPD)]
+fv=[v-v.mean() for v in fv]
+print()
+print('%16s %12s %14s %14s %14s'%('parcela','g.l. ef.','amplitude est.','amplitude verd.','|viés| médio'))
+for j in range(3):
+    print('%16s %12s %14s %14s %14s'%(NOM[j],c([ss_edf(X[j],l) for l in (l1,l2,l3)][j],2),
+          c(float(np.ptp(F[j])),2),c(float(np.ptp(fv[j])),2),c(float(np.abs(F[j]-fv[j]).mean()))))
+print()
+print('  R² de resubstituição do GAM = %s'%c(r2(y,a0+sum(F))))
+print('  R² do modelo verdadeiro     = %s'%c(r2(y,verdade(PAR,TEMP,VPD))))
+print()
+print('As três parcelas são recuperadas com viés pequeno. A do VPD é a mais')
+print('difícil: a amplitude verdadeira é %s e os dados se concentram abaixo'%c(float(np.ptp(fv[2])),2))
+print('de 1 kPa, de modo que a parte alta da curva é estimada com poucos pontos.')
+print()
+print('%16s %10s %12s'%('VPD','n','% do total'))
+for lo,hi in [(0,0.5),(0.5,0.8),(0.8,1.2),(1.2,1.8),(1.8,3.0)]:
+    mk=(VPD&gt;=lo)&amp;(VPD&lt;hi)
+    print('%16s %10d %12s'%('%.1f a %.1f'%(lo,hi),int(mk.sum()),c(100*mk.mean(),1)+'%'))
+
+print('\n'+'='*70)
+print('CONCURVIDADE: a colinearidade dos modelos aditivos')
+print('Duas preditoras colineares tornam os coeficientes indeterminados. Duas')
+print('preditoras ligadas por uma RELAÇÃO SUAVE qualquer tornam as PARCELAS')
+print('indeterminadas — e isso não aparece no VIF, que só vê relações lineares.')
+print()
+print('%28s %14s %14s'%('par de preditoras','r de Pearson','R² de um suavizador'))
+for i in range(3):
+    for j in range(3):
+        if i&lt;j:
+            aj_=ss_prev(X[i],X[j],2e-4,X[i])
+            print('%28s %14s %14s'%('%s e %s'%(NOM[i],NOM[j]),c(float(np.corrcoef(X[i],X[j])[0,1])),
+                  c(r2(X[j],aj_))))
+print()
+print('A temperatura e o VPD estão ligados por uma relação não linear forte: o')
+print('r de Pearson é %s, mas um suavizador explica %s da variação do VPD.'%(
+      c(float(np.corrcoef(TEMP,VPD)[0,1])),c(r2(VPD,ss_prev(TEMP,VPD,2e-4,TEMP)))))
+print('É a concurvidade, e a consequência é que parte do efeito pode ser')
+print('atribuída a qualquer uma das duas.')
+print()
+print('A demonstração: 300 reamostras bootstrap, GAM reajustado em cada uma.')
+rg=np.random.default_rng(23)
+PT=np.zeros((300,3))
+alvos=[np.array([1500.]),np.array([34.]),np.array([1.8])]
+for r in range(300):
+    i=rg.integers(0,NG,NG)
+    sv2=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in (l1,l2,l3)]
+    a_,F_=gam_backfit([v[i] for v in X],y[i],sv2,it=20)
+    for j in range(3):
+        PT[r,j]=float(ss_prev(X[j][i],F_[j],[l1,l2,l3][j],alvos[j])[0])
+print()
+print('%28s %14s %14s %14s'%('parcela em','estimativa','EP bootstrap','|EP/amplitude|'))
+for j,alv in enumerate(alvos):
+    est=float(ss_prev(X[j],F[j],[l1,l2,l3][j],alv)[0])
+    print('%28s %14s %14s %14s'%('%s = %s'%(NOM[j],c(float(alv[0]),1)),c(est),c(float(PT[:,j].std(ddof=1))),
+          c(float(PT[:,j].std(ddof=1))/float(np.ptp(F[j]))))) 
+print()
+print('A leitura honesta: os três erros-padrão são PEQUENOS em relação às')
+print('amplitudes — de 2% a 6%. A concurvidade não destruiu a estimação aqui,')
+print('e dizer o contrário seria exagero.')
+print()
+print('O que a tabela mostra é uma ORDEM: a parcela do VPD tem incerteza')
+print('relativa três vezes maior que a do PAR (6,1% contra 2,1%), e é')
+print('exatamente ela que acumula os dois problemas — concurvidade com a')
+print('temperatura (um suavizador explica 45% da variação do VPD a partir')
+print('dela) e escassez de dados na parte alta da faixa (1,5% das observações')
+print('acima de 1,8 kPa). Com concurvidade mais forte, ou com n menor, essa')
+print('ordem viraria um problema de fato.')
+
+print('\n'+'='*70)
+print('O QUE A HIPÓTESE ADITIVA EXCLUI: interações')
+print('Na fisiologia real, o efeito da temperatura DEPENDE da radiação: no')
+print('escuro não há fotossíntese para a temperatura modular. Um GAM aditivo')
+print('não pode representar isso.')
+print()
+print('A verificação: simulam-se dados COM interação de força crescente e')
+print('mede-se o que o GAM aditivo deixa escapar.')
+print()
+print('  %5s %14s %16s %18s %14s'%('força','amplitude','R² do GAM','r(resíduo, PARxT)','ganho de R²'))
+print('  %5s %14s %16s %18s %14s'%('','da interação','aditivo','','ao incluir PARxT'))
+rg=np.random.default_rng(31)
+for forca in [0.0,1.0,2.5,5.0,10.0]:
+    fint=forca*0.0016*(PAR-PAR.mean())*(TEMP-TEMP.mean())/10.0
+    yy=verdade(PAR,TEMP,VPD)+fint-fint.mean()+rg.normal(0,SIG,NG)
+    sv3=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in (l1,l2,l3)]
+    a_,F_=gam_backfit(X,yy,sv3,it=40)
+    res=yy-a_-sum(F_)
+    # o resíduo ainda guarda estrutura? correlaciona com o produto centrado
+    pr=(PAR-PAR.mean())*(TEMP-TEMP.mean())
+    amp=float(np.ptp(fint)); rr_=float(np.corrcoef(res,pr)[0,1])
+    aj_i=np.column_stack([np.ones(NG),a_+sum(F_),pr]); bi=np.linalg.lstsq(aj_i,yy,rcond=None)[0]
+    ganho=r2(yy,aj_i@bi)-r2(yy,a_+sum(F_))
+    print('  %5s %14s %16s %18s %14s'%(c(forca,1),c(amp,2),c(r2(yy,a_+sum(F_))),c(rr_),c(ganho)))
+print()
+print()
+print('A leitura é quantitativa, e isso importa. Com interação de amplitude 3,3')
+print('umol — um sexto da amplitude da parcela do PAR, que é 21,5 — o GAM')
+print('aditivo perde pouco: o R² cai de 0,9653 para 0,9483, e incluir o termo')
+print('de produto recupera apenas 0,0018 de R². É só quando a interação chega a')
+print('uma amplitude comparável à das parcelas principais que ela se torna')
+print('visível no resíduo e o ganho de incluí-la fica relevante.')
+print()
+print('O diagnóstico prático é exatamente esse: examinar o resíduo contra os')
+print('produtos das preditoras, e medir o GANHO de R² ao acrescentar o termo —')
+print('não apenas constatar que a correlação não é zero.')
+
+print('\n'+'='*70)
+print('A SÍNTESE: o que cada ficha do grupo acrescentou')
+print()
+print('%44s %16s'%('modelo','EQM 10-fold'))
+print('%44s %16s'%('média de A (modelo nulo)',c(float(np.mean((y-y.mean())**2)))))
+print('%44s %16s'%('linear nas três preditoras',c(cvm_multi(aj_lin))))
+def aj_p1(tr,te):
+    B=poli(PAR[tr],5,PAR); bb=ajusta_base(B,y[tr]); return poli(PAR[te],5,PAR)@bb
+print('%44s %16s'%('polinômio grau 5 só em PAR',c(cvm_multi(aj_p1))))
+def aj_lin_poli(tr,te):
+    Z=np.column_stack([poli(PAR[tr],5,PAR),TEMP[tr,None],VPD[tr,None]])
+    bb=np.linalg.lstsq(Z,y[tr],rcond=None)[0]
+    Zt=np.column_stack([poli(PAR[te],5,PAR),TEMP[te,None],VPD[te,None]])
+    return Zt@bb
+print('%44s %16s'%('polinômio em PAR + linear nas outras',c(cvm_multi(aj_lin_poli))))
+def ajg_fin(tr,te):
+    sv4=[(lambda xx,rr,l=l: ss_prev(xx,rr,l,xx)) for l in (l1,l2,l3)]
+    a,ff=gam_backfit([v[tr] for v in X],y[tr],sv4,it=20)
+    return a+sum(ss_prev(X[j][tr],ff[j],[l1,l2,l3][j],X[j][te]) for j in range(3))
+print('%44s %16s'%('GAM com as três parcelas suaves',c(cvm_multi(ajg_fin))))
+print('%44s %16s'%('modelo VERDADEIRO (o piso)',c(eqm(y,verdade(PAR,TEMP,VPD)))))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Agora as TRÊS preditoras ao mesmo tempo. As quatro fichas anteriores
+trataram uma variável de cada vez; esta junta as três, mantendo a
+flexibilidade de cada uma e supondo que os efeitos se SOMAM.
+
+  A = alfa + f1(PAR) + f2(temperatura) + f3(VPD) + erro
+
+Essa é a hipótese ADITIVA, e é o que se ganha e o que se paga: ganha-se
+a possibilidade de estimar cada função separadamente, com n razoável;
+paga-se a exclusão das interações.
+
+======================================================================
+O PONTO DE PARTIDA: quanto o modelo linear deixa na mesa
+
+          modelo       R² resub    EQM 10-fold
+          linear         0,6747        11,8102
+      verdadeiro         0,9514         1,6840
+
+  variância de A = 34,8025 | sigma² = 1,6900
+
+======================================================================
+O RETROAJUSTE (backfitting) de Hastie e Tibshirani
+O algoritmo é simples: começa com todas as parcelas em zero e, em
+rodadas, atualiza cada uma suavizando os RESÍDUOS PARCIAIS — o que
+sobra de y depois de tirar o intercepto e as outras parcelas.
+
+  rodada      maior mudança              SQR
+       1          1.885e+01         446,0718
+       2          2.160e+00         379,0075
+       3          3.765e-01         371,5735
+       5          3.109e-01         369,6566
+       8          2.546e-01         369,4501
+      12          1.994e-01         369,4090
+      20          1.203e-01         369,4173
+      30          6.391e-02         369,4618
+      40          3.395e-02         369,4984
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="loess.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão local (LOESS)
-    </a>
-<a href="cart-reg.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Árvore de regressão (CART)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+A convergência tem dois ritmos, e vale distinguir. A SOMA DE QUADRADOS
+estabiliza depressa: da rodada 3 em diante ela muda na terceira casa.
+As PARCELAS continuam se ajustando por mais tempo, porque a parte que
+as preditoras compartilham é redistribuída entre elas lentamente —
+a mudança máxima cai de 1.9e+01 na primeira rodada para 3.4e-02 na 40ª.
+É a concurvidade em ação, e o assunto reaparece adiante nesta ficha.
+
+Cada parcela é CENTRADA (média zero) a cada
+passo: sem isso o intercepto e as parcelas não seriam identificáveis,
+porque somar uma constante a f1 e tirá-la de f2 não mudaria nada.
+
+  média de f1 após convergir = -0,0000000000
+  média de f2 após convergir = 0,0000000000
+  média de f3 após convergir = -0,0000000000
+  intercepto = 14,1245 | média de A = 14,1245
+
+======================================================================
+A ESCOLHA DA SUAVIDADE DE CADA PARCELA
+Cada f tem seu próprio lambda, e eles são escolhidos juntos.
+
+      lam1       lam2       lam3    EQM 10-fold  g.l. ef. (f1, f2, f3)
+     1e-05      1e-05      1e-05         2,1723    25,07, 22,79, 20,86
+     2e-04      2e-04      2e-04         1,8755    12,53, 11,76, 11,02
+     2e-04      1e-03      5e-03         1,8378      12,53, 8,22, 5,60 &lt;- melhor
+     5e-03      5e-03      5e-03         1,9387       6,13, 5,77, 5,60
+
+  melhor combinação: lambda = (2e-04, 1e-03, 5e-03)
+  g.l. efetivos: f1 = 12,53, f2 = 8,22, f3 = 5,60
+  EQM 10-fold = 1,8478, contra 11,8102 do modelo linear
+  redução de 84,4% no erro de predição
+
+======================================================================
+AS TRÊS PARCELAS ESTIMADAS, contra as VERDADEIRAS
+
+         parcela     g.l. ef. amplitude est. amplitude verd.   |viés| médio
+             PAR        12,53          21,48          21,51         0,1465
+     Temperatura         8,22          11,25          10,38         0,1417
+             VPD         5,60           6,32           4,28         0,1688
+
+  R² de resubstituição do GAM = 0,9566
+  R² do modelo verdadeiro     = 0,9514
+
+As três parcelas são recuperadas com viés pequeno. A do VPD é a mais
+difícil: a amplitude verdadeira é 4,28 e os dados se concentram abaixo
+de 1 kPa, de modo que a parte alta da curva é estimada com poucos pontos.
+
+             VPD          n   % do total
+       0.0 a 0.5         62        23,8%
+       0.5 a 0.8         88        33,8%
+       0.8 a 1.2         79        30,4%
+       1.2 a 1.8         27        10,4%
+       1.8 a 3.0          4         1,5%
+
+======================================================================
+CONCURVIDADE: a colinearidade dos modelos aditivos
+Duas preditoras colineares tornam os coeficientes indeterminados. Duas
+preditoras ligadas por uma RELAÇÃO SUAVE qualquer tornam as PARCELAS
+indeterminadas — e isso não aparece no VIF, que só vê relações lineares.
+
+           par de preditoras   r de Pearson R² de um suavizador
+           PAR e Temperatura         0,3306         0,1534
+                   PAR e VPD         0,2458         0,0972
+           Temperatura e VPD         0,5794         0,4482
+
+A temperatura e o VPD estão ligados por uma relação não linear forte: o
+r de Pearson é 0,5794, mas um suavizador explica 0,4482 da variação do VPD.
+É a concurvidade, e a consequência é que parte do efeito pode ser
+atribuída a qualquer uma das duas.
+
+A demonstração: 300 reamostras bootstrap, GAM reajustado em cada uma.
+
+                  parcela em     estimativa   EP bootstrap |EP/amplitude|
+                PAR = 1500,0         4,8918         0,4398         0,0205
+          Temperatura = 34,0        -0,4295         0,4939         0,0439
+                   VPD = 1,8        -2,2082         0,3870         0,0613
+
+A leitura honesta: os três erros-padrão são PEQUENOS em relação às
+amplitudes — de 2% a 6%. A concurvidade não destruiu a estimação aqui,
+e dizer o contrário seria exagero.
+
+O que a tabela mostra é uma ORDEM: a parcela do VPD tem incerteza
+relativa três vezes maior que a do PAR (6,1% contra 2,1%), e é
+exatamente ela que acumula os dois problemas — concurvidade com a
+temperatura (um suavizador explica 45% da variação do VPD a partir
+dela) e escassez de dados na parte alta da faixa (1,5% das observações
+acima de 1,8 kPa). Com concurvidade mais forte, ou com n menor, essa
+ordem viraria um problema de fato.
+
+======================================================================
+O QUE A HIPÓTESE ADITIVA EXCLUI: interações
+Na fisiologia real, o efeito da temperatura DEPENDE da radiação: no
+escuro não há fotossíntese para a temperatura modular. Um GAM aditivo
+não pode representar isso.
+
+A verificação: simulam-se dados COM interação de força crescente e
+mede-se o que o GAM aditivo deixa escapar.
+
+  força      amplitude        R² do GAM  r(resíduo, PARxT)    ganho de R²
+          da interação          aditivo                    ao incluir PARxT
+    0,0           0,00           0,9653             0,0434         0,0001
+    1,0           3,32           0,9483             0,1813         0,0018
+    2,5           8,31           0,9348             0,3387         0,0076
+    5,0          16,62           0,9051             0,5265         0,0263
+   10,0          33,24           0,7850             0,6715         0,0984
+
+
+A leitura é quantitativa, e isso importa. Com interação de amplitude 3,3
+umol — um sexto da amplitude da parcela do PAR, que é 21,5 — o GAM
+aditivo perde pouco: o R² cai de 0,9653 para 0,9483, e incluir o termo
+de produto recupera apenas 0,0018 de R². É só quando a interação chega a
+uma amplitude comparável à das parcelas principais que ela se torna
+visível no resíduo e o ganho de incluí-la fica relevante.
+
+O diagnóstico prático é exatamente esse: examinar o resíduo contra os
+produtos das preditoras, e medir o GANHO de R² ao acrescentar o termo —
+não apenas constatar que a correlação não é zero.
+
+======================================================================
+A SÍNTESE: o que cada ficha do grupo acrescentou
+
+                                      modelo      EQM 10-fold
+                    média de A (modelo nulo)          34,6687
+                  linear nas três preditoras          11,8102
+                  polinômio grau 5 só em PAR           5,6654
+        polinômio em PAR + linear nas outras           3,2507
+             GAM com as três parcelas suaves           1,8392
+                  modelo VERDADEIRO (o piso)           1,6840</pre></div><figure class="fig"><img src="../assets/resultados/gam.png" alt="A concurvidade que o VIF não enxerga, o custo da hipótese aditiva e a síntese do grupo" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, para cada par de preditoras, a correlação de Pearson contra o \(R^2\) de um suavizador — a diferença entre as duas barras é a concurvidade invisível ao VIF. No centro, o que a hipótese aditiva deixa escapar quando há interação de força crescente. À direita, o erro validado dos cinco modelos do grupo, do nulo ao GAM, com o piso irredutível marcado. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O ponto de partida</caption><thead><tr><th>Modelo</th><th>R² de resubstituição</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>Linear nas três preditoras</td><td>0,6747</td><td>11,8102</td></tr><tr><td><em>Modelo verdadeiro</em></td><td><em>0,9514</em></td><td><em>1,6840</em></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A escolha da suavidade de cada parcela</caption><thead><tr><th>λ₁</th><th>λ₂</th><th>λ₃</th><th>EQM 10-fold</th><th>g.l. efetivos (f₁, f₂, f₃)</th></tr></thead><tbody><tr><td>10⁻⁵</td><td>10⁻⁵</td><td>10⁻⁵</td><td>2,1723</td><td>25,07 | 22,79 | 20,86</td></tr><tr><td>2 × 10⁻⁴</td><td>2 × 10⁻⁴</td><td>2 × 10⁻⁴</td><td>1,8755</td><td>12,53 | 11,76 | 11,02</td></tr><tr><td><strong>2 × 10⁻⁴</strong></td><td><strong>10⁻³</strong></td><td><strong>5 × 10⁻³</strong></td><td><strong>1,8378</strong></td><td><strong>12,53 | 8,22 | 5,60</strong></td></tr><tr><td>5 × 10⁻³</td><td>5 × 10⁻³</td><td>5 × 10⁻³</td><td>1,9387</td><td>6,13 | 5,77 | 5,60</td></tr></tbody></table></div><p>O melhor conjunto dá EQM validado de <strong>1,8478</strong>, contra 11,8102 do modelo linear: uma redução de <strong>84,4%</strong> no erro de predição.</p><div class="table-wrap"><table class="method-table"><caption>As três parcelas estimadas, contra as verdadeiras</caption><thead><tr><th>Parcela</th><th>g.l. ef.</th><th>Amplitude estimada</th><th>Amplitude verdadeira</th><th>|Viés| médio</th></tr></thead><tbody><tr><td>PAR</td><td>12,53</td><td>21,48</td><td>21,51</td><td>0,1465</td></tr><tr><td>Temperatura</td><td>8,22</td><td>11,25</td><td>10,38</td><td>0,1417</td></tr><tr><td>VPD</td><td>5,60</td><td>6,32</td><td>4,28</td><td>0,1688</td></tr></tbody></table></div><p>O \(R^2\) de resubstituição do GAM é 0,9566, contra 0,9514 do modelo verdadeiro — o GAM "explica mais" porque está ajustando também parte do ruído.</p><div class="table-wrap"><table class="method-table"><caption>Concurvidade: o que o r de Pearson esconde</caption><thead><tr><th>Par de preditoras</th><th>r de Pearson</th><th>R² de um suavizador</th></tr></thead><tbody><tr><td>PAR e Temperatura</td><td>0,3306</td><td>0,1534</td></tr><tr><td>PAR e VPD</td><td>0,2458</td><td>0,0972</td></tr><tr><td><strong>Temperatura e VPD</strong></td><td><strong>0,5794</strong></td><td><strong>0,4482</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A incerteza de cada parcela (300 reamostras bootstrap)</caption><thead><tr><th>Parcela avaliada em</th><th>Estimativa</th><th>EP bootstrap</th><th>EP / amplitude</th></tr></thead><tbody><tr><td>PAR = 1 500</td><td>4,8918</td><td>0,4398</td><td><strong>2,1%</strong></td></tr><tr><td>Temperatura = 34,0</td><td>−0,4295</td><td>0,4939</td><td>4,4%</td></tr><tr><td>VPD = 1,8</td><td>−2,2082</td><td>0,3870</td><td><strong>6,1%</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Onde estão os dados de VPD</caption><thead><tr><th>Faixa de VPD</th><th>n</th><th>% do total</th></tr></thead><tbody><tr><td>0,0 a 0,5</td><td>62</td><td>23,8%</td></tr><tr><td>0,5 a 0,8</td><td>88</td><td>33,8%</td></tr><tr><td>0,8 a 1,2</td><td>79</td><td>30,4%</td></tr><tr><td>1,2 a 1,8</td><td>27</td><td>10,4%</td></tr><tr><td><strong>1,8 a 3,0</strong></td><td><strong>4</strong></td><td><strong>1,5%</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O custo da hipótese aditiva, com interação de força crescente</caption><thead><tr><th>Força</th><th>Amplitude da interação</th><th>R² do GAM aditivo</th><th>r(resíduo, PAR × temp)</th><th>Ganho de R² ao incluir o produto</th></tr></thead><tbody><tr><td>0,0</td><td>0,00</td><td>0,9653</td><td>0,0434</td><td>0,0001</td></tr><tr><td>1,0</td><td>3,32</td><td>0,9483</td><td>0,1813</td><td>0,0018</td></tr><tr><td>2,5</td><td>8,31</td><td>0,9348</td><td>0,3387</td><td>0,0076</td></tr><tr><td>5,0</td><td>16,62</td><td>0,9051</td><td>0,5265</td><td>0,0263</td></tr><tr><td>10,0</td><td><strong>33,24</strong></td><td>0,7850</td><td><strong>0,6715</strong></td><td><strong>0,0984</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A síntese do grupo inteiro</caption><thead><tr><th>Modelo</th><th>EQM 10-fold</th><th>Redução em relação ao nulo</th></tr></thead><tbody><tr><td>Média de A (modelo nulo)</td><td>34,6687</td><td>—</td></tr><tr><td>Linear nas três preditoras</td><td>11,8102</td><td>65,9%</td></tr><tr><td><a href="polinomial.html">Polinômio grau 5</a> só em PAR</td><td>5,6654</td><td>83,7%</td></tr><tr><td>Polinômio em PAR + lineares nas outras</td><td>3,2507</td><td>90,6%</td></tr><tr><td><strong>GAM com as três parcelas suaves</strong></td><td><strong>1,8392</strong></td><td><strong>94,7%</strong></td></tr><tr><td><em>Modelo VERDADEIRO (o piso)</em></td><td><em>1,6840</em></td><td><em>95,1%</em></td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela da suavidade mostra que escolher um \(\lambda\) comum às três parcelas custa pouco mas custa: 1,8755 contra 1,8378 com \(\lambda\) próprio para cada. A diferença é de 2%, e o que ela compra é interpretabilidade — os graus de liberdade por parcela passam a refletir a complexidade real de cada função (12,53 para o PAR, 5,60 para o VPD) em vez de um compromisso médio. O <code>mgcv</code> estima uma penalidade por termo automaticamente, e é por isso que ele deve ser preferido a uma implementação manual.</p><p><strong>Sobre as parcelas recuperadas:</strong> o |viés| médio fica entre 0,14 e 0,17 μmol para as três, contra um \(\sigma\) de 1,30 — isto é, o erro de estimação da forma é cerca de um oitavo do ruído de uma observação isolada. As amplitudes também são recuperadas de perto para PAR (21,48 contra 21,51) e temperatura (11,25 contra 10,38). O VPD é o caso menos exato: amplitude estimada de 6,32 contra 4,28 da verdadeira, uma superestimação de 48%. A causa está na penúltima tabela — apenas 1,5% das observações têm VPD acima de 1,8 kPa, e é justamente no extremo que a curva estimada se afasta.</p><p><strong>Sobre a concurvidade:</strong> esta é a contribuição conceitual da ficha, e a tabela a torna concreta. A temperatura e o VPD têm \(r=0{,}5794\) — um valor que nenhum diagnóstico de colinearidade acusaria, porque o VIF correspondente seria cerca de 1,5. Mas um suavizador da temperatura explica <strong>44,8%</strong> da variação do VPD, quase o triplo de \(r^2=0{,}336\). A razão é física: o VPD cresce exponencialmente com a temperatura, e uma medida de associação <em>linear</em> não captura isso. O diagnóstico certo é a função <code>concurvity()</code>.</p><p><strong>A leitura honesta da consequência:</strong> os três erros-padrão são <em>pequenos</em> em relação às amplitudes — de 2,1% a 6,1%. A concurvidade não destruiu a estimação aqui, e dizer o contrário seria exagero. O que a tabela mostra é uma <strong>ordem</strong>: a parcela do VPD tem incerteza relativa três vezes maior que a do PAR, e é exatamente ela que acumula os dois problemas — concurvidade com a temperatura e escassez de dados na parte alta da faixa. Com concurvidade mais forte, ou com \(n\) menor, essa ordem viraria um problema de fato. O sinal de alerta já apareceu antes, no retroajuste: as parcelas demoraram quarenta rodadas para se estabilizar, enquanto a soma de quadrados convergiu em três.</p><p><strong>Sobre as interações:</strong> a leitura é quantitativa, e isso importa mais do que a constatação qualitativa de que "o GAM aditivo não representa interações". Com interação de amplitude 3,32 μmol — um sexto da amplitude da parcela do PAR, que é 21,5 — o GAM aditivo perde pouco: o \(R^2\) cai de 0,9653 para 0,9483, e incluir o termo de produto recupera apenas 0,0018 de \(R^2\). Na prática, não se detectaria. É só quando a interação chega a uma amplitude <em>comparável</em> à das parcelas principais — força 10, amplitude 33 — que ela se torna visível no resíduo (\(r=0{,}67\)) e o ganho de incluí-la fica relevante (0,0984 de \(R^2\)).</p><p>O diagnóstico prático decorre disso: examinar a correlação do resíduo com os produtos das preditoras, e <em>medir o ganho</em> de acrescentar o termo — não apenas constatar que a correlação não é zero. Uma correlação de 0,18, como a da força 1, é estatisticamente detectável com \(n=260\) e praticamente irrelevante.</p><p><strong>Sobre a síntese:</strong> a última tabela é o fecho do grupo de cinco fichas. Do modelo nulo ao GAM, o erro de predição cai <strong>94,7%</strong>. O modelo linear nas três preditoras já captura 65,9% disso; dar uma forma flexível apenas ao PAR leva a 83,7%; dar forma flexível às três leva a 94,7%. E o piso irredutível — o erro do modelo verdadeiro, que nenhum método pode superar — é 95,1%. O GAM chega a <strong>9% do piso</strong>, e o que falta para cobrir essa distância é, em boa medida, exatamente o que a hipótese aditiva exclui.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td><strong>Não rodar <code>gam.check</code></strong></td><td>Ele avisa se k está apertado; é barato.</td></tr><tr><td>Confundir k com os graus de liberdade usados</td><td>k é o MÁXIMO da base; o edf é o usado.</td></tr><tr><td>Usar o VIF para diagnosticar dependência</td><td>Ele só vê relações lineares; use <code>concurvity</code>.</td></tr><tr><td>Manter <code>s()</code> em termos com edf ≈ 1</td><td>Troque por termo linear: mais simples e com inferência usual.</td></tr><tr><td>Supor aditividade sem verificar</td><td>Resíduo contra produtos; compare com <code>te()</code>.</td></tr><tr><td>Interpretar parcelas sem olhar os traços de dados</td><td>A banda se abre onde faltam observações.</td></tr><tr><td>Usar GCV em vez de REML</td><td>REML é mais estável; é a recomendação de Wood.</td></tr><tr><td>Carregar <code>gam</code> e <code>mgcv</code> juntos</td><td>Ambos definem <code>gam()</code>; use <code>mgcv::gam</code>.</td></tr><tr><td>Reportar valores-p sem ressalva</td><td>A suavidade foi estimada dos dados.</td></tr><tr><td>Usar com erros correlacionados</td><td>Use <code>gamm</code> com estrutura de correlação.</td></tr><tr><td>Extrapolar</td><td>Vale o mesmo das quatro fichas anteriores.</td></tr><tr><td>Ler o R² de resubstituição como desempenho</td><td>Valide; aqui ele supera o do modelo verdadeiro.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>GAM com termos tensoriais <code>te()</code></td><td>Quando há interação suave entre duas preditoras.</td></tr><tr><td><a href="linear-multipla.html">Modelo linear</a></td><td>Quando todos os edf saem próximos de 1.</td></tr><tr><td>Modelo linear com termos polinomiais</td><td>Poucas preditoras e curvatura simples.</td></tr><tr><td><code>gamm</code> e <code>gamm4</code></td><td>Erros correlacionados, efeitos aleatórios, medidas repetidas.</td></tr><tr><td>Modelos de índice único</td><td>Quando a resposta depende de uma combinação linear transformada.</td></tr><tr><td>Projection pursuit</td><td>Quando a aditividade falha mas a dimensão é baixa.</td></tr><tr><td><a href="randomforest.html">Florestas aleatórias</a> e <a href="boosting.html">boosting</a></td><td>Quando há muitas interações e a interpretação importa menos.</td></tr><tr><td>Modelos mecanísticos</td><td>Quando a teoria dá as formas e os parâmetros têm significado.</td></tr><tr><td>GAM com seleção de termos (<code>select = TRUE</code>)</td><td>Muitas preditoras candidatas: penaliza até o termo sumir.</td></tr><tr><td>Gráficos de dependência parcial de um modelo de árvores</td><td>Quando se quer a forma dos efeitos sem supor aditividade.</td></tr></tbody></table></div><ol class="steps"><li>Comece pelo gráfico de cada preditora contra a resposta, com LOESS.</li><li>Ajuste o modelo linear primeiro: é a referência.</li><li>Ajuste o GAM com <code>method = "REML"</code>.</li><li>Rode <code>gam.check</code> e aumente k onde for preciso.</li><li>Examine a <code>concurvity</code> antes de interpretar as parcelas.</li><li>Olhe os edf: onde der ≈ 1, troque por termo linear.</li><li>Desenhe as três parcelas com banda e com traços de dados.</li><li>Verifique a aditividade: resíduo contra produtos, ou compare com <code>te()</code>.</li><li>Compare com o linear por validação cruzada, não só por AIC.</li><li>Ao interpretar, lembre que a banda se abre onde faltam observações.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>HASTIE, Trevor; TIBSHIRANI, Robert. Generalized additive models. <em>Statistical Science</em>, v. 1, n. 3, p. 297-310, 1986.</li><li>HASTIE, Trevor J.; TIBSHIRANI, Robert J. <em>Generalized additive models.</em> London: Chapman &amp; Hall, 1990.</li><li>BUJA, Andreas; HASTIE, Trevor; TIBSHIRANI, Robert. Linear smoothers and additive models. <em>The Annals of Statistics</em>, v. 17, n. 2, p. 453-510, 1989.</li><li>WOOD, Simon N. Stable and efficient multiple smoothing parameter estimation for generalized additive models. <em>Journal of the American Statistical Association</em>, v. 99, n. 467, p. 673-686, 2004.</li><li>WOOD, Simon N. Fast stable restricted maximum likelihood and marginal likelihood estimation of semiparametric generalized linear models. <em>Journal of the Royal Statistical Society: Series B</em>, v. 73, n. 1, p. 3-36, 2011.</li><li>WOOD, Simon N. <em>Generalized additive models: an introduction with R.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2017.</li><li>WOOD, Simon N. Thin plate regression splines. <em>Journal of the Royal Statistical Society: Series B</em>, v. 65, n. 1, p. 95-114, 2003.</li><li>RAMSAY, Timothy O.; BURNETT, Richard T.; KREWSKI, Daniel. The effect of concurvity in generalized additive models linking mortality to ambient particulate matter. <em>Epidemiology</em>, v. 14, n. 1, p. 18-23, 2003.</li><li>HE, Shui; MAZUMDAR, Sati; ARENA, Vincent C. A comparative study of the use of GAM and GLM in air pollution research. <em>Environmetrics</em>, v. 17, n. 1, p. 81-93, 2006.</li><li>MARRA, Giampiero; WOOD, Simon N. Practical variable selection for generalized additive models. <em>Computational Statistics &amp; Data Analysis</em>, v. 55, n. 7, p. 2372-2387, 2011.</li><li>FRIEDMAN, Jerome H.; STUETZLE, Werner. Projection pursuit regression. <em>Journal of the American Statistical Association</em>, v. 76, n. 376, p. 817-823, 1981.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>FARAWAY, Julian J. <em>Extending the linear model with R.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2016.</li><li>RUPPERT, David; WAND, M. P.; CARROLL, Raymond J. <em>Semiparametric regression.</em> Cambridge: Cambridge University Press, 2003.</li><li>WOOD, Simon N. <em>mgcv: mixed GAM computation vehicle with automatic smoothness estimation.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=mgcv" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=mgcv</a>.</li><li>HASTIE, Trevor. <em>gam: generalized additive models.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=gam" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=gam</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Pacote <code>splines</code>, funções <code>bs</code> e <code>ns</code>; pacote <code>stats</code>, funções <code>poly</code>, <code>smooth.spline</code> e <code>loess</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Aditividade (a hipótese central), parcelas centradas, erros independentes, k suficiente em cada termo suave, suavidade estimada por REML, concurvidade examinada e dados em toda a faixa de cada preditora.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>mgcv, gam</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="loess.html"><span>← ANTERIOR</span>Regressão local (LOESS)</a><a href="cart-reg.html"><span>PRÓXIMO →</span>Árvore de regressão (CART)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

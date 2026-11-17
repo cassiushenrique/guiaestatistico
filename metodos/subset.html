@@ -4,308 +4,684 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Seleção exaustiva de subconjuntos: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Seleção exaustiva de subconjuntos | Estatística e Ciência de Dados
-  </title>
+<meta content="Seleção exaustiva de subconjuntos: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Seleção exaustiva de subconjuntos | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Seleção exaustiva de subconjuntos
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 14 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Seleção exaustiva de subconjuntos
-    </h1>
-<p class="detail-lead">
-     Seleciona combinações de variáveis que oferecem melhor equilíbrio entre ajuste e simplicidade.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/subset.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Seleciona combinações de variáveis que oferecem melhor equilíbrio entre ajuste e simplicidade.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Preditores candidatos definidos, ausência de vazamento da resposta do teste, amostra suficiente.</li><li>Seleção influencia a validade posterior dos p-valores.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       A busca por subconjuntos não possui teste de significância próprio. Testes dos coeficientes após seleção exigem cautela porque a seleção usa os mesmos dados.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{BIC}=-2\ell(\widehat{\boldsymbol\beta})+k\ln n\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\lambda\)
-        </dt>
-<dd>
-         parâmetro de penalização, quando existente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor de coeficientes do modelo
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X\)
-        </dt>
-<dd>
-         matriz dos preditores
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       A 5%, p-valores usuais após seleção ingênua não têm interpretação confirmatória automática; use validação e, se necessário, inferência pós-seleção.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Selecionar atributos de veículo relacionados à autonomia (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-subset" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-subset"><code># Seleção exaustiva de subconjuntos ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Seleção exaustiva de subconjuntos</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REGULARIZAÇÃO E SELEÇÃO</span><h1>Seleção exaustiva de subconjuntos</h1><p class="detail-lead">Avalia todos os 2^p subconjuntos de candidatas e devolve o melhor de cada tamanho — expondo, no caminho, os limites da seleção de variáveis.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/subset.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/subset.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a seleção exaustiva</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A seleção exaustiva responde a uma pergunta bem definida: entre todos os \(2^{p}\) subconjuntos possíveis das variáveis candidatas, qual ajusta melhor? Com doze candidatas são 4.096 modelos, todos verificáveis. A resposta é exata — e é precisamente por isso que o método serve de laboratório para entender o que a seleção de variáveis pode e não pode entregar.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Seleção exaustiva" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que faz</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Avalia TODOS os</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">2^p subconjuntos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que entrega</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">O melhor de cada</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">tamanho, por SQR</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que NÃO entrega</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">O tamanho: isso</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">é outro critério</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Os critérios</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">R² ajustado, Cp</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">AIC, BIC, validação</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O custo</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">2^p: inviável acima</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">de p ≈ 30 a 40</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema real</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Instabilidade e</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">maldição do vencedor</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Seleção exaustiva</text></svg><figcaption>Visão geral da seleção exaustiva. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O que esta ficha consegue mostrar e as de dados reais não</strong><p>Os dados são construídos: sabe-se que apenas quatro das doze candidatas entram no processo gerador. Isso permite perguntar diretamente se o método acerta — e a resposta, aqui, é instrutiva: o melhor subconjunto de tamanho quatro <strong>não</strong> é o verdadeiro, e o verdadeiro aparece em <strong>764º</strong> lugar entre os 4.096 ordenados por soma de quadrados dos resíduos.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a seleção exaustiva</h2><p>Para cada tamanho \(k\) de 0 a \(p\), avaliam-se todos os \(\binom{p}{k}\) subconjuntos e guarda-se o de menor soma de quadrados dos resíduos. O resultado é uma lista com \(p+1\) modelos — um por tamanho — e nada mais. <strong>Escolher entre eles é um segundo problema</strong>, e é onde entram o \(R^2\) ajustado, o \(C_p\), o AIC, o BIC e a validação cruzada.</p><figure class="fig"><img src="../assets/resultados/subset-didatica.png" alt="Os 4.096 subconjuntos, os quatro critérios e a inflação do R² pela busca" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, os 4.096 modelos como nuvem, com a fronteira do melhor de cada tamanho: ela nunca desce, porque acrescentar uma variável não pode aumentar a soma de quadrados — e é por isso que o \(R^2\) não serve para escolher o tamanho. A estrela marca o modelo verdadeiro, que não está na fronteira. No centro, os quatro critérios reescalados: eles escolhem tamanhos diferentes. À direita, a maldição do vencedor: com y permutado, sem nenhum sinal, o \(R^2\) do melhor subconjunto é mais que o dobro do esperado. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Quantos modelos há</caption><thead><tr><th>p</th><th>Subconjuntos</th><th>Viável por enumeração?</th></tr></thead><tbody><tr><td>10</td><td>1 024</td><td>sim</td></tr><tr><td>12</td><td>4 096</td><td>sim — é o caso desta ficha</td></tr><tr><td>15</td><td>32 768</td><td>sim</td></tr><tr><td>20</td><td>1 048 576</td><td>sim</td></tr><tr><td>25</td><td>33 554 432</td><td>no limite</td></tr><tr><td>30</td><td>1 073 741 824</td><td>não</td></tr><tr><td>40</td><td>1,1 × 10¹²</td><td>não</td></tr><tr><td>200</td><td>1,6 × 10⁶⁰</td><td>não</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Os do modelo linear</td><td>A seleção não dispensa nenhum deles.</td><td>Resíduos do modelo ESCOLHIDO: <a href="sw.html">normalidade</a>, <a href="levene.html">homocedasticidade</a>.</td></tr><tr><td><strong>n consideravelmente maior que p</strong></td><td>Com p próximo de n a busca ajusta ruído.</td><td>Regra prática: n/p ≥ 10 para seleção.</td></tr><tr><td>Candidatas definidas ANTES de ver os dados</td><td>Acrescentar candidatas depois agrava a inflação.</td><td>Registre a lista antes da análise.</td></tr><tr><td>σ² estimável para o Cp</td><td>O Cp exige um estimador de σ² do modelo completo.</td><td>Impossível quando p ≥ n − 1.</td></tr><tr><td><strong>Avaliação do erro por VC ANINHADA</strong></td><td>Avaliar onde se escolheu é otimista.</td><td>Refaça a busca dentro de cada dobra.</td></tr><tr><td>Colinearidade reconhecida</td><td>Variáveis quase redundantes se substituem.</td><td>VIF e matriz de correlação antes de começar.</td></tr><tr><td>Ausência de hierarquia obrigatória</td><td>Termos quadráticos e interações exigem os principais.</td><td>Use <code>force.in</code> no <code>regsubsets</code>.</td></tr><tr><td><strong>Valores-p do modelo final não reportados</strong></td><td>Não são valores-p após a seleção.</td><td>Veja a ficha <a href="stepwise.html">stepwise</a>.</td></tr></tbody></table></div><div class="callout warn"><strong>A colinearidade muda a pergunta</strong><p>Nestes dados, \(r(\text{argila}, \text{areia})=-0{,}904\) e \(r(\text{argila}, \text{silte}+\text{areia})=-0{,}957\). Quando duas variáveis carregam praticamente a mesma informação, perguntar "qual delas entra no modelo" não tem resposta estatística: ambas servem, e a busca escolhe a que por acaso se ajusta um pouco melhor à amostra. Reportar essa escolha como descoberta científica é um erro de interpretação, não de cálculo.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Para um subconjunto \(S\subseteq\{1,\dots,p\}\) de tamanho \(k\), com \(d=k+1\) parâmetros:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{SQR}(S)=\min_{\beta}\left\|y-X_S\beta\right\|^{2},\]\[\hat S_k=\arg\min_{|S|=k}\text{SQR}(S)\]</div><h3>Os quatro critérios</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[R^{2}_{\text{aj}}=1-\frac{\text{SQR}/(n-d)}{\text{SQT}/(n-1)},\]\[C_p=\frac{\text{SQR}}{\hat\sigma^{2}}-n+2d\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{AIC}=n\ln\!\left(\frac{\text{SQR}}{n}\right)+2d,\]\[\text{BIC}=n\ln\!\left(\frac{\text{SQR}}{n}\right)+d\ln n\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\text{SQR}\)</dt><dd>soma de quadrados dos resíduos do submodelo</dd></div><div><dt>\(\text{SQT}\)</dt><dd>soma de quadrados total</dd></div><div><dt>\(n\)</dt><dd>número de observações (90)</dd></div><div><dt>\(d\)</dt><dd>número de parâmetros, \(k+1\)</dd></div><div><dt>\(\hat\sigma^{2}\)</dt><dd>estimativa de \(\sigma^2\) pelo modelo COMPLETO</dd></div><div><dt>\(p\)</dt><dd>número de candidatas (12)</dd></div></dl><div class="callout warn"><strong>A regra do Cp é frequentemente enunciada de forma errada</strong><p>Lê-se muitas vezes "escolha o modelo cujo \(C_p\) esteja mais próximo de \(p\)". Essa leitura é incorreta, e a razão é algébrica: o \(C_p\) do modelo <em>completo</em> é sempre exatamente igual ao seu \(d\). Nestes dados, o modelo com as doze candidatas tem \(C_p=13{,}00\) e \(d=13\) — identidade, não coincidência. A regra assim enunciada escolheria trivialmente o modelo completo, sempre. A regra correta é <strong>o menor modelo cujo \(C_p\) não exceda o próprio \(d\)</strong>, e aqui ela escolhe tamanho 4.</p></div><h3>Exemplo numérico, passo a passo</h3><p>Com \(\hat\sigma^2=0{,}3716\) (77 graus de liberdade do modelo completo) e \(\text{SQT}=102{,}72\):</p><div class="table-wrap"><table class="method-table"><caption>O melhor subconjunto de cada tamanho, entre os 4.096</caption><thead><tr><th>Tam.</th><th>Variáveis</th><th>R²</th><th>R²aj</th><th>Cp</th><th>AIC</th><th>BIC</th></tr></thead><tbody><tr><td>0</td><td>(só o intercepto)</td><td>0,0000</td><td>0,0000</td><td>188,42</td><td>13,90</td><td>16,40</td></tr><tr><td>1</td><td>M.O.</td><td>0,4039</td><td>0,3972</td><td>78,76</td><td>−30,67</td><td>−25,67</td></tr><tr><td>2</td><td>M.O., V%</td><td>0,6186</td><td>0,6099</td><td>21,42</td><td>−68,86</td><td>−61,36</td></tr><tr><td>3</td><td>M.O., V%, Areia</td><td>0,6720</td><td>0,6606</td><td>8,65</td><td>−80,44</td><td>−70,45</td></tr><tr><td><strong>4</strong></td><td>M.O., P, V%, <strong>Areia</strong></td><td>0,6959</td><td>0,6816</td><td><strong>4,05</strong></td><td>−85,25</td><td>−72,75</td></tr><tr><td><strong>5</strong></td><td>M.O., P, K, V%, Areia</td><td>0,7108</td><td>0,6936</td><td>1,93</td><td><strong>−87,77</strong></td><td><strong>−72,78</strong></td></tr><tr><td>6</td><td>M.O., P, K, Ca, V%, Areia</td><td>0,7150</td><td>0,6944</td><td>2,77</td><td>−87,09</td><td>−69,59</td></tr><tr><td><strong>7</strong></td><td>M.O., P, K, Ca, V%, Argila, Silte</td><td>0,7187</td><td><strong>0,6947</strong></td><td>3,77</td><td>−86,24</td><td>−66,25</td></tr><tr><td>8</td><td>+ Areia</td><td>0,7209</td><td>0,6934</td><td>5,14</td><td>−84,97</td><td>−62,47</td></tr><tr><td>12</td><td>todas as candidatas</td><td>0,7214</td><td>0,6780</td><td>13,00</td><td>−77,13</td><td>−44,64</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Quatro critérios, três respostas</caption><thead><tr><th>Critério</th><th>Tamanho escolhido</th><th>Variáveis</th></tr></thead><tbody><tr><td>Cp de Mallows (regra correta)</td><td><strong>4</strong></td><td>M.O., P, V%, Areia</td></tr><tr><td>AIC</td><td><strong>5</strong></td><td>M.O., P, K, V%, Areia</td></tr><tr><td>BIC</td><td><strong>5</strong></td><td>M.O., P, K, V%, Areia</td></tr><tr><td>R² ajustado</td><td><strong>7</strong></td><td>M.O., P, K, Ca, V%, Argila, Silte</td></tr><tr><td>R² simples</td><td>12</td><td>todas — nunca use</td></tr></tbody></table></div><div class="worked"><strong>O método acerta o modelo verdadeiro?</strong><div class="table-wrap"><table class="method-table"><caption>O verdadeiro contra o escolhido</caption><thead><tr><th></th><th>Modelo verdadeiro</th><th>Melhor de tamanho 4</th></tr></thead><tbody><tr><td>Variáveis</td><td>M.O., P, V%, <strong>Argila</strong></td><td>M.O., P, V%, <strong>Areia</strong></td></tr><tr><td>SQR</td><td>32,8551</td><td><strong>31,2342</strong></td></tr><tr><td>R²</td><td>0,6801</td><td><strong>0,6959</strong></td></tr><tr><td>Posição entre os 4.096 (por SQR)</td><td><strong>764º</strong></td><td>1º</td></tr></tbody></table></div><p>O melhor subconjunto de tamanho quatro erra uma variável em quatro: troca a argila pela areia. E não erra por pouco — o modelo verdadeiro está na posição 764 de 4.096, isto é, no quinto superior mas longe do topo.</p><p>O erro é compreensível e até correto do ponto de vista preditivo: como argila ≈ 100 − silte − areia, a areia é um substituto quase perfeito da argila, com sinal invertido. Nos dados observados, por acaso amostral, a areia se ajusta um pouco melhor. Nenhuma quantidade de dados resolveria a ambiguidade de forma confiável, porque <em>as duas variáveis contêm quase a mesma informação</em>.</p><p>A lição é que a seleção exaustiva encontra o melhor subconjunto <em>para predizer naquela amostra</em>, e isso não é o mesmo que encontrar o mecanismo. Quando as candidatas são colineares, as duas coisas se separam.</p></div><h3>Propriedades</h3><ul class="checklist"><li>A SQR do melhor subconjunto é NÃO CRESCENTE em \(k\): acrescentar variável nunca piora o ajuste.</li><li>Logo \(R^2\) é não decrescente em \(k\), e não pode escolher o tamanho.</li><li>O \(C_p\) do modelo completo é sempre exatamente \(d\).</li><li>Para modelos lineares com \(\hat\sigma^2\) fixo, minimizar \(C_p\) e minimizar o AIC são equivalentes.</li><li>O BIC penaliza com \(\ln n\) em vez de 2, e escolhe modelos menores quando \(n&gt;7{,}4\).</li><li>O custo é \(2^{p}\); o algoritmo de ramificação e poda reduz muito o tempo sem mudar o resultado.</li><li>A estimativa de erro do modelo escolhido é otimista se não houver validação ANINHADA.</li><li>A escolha é instável: pequenas mudanças na amostra mudam o subconjunto.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Tabela de asteriscos do <code>regsubsets</code></td><td>O melhor subconjunto de cada tamanho.</td><td>Não diz qual tamanho escolher.</td></tr><tr><td><code>$rsq</code></td><td>R² de cada melhor.</td><td>Não decrescente: nunca use para escolher.</td></tr><tr><td><code>$adjr2</code></td><td>R² ajustado.</td><td>Penaliza pouco; escolhe modelos grandes.</td></tr><tr><td><code>$cp</code></td><td>Cp de Mallows.</td><td>Regra: MENOR modelo com Cp ≤ d.</td></tr><tr><td><code>$bic</code></td><td>BIC.</td><td>Escolhe os modelos mais parcimoniosos.</td></tr><tr><td><code>coef(ex, k)</code></td><td>Coeficientes do melhor de tamanho k.</td><td>Estimativas enviesadas pela seleção.</td></tr><tr><td>Erro validado com busca aninhada</td><td>A única estimativa honesta do erro.</td><td>Sempre acima da resubstituição.</td></tr><tr><td>Frequência de inclusão no bootstrap</td><td>A estabilidade de cada variável.</td><td>Mais informativa que a escolha única.</td></tr></tbody></table></div><h3>A maldição do vencedor</h3><p>O \(R^2\) do melhor subconjunto é um máximo sobre muitas tentativas, e máximos são otimistas. A simulação desta ficha permuta \(y\) — destruindo qualquer relação com \(X\) — e repete a busca 400 vezes:</p><div class="table-wrap"><table class="method-table"><caption>Com y permutado: nenhum sinal, e ainda assim R² substancial</caption><thead><tr><th>Tamanho</th><th>R² esperado de UM subconjunto, k/(n−1)</th><th>R² do MELHOR de todos</th><th>Razão</th></tr></thead><tbody><tr><td>1</td><td>0,0112</td><td>0,0379</td><td>3,4</td></tr><tr><td>2</td><td>0,0225</td><td>0,0647</td><td>2,9</td></tr><tr><td>3</td><td>0,0337</td><td>0,0856</td><td>2,5</td></tr><tr><td>4</td><td>0,0449</td><td><strong>0,1009</strong></td><td>2,2</td></tr><tr><td>5</td><td>0,0562</td><td>0,1120</td><td>2,0</td></tr><tr><td>6</td><td>0,0674</td><td>0,1201</td><td>1,8</td></tr></tbody></table></div><div class="callout warn"><strong>O que esses números implicam na prática</strong><p>Em um conjunto sem nenhum sinal, a busca exaustiva de tamanho 4 devolve \(R^2=0{,}10\) — mais que o dobro do esperado para um modelo fixo. Um \(R^2\) de 0,10 obtido por busca entre 4.096 modelos não é evidência de relação alguma. A inflação é mais severa nos tamanhos pequenos, justamente onde se buscam modelos "parcimoniosos e interpretáveis".</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O pacote <code>leaps</code> é a implementação de referência. <code>regsubsets(y ~ ., data = solo, nvmax = 12)</code> devolve o melhor subconjunto de cada tamanho, e <code>summary()</code> dá a tabela de asteriscos mais os vetores <code>$rsq</code>, <code>$adjr2</code>, <code>$cp</code> e <code>$bic</code>. O algoritmo é o de ramificação e poda de Furnival e Wilson (1974): ele devolve exatamente o mesmo resultado da enumeração completa examinando apenas uma fração dos modelos, o que viabiliza \(p\) da ordem de 30 a 40. Para forçar a presença de um termo use <code>force.in</code>; para excluir, <code>force.out</code>. Os coeficientes de um tamanho específico saem de <code>coef(ex, k)</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-subset-min" type="button">Copiar código</button></div><pre id="code-subset-min"><code>library(leaps)
+ex &lt;- regsubsets(y ~ ., data = solo, nvmax = 12)
+s  &lt;- summary(ex)
+s$cp
+min(which(s$cp &lt;= (1:12) + 1))   # a regra correta do Cp
+coef(ex, which.min(s$bic))
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 90 amostras de solo de uma área experimental, com a produtividade da cultura (t/ha) e <strong>doze</strong> variáveis candidatas de análise de rotina — pH, matéria orgânica, fósforo resina, potássio, cálcio, magnésio, alumínio, CTC, saturação por bases (V%), argila, silte e areia. O processo gerador é conhecido e usa <strong>apenas quatro</strong> delas: matéria orgânica, fósforo, V% e argila, com erro de desvio-padrão 0,60 t/ha. A colinearidade é deliberada e realista: argila, silte e areia somam aproximadamente 100% por construção física, e cálcio, magnésio e potássio estão ligados à CTC e ao V%. Saber qual é o modelo verdadeiro permite verificar se cada método o encontra — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as seis fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-subset" type="button">Copiar código</button></div><pre id="code-subset"><code># Seleção exaustiva de subconjuntos: exemplo completo ----
+# Pacotes: leaps (regsubsets)
+# Dados fictícios: 90 amostras de solo, 12 candidatas.
+# O arquivo solo.csv acompanha o site, na pasta scripts/.
+solo &lt;- read.csv("solo.csv")
+str(solo)          # y (t/ha) e as 12 candidatas
+dim(solo)
+# O modelo VERDADEIRO (conhecido por construção) usa só quatro:
+#   y = 4,00 + 0,80*mo + 0,0250*pres + 0,0300*v + 0,0200*argila + erro
+cand &lt;- c("ph","mo","pres","k","ca","mg","al","ctc","v","argila","silte","areia")
+verdadeiras &lt;- c("mo","pres","v","argila")
 
-# Ajuste e resultados ----
-if (!requireNamespace("leaps", quietly = TRUE)) install.packages("leaps")
+# A colinearidade, que é o problema central do grupo
+library(car)
+vif(lm(y ~ ., data = solo))
+round(cor(solo[, cand]), 2)
+
+# ---- 1. A enumeração exaustiva: todos os 2^12 = 4.096 subconjuntos
 library(leaps)
-d &lt;- mtcars[, c("mpg", "wt", "hp", "disp", "qsec", "drat")]
-ajuste &lt;- regsubsets(mpg ~ ., data = d, nvmax = 5)
-s &lt;- summary(ajuste)
-melhor &lt;- which.min(s$bic)
-print(c(modelo = melhor, BIC = s$bic[melhor]))
-print(coef(ajuste, id = melhor))
+ex &lt;- regsubsets(y ~ ., data = solo, nvmax = 12, really.big = FALSE)
+s  &lt;- summary(ex)
+s                            # a tabela de asteriscos: o melhor de cada tamanho
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O leaps NÃO testa os 4.096: usa ramificação e poda (Furnival e Wilson, 1974)
+# e devolve o mesmo resultado examinando uma fração deles.
+
+# ---- 2. Os quatro critérios, lado a lado
+data.frame(tam = 1:12, R2 = round(s$rsq, 4), R2aj = round(s$adjr2, 4),
+           Cp = round(s$cp, 2), BIC = round(s$bic, 2))
+
+which.max(s$adjr2)           # o tamanho que o R² ajustado escolhe
+which.min(s$bic)             # o que o BIC escolhe
+# Para o Cp a regra é o MENOR modelo com Cp &lt;= p (e NÃO "o Cp mais próximo
+# de p": o Cp do modelo completo é sempre exatamente p, de modo que essa
+# leitura escolheria trivialmente o modelo completo).
+min(which(s$cp &lt;= (1:12) + 1))
+
+# As variáveis de cada escolha
+coef(ex, which.max(s$adjr2))
+coef(ex, which.min(s$bic))
+coef(ex, min(which(s$cp &lt;= (1:12) + 1)))
+
+# ---- 3. O modelo escolhido recupera o VERDADEIRO?
+names(coef(ex, 4))[-1]
+verdadeiras
+# A areia entra no lugar da argila, porque argila = 100 - silte - areia
+cor(solo$argila, solo$areia)
+cor(solo$argila, solo$silte + solo$areia)
+
+# ---- 4. A MALDIÇÃO DO VENCEDOR: y permutado, nenhum sinal
+set.seed(5)
+inf &lt;- t(replicate(200, {
+  yp &lt;- sample(solo$y)
+  sp &lt;- summary(regsubsets(yp ~ ., data = solo[, cand], nvmax = 6))
+  sp$rsq[1:6] }))
+rbind(esperado = (1:6)/(nrow(solo) - 1), melhor = colMeans(inf))
+# O R² esperado de UM subconjunto fixo de tamanho k é k/(n-1). O do MELHOR
+# de todos os subconjuntos desse tamanho é MUITO maior. A diferença é
+# inflação vinda da própria busca.
+
+# ---- 5. INSTABILIDADE: a escolha muda de amostra para amostra
+set.seed(11)
+cont &lt;- numeric(12); names(cont) &lt;- cand
+for (b in 1:500) {
+  i  &lt;- sample(nrow(solo), replace = TRUE)
+  sb &lt;- summary(regsubsets(y ~ ., data = solo[i, ], nvmax = 4))
+  sel &lt;- cand[sb$which[4, -1]]
+  cont[sel] &lt;- cont[sel] + 1
+}
+sort(round(100*cont/500, 1), decreasing = TRUE)
+
+# ---- 6. O ERRO DE PREDIÇÃO, honestamente: validação cruzada ANINHADA
+# A busca precisa ser REFEITA dentro de cada dobra. Avaliar o subconjunto
+# escolhido na amostra inteira é otimista.
+set.seed(3)
+k &lt;- 10; d &lt;- sample(rep(1:k, length.out = nrow(solo)))
+er_an &lt;- er_fix &lt;- numeric(nrow(solo))
+fixo &lt;- names(coef(ex, 4))[-1]          # escolhido na amostra INTEIRA
+for (j in 1:k) {
+  tr &lt;- solo[d != j, ]; te &lt;- solo[d == j, ]
+  sb &lt;- summary(regsubsets(y ~ ., data = tr, nvmax = 12))
+  mel &lt;- which.min(sb$bic)
+  vs  &lt;- cand[sb$which[mel, -1]]
+  m1  &lt;- lm(reformulate(vs, "y"), data = tr)
+  er_an[d == j] &lt;- te$y - predict(m1, newdata = te)
+  m2  &lt;- lm(reformulate(fixo, "y"), data = tr)
+  er_fix[d == j] &lt;- te$y - predict(m2, newdata = te)
+}
+mean(er_fix^2)      # OTIMISTA: a escolha viu os dados de teste
+mean(er_an^2)       # honesto
+mean((solo$y - fitted(lm(reformulate(verdadeiras, "y"), data = solo)))^2)
+
+# ---- 7. Quais subconjuntos cada dobra escolhe?
+for (j in 1:k) {
+  sb &lt;- summary(regsubsets(y ~ ., data = solo[d != j, ], nvmax = 12))
+  cat(sprintf("dobra %2d: %s\n", j,
+      paste(cand[sb$which[which.min(sb$bic), -1]], collapse = ", ")))
+}
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-subset" type="button">Copiar código</button></div><pre id="code-py-subset"><code>import numpy as np, itertools, sys
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab14)
+# ------------------------------------------------------------------
+import numpy as np, itertools
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 90 amostras de solo (arquivo solo.csv, pasta scripts/ do site)
+solo = le_csv('solo.csv')
+NOMES=['ph', 'mo', 'pres', 'k', 'ca', 'mg', 'al', 'ctc', 'v', 'argila', 'silte', 'areia']
+ROT={'ph':'pH','mo':'M.O.','pres':'P (resina)','k':'K','ca':'Ca','mg':'Mg','al':'Al','ctc':'CTC','v':'V%','argila':'Argila','silte':'Silte','areia':'Areia'}
+X=solo[NOMES].to_numpy(float); Y=solo['y'].to_numpy(float)
+VERD={"mo":0.80,"pres":0.0250,"v":0.0300,"argila":0.0200}
+N,P=X.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+def pad(A, mu=None, sd=None):
+    """Padroniza colunas (média 0, desvio 1, com n-1)."""
+    if mu is None: mu = A.mean(0)
+    if sd is None: sd = A.std(0, ddof=1)
+    sd = np.where(sd &lt; 1e-12, 1.0, sd)
+    return (A - mu)/sd, mu, sd
+
+def ols(A, y):
+    Ad = np.column_stack([np.ones(len(A)), A])
+    return np.linalg.lstsq(Ad, y, rcond=None)[0]
+
+def prev(A, b):
+    return b[0] + A @ b[1:]
+
+def sqr(obs, p_): return float(np.sum((obs - p_)**2))
+def eqm(obs, p_): return float(np.mean((obs - p_)**2))
+
+def ridge(A, y, lam):
+    """Ridge em A JÁ padronizado; não penaliza o intercepto."""
+    n_, p_ = A.shape
+    G = A.T @ A + lam*n_*np.eye(p_)
+    b = np.linalg.solve(G, A.T @ (y - y.mean()))
+    return np.concatenate([[y.mean()], b])
+
+def lasso(A, y, lam, it=20000, tol=1e-11):
+    """Descida por coordenadas em A JÁ padronizado (Friedman et al., 2010)."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean()
+    nrm = (A**2).sum(0)/n_
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = A[:, j] @ (r + A[:, j]*bj)/n_
+            nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+            if nb != bj:
+                r = r - A[:, j]*(nb - bj); b[j] = nb
+                mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return np.concatenate([[y.mean()], b])
+
+def pcr(A, y, m):
+    """Regressão nos m primeiros componentes principais de A padronizado."""
+    u, s, vt = np.linalg.svd(A, full_matrices=False)
+    T = (u*s)[:, :m]
+    g = np.linalg.lstsq(T, y - y.mean(), rcond=None)[0]
+    b = vt[:m].T @ g
+    return np.concatenate([[y.mean()], b])
+
+def pls(A, y, m):
+    """NIPALS para uma resposta; devolve coeficientes na escala de A."""
+    Xr = A.copy(); yr = y - y.mean()
+    W = np.zeros((A.shape[1], m)); Pm = np.zeros((A.shape[1], m)); q = np.zeros(m)
+    for a in range(m):
+        w = Xr.T @ yr; w = w/np.linalg.norm(w)
+        t = Xr @ w; tt = t @ t
+        pj = Xr.T @ t/tt; qa = (yr @ t)/tt
+        Xr = Xr - np.outer(t, pj); yr = yr - qa*t
+        W[:, a] = w; Pm[:, a] = pj; q[a] = qa
+    Rm = W @ np.linalg.inv(Pm.T @ W)
+    b = Rm @ q
+    return np.concatenate([[y.mean()], b])
+
+def dobras(n_, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n_/k)))[:n_]
+    rg.shuffle(d); return d
+
+def cv(ajusta, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada; TODA a padronização dentro do laço."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 1000*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            b = ajusta(Ap, y[tr])
+            e[te] = y[te] - prev((A[te] - mu)/sd, b)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0
+
+def crit(A, y, cols, s2):
+    """Cp de Mallows, AIC e BIC de um submodelo."""
+    Ad = np.column_stack([np.ones(len(A))] + [A[:, j] for j in cols])
+    b = np.linalg.lstsq(Ad, y, rcond=None)[0]
+    sq = sqr(y, Ad @ b); n_, d = len(y), len(cols) + 1
+    return dict(sqr=sq, p=d, r2=1 - sq/np.sum((y - y.mean())**2),
+                r2a=1 - (sq/(n_ - d))/(np.sum((y - y.mean())**2)/(n_ - 1)),
+                cp=sq/s2 - n_ + 2*d,
+                aic=n_*np.log(sq/n_) + 2*d, bic=n_*np.log(sq/n_) + np.log(n_)*d)
+
+def vif(A):
+    Ap, _, _ = pad(A); out = []
+    for j in range(A.shape[1]):
+        o = [i for i in range(A.shape[1]) if i != j]
+        b = ols(Ap[:, o], Ap[:, j]); r = Ap[:, j] - prev(Ap[:, o], b)
+        out.append(1/(1 - (1 - r @ r/np.sum((Ap[:, j] - Ap[:, j].mean())**2))))
+    return np.array(out)
+
+def c(v, d=4):
+    return ('%.*f' % (d, v)).replace('.', ',')
+
+def lasso_path(A, y, lams, it=5000, tol=1e-10):
+    """Caminho do lasso com partida quente (como o glmnet). lams DECRESCENTE."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def enet_path(A, y, lams, al, it=5000, tol=1e-10):
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(nrm[j] + lam*(1 - al))
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def cv_path(ajusta_path, A, y, lams, k=10, seed=0, reps=1):
+    """EQM por VC para TODA a grade de lambda de uma vez, com partida quente."""
+    acc = np.zeros((reps, len(lams)))
+    for rp in range(reps):
+        d = dobras(len(y), k, seed + 1000*rp); E = np.zeros((len(lams), len(y)))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            bs = ajusta_path(Ap, y[tr], lams)
+            Ate = (A[te] - mu)/sd
+            for i, b in enumerate(bs): E[i, te] = y[te] - prev(Ate, b)
+        acc[rp] = (E**2).mean(1)
+    return acc.mean(0), acc.std(0, ddof=1) if reps &gt; 1 else np.zeros(len(lams))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="bias-variance.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Compromisso viés–variância
-    </a>
-<a href="stepwise.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Seleção stepwise por AIC
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def _cd_gram(G, Ay, lam, al, b, dg, it=10000, tol=1e-11):
+    """Descida por coordenadas usando a matriz de Gram: só escalares no laço."""
+    p_ = len(b)
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return b
+
+def enet_path_g(A, y, lams, al=1.0):
+    """Caminho da rede elástica (al=1 é o lasso) com Gram e partida quente."""
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_gram(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_g(A, y, lams): return enet_path_g(A, y, lams, 1.0)
+
+
+def _cd_ativo(G, Ay, lam, al, b, dg, it=200, tol=1e-11):
+    """Descida por coordenadas com CONJUNTO ATIVO (estratégia do glmnet):
+    varre tudo, depois itera só nos coeficientes não nulos."""
+    p_ = len(b)
+    for _ in range(it):
+        # varredura completa
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        ativo = np.flatnonzero(b)
+        if len(ativo) == 0 or mx &lt; tol: break
+        Ga = G[np.ix_(ativo, ativo)]; Aya = Ay[ativo]; dga = dg[ativo]
+        ba = b[ativo].copy()
+        for _ in range(2000):
+            mxa = 0.0
+            for i in range(len(ativo)):
+                bi = ba[i]
+                rho = Aya[i] - (Ga[i] @ ba - dga[i]*bi)
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dga[i] + lam*(1 - al))
+                if nb != bi:
+                    ba[i] = nb; mxa = max(mxa, abs(nb - bi))
+            if mxa &lt; tol: break
+        b[ativo] = ba
+        if mx &lt; tol: break
+    return b
+
+def enet_path_a(A, y, lams, al=1.0):
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_ativo(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_a(A, y, lams): return enet_path_a(A, y, lams, 1.0)
+# ------------------------------------------------------------------ fim do bloco comum
+np.set_printoptions(suppress=True)
+
+print('ANÁLISE DE SOLO: 90 amostras, 12 candidatas, resposta = produtividade')
+print('O modelo VERDADEIRO (dados fictícios, de construção conhecida) usa')
+print('apenas QUATRO das doze: M.O., P resina, V% e argila.')
+print()
+print('variável      VIF    r com y   no modelo verdadeiro?')
+V=vif(X)
+for j,nm in enumerate(NOMES):
+    print('%-9s %9.1f   %+7.4f   %s'%(ROT[nm],V[j],np.corrcoef(X[:,j],Y)[0,1],
+          'SIM' if nm in VERD else '-'))
+print()
+print('A argila, o silte e a areia somam aproximadamente 100% por construção')
+print('física, e por isso os VIF delas são os maiores: 101, 29 e 126.')
+
+Xp,mu,sd=pad(X); SQT=float(np.sum((Y-Y.mean())**2))
+s2=sqr(Y,prev(Xp,ols(Xp,Y)))/(N-P-1)
+print('\nsigma^2 estimado pelo modelo completo = %s (g.l. = %d)'%(c(s2),N-P-1))
+
+print('\n'+'='*70)
+print('ENUMERAÇÃO EXAUSTIVA: todos os 2^12 = 4.096 subconjuntos')
+melhor={}; todos=[]
+for tam in range(0,P+1):
+    bb=None
+    for cols in itertools.combinations(range(P),tam):
+        r=crit(Xp,Y,list(cols),s2); r['cols']=cols; todos.append(r)
+        if bb is None or r['sqr']&lt;bb['sqr']: bb=r
+    melhor[tam]=bb
+print('%d subconjuntos avaliados'%len(todos))
+print()
+print('tam.  variáveis do melhor subconjunto desse tamanho          R²     R²aj      Cp      AIC      BIC')
+for tam in range(0,P+1):
+    b=melhor[tam]; nm=', '.join(ROT[NOMES[j]] for j in b['cols']) or '(só intercepto)'
+    print('%3d   %-50s %6s %7s %7s %8s %8s'%(tam,nm[:50],c(b['r2'],4),c(b['r2a'],4),
+          c(b['cp'],2),c(b['aic'],2),c(b['bic'],2)))
+print()
+for nome,chave,mn in [('R² ajustado','r2a',False),('Cp de Mallows','cp',None),
+                      ('AIC','aic',True),('BIC','bic',True)]:
+    if chave=='cp':
+        cand=[k for k in range(P+1) if melhor[k]['cp']&lt;=melhor[k]['p']]
+        t=min(cand); t2=min(range(P+1),key=lambda k:melhor[k]['cp'])
+        print('%-15s escolhe tamanho %d (MENOR modelo com Cp &lt;= p)'%(nome,t))
+        print('%-15s  menor Cp absoluto: tamanho %d (Cp = %s)'%('',t2,c(melhor[t2]['cp'],2)))
+        print('%-15s  ATENÇÃO: o Cp do modelo COMPLETO é sempre exatamente p.'%'')
+        print('%-15s  Aqui: Cp = %s e p = %d. A regra "Cp mais próximo de p"'%('',c(melhor[P]['cp'],2),melhor[P]['p']))
+        print('%-15s  escolheria trivialmente o modelo completo, e está errada.'%'')
+        print('%-15s  A regra correta é o MENOR modelo com Cp &lt;= p: tamanho %d,'%('',t))
+        print('%-15s  que é %s'%('',', '.join(ROT[NOMES[j]] for j in melhor[t]['cols'])))
+    else:
+        f=max if not mn else min
+        t=f(range(P+1),key=lambda k:melhor[k][chave])
+        print('%-15s escolhe tamanho %d: %s'%(nome,t,', '.join(ROT[NOMES[j]] for j in melhor[t]['cols'])))
+
+print('\nO modelo VERDADEIRO tem tamanho 4: M.O., P (resina), V%, Argila')
+vt=tuple(sorted(NOMES.index(k) for k in VERD))
+print('O melhor subconjunto de tamanho 4 é:',', '.join(ROT[NOMES[j]] for j in melhor[4]['cols']))
+print('É o verdadeiro?',melhor[4]['cols']==vt)
+rv=crit(Xp,Y,list(vt),s2)
+print('SQR do verdadeiro = %s | SQR do melhor de tamanho 4 = %s'%(c(rv['sqr']),c(melhor[4]['sqr'])))
+print('R² do verdadeiro = %s | do melhor de tamanho 4 = %s'%(c(rv['r2']),c(melhor[4]['r2'])))
+pos=sorted(range(len(todos)),key=lambda i:todos[i]['sqr'])
+rk=[i for i,q in enumerate(pos) if todos[q]['cols']==vt][0]
+print('Posição do modelo verdadeiro no ranking dos 4.096 por SQR: %dº'%(rk+1))
+
+print('\n'+'='*70)
+print('A MALDIÇÃO DO VENCEDOR: o R² do melhor subconjunto é otimista por')
+print('construção, porque é o MÁXIMO de muitas tentativas.')
+print()
+print('Simulação: y PERMUTADO (nenhuma relação com X), 400 repetições.')
+rg=np.random.default_rng(5)
+mr=np.zeros((400,6))
+for r in range(400):
+    yp=rg.permutation(Y)
+    for ti,tam in enumerate([1,2,3,4,5,6]):
+        mx=0
+        for cols in itertools.combinations(range(P),tam):
+            Ad=np.column_stack([np.ones(N)]+[Xp[:,j] for j in cols])
+            b=np.linalg.lstsq(Ad,yp,rcond=None)[0]
+            mx=max(mx,1-sqr(yp,Ad@b)/np.sum((yp-yp.mean())**2))
+        mr[r,ti]=mx
+print('tam.   R² esperado de UM subconjunto    R² do MELHOR subconjunto')
+for ti,tam in enumerate([1,2,3,4,5,6]):
+    print('%3d                      %s                     %s'%(tam,c(tam/(N-1),4),c(mr[:,ti].mean(),4)))
+print()
+print('Com y permutado, o R² esperado de um subconjunto fixo de tamanho k é')
+print('k/(n-1). O R² do MELHOR de todos os subconjuntos desse tamanho é muito')
+print('maior: no tamanho 4, %s contra %s esperados. É inflação pura,'%(c(mr[:,3].mean(),4),c(4/(N-1),4)))
+print('vinda da própria busca, sem nenhum sinal nos dados.')
+
+print('\n'+'='*70)
+print('O que a busca exaustiva CUSTA, e o que ela NÃO resolve')
+print()
+print('   p   subconjuntos        viável?')
+for p_ in [10,12,15,20,25,30,40,50]:
+    print('%4d   %18s   %s'%(p_,('%d'%2**p_),'sim' if p_&lt;=25 else 'não'))
+print()
+print('O leaps::regsubsets usa ramificação e poda (branch and bound) e chega a')
+print('p da ordem de 30 a 40; acima disso, nem ele. E o custo não é o pior')
+print('problema: o pior é a INSTABILIDADE da escolha.')
+
+print('\n'+'='*70)
+print('INSTABILIDADE: 500 reamostras bootstrap, busca exaustiva em cada uma.')
+print('Com que frequência cada variável entra no melhor subconjunto de 4?')
+rg=np.random.default_rng(11)
+cont=np.zeros(P); mesmo=0
+for r in range(500):
+    i=rg.integers(0,N,N); Xb,_,_=pad(X[i]); yb=Y[i]
+    bb=None
+    for cols in itertools.combinations(range(P),4):
+        Ad=np.column_stack([np.ones(N)]+[Xb[:,j] for j in cols])
+        b=np.linalg.lstsq(Ad,yb,rcond=None)[0]; sq=sqr(yb,Ad@b)
+        if bb is None or sq&lt;bb[0]: bb=(sq,cols)
+    for j in bb[1]: cont[j]+=1
+    if bb[1]==melhor[4]['cols']: mesmo+=1
+print()
+print('variável        frequência de inclusão   no verdadeiro?')
+for j in np.argsort(-cont):
+    print('%-10s                 %6.1f%%   %s'%(ROT[NOMES[j]],100*cont[j]/500,
+          'SIM' if NOMES[j] in VERD else '-'))
+print()
+print('O melhor subconjunto de 4 da amostra original foi reencontrado em')
+print('apenas %.1f%% das 500 reamostras.'%(100*mesmo/500))
+
+print('\n'+'='*70)
+print('A COMPARAÇÃO QUE IMPORTA: erro de PREDIÇÃO validado por k-fold')
+print('(validação cruzada ANINHADA: a busca é refeita dentro de cada dobra)')
+print()
+d=dobras(N,10,3)
+er_an=np.empty(N); er_fix=np.empty(N)
+for j in range(10):
+    tr,te=d!=j,d==j
+    Ap,m_,s_=pad(X[tr]); ytr=Y[tr]
+    s2t=sqr(ytr,prev(Ap,ols(Ap,ytr)))/(tr.sum()-P-1)
+    bb=None
+    for tam in range(1,P+1):
+        for cols in itertools.combinations(range(P),tam):
+            r=crit(Ap,ytr,list(cols),s2t)
+            if bb is None or r['bic']&lt;bb['bic']: bb=r; bb['cols']=cols
+    Ad=np.column_stack([np.ones(tr.sum())]+[Ap[:,k] for k in bb['cols']])
+    b=np.linalg.lstsq(Ad,ytr,rcond=None)[0]
+    Xte=(X[te]-m_)/s_
+    er_an[te]=Y[te]-(b[0]+Xte[:,list(bb['cols'])]@b[1:])
+    # mesmo modelo, mas escolhido NA AMOSTRA INTEIRA (errado de propósito)
+    Ad2=np.column_stack([np.ones(tr.sum())]+[Ap[:,k] for k in melhor[4]['cols']])
+    b2=np.linalg.lstsq(Ad2,ytr,rcond=None)[0]
+    er_fix[te]=Y[te]-(b2[0]+Xte[:,list(melhor[4]['cols'])]@b2[1:])
+print('EQM de resubstituição do melhor subconjunto de 4 = %s'%c(melhor[4]['sqr']/N))
+print('EQM validado, subconjunto escolhido na amostra INTEIRA = %s  &lt;- OTIMISTA'%c(eqm(np.zeros(N),er_fix)))
+print('EQM validado, busca REFEITA dentro de cada dobra     = %s'%c(eqm(np.zeros(N),er_an)))
+print('EQM validado do modelo VERDADEIRO (4 variáveis)      = %s'%c(cv(ols,X[:,list(vt)],Y,10,3)[0]))
+print('EQM validado do modelo COMPLETO (12 variáveis)       = %s'%c(cv(ols,X,Y,10,3)[0]))
+print()
+print('Os subconjuntos escolhidos dentro de cada uma das 10 dobras:')
+d=dobras(N,10,3)
+for j in range(10):
+    tr=d!=j; Ap,_,_=pad(X[tr]); ytr=Y[tr]
+    s2t=sqr(ytr,prev(Ap,ols(Ap,ytr)))/(tr.sum()-P-1); bb=None
+    for tam in range(1,P+1):
+        for cols in itertools.combinations(range(P),tam):
+            r=crit(Ap,ytr,list(cols),s2t)
+            if bb is None or r['bic']&lt;bb['bic']: bb=r; bb['cols']=cols
+    print('  dobra %2d (%d vars): %s'%(j+1,len(bb['cols']),', '.join(ROT[NOMES[k]] for k in bb['cols'])))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ANÁLISE DE SOLO: 90 amostras, 12 candidatas, resposta = produtividade
+O modelo VERDADEIRO (dados fictícios, de construção conhecida) usa
+apenas QUATRO das doze: M.O., P resina, V% e argila.
+
+variável      VIF    r com y   no modelo verdadeiro?
+pH              4.6   +0.2234   -
+M.O.            1.8   +0.6356   SIM
+P (resina)       1.1   +0.1303   SIM
+K               8.0   +0.4833   -
+Ca             13.0   +0.4435   -
+Mg              8.5   +0.4486   -
+Al              1.6   +0.0188   -
+CTC             9.5   +0.3490   -
+V%             22.2   +0.3509   SIM
+Argila        101.3   +0.1513   SIM
+Silte          29.2   +0.1875   -
+Areia         125.9   -0.1961   -
+
+A argila, o silte e a areia somam aproximadamente 100% por construção
+física, e por isso os VIF delas são os maiores: 101, 29 e 126.
+
+sigma^2 estimado pelo modelo completo = 0,3716 (g.l. = 77)
+
+======================================================================
+ENUMERAÇÃO EXAUSTIVA: todos os 2^12 = 4.096 subconjuntos
+4096 subconjuntos avaliados
+
+tam.  variáveis do melhor subconjunto desse tamanho          R²     R²aj      Cp      AIC      BIC
+  0   (só intercepto)                                    -0,0000  0,0000  188,42    13,90    16,40
+  1   M.O.                                               0,4039  0,3972   78,76   -30,67   -25,67
+  2   M.O., V%                                           0,6186  0,6099   21,42   -68,86   -61,36
+  3   M.O., V%, Areia                                    0,6720  0,6606    8,65   -80,44   -70,45
+  4   M.O., P (resina), V%, Areia                        0,6959  0,6816    4,05   -85,25   -72,75
+  5   M.O., P (resina), K, V%, Areia                     0,7108  0,6936    1,93   -87,77   -72,78
+  6   M.O., P (resina), K, Ca, V%, Areia                 0,7150  0,6944    2,77   -87,09   -69,59
+  7   M.O., P (resina), K, Ca, V%, Argila, Silte         0,7187  0,6947    3,77   -86,24   -66,25
+  8   M.O., P (resina), K, Ca, V%, Argila, Silte, Areia  0,7209  0,6934    5,14   -84,97   -62,47
+  9   M.O., P (resina), K, Ca, CTC, V%, Argila, Silte, A 0,7213  0,6900    7,03   -83,10   -58,10
+ 10   pH, M.O., P (resina), K, Ca, CTC, V%, Argila, Silt 0,7214  0,6861    9,01   -81,12   -53,62
+ 11   pH, M.O., P (resina), K, Ca, Al, CTC, V%, Argila,  0,7214  0,6821   11,01   -79,13   -49,13
+ 12   pH, M.O., P (resina), K, Ca, Mg, Al, CTC, V%, Argi 0,7214  0,6780   13,00   -77,13   -44,64
+
+R² ajustado     escolhe tamanho 7: M.O., P (resina), K, Ca, V%, Argila, Silte
+Cp de Mallows   escolhe tamanho 4 (MENOR modelo com Cp &lt;= p)
+                 menor Cp absoluto: tamanho 5 (Cp = 1,93)
+                 ATENÇÃO: o Cp do modelo COMPLETO é sempre exatamente p.
+                 Aqui: Cp = 13,00 e p = 13. A regra "Cp mais próximo de p"
+                 escolheria trivialmente o modelo completo, e está errada.
+                 A regra correta é o MENOR modelo com Cp &lt;= p: tamanho 4,
+                 que é M.O., P (resina), V%, Areia
+AIC             escolhe tamanho 5: M.O., P (resina), K, V%, Areia
+BIC             escolhe tamanho 5: M.O., P (resina), K, V%, Areia
+
+O modelo VERDADEIRO tem tamanho 4: M.O., P (resina), V%, Argila
+O melhor subconjunto de tamanho 4 é: M.O., P (resina), V%, Areia
+É o verdadeiro? False
+SQR do verdadeiro = 32,8551 | SQR do melhor de tamanho 4 = 31,2342
+R² do verdadeiro = 0,6801 | do melhor de tamanho 4 = 0,6959
+Posição do modelo verdadeiro no ranking dos 4.096 por SQR: 764º
+
+======================================================================
+A MALDIÇÃO DO VENCEDOR: o R² do melhor subconjunto é otimista por
+construção, porque é o MÁXIMO de muitas tentativas.
+
+Simulação: y PERMUTADO (nenhuma relação com X), 400 repetições.
+tam.   R² esperado de UM subconjunto    R² do MELHOR subconjunto
+  1                      0,0112                     0,0379
+  2                      0,0225                     0,0647
+  3                      0,0337                     0,0856
+  4                      0,0449                     0,1009
+  5                      0,0562                     0,1120
+  6                      0,0674                     0,1201
+
+Com y permutado, o R² esperado de um subconjunto fixo de tamanho k é
+k/(n-1). O R² do MELHOR de todos os subconjuntos desse tamanho é muito
+maior: no tamanho 4, 0,1009 contra 0,0449 esperados. É inflação pura,
+vinda da própria busca, sem nenhum sinal nos dados.
+
+======================================================================
+O que a busca exaustiva CUSTA, e o que ela NÃO resolve
+
+   p   subconjuntos        viável?
+  10                 1024   sim
+  12                 4096   sim
+  15                32768   sim
+  20              1048576   sim
+  25             33554432   sim
+  30           1073741824   não
+  40        1099511627776   não
+  50     1125899906842624   não
+
+O leaps::regsubsets usa ramificação e poda (branch and bound) e chega a
+p da ordem de 30 a 40; acima disso, nem ele. E o custo não é o pior
+problema: o pior é a INSTABILIDADE da escolha.
+
+======================================================================
+INSTABILIDADE: 500 reamostras bootstrap, busca exaustiva em cada uma.
+Com que frequência cada variável entra no melhor subconjunto de 4?
+
+variável        frequência de inclusão   no verdadeiro?
+M.O.                        100.0%   SIM
+V%                           98.0%   SIM
+Areia                        81.6%   -
+P (resina)                   47.8%   SIM
+K                            25.8%   -
+Argila                       13.0%   SIM
+CTC                          10.2%   -
+Ca                            9.8%   -
+Silte                         5.6%   -
+Mg                            3.8%   -
+Al                            2.6%   -
+pH                            1.8%   -
+
+O melhor subconjunto de 4 da amostra original foi reencontrado em
+apenas 36.0% das 500 reamostras.
+
+======================================================================
+A COMPARAÇÃO QUE IMPORTA: erro de PREDIÇÃO validado por k-fold
+(validação cruzada ANINHADA: a busca é refeita dentro de cada dobra)
+
+EQM de resubstituição do melhor subconjunto de 4 = 0,3470
+EQM validado, subconjunto escolhido na amostra INTEIRA = 0,4039  &lt;- OTIMISTA
+EQM validado, busca REFEITA dentro de cada dobra     = 0,4454
+EQM validado do modelo VERDADEIRO (4 variáveis)      = 0,4234
+EQM validado do modelo COMPLETO (12 variáveis)       = 0,4584
+
+Os subconjuntos escolhidos dentro de cada uma das 10 dobras:
+  dobra  1 (5 vars): M.O., P (resina), K, V%, Areia
+  dobra  2 (5 vars): M.O., P (resina), CTC, V%, Areia
+  dobra  3 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  4 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  5 (4 vars): M.O., P (resina), V%, Areia
+  dobra  6 (5 vars): M.O., P (resina), Ca, V%, Areia
+  dobra  7 (3 vars): M.O., V%, Areia
+  dobra  8 (4 vars): M.O., P (resina), V%, Areia
+  dobra  9 (4 vars): M.O., P (resina), V%, Areia
+  dobra 10 (5 vars): M.O., P (resina), K, V%, Areia</pre></div><figure class="fig"><img src="../assets/resultados/subset.png" alt="A instabilidade da escolha, a cadeia do otimismo e o custo computacional" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a frequência com que cada variável entra no melhor subconjunto de quatro, em 250 reamostras bootstrap: a argila, que está no modelo verdadeiro, entra em menos de 15% das vezes, porque a areia ocupa o lugar dela. No centro, as cinco estimativas de erro, da resubstituição à busca aninhada. À direita, o custo de \(2^p\) contra o da seleção para frente, em escala logarítmica. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Instabilidade: 500 reamostras bootstrap, busca de tamanho 4 refeita</caption><thead><tr><th>Variável</th><th>Frequência de inclusão</th><th>No modelo verdadeiro?</th></tr></thead><tbody><tr><td>M.O.</td><td>100,0%</td><td>SIM</td></tr><tr><td>V%</td><td>98,0%</td><td>SIM</td></tr><tr><td><strong>Areia</strong></td><td><strong>81,6%</strong></td><td><strong>não</strong></td></tr><tr><td>P (resina)</td><td>47,8%</td><td>SIM</td></tr><tr><td>K</td><td>25,8%</td><td>não</td></tr><tr><td><strong>Argila</strong></td><td><strong>13,0%</strong></td><td><strong>SIM</strong></td></tr><tr><td>CTC</td><td>10,2%</td><td>não</td></tr><tr><td>Ca</td><td>9,8%</td><td>não</td></tr><tr><td>Silte</td><td>5,6%</td><td>não</td></tr><tr><td>Mg</td><td>3,8%</td><td>não</td></tr><tr><td>Al</td><td>2,6%</td><td>não</td></tr><tr><td>pH</td><td>1,8%</td><td>não</td></tr></tbody></table></div><p>O melhor subconjunto de quatro da amostra original foi reencontrado em apenas <strong>36,0%</strong> das 500 reamostras.</p><div class="table-wrap"><table class="method-table"><caption>A cadeia do otimismo</caption><thead><tr><th>Estimativa</th><th>EQM</th><th>Natureza</th></tr></thead><tbody><tr><td>Resubstituição do melhor subconjunto de 4</td><td>0,3470</td><td>otimista</td></tr><tr><td>Validada, subconjunto escolhido na amostra INTEIRA</td><td>0,4039</td><td>ainda otimista</td></tr><tr><td><strong>Validada, busca REFEITA em cada dobra</strong></td><td><strong>0,4454</strong></td><td><strong>honesta</strong></td></tr><tr><td>Validada, modelo VERDADEIRO (4 variáveis)</td><td>0,4234</td><td>referência</td></tr><tr><td>Validada, modelo COMPLETO (12 variáveis)</td><td>0,4584</td><td>sem seleção</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os subconjuntos escolhidos dentro de cada dobra (por BIC)</caption><thead><tr><th>Dobra</th><th>Tam.</th><th>Variáveis</th></tr></thead><tbody><tr><td>1</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr><tr><td>2</td><td>5</td><td>M.O., P, CTC, V%, Areia</td></tr><tr><td>3</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>4</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>5</td><td>4</td><td>M.O., P, V%, Areia</td></tr><tr><td>6</td><td>5</td><td>M.O., P, Ca, V%, Areia</td></tr><tr><td>7</td><td>3</td><td>M.O., V%, Areia</td></tr><tr><td>8</td><td>4</td><td>M.O., P, V%, Areia</td></tr><tr><td>9</td><td>4</td><td>M.O., P, V%, Areia</td></tr><tr><td>10</td><td>5</td><td>M.O., P, K, V%, Areia</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela dos melhores subconjuntos mostra por que o \(R^2\) não pode escolher o tamanho — ele sobe de 0,4039 a 0,7214 e nunca desce. Os quatro critérios que penalizam a complexidade dão três respostas diferentes: \(C_p\) escolhe 4, AIC e BIC escolhem 5, o \(R^2\) ajustado escolhe 7. A discordância não é defeito de implementação: cada critério tem uma penalidade diferente, e o \(R^2\) ajustado é o mais frouxo de todos, por isso escolhe o maior modelo. Entre o modelo de 4 e o de 7, o \(R^2\) ajustado difere na quarta casa decimal (0,6816 contra 0,6947) — isto é, os critérios estão escolhendo entre modelos praticamente empatados, e a escolha é em boa medida arbitrária.</p><p><strong>Sobre a instabilidade:</strong> esta é a objeção mais séria ao método, e a tabela do bootstrap a expõe sem ambiguidade. A argila está no processo gerador e entra no melhor subconjunto em apenas 13,0% das reamostras; a areia, que <em>não</em> está, entra em 81,6%. O fósforo, que está, entra em 47,8% — menos que uma vez em duas. E o conjunto exato escolhido na amostra original reaparece em 36% das reamostras. Reportar "as variáveis selecionadas foram M.O., P, V% e areia" como se fosse um resultado sugere uma precisão que os dados não têm.</p><p><strong>Sobre o otimismo:</strong> a cadeia de cinco números tem o mesmo formato das fichas de <a href="holdout.html">avaliação de modelos</a>, e a mesma lição. A resubstituição dá 0,3470; avaliar por validação cruzada o subconjunto que foi escolhido usando todos os dados dá 0,4039 — melhor, mas ainda otimista, porque a escolha viu as dobras de teste; refazer a busca dentro de cada dobra dá 0,4454. A diferença entre 0,4039 e 0,4454 é o <strong>otimismo de seleção</strong>, e vale 10% do erro.</p><p><strong>O resultado mais desconfortável:</strong> a busca aninhada entre 4.096 modelos (0,4454) prediz <em>pior</em> que o modelo verdadeiro de quatro variáveis (0,4234). Isso não é paradoxal — é o esperado. A busca paga em variância o que ganha em flexibilidade, e quem já conhece o modelo correto não paga nada. Em compensação, a busca prediz melhor que o modelo completo com as doze (0,4584), de modo que a seleção <em>é</em> útil: ela reduz o erro em 2,8% em relação a não selecionar nada. O ganho é real e pequeno, e vale dizê-lo nessa ordem.</p><p><strong>Sobre as dobras:</strong> as dez dobras escolhem dez subconjuntos, de tamanho 3 a 5, e apenas quatro variáveis aparecem em todas: M.O., P, V% e areia. É uma forma prática de medir estabilidade sem bootstrap, e deveria ser reportada junto com a escolha final.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar o R² para escolher o tamanho</td><td>Ele é não decrescente; use Cp, BIC ou validação.</td></tr><tr><td>Ler o Cp como "mais próximo de p"</td><td>O Cp do modelo completo é sempre p; use Cp ≤ d.</td></tr><tr><td>Reportar os valores-p do modelo escolhido</td><td>Não são valores-p; veja a ficha <a href="stepwise.html">stepwise</a>.</td></tr><tr><td>Avaliar o erro no conjunto em que se escolheu</td><td>Use validação cruzada ANINHADA.</td></tr><tr><td>Apresentar o subconjunto escolhido como descoberta</td><td>Reporte a frequência de inclusão por bootstrap.</td></tr><tr><td>Aplicar a busca com p próximo de n</td><td>A inflação torna o resultado inútil.</td></tr><tr><td>Acrescentar candidatas depois de ver os resultados</td><td>Agrava a maldição do vencedor.</td></tr><tr><td>Ignorar a colinearidade antes de buscar</td><td>Variáveis redundantes se substituem ao acaso.</td></tr><tr><td>Selecionar termos quadráticos sem os principais</td><td>Use <code>force.in</code> para respeitar a hierarquia.</td></tr><tr><td>Interpretar a ausência de uma variável como ausência de efeito</td><td>Ela pode ter sido substituída por uma colinear.</td></tr><tr><td>Usar o modelo escolhido para inferência sem correção</td><td>Veja inferência pós-seleção nas alternativas.</td></tr><tr><td>Confiar em "o melhor modelo" quando os critérios discordam</td><td>A discordância é informação: os modelos estão empatados.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="stepwise.html">Seleção stepwise</a></td><td>Quando p é grande demais para a exaustiva — com as mesmas ressalvas.</td></tr><tr><td><a href="lasso.html">Lasso</a></td><td>Seleção e encolhimento simultâneos; funciona com p > n.</td></tr><tr><td><a href="ridge.html">Ridge</a></td><td>Quando não se quer selecionar, só estabilizar — e a predição é o alvo.</td></tr><tr><td>Rede elástica</td><td>Candidatas colineares em grupos, como aqui.</td></tr><tr><td><a href="pcr.html">PCR</a> e <a href="pls.html">PLS</a></td><td>Quando se quer reduzir dimensão sem descartar variáveis.</td></tr><tr><td>Médias de modelos (<em>model averaging</em>)</td><td>Quando os critérios empatam: combina em vez de escolher.</td></tr><tr><td>Pesos de evidência do AIC</td><td>Quantifica o quanto cada modelo é apoiado.</td></tr><tr><td>Reduzir candidatas por conhecimento da área</td><td>A melhor seleção de variáveis é a que não usa os dados.</td></tr><tr><td>Manter o modelo completo</td><td>Quando p é pequeno e o alvo é predição: evita a maldição do vencedor.</td></tr><tr><td>Inferência pós-seleção</td><td>Quando se precisa de intervalos válidos após selecionar.</td></tr></tbody></table></div><ol class="steps"><li>Defina as candidatas ANTES de ver os dados, e registre a lista.</li><li>Examine VIF e correlações: grupos colineares tornam a escolha arbitrária.</li><li>Verifique que n/p é confortável — ao menos 10.</li><li>Rode a busca com <code>regsubsets</code> e examine o melhor de cada tamanho.</li><li>Escolha o tamanho por BIC ou por validação cruzada, nunca por R².</li><li>Estime o erro por validação ANINHADA, refazendo a busca em cada dobra.</li><li>Meça a estabilidade por bootstrap e reporte as frequências de inclusão.</li><li>Não reporte valores-p do modelo escolhido.</li><li>Compare com o lasso e com o ridge antes de concluir que a seleção ajudou.</li><li>Se os critérios discordarem, diga isso em vez de escolher um deles.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>MILLER, Alan J. <em>Subset selection in regression.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2002.</li><li>MALLOWS, Colin L. Some comments on Cp. <em>Technometrics</em>, v. 15, n. 4, p. 661-675, 1973.</li><li>FURNIVAL, George M.; WILSON, Robert W. Regressions by leaps and bounds. <em>Technometrics</em>, v. 16, n. 4, p. 499-511, 1974.</li><li>AKAIKE, Hirotugu. A new look at the statistical model identification. <em>IEEE Transactions on Automatic Control</em>, v. 19, n. 6, p. 716-723, 1974.</li><li>SCHWARZ, Gideon. Estimating the dimension of a model. <em>The Annals of Statistics</em>, v. 6, n. 2, p. 461-464, 1978.</li><li>BERK, Richard; BROWN, Lawrence; BUJA, Andreas; ZHANG, Kai; ZHAO, Linda. Valid post-selection inference. <em>The Annals of Statistics</em>, v. 41, n. 2, p. 802-837, 2013.</li><li>LOCKHART, Richard; TAYLOR, Jonathan; TIBSHIRANI, Ryan J.; TIBSHIRANI, Robert. A significance test for the lasso. <em>The Annals of Statistics</em>, v. 42, n. 2, p. 413-468, 2014.</li><li>BURNHAM, Kenneth P.; ANDERSON, David R. <em>Model selection and multimodel inference.</em> 2. ed. New York: Springer, 2002.</li><li>FREEDMAN, David A. A note on screening regression equations. <em>The American Statistician</em>, v. 37, n. 2, p. 152-155, 1983.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>HOCKING, R. R. The analysis and selection of variables in linear regression. <em>Biometrics</em>, v. 32, n. 1, p. 1-49, 1976.</li><li>LUMLEY, Thomas; MILLER, Alan. <em>leaps: regression subset selection.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=leaps" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=leaps</a>.</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>, função <code>vif</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os do modelo linear, n consideravelmente maior que p, candidatas definidas antes de ver os dados, σ² estimável para o Cp e avaliação do erro por validação cruzada aninhada.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>leaps, car</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="bias-variance.html"><span>← ANTERIOR</span>Compromisso viés–variância</a><a href="stepwise.html"><span>PRÓXIMO →</span>Seleção stepwise por AIC</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

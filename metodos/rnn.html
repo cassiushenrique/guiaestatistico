@@ -4,341 +4,399 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Redes neurais recorrentes (RNN): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Redes neurais recorrentes (RNN) | Estatística e Ciência de Dados
-  </title>
+<meta content="Redes neurais recorrentes (RNN): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Redes neurais recorrentes (RNN) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Redes neurais recorrentes (RNN)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 18 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Redes neurais recorrentes (RNN)
-    </h1>
-<p class="detail-lead">
-     Analisa sequências temporais para prever comportamentos ou eventos futuros.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/rnn.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Analisa sequências temporais para prever comportamentos ou eventos futuros.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Ordem temporal real.</li><li>treino anterior ao teste.</li><li>escalonamento apenas com treino.</li><li>janelas que não vazem informação futura e validação temporal.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbf h_t=\phi(\mathbf W_x\mathbf x_t+\mathbf W_h\mathbf h_{t-1}+\mathbf b)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de entradas
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf W\)
-        </dt>
-<dd>
-         matriz de pesos ajustáveis
-        </dd>
-</div>
-<div>
-<dt>
-         \(\phi\)
-        </dt>
-<dd>
-         função de ativação
-        </dd>
-</div>
-<div>
-<dt>
-         \(\widehat y\)
-        </dt>
-<dd>
-         saída predita pela rede
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Avalie erro em períodos futuros não usados no treino; \(p&lt;0{,}05\) não representa qualidade da previsão.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        A série AirPassengers representa passageiros mensais de companhias aéreas e contém tendência e sazonalidade.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Previsão de passageiros mensais (AirPassengers, R base) como análogo de demanda de sistemas de transporte.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-rnn" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-rnn"><code># Redes neurais recorrentes (RNN) ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("keras3", quietly = TRUE)) install.packages("keras3")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Redes neurais recorrentes (RNN)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REDES NEURAIS</span><h1>Redes neurais recorrentes (RNN)</h1><p class="detail-lead">Lê a sequência um passo de cada vez, com um estado que resume o passado e os mesmos pesos em todos os passos — usa a ordem que os outros modelos ignoram.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/rnn.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/rnn.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma rede recorrente</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Os modelos das fichas anteriores tratam as entradas como um conjunto sem ordem: trocar a coluna do dia 3 pela do dia 17 não muda nada para eles. Para uma sequência — 30 dias de clima, uma série de leituras, uma frase —, a ordem é informação. A rede recorrente lê a sequência <strong>um passo de cada vez</strong>, mantendo um <strong>estado</strong> que resume o que veio antes e que é atualizado a cada passo pelos mesmos pesos.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: RNN" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O estado</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">h_t resume o</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">passado</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A recorrência</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Mesmos pesos</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">em todos os passos</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O treino</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Retropropagação</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">no tempo</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Gradiente que se</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">desvanece ou explode</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Os remédios</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Corte da norma;</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">LSTM e GRU</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ganho</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Usa a ordem</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">RNN</text></svg><figcaption>Visão geral da rede recorrente. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Dois talhões com a mesma contagem</strong><p>Nos dados de teste há dois talhões com exatamente 5 dias favoráveis em 30. No primeiro, os dias estão espalhados (maior sequência: 1 dia) e a probabilidade verdadeira de surto é 0,0411. No segundo, são 5 dias seguidos, e a probabilidade é 0,7408. Qualquer modelo que só conte os dias dá a mesma resposta aos dois. Uma RNN pode distingui-los.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma rede recorrente</h2><p>Em cada dia \(t\), a rede combina a entrada do dia \(x_t\) com o estado anterior \(h_{t-1}\) e produz o novo estado \(h_t\). Depois do último dia, uma camada de saída transforma \(h_{30}\) na probabilidade de surto. Desenrolada no tempo, uma RNN é uma rede muito profunda — 30 camadas — em que todas as camadas compartilham os mesmos pesos.</p><figure class="fig"><img src="../assets/resultados/rnn-didatica.png" alt="Diagrama da rede recorrente desenrolada no tempo e as sequências de dois talhões com a mesma contagem de dias favoráveis" loading="lazy"/><figcaption><strong>A recorrência e o problema.</strong> À esquerda, a RNN desenrolada: cada estado h recebe a entrada do dia e o estado anterior, sempre pelos mesmos pesos; só o último estado vai para a saída. À direita, os dias favoráveis (vermelho) de dois talhões de teste com 5 dias favoráveis cada: espalhados no talhão A, seguidos no talhão B. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Modelos para sequências</caption><thead><tr><th>Modelo</th><th>Usa a ordem?</th><th>Parâmetros (aqui)</th></tr></thead><tbody><tr><td>Logística em resumos (médias, contagens)</td><td>Não</td><td>2 ou 3</td></tr><tr><td>MLP nos 60 valores</td><td>Em princípio; sem compartilhar pesos</td><td>1.985</td></tr><tr><td><strong>RNN simples (Elman)</strong></td><td><strong>Sim</strong></td><td><strong>321</strong></td></tr><tr><td>LSTM / GRU</td><td>Sim, com memória longa</td><td>≈ 4 vezes a RNN</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Sequências independentes entre si</td><td>Cada talhão é uma unidade.</td><td>Desenho; validação por talhão ou por período.</td></tr><tr><td>Entradas padronizadas</td><td>tanh satura.</td><td>Média e desvio do treino.</td></tr><tr><td><strong>Treino estável</strong></td><td>Gradientes explodem na recorrência.</td><td>Corte da norma; curva do erro.</td></tr><tr><td>Memória necessária</td><td>RNN simples esquece depressa.</td><td>Sensibilidade a dias antigos; LSTM/GRU.</td></tr><tr><td>Dados suficientes</td><td>A rede aprende o que agrônomos já sabem a duras penas.</td><td>Compare com variáveis construídas por conhecimento.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[h_t=\tanh\left(W_x^\top x_t+W_h^\top h_{t-1}+b\right),\]\[h_0=0,\]\[q=\sigma\left(v^\top h_T+c\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(x_t\)</dt><dd>entrada no dia \(t\): temperatura e molhamento padronizados</dd></div><div><dt>\(h_t\)</dt><dd>estado oculto, com \(H\) componentes</dd></div><div><dt>\(W_x,\ W_h,\ b\)</dt><dd>pesos da entrada, da recorrência e viés — os mesmos em todos os dias</dd></div><div><dt>\(T\)</dt><dd>comprimento da sequência (30)</dd></div></dl><h3>A retropropagação no tempo</h3><p>O gradiente em relação a uma entrada antiga passa por todos os estados intermediários:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\frac{\partial h_T}{\partial h_t}=\prod_{s=t+1}^{T}\operatorname{diag}\left(1-h_s^2\right)W_h^\top\]</div><p>É um produto de \(T-t\) matrizes. Se elas "encolhem" vetores (raio espectral efetivo menor que 1), o produto vai a zero exponencialmente — o <strong>gradiente que se desvanece</strong> (Bengio, Simard e Frasconi, 1994), e a rede não aprende a usar o passado distante. Se "esticam", o produto explode, e um passo de treino pode jogar os pesos para longe: o remédio é o <strong>corte da norma do gradiente</strong> (Pascanu, Mikolov e Bengio, 2013).</p><h3>Exemplo numérico: quatro dias com H = 2 e pesos escolhidos à mão</h3><div class="table-wrap"><table class="method-table"><caption>O estado ao longo dos dias</caption><thead><tr><th>Dia</th><th>x (temperatura, molhamento)</th><th>h</th></tr></thead><tbody><tr><td>1</td><td>(2,171; −0,906)</td><td>(−0,363; −0,522)</td></tr><tr><td>2</td><td>(1,512; −0,059)</td><td>(−0,089; −0,453)</td></tr><tr><td>3</td><td>(1,413; 0,572)</td><td>(0,549; −0,182)</td></tr><tr><td>4</td><td>(1,189; 0,895)</td><td>(0,852; 0,129)</td></tr></tbody></table></div><div class="worked"><strong>O estado acumula</strong><p>Com \(W_x=\begin{pmatrix}0{,}2&-0{,}1\\0{,}9&0{,}4\end{pmatrix}\) e \(W_h=\begin{pmatrix}0{,}5&0\\0{,}3&0{,}6\end{pmatrix}\), no dia 1 o estado parte de zero e só reflete a entrada. A partir do dia 2, cada estado é uma mistura da entrada do dia com o estado anterior: nos dias 3 e 4, com molhamento acima da média, a primeira componente sobe de −0,089 para 0,549 e 0,852 — ela "conta" dias úmidos seguidos, decaindo quando o molhamento cai. Treinar a rede é encontrar pesos que façam um dos componentes de \(h\) se comportar como um contador de dias favoráveis seguidos.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Processa sequências de qualquer comprimento com o mesmo número de parâmetros.</li><li>Usa a ordem: permutar os passos muda a saída.</li><li>Desenrolada, é uma rede profunda com pesos compartilhados.</li><li>Treino instável sem corte do gradiente.</li><li>Memória curta na versão simples; LSTM e GRU usam portões para preservar o estado.</li><li>Para sequências longas e muitos dados, convoluções 1D e transformadores são alternativas.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Curva do erro por época</td><td>Estabilidade do treino.</td><td>Oscilação: passo grande ou falta de corte.</td></tr><tr><td>Erro com a ordem embaralhada</td><td>Se a rede usa a ordem.</td><td>Compare com o erro na ordem verdadeira.</td></tr><tr><td>Sensibilidade a cada passo</td><td>Até onde vai a memória.</td><td>Antes e depois do treino.</td></tr><tr><td>Comparação com resumos</td><td>Quanto vale a ordem.</td><td>Use resumos construídos com conhecimento do problema.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>No R, o pacote <code>keras3</code> (com instalação adicional do Python e do TensorFlow) oferece <code>layer_simple_rnn()</code>, <code>layer_lstm()</code> e <code>layer_gru()</code>; as entradas são um arranjo de dimensão (sequências, passos, variáveis). O corte da norma do gradiente é o argumento <code>clipnorm</code> do otimizador. O pacote <code>torch</code> é a alternativa sem Python. Em Python, <code>keras</code> ou <code>torch.nn.RNN</code>, <code>LSTM</code> e <code>GRU</code>. O script desta ficha implementa a RNN em <code>numpy</code>, com a retropropagação no tempo e o otimizador Adam escritos à mão.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-rnn-min" type="button">Copiar código</button></div><pre id="code-rnn-min"><code>library(keras3)
+rnn &lt;- keras_model_sequential(input_shape = c(30, 2)) |&gt;
+  layer_simple_rnn(units = 16) |&gt;
+  layer_dense(units = 1, activation = "sigmoid")
+rnn |&gt; compile(optimizer = optimizer_adam(0.003, clipnorm = 1),
+               loss = "binary_crossentropy", metrics = "accuracy")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>3.000 talhões</strong> de café (2.000 para treino e 1.000 para teste), cada um com <strong>30 dias</strong> de temperatura média (°C) e de horas de molhamento foliar, e a ocorrência de <strong>surto de ferrugem</strong> na semana seguinte (36,05% dos talhões de treino). O clima tem períodos chuvosos persistentes, como na realidade. O processo gerador é conhecido: um dia é <strong>favorável</strong> à infecção quando tem 8 horas ou mais de folha molhada e temperatura entre 19 e 25 °C, e o risco de surto depende da <strong>maior sequência de dias favoráveis seguidos</strong>, não do número total deles — a infecção exige que as condições se mantenham. As duas grandezas têm correlação 0,8424; a diferença entre elas é justamente a informação de <em>ordem</em>. O erro de Bayes é 0,1848. O arquivo clima.csv (pasta scripts/ do site) traz um talhão por linha, com as 30 temperaturas e os 30 molhamentos.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-rnn" type="button">Copiar código</button></div><pre id="code-rnn"><code># Redes neurais recorrentes (RNN): exemplo completo ----
+# Pacote: keras3 (exige instalar o Python e o TensorFlow uma única vez)
+# install.packages("keras3"); keras3::install_keras()
 library(keras3)
-set.seed(2026)
-s &lt;- as.numeric(log(AirPassengers))
-centro &lt;- mean(s[1:100]); escala &lt;- sd(s[1:100])
-z &lt;- (s - centro) / escala
-janela &lt;- 12
-X &lt;- array(0, c(length(z) - janela, janela, 1))
-Y &lt;- numeric(length(z) - janela)
-for (i in seq_along(Y)) {
-  X[i,,1] &lt;- z[i:(i+janela-1)]
-  Y[i] &lt;- z[i+janela]
-}
-tr &lt;- 1:100; te &lt;- 101:length(Y)
-modelo &lt;- keras_model_sequential(input_shape = c(janela, 1)) |&gt;
-  layer_simple_rnn(units = 12, activation = "tanh") |&gt;
-  layer_dense(units = 1)
-modelo |&gt; compile(optimizer = "adam", loss = "mse")
-modelo |&gt; fit(X[tr,,,drop=FALSE], Y[tr], epochs = 25,
-              batch_size = 16, verbose = 0)
-pred &lt;- as.numeric(modelo |&gt; predict(X[te,,,drop=FALSE], verbose = 0))
-print(c(RMSE_log_padronizado = sqrt(mean((Y[te] - pred)^2))))
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/clima.csv"
+cl &lt;- if (file.exists("clima.csv")) read.csv("clima.csv") else read.csv(url)
+tr &lt;- cl[cl$conjunto == "treino", ]; te &lt;- cl[cl$conjunto == "teste", ]
+temp_tr &lt;- as.matrix(tr[, paste0("temp", 1:30)]); molh_tr &lt;- as.matrix(tr[, paste0("molh", 1:30)])
+temp_te &lt;- as.matrix(te[, paste0("temp", 1:30)]); molh_te &lt;- as.matrix(te[, paste0("molh", 1:30)])
 
-# Visualização e diagnóstico ----
-plot(AirPassengers, xlab = "Ano", ylab = "Passageiros", main = "Série mensal")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. As referências que ignoram a ordem
+fav &lt;- function(t, m) (m &gt;= 8) &amp; (t &gt;= 19) &amp; (t &lt;= 25)
+maior_seq &lt;- function(f) apply(f, 1, function(r) { x &lt;- rle(r); max(c(0, x$lengths[x$values])) })
+d_tr &lt;- data.frame(surto = tr$surto, n_fav = rowSums(fav(temp_tr, molh_tr)),
+                   seq = maior_seq(fav(temp_tr, molh_tr)))
+d_te &lt;- data.frame(surto = te$surto, n_fav = rowSums(fav(temp_te, molh_te)),
+                   seq = maior_seq(fav(temp_te, molh_te)))
+g_cont &lt;- glm(surto ~ n_fav, data = d_tr, family = binomial)
+mean((predict(g_cont, d_te, type = "response") &gt;= 0.5) != d_te$surto)   # conta os dias
+g_seq &lt;- glm(surto ~ seq, data = d_tr, family = binomial)               # o "oráculo"
+mean((predict(g_seq, d_te, type = "response") &gt;= 0.5) != d_te$surto)
 
+# ---- 2. A RNN nos dados brutos: entradas (talhões, 30 dias, 2 variáveis)
+mt &lt;- mean(temp_tr); st &lt;- sd(temp_tr); mm &lt;- mean(molh_tr); sm &lt;- sd(molh_tr)
+arr &lt;- function(t, m) { a &lt;- array(0, c(nrow(t), 30, 2))
+  a[, , 1] &lt;- (t - mt) / st; a[, , 2] &lt;- (m - mm) / sm; a }
+Xtr &lt;- arr(temp_tr, molh_tr); Xte &lt;- arr(temp_te, molh_te)
+set_random_seed(1)
+rnn &lt;- keras_model_sequential(input_shape = c(30, 2)) |&gt;
+  layer_simple_rnn(units = 16, activation = "tanh") |&gt;
+  layer_dense(units = 1, activation = "sigmoid")
+summary(rnn)                                   # 321 parâmetros
+rnn |&gt; compile(optimizer = optimizer_adam(learning_rate = 0.003, clipnorm = 1),
+               loss = "binary_crossentropy", metrics = "accuracy")
+rnn |&gt; fit(Xtr, tr$surto, epochs = 150, batch_size = 64, validation_split = 0.2, verbose = 0)
+rnn |&gt; evaluate(Xte, te$surto)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Exige backend TensorFlow/Python e treinamento computacional. Dependência temporal obriga avaliar janelas e evitar partição aleatória.
-      </p>
-</aside>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Na predição temporal, a avaliação precisa respeitar a ordem cronológica. O exemplo exige instalação e configuração do backend TensorFlow.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="cnn.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Redes neurais convolucionais (CNN)
-    </a>
-<span>
-</span>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. A RNN no indicador de dia favorável (+1 / -1)
+Ftr &lt;- array(2 * fav(temp_tr, molh_tr) - 1, c(nrow(tr), 30, 1))
+Fte &lt;- array(2 * fav(temp_te, molh_te) - 1, c(nrow(te), 30, 1))
+rnn2 &lt;- keras_model_sequential(input_shape = c(30, 1)) |&gt;
+  layer_simple_rnn(16) |&gt; layer_dense(1, activation = "sigmoid")
+rnn2 |&gt; compile(optimizer = optimizer_adam(0.001, clipnorm = 1), loss = "binary_crossentropy",
+                metrics = "accuracy")
+rnn2 |&gt; fit(Ftr, tr$surto, epochs = 150, batch_size = 64, verbose = 0)
+rnn2 |&gt; evaluate(Fte, te$surto)
+
+# ---- 4. A rede usa a ordem? Avalie com os dias embaralhados
+set.seed(9); o &lt;- sample(30)
+rnn2 |&gt; evaluate(Fte[, o, , drop = FALSE], te$surto)
+
+# ---- 5. As variantes com portões: troque layer_simple_rnn por
+#   layer_lstm(16)   ou   layer_gru(16)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-rnn" type="button">Copiar código</button></div><pre id="code-py-rnn"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16rnn)
+# ------------------------------------------------------------------
+import numpy as np
+# Sequências fictícias de 30 dias de clima em talhões de café, e a ocorrência
+# de SURTO de ferrugem na semana seguinte. A infecção exige vários dias
+# SEGUIDOS de folha molhada (&gt;= 8 h) com temperatura entre 19 e 25 C:
+# o que importa é a MAIOR SEQUÊNCIA de dias favoráveis, não a quantidade.
+T = 30
+def clima(rg, n):
+    chuva = np.zeros((n, T), bool); st = rg.random(n) &lt; 0.3
+    for t in range(T):                         # períodos chuvosos persistentes
+        st = np.where(st, rg.random(n) &lt; 0.72, rg.random(n) &lt; 0.20); chuva[:, t] = st
+    molh = np.clip(np.where(chuva, rg.normal(10.5, 2.5, (n, T)), rg.normal(4.0, 2.5, (n, T))), 0, 24)
+    base = rg.normal(22, 2.2, n)[:, None]
+    temp = base + np.cumsum(rg.normal(0, 0.6, (n, T)), 1)*0.5 - 1.2*chuva + rg.normal(0, 0.8, (n, T))
+    return temp, molh
+
+def favoravel(temp, molh): return (molh &gt;= 8) &amp; (temp &gt;= 19) &amp; (temp &lt;= 25)
+def maior_seq(f):
+    r = np.zeros(f.shape[0], int); cur = np.zeros(f.shape[0], int)
+    for t in range(f.shape[1]):
+        cur = np.where(f[:, t], cur + 1, 0); r = np.maximum(r, cur)
+    return r
+def p_surto(temp, molh): return 1/(1 + np.exp(-(-4.2 + 1.05*maior_seq(favoravel(temp, molh)))))
+
+def amostra(n, semente):
+    rg = np.random.default_rng(semente); temp, molh = clima(rg, n)
+    p = p_surto(temp, molh); y = (rg.random(n) &lt; p).astype(int)
+    return temp, molh, y, p
+TTR, MTR, YTR, PTR = amostra(2000, 31)
+TTE, MTE, YTE, PTE = amostra(1000, 32)
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def aval(q, y):
+    qq = np.clip(q, 1e-7, 1 - 1e-7)
+    return float(np.mean((q &gt;= .5) != y)), float(-np.mean(y*np.log(qq) + (1 - y)*np.log(1 - qq)))
+
+print('CLIMA E FERRUGEM (dados fictícios): 30 dias de temperatura média (C) e')
+print('horas de molhamento foliar por dia, em 3.000 talhões; resposta: surto de')
+print('ferrugem na semana seguinte (1) ou não (0).')
+print('Processo gerador CONHECIDO: o risco depende da MAIOR SEQUÊNCIA de dias')
+print('favoráveis seguidos (molhamento &gt;= 8 h e temperatura de 19 a 25 C).')
+erro_bayes = float(np.mean(np.minimum(PTE, 1 - PTE)))
+print('  treino: 2.000 talhões; teste: 1.000. Prevalência no treino = %s' % c(YTR.mean()))
+print('  erro de Bayes no teste = %s' % c(erro_bayes))
+f = favoravel(TTR, MTR)
+print('  correlação entre o NÚMERO de dias favoráveis e a MAIOR SEQUÊNCIA = %s' % c(np.corrcoef(f.sum(1), maior_seq(f))[0, 1]))
+
+print('\n' + '='*70)
+print('DOIS TALHÕES COM O MESMO NÚMERO DE DIAS FAVORÁVEIS')
+fte = favoravel(TTE, MTE); cnt = fte.sum(1); seq = maior_seq(fte)
+for k in range(4, 12):
+    i = np.where(cnt == k)[0]
+    if len(i) &gt; 1 and seq[i].max() - seq[i].min() &gt;= 4: break
+a, b = i[np.argmin(seq[i])], i[np.argmax(seq[i])]
+for nm, j in [('A', a), ('B', b)]:
+    print('  talhão %s: %d dias favoráveis, maior sequência %d, P(surto) = %s' % (nm, cnt[j], seq[j], c(PTE[j])))
+    print('     ' + ''.join('#' if v else '.' for v in fte[j]))
+print('Um modelo que só conta os dias não distingue A de B. A ORDEM importa.')
+
+# ------------------------------------------------------------ preparação
+mt, st_ = TTR.mean(), TTR.std(); mm, sm = MTR.mean(), MTR.std()
+def entrada(Tm, Mo): return np.stack([(Tm - mt)/st_, (Mo - mm)/sm], -1)      # (n, T, 2)
+Xtr, Xte = entrada(TTR, MTR), entrada(TTE, MTE)
+
+# ------------------------------------------------------------ a rede recorrente
+def rnn_frente(X, p):
+    n = X.shape[0]; H = p['Wh'].shape[0]; h = np.zeros((n, H)); hs = [h]
+    for t in range(X.shape[1]):
+        h = np.tanh(X[:, t] @ p['Wx'] + h @ p['Wh'] + p['b']); hs.append(h)
+    q = 1/(1 + np.exp(-(h @ p['v'] + p['c'])))
+    return q, hs
+
+def rnn_gradiente(X, y, p):
+    q, hs = rnn_frente(X, p); n = len(y)
+    g = (q - y)/n
+    gr = {k: np.zeros_like(v) for k, v in p.items()}
+    gr['v'] = hs[-1].T @ g; gr['c'] = np.array([g.sum()])
+    dh = np.outer(g, p['v'])
+    for t in range(X.shape[1] - 1, -1, -1):                  # retropropagação no tempo
+        da = dh*(1 - hs[t + 1]**2)
+        gr['Wx'] += X[:, t].T @ da; gr['Wh'] += hs[t].T @ da; gr['b'] += da.sum(0)
+        dh = da @ p['Wh'].T
+    return gr
+
+def treina_rnn(A, H=16, epocas=150, semente=0, lote=64, eta=0.001, corte=1.0, embaralha=False, B=None, marcas=()):
+    """Adam com corte da norma do gradiente (corte=None desliga)."""
+    rg = np.random.default_rng(semente); d = A.shape[2]
+    p = dict(Wx=rg.normal(0, 0.5, (d, H)), Wh=rg.normal(0, 0.9/np.sqrt(H), (H, H)), b=np.zeros(H),
+             v=rg.normal(0, 0.3, H), c=np.zeros(1))
+    est = {}; t = 0; n = len(YTR); hist = []
+    for ep in range(epocas):
+        for ii in np.array_split(rg.permutation(n), n//lote):
+            Xb = A[ii]
+            if embaralha: Xb = Xb[:, rg.permutation(T)]
+            gr = rnn_gradiente(Xb, YTR[ii], p); t += 1
+            if corte:
+                nrm = np.sqrt(sum((g**2).sum() for g in gr.values()))
+                if nrm &gt; corte: gr = {k: g*corte/nrm for k, g in gr.items()}
+            for k in p:
+                m, v = est.get(k, (0, 0)); m = 0.9*m + 0.1*gr[k]; v = 0.999*v + 0.001*gr[k]**2; est[k] = (m, v)
+                p[k] -= eta*(m/(1 - 0.9**t))/(np.sqrt(v/(1 - 0.999**t)) + 1e-8)
+        if ep + 1 in marcas: hist.append((ep + 1, aval(rnn_frente(A, p)[0], YTR), aval(rnn_frente(B, p)[0], YTE)))
+    return p, hist
+
+print('\n' + '='*70)
+print('A RECORRÊNCIA:  h_t = tanh(W_x x_t + W_h h_(t-1) + b),  q = sigma(v . h_30 + c)')
+print('Os MESMOS pesos são usados em todos os 30 dias. Exemplo com H = 2 e pesos')
+print('escolhidos à mão, para um talhão, nos 4 primeiros dias:')
+pe = dict(Wx=np.array([[0.2, -0.1], [0.9, 0.4]]), Wh=np.array([[0.5, 0.0], [0.3, 0.6]]), b=np.zeros(2))
+h = np.zeros(2)
+for t in range(4):
+    x = Xte[a, t]; a_ = x @ pe['Wx'] + h @ pe['Wh'] + pe['b']; h = np.tanh(a_)
+    print('  dia %d: x = (%s, %s)  -&gt;  h = (%s, %s)' % (t + 1, c(x[0], 3), c(x[1], 3), c(h[0], 3), c(h[1], 3)))
+print('O estado h carrega um resumo de TUDO o que veio antes.')
+
+print('\n' + '='*70)
+print('TREINO DA RNN NOS DADOS BRUTOS (temperatura e molhamento de cada dia)')
+print('H = 16, Adam, lotes de 64, retropropagação no tempo. Duas configurações:')
+mk = (5, 20, 50, 100, 150)
+pa, ha = treina_rnn(Xtr, eta=0.01, corte=None, B=Xte, marcas=mk)
+pb, hb = treina_rnn(Xtr, eta=0.003, corte=1.0, B=Xte, marcas=mk)
+print()
+print('%7s %26s %26s' % ('', 'eta = 0,01, sem corte', 'eta = 0,003, corte em 1'))
+print('%7s %13s %12s %13s %12s' % ('época', 'erro teste', 'log-loss', 'erro teste', 'log-loss'))
+for (ep, _, ta), (_, _, tb) in zip(ha, hb): print('%7d %13s %12s %13s %12s' % (ep, c(ta[0]), c(ta[1]), c(tb[0]), c(tb[1])))
+print('Passo grande sem corte: o erro oscila e não melhora. O CORTE DA NORMA')
+print('do gradiente impede os saltos que a recorrência produz.')
+p = pb
+
+print('\n' + '='*70)
+print('A RNN COM UM PRÉ-PROCESSAMENTO AGRONÔMICO')
+print('Em vez dos valores brutos, cada dia entra como +1 (favorável) ou -1.')
+print('A rede não precisa mais descobrir a faixa de 19 a 25 C: só a parte TEMPORAL.')
+Ftr = favoravel(TTR, MTR)[..., None]*2.0 - 1; Fte = fte[..., None]*2.0 - 1
+pf, hf = treina_rnn(Ftr, eta=0.001, corte=1.0, B=Fte, marcas=mk)
+print()
+print('%7s %14s %14s %14s' % ('época', 'erro treino', 'erro teste', 'log-loss teste'))
+for ep, tr_, te_ in hf: print('%7d %14s %14s %14s' % (ep, c(tr_[0]), c(te_[0]), c(te_[1])))
+print('  parâmetros: dados brutos %d; dia favorável %d' % (sum(v.size for v in pb.values()), sum(v.size for v in pf.values())))
+
+print('\n' + '='*70)
+print('COMPARAÇÃO NO TESTE')
+res = []
+def lg(A, B):
+    m = LogisticRegression(C=1e4, max_iter=5000).fit(A, YTR); return m.predict_proba(B)[:, 1]
+res.append(('logística nas MÉDIAS (temp., molhamento)', lg(np.column_stack([TTR.mean(1), MTR.mean(1)]), np.column_stack([TTE.mean(1), MTE.mean(1)]))))
+res.append(('logística no NÚMERO de dias favoráveis', lg(f.sum(1)[:, None], fte.sum(1)[:, None])))
+m = MLPClassifier((32,), alpha=1e-2, max_iter=3000, random_state=0).fit(Xtr.reshape(2000, -1), YTR)
+res.append(('MLP nos 60 valores, dia a dia', m.predict_proba(Xte.reshape(1000, -1))[:, 1]))
+res.append(('RNN nos dados brutos', rnn_frente(Xte, pb)[0]))
+res.append(('RNN no indicador de dia favorável', rnn_frente(Fte, pf)[0]))
+res.append(('logística na MAIOR SEQUÊNCIA (oráculo)', lg(maior_seq(f)[:, None], seq[:, None])))
+print()
+print('%-44s %10s %10s' % ('modelo', 'erro', 'log-loss'))
+for nm, q in res: print('%-44s %10s %10s' % (nm, *[c(v) for v in aval(q, YTE)]))
+print('%-44s %10s' % ('erro de Bayes', c(erro_bayes)))
+print('O "oráculo" recebe a variável que gerou os dados; nenhum método real a')
+print('teria. Ele mostra o quanto ainda é possível ganhar.')
+
+print('\n' + '='*70)
+print('A RNN USA A ORDEM? Teste com os dias EMBARALHADOS (RNN do dia favorável)')
+rg = np.random.default_rng(9); ordem = rg.permutation(T)
+print('  erro no teste, ordem verdadeira       = %s' % c(aval(rnn_frente(Fte, pf)[0], YTE)[0]))
+print('  erro no teste, dias embaralhados      = %s' % c(aval(rnn_frente(Fte[:, ordem], pf)[0], YTE)[0]))
+print('E se a rede for TREINADA com os dias embaralhados? Só pode aprender a contar:')
+p2, _ = treina_rnn(Ftr, eta=0.001, corte=1.0, embaralha=True)
+print('  erro no teste = %s | log-loss = %s' % tuple(c(v) for v in aval(rnn_frente(Fte, p2)[0], YTE)))
+print('  (compare com a logística no NÚMERO de dias favoráveis, acima)')
+
+print('\n' + '='*70)
+print('O GRADIENTE QUE SE DESVANECE')
+print('Sensibilidade da saída a uma pequena mudança no molhamento de cada dia,')
+print('média sobre os talhões de teste (diferenças finitas), na rede dos dados')
+print('brutos ANTES e DEPOIS do treino:')
+p0, _ = treina_rnn(Xtr, epocas=0, semente=0)            # pesos iniciais, sem treino
+def sensib(pp):
+    q0 = rnn_frente(Xte, pp)[0]; out = []
+    for t in range(T):
+        Z = Xte.copy(); Z[:, t, 1] += 0.01; out.append(float(np.mean(np.abs(rnn_frente(Z, pp)[0] - q0))/0.01))
+    return np.array(out)
+s0, s1 = sensib(p0), sensib(pb)
+print()
+print('%6s %16s %16s' % ('dia', 'antes do treino', 'depois'))
+for t in [0, 4, 9, 14, 19, 24, 27, 29]: print('%6d %16s %16s' % (t + 1, c(s0[t], 5), c(s1[t], 5)))
+print('  razão dia 30 / dia 1: antes %s ; depois %s' % (c(s0[-1]/s0[0], 1), c(s1[-1]/s1[0], 2)))
+rho = lambda W: float(np.max(np.abs(np.linalg.eigvals(W))))
+print('  raio espectral de W_h: antes %s ; depois %s' % (c(rho(p0['Wh']), 3), c(rho(pb['Wh']), 3)))
+print('Na partida, a influência de um dia cai por um fator a cada passo, e o')
+print('dia 1 quase não chega à saída: é o gradiente que se desvanece. O treino')
+print('aumentou W_h e aprendeu a reter a memória, o que é possível em 30 passos.')
+print('Em sequências de centenas de passos a RNN simples não consegue; as')
+print('variantes LSTM e GRU usam portões para preservar a memória.')
+
+print('\n' + '='*70)
+print('VARIABILIDADE ENTRE TREINOS: 4 sementes, RNN do dia favorável')
+for s_ in range(1, 5):
+    pp, _ = treina_rnn(Ftr, eta=0.001, corte=1.0, semente=s_)
+    print('  semente %d: erro teste %s | log-loss %s' % (s_, *[c(v) for v in aval(rnn_frente(Fte, pp)[0], YTE)]))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">CLIMA E FERRUGEM (dados fictícios): 30 dias de temperatura média (C) e
+horas de molhamento foliar por dia, em 3.000 talhões; resposta: surto de
+ferrugem na semana seguinte (1) ou não (0).
+Processo gerador CONHECIDO: o risco depende da MAIOR SEQUÊNCIA de dias
+favoráveis seguidos (molhamento &gt;= 8 h e temperatura de 19 a 25 C).
+  treino: 2.000 talhões; teste: 1.000. Prevalência no treino = 0,3605
+  erro de Bayes no teste = 0,1848
+  correlação entre o NÚMERO de dias favoráveis e a MAIOR SEQUÊNCIA = 0,8424
+
+======================================================================
+DOIS TALHÕES COM O MESMO NÚMERO DE DIAS FAVORÁVEIS
+  talhão A: 5 dias favoráveis, maior sequência 1, P(surto) = 0,0411
+     ...#..#.............#...#....#
+  talhão B: 5 dias favoráveis, maior sequência 5, P(surto) = 0,7408
+     #####.........................
+Um modelo que só conta os dias não distingue A de B. A ORDEM importa.
+
+======================================================================
+A RECORRÊNCIA:  h_t = tanh(W_x x_t + W_h h_(t-1) + b),  q = sigma(v . h_30 + c)
+Os MESMOS pesos são usados em todos os 30 dias. Exemplo com H = 2 e pesos
+escolhidos à mão, para um talhão, nos 4 primeiros dias:
+  dia 1: x = (2,171, -0,906)  -&gt;  h = (-0,363, -0,522)
+  dia 2: x = (1,512, -0,059)  -&gt;  h = (-0,089, -0,453)
+  dia 3: x = (1,413, 0,572)  -&gt;  h = (0,549, -0,182)
+  dia 4: x = (1,189, 0,895)  -&gt;  h = (0,852, 0,129)
+O estado h carrega um resumo de TUDO o que veio antes.
+
+======================================================================
+TREINO DA RNN NOS DADOS BRUTOS (temperatura e molhamento de cada dia)
+H = 16, Adam, lotes de 64, retropropagação no tempo. Duas configurações:
+
+             eta = 0,01, sem corte    eta = 0,003, corte em 1
+  época    erro teste     log-loss    erro teste     log-loss
+      5        0,2890       0,5519        0,2740       0,5495
+     20        0,3710       0,6162        0,2810       0,5486
+     50        0,3510       0,5864        0,2490       0,5214
+    100        0,3640       0,6108        0,2430       0,5003
+    150        0,3490       0,5989        0,2250       0,5110
+Passo grande sem corte: o erro oscila e não melhora. O CORTE DA NORMA
+do gradiente impede os saltos que a recorrência produz.
+
+======================================================================
+A RNN COM UM PRÉ-PROCESSAMENTO AGRONÔMICO
+Em vez dos valores brutos, cada dia entra como +1 (favorável) ou -1.
+A rede não precisa mais descobrir a faixa de 19 a 25 C: só a parte TEMPORAL.
+
+  época    erro treino     erro teste log-loss teste
+      5         0,2485         0,2640         0,5296
+     20         0,2130         0,2270         0,4706
+     50         0,1780         0,1890         0,4240
+    100         0,1680         0,1850         0,4084
+    150         0,1690         0,1770         0,4048
+  parâmetros: dados brutos 321; dia favorável 305
+
+======================================================================
+COMPARAÇÃO NO TESTE
+
+modelo                                             erro   log-loss
+logística nas MÉDIAS (temp., molhamento)         0,3200     0,5867
+logística no NÚMERO de dias favoráveis           0,2460     0,4838
+MLP nos 60 valores, dia a dia                    0,3140     1,6904
+RNN nos dados brutos                             0,2250     0,5110
+RNN no indicador de dia favorável                0,1770     0,4048
+logística na MAIOR SEQUÊNCIA (oráculo)           0,1750     0,3772
+erro de Bayes                                    0,1848
+O "oráculo" recebe a variável que gerou os dados; nenhum método real a
+teria. Ele mostra o quanto ainda é possível ganhar.
+
+======================================================================
+A RNN USA A ORDEM? Teste com os dias EMBARALHADOS (RNN do dia favorável)
+  erro no teste, ordem verdadeira       = 0,1770
+  erro no teste, dias embaralhados      = 0,3060
+E se a rede for TREINADA com os dias embaralhados? Só pode aprender a contar:
+  erro no teste = 0,2550 | log-loss = 0,4864
+  (compare com a logística no NÚMERO de dias favoráveis, acima)
+
+======================================================================
+O GRADIENTE QUE SE DESVANECE
+Sensibilidade da saída a uma pequena mudança no molhamento de cada dia,
+média sobre os talhões de teste (diferenças finitas), na rede dos dados
+brutos ANTES e DEPOIS do treino:
+
+   dia  antes do treino           depois
+     1          0,00000          0,04062
+     5          0,00001          0,03810
+    10          0,00005          0,03183
+    15          0,00029          0,03812
+    20          0,00159          0,03743
+    25          0,01329          0,03650
+    28          0,04443          0,04206
+    30          0,01286          0,02464
+  razão dia 30 / dia 1: antes 4621,0 ; depois 0,61
+  raio espectral de W_h: antes 0,940 ; depois 1,998
+Na partida, a influência de um dia cai por um fator a cada passo, e o
+dia 1 quase não chega à saída: é o gradiente que se desvanece. O treino
+aumentou W_h e aprendeu a reter a memória, o que é possível em 30 passos.
+Em sequências de centenas de passos a RNN simples não consegue; as
+variantes LSTM e GRU usam portões para preservar a memória.
+
+======================================================================
+VARIABILIDADE ENTRE TREINOS: 4 sementes, RNN do dia favorável
+  semente 1: erro teste 0,1910 | log-loss 0,4090
+  semente 2: erro teste 0,1820 | log-loss 0,4193
+  semente 3: erro teste 0,1820 | log-loss 0,4112
+  semente 4: erro teste 0,1870 | log-loss 0,4147</pre></div><figure class="fig"><img src="../assets/resultados/rnn.png" alt="Erro no teste ao longo do treino para três configurações, comparação de modelos e sensibilidade da saída a cada dia" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro no teste ao longo das épocas: passo grande sem corte (vermelho) oscila e não melhora; com passo menor e corte (verde), melhora devagar; com o indicador de dia favorável como entrada (azul), chega perto do oráculo. No centro, o erro dos seis modelos, com o erro de Bayes tracejado. À direita, a sensibilidade da saída ao molhamento de cada dia, em escala log, antes e depois do treino. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Treinar uma RNN nos dados brutos (H = 16)</caption><thead><tr><th>Época</th><th>η = 0,01, sem corte: erro</th><th>Log-loss</th><th>η = 0,003, corte em 1: erro</th><th>Log-loss</th></tr></thead><tbody><tr><td>5</td><td>0,2890</td><td>0,5519</td><td>0,2740</td><td>0,5495</td></tr><tr><td>20</td><td>0,3710</td><td>0,6162</td><td>0,2810</td><td>0,5486</td></tr><tr><td>50</td><td>0,3510</td><td>0,5864</td><td>0,2490</td><td>0,5214</td></tr><tr><td>100</td><td>0,3640</td><td>0,6108</td><td>0,2430</td><td>0,5003</td></tr><tr><td>150</td><td>0,3490</td><td>0,5989</td><td>0,2250</td><td>0,5110</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação no teste (1.000 talhões)</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th></tr></thead><tbody><tr><td>Logística nas médias (temperatura, molhamento)</td><td>0,3200</td><td>0,5867</td></tr><tr><td>Logística no número de dias favoráveis</td><td>0,2460</td><td>0,4838</td></tr><tr><td>MLP nos 60 valores, dia a dia</td><td>0,3140</td><td>1,6904</td></tr><tr><td>RNN nos dados brutos</td><td>0,2250</td><td>0,5110</td></tr><tr><td><strong>RNN no indicador de dia favorável</strong></td><td><strong>0,1770</strong></td><td><strong>0,4048</strong></td></tr><tr><td><em>Logística na maior sequência (oráculo)</em></td><td><em>0,1750</em></td><td><em>0,3772</em></td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1848</em></td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A rede usa a ordem? (RNN do dia favorável)</caption><thead><tr><th>Situação</th><th>Erro no teste</th></tr></thead><tbody><tr><td>Ordem verdadeira</td><td>0,1770</td></tr><tr><td>Mesma rede, dias embaralhados no teste</td><td>0,3060</td></tr><tr><td>Rede treinada com os dias embaralhados</td><td>0,2550</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O gradiente que se desvanece: sensibilidade da saída ao molhamento de cada dia</caption><thead><tr><th>Dia</th><th>Antes do treino</th><th>Depois do treino</th></tr></thead><tbody><tr><td>1</td><td>0,00000</td><td>0,04062</td></tr><tr><td>10</td><td>0,00005</td><td>0,03183</td></tr><tr><td>20</td><td>0,00159</td><td>0,03743</td></tr><tr><td>28</td><td>0,04443</td><td>0,04206</td></tr><tr><td>30</td><td>0,01286</td><td>0,02464</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela de comparação conta a história em degraus. Resumir os 30 dias pelas médias joga fora quase tudo (erro 0,3200). Contar os dias favoráveis — um resumo construído com conhecimento agronômico, mas sem ordem — leva a 0,2460. A RNN nos dados brutos, que precisa descobrir sozinha o que é um dia favorável <em>e</em> a importância das sequências, chega a 0,2250. A RNN que recebe o indicador de dia favorável e só precisa aprender a parte temporal chega a 0,1770, praticamente o mesmo do oráculo (0,1750), que recebe a variável que gerou os dados.</p><p><strong>O oráculo e a RNN ficaram abaixo do erro de Bayes (0,1848)</strong>, o que parece impossível e não é: o erro de Bayes é o erro <em>esperado</em>; num teste de 1.000 talhões, o erro observado tem desvio-padrão de cerca de 0,012, e ficar um desvio abaixo é sorte amostral. A conclusão correta é que os dois estão no limite do possível.</p><p><strong>A rede usa a ordem, e isso se mede.</strong> Embaralhando os dias no teste, o erro da mesma rede sobe de 0,1770 para 0,3060. Treinando uma rede com os dias embaralhados — o que a impede de aprender qualquer coisa além de contar —, o erro é 0,2550, próximo do da logística na contagem (0,2460). A diferença entre 0,2550 e 0,1770 é o valor da ordem.</p><p><strong>O treino de uma RNN é delicado.</strong> Com passo 0,01 e sem corte, o erro oscila entre 0,29 e 0,37 por 150 épocas, sem melhorar. Com passo 0,003 e corte da norma em 1, desce a 0,2250. O MLP nos 60 valores, que não compartilha pesos entre os dias, erra 0,3140 e tem log-loss de 1,6904: sobreajusta o treino e dá probabilidades extremas.</p><p><strong>O gradiente que se desvanece</strong> aparece na rede antes do treino: a influência do dia 1 sobre a saída é 4.621 vezes menor que a do dia 30, e o raio espectral de \(W_h\) é 0,940. O treino aumentou o raio espectral para 1,998 e a rede aprendeu a reter a memória — a sensibilidade ficou praticamente plana nos 30 dias. Em 30 passos isso é possível; em sequências de centenas de passos, a RNN simples não consegue, e as variantes LSTM (Hochreiter e Schmidhuber, 1997) e GRU usam portões que controlam o que o estado guarda e esquece. Entre quatro sementes, a RNN do dia favorável errou de 0,1820 a 0,1910: estável.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Treinar sem corte do gradiente</td><td><code>clipnorm</code> no otimizador.</td></tr><tr><td>Passo grande demais</td><td>Curva do erro; reduza η.</td></tr><tr><td>Usar RNN onde um resumo basta</td><td>Compare com logística em resumos bem construídos.</td></tr><tr><td>Esperar que a rede descubra o que o especialista já sabe</td><td>Dê variáveis construídas com conhecimento.</td></tr><tr><td>Avaliar sem testar a ordem</td><td>Embaralhe os passos no teste.</td></tr><tr><td>Validação com sequências sobrepostas</td><td>Separe por unidade ou por período.</td></tr><tr><td>RNN simples em sequências longas</td><td>LSTM, GRU ou convoluções 1D.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>LSTM e GRU</td><td>Dependências longas.</td></tr><tr><td>Convoluções 1D</td><td>Padrões locais no tempo, treino mais estável.</td></tr><tr><td>Variáveis construídas + <a href="boosting.html">boosting</a></td><td>Quando o conhecimento do problema define os resumos certos.</td></tr><tr><td>Modelos de séries temporais (ARIMA, espaço de estados)</td><td>Uma série longa, previsão do próximo valor.</td></tr><tr><td><a href="gee.html">GEE</a> e modelos mistos</td><td>Medidas repetidas com inferência sobre efeitos.</td></tr><tr><td>Transformadores</td><td>Sequências longas e muitos dados.</td></tr></tbody></table></div><ol class="steps"><li>Construa resumos com conhecimento do problema e ajuste um modelo simples.</li><li>Treine a RNN com corte do gradiente e curva do erro à vista.</li><li>Compare com os resumos.</li><li>Teste com os passos embaralhados.</li><li>Se a memória for longa, passe a LSTM ou GRU.</li><li>Repita com várias sementes.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>ELMAN, Jeffrey L. Finding structure in time. <em>Cognitive Science</em>, v. 14, n. 2, p. 179-211, 1990.</li><li>RUMELHART, David E.; HINTON, Geoffrey E.; WILLIAMS, Ronald J. Learning representations by back-propagating errors. <em>Nature</em>, v. 323, p. 533-536, 1986.</li><li>BENGIO, Yoshua; SIMARD, Patrice; FRASCONI, Paolo. Learning long-term dependencies with gradient descent is difficult. <em>IEEE Transactions on Neural Networks</em>, v. 5, n. 2, p. 157-166, 1994.</li><li>PASCANU, Razvan; MIKOLOV, Tomas; BENGIO, Yoshua. On the difficulty of training recurrent neural networks. <em>Proceedings of Machine Learning Research</em>, v. 28, n. 3, p. 1310-1318, 2013.</li><li>HOCHREITER, Sepp; SCHMIDHUBER, Jürgen. Long short-term memory. <em>Neural Computation</em>, v. 9, n. 8, p. 1735-1780, 1997.</li><li>CHO, Kyunghyun et al. Learning phrase representations using RNN encoder-decoder for statistical machine translation. In: CONFERENCE ON EMPIRICAL METHODS IN NATURAL LANGUAGE PROCESSING, 2014, Doha. <em>Proceedings</em> [...]. Doha: ACL, 2014. p. 1724-1734.</li><li>WERBOS, Paul J. Backpropagation through time: what it does and how to do it. <em>Proceedings of the IEEE</em>, v. 78, n. 10, p. 1550-1560, 1990.</li><li>KINGMA, Diederik P.; BA, Jimmy. Adam: a method for stochastic optimization. In: INTERNATIONAL CONFERENCE ON LEARNING REPRESENTATIONS, 3., 2015, San Diego. <em>Proceedings</em> [...]. San Diego: ICLR, 2015.</li><li>GOODFELLOW, Ian; BENGIO, Yoshua; COURVILLE, Aaron. <em>Deep learning.</em> Cambridge: MIT Press, 2016. Disponível em: <a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener noreferrer">https://www.deeplearningbook.org/</a>.</li><li>CHOLLET, François; KALINOWSKI, Tomasz; ALLAIRE, J. J. <em>Deep learning with R.</em> 2. ed. Shelter Island: Manning, 2022.</li><li>KALINOWSKI, Tomasz; ALLAIRE, J. J.; CHOLLET, François. <em>keras3: R interface to Keras.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=keras3" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=keras3</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Sequências independentes, entradas padronizadas, treino com corte do gradiente e memória compatível com o comprimento da sequência.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>keras3 + TensorFlow (instalação adicional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="cnn.html"><span>← ANTERIOR</span>Redes neurais convolucionais (CNN)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

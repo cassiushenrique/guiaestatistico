@@ -4,310 +4,326 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="SVM com kernel radial (RBF): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   SVM com kernel radial (RBF) | Estatística e Ciência de Dados
-  </title>
+<meta content="SVM com kernel radial (RBF): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>SVM com kernel radial (RBF) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     SVM com kernel radial (RBF)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 17 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     SVM com kernel radial (RBF)
-    </h1>
-<p class="detail-lead">
-     Classifica observações quando as fronteiras entre grupos são não lineares.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/svm-rbf.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Classifica observações quando as fronteiras entre grupos são não lineares.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Padronização, escolha de C e gamma por CV, conjuntos representativos.</li><li>Risco de overfitting com n pequeno.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[K(\mathbf x,\mathbf z)=\exp\bigl(-\gamma\|\mathbf x-\mathbf z\|^2\bigr)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da nova unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(Y\)
-        </dt>
-<dd>
-         classe de resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(K\)
-        </dt>
-<dd>
-         número de vizinhos ou classes, conforme a definição do método
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor erro de teste valida o ganho de flexibilidade; não interpretar a fronteira como efeito causal.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificar veículos por cilindros a partir de massa e potência (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-svm-rbf" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-svm-rbf"><code># SVM com kernel radial (RBF) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>SVM com kernel radial (RBF)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · CLASSIFICADORES</span><h1>SVM com kernel radial (RBF)</h1><p class="detail-lead">A SVM com o produto interno trocado por uma semelhança gaussiana — fronteiras curvas sem construir variáveis, com C e γ escolhidos juntos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/svm-rbf.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/svm-rbf.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a SVM com núcleo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A <a href="svm-linear.html">SVM linear</a> só traça hiperplanos. A SVM com núcleo radial traça fronteiras curvas sem precisar construir as variáveis que as descrevem. O truque é que a solução da SVM depende dos dados apenas por meio de <strong>produtos internos</strong> entre pares de pontos; trocando o produto interno por uma função de semelhança — o <strong>núcleo</strong> —, a SVM passa a trabalhar num espaço de dimensão muito maior (infinita, no caso radial) sem nunca calculá-lo.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: SVM radial" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O núcleo</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">exp(−γ|x − x′|²):</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">semelhança</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O truque</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Produto interno</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">num espaço implícito</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">γ</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Alcance de cada</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">ponto</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">C</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Custo de violar</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">a margem</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A escolha</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Grade de C e γ</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">por validação</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A extensão</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">SVR para</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">regressão</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">SVM radial</text></svg><figcaption>Visão geral da SVM com núcleo radial. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>Dois parâmetros que interagem</strong><p>Na SVM radial, C e γ precisam ser escolhidos <em>juntos</em>. γ define o alcance da influência de cada ponto: grande, cada ponto só "vê" a si mesmo e a fronteira contorna cada lote; pequeno, todos se parecem e a fronteira fica quase reta. C define quanto custa errar. A tabela de erros na grade desta ficha mostra que o ótimo de um depende do outro.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a SVM com núcleo</h2><p>A função de decisão passa a ser \(f(x)=\sum_{i\in SV}\alpha_iy_iK(x_i,x)+b\): uma soma ponderada de semelhanças entre \(x\) e cada vetor de suporte. Com o núcleo radial, cada vetor de suporte é o centro de uma "colina" gaussiana de largura \(1/\sqrt\gamma\), e a fronteira é a curva de nível zero da soma das colinas.</p><figure class="fig"><img src="../assets/resultados/svm-rbf-didatica.png" alt="Regiões de decisão da SVM radial para três valores de gamma no plano altitude por sombreamento" loading="lazy"/><figcaption><strong>O efeito de γ, com C = 10.</strong> Com γ = 0,05 (esquerda), a fronteira é suave e próxima de uma reta. Com γ = 1 (centro), ela se curva para acompanhar os dados. Com γ = 20 (direita), forma ilhas em torno de lotes isolados: o erro de treino cai, e o modelo decora o ruído. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Núcleos usuais</caption><thead><tr><th>Núcleo</th><th>K(x, x′)</th><th>Uso</th></tr></thead><tbody><tr><td>Linear</td><td>\(x^\top x^\prime\)</td><td>Fronteira linear: a SVM linear.</td></tr><tr><td>Polinomial</td><td>\((\gamma x^\top x^\prime+c_0)^d\)</td><td>Interações até a ordem d.</td></tr><tr><td><strong>Radial (gaussiano)</strong></td><td>\(\exp(-\gamma\lVert x-x^\prime\rVert^2)\)</td><td>O padrão: fronteiras suaves de qualquer forma.</td></tr><tr><td>Sigmoide</td><td>\(\tanh(\gamma x^\top x^\prime+c_0)\)</td><td>Histórico; nem sempre é um núcleo válido.</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>O núcleo usa a distância euclidiana.</td><td><code>scale = TRUE</code>.</td></tr><tr><td><strong>C e γ escolhidos juntos</strong></td><td>O ótimo de um depende do outro.</td><td>Grade em escala logarítmica com <code>tune()</code>.</td></tr><tr><td>Variáveis relevantes</td><td>Ruído entra na distância, como no kNN.</td><td>Seleção prévia.</td></tr><tr><td>n moderado</td><td>O custo cresce entre n² e n³.</td><td>Para n grande, aproximações ou SVM linear.</td></tr><tr><td>Probabilidades</td><td>Não vêm da SVM.</td><td>Platt.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[f(x)=\sum_{i=1}^{n}\alpha_iy_i\,K\left(x_i,x\right)+b,\]\[K\left(x,x^\prime\right)=\exp\!\left(-\gamma\lVert x-x^\prime\rVert^2\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\alpha_i\)</dt><dd>pesos da solução dual; diferentes de zero só nos vetores de suporte, com \(0&lt;\alpha_i\le C\)</dd></div><div><dt>\(K\)</dt><dd>o núcleo: semelhança entre dois pontos</dd></div><div><dt>\(\gamma\)</dt><dd>inverso do quadrado do alcance de cada ponto</dd></div></dl><p>Os \(\alpha_i\) resolvem o problema dual, que só envolve os dados por meio de \(K\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\max_{\alpha}\ \sum_i\alpha_i \\ &\quad -\frac12\sum_i\sum_k\alpha_i\alpha_ky_iy_kK\left(x_i,x_k\right)\end{aligned}\]\[\text{sujeito a}\quad 0\le\alpha_i\le C,\]\[\sum_i\alpha_iy_i=0\]</div><h3>Exemplo numérico: o núcleo entre o lote 1 e cinco outros</h3><div class="table-wrap"><table class="method-table"><caption>K(x₁, x) para três valores de γ (variáveis padronizadas)</caption><thead><tr><th>Lote</th><th>|x₁ − x|²</th><th>γ = 0,05</th><th>γ = 0,5</th><th>γ = 5</th></tr></thead><tbody><tr><td>2</td><td>6,151</td><td>0,7353</td><td>0,0462</td><td>0,0000</td></tr><tr><td>3</td><td>3,200</td><td>0,8521</td><td>0,2019</td><td>0,0000</td></tr><tr><td>4</td><td>7,125</td><td>0,7003</td><td>0,0284</td><td>0,0000</td></tr><tr><td>5</td><td>5,130</td><td>0,7738</td><td>0,0769</td><td>0,0000</td></tr><tr><td>6</td><td>7,453</td><td>0,6889</td><td>0,0241</td><td>0,0000</td></tr></tbody></table></div><div class="worked"><strong>O que a tabela diz</strong><p>Com γ = 0,05, \(K=e^{-0{,}05\times6{,}151}=0{,}7353\): o lote 2 é "muito parecido" com o lote 1, embora esteja a uma distância de 2,5 desvios-padrão. Com γ = 5, todas as semelhanças são zero até a quarta casa: nenhum lote influencia a predição nos outros, e cada vetor de suporte só decide a sua própria vizinhança imediata. O padrão do <code>e1071</code> e do <code>scikit-learn</code> é \(\gamma=1/p\) com variáveis padronizadas — aqui, 1/6 = 0,1667 —, um ponto de partida razoável, não uma escolha.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Aproxima fronteiras de qualquer forma (o núcleo radial é universal).</li><li>Problema convexo: sem mínimos locais.</li><li>γ grande + C grande = sobreajuste; γ pequeno + C pequeno = fronteira quase linear.</li><li>A solução continua esparsa: depende só dos vetores de suporte.</li><li>O custo computacional cresce rapidamente com n.</li><li>A SVR usa a perda ε-insensível: desvios menores que ε não custam nada.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Mapa do erro na grade C × γ</td><td>Região boa dos parâmetros.</td><td>Use escala log nos dois eixos.</td></tr><tr><td>Número de vetores de suporte</td><td>Complexidade efetiva.</td><td>Todos os pontos = sobreajuste.</td></tr><tr><td>Erro de treino</td><td>Quase nada.</td><td>Com γ grande, vai a zero.</td></tr><tr><td>Probabilidades de Platt</td><td>Para decisões com custo.</td><td>Calibração por validação interna.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>svm()</code> do <code>e1071</code> com <code>kernel = "radial"</code> (o padrão), <code>cost</code> = C e <code>gamma</code> = γ; <code>tune()</code> com <code>ranges = list(cost = …, gamma = …)</code> faz a busca na grade por validação cruzada. Para regressão, a mesma função com resposta numérica (<code>type = "eps-regression"</code>) e o argumento <code>epsilon</code>. O pacote <code>kernlab</code> (função <code>ksvm</code>) oferece mais núcleos e uma estimativa automática de γ (<code>sigest</code>). Em Python, <code>sklearn.svm.SVC</code> e <code>SVR</code>, com <code>GridSearchCV</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-svm-rbf-min" type="button">Copiar código</button></div><pre id="code-svm-rbf-min"><code>library(e1071)
+aj &lt;- tune(svm, fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+           ranges = list(cost = 10^(-1:2), gamma = c(0.01, 0.05, 0.2, 1)))
+aj$best.parameters
+summary(aj$best.model)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-svm-rbf" type="button">Copiar código</button></div><pre id="code-svm-rbf"><code># SVM com núcleo radial (RBF): exemplo completo ----
+# Pacote: e1071
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("e1071", quietly = TRUE)) install.packages("e1071")
 library(e1071)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(cyl))
-i &lt;- unlist(lapply(split(seq_len(nrow(d)), d$classe),
-                  function(z) sample(z, max(3, length(z) - 2))))
-ajuste &lt;- svm(classe ~ wt + hp, data = d[i, ],
-              kernel = "radial", cost = 1, gamma = 0.5,
-              scale = TRUE)
-print(table(real = d$classe[-i],
-            previsto = predict(ajuste, d[-i, ])))
+f &lt;- fino_f ~ alt + temp + chuva + somb + nfol + ph
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. O núcleo: semelhança entre dois lotes padronizados
+Z &lt;- scale(cafe[, c("alt","temp","chuva","somb","nfol","ph")])
+d2 &lt;- sum((Z[1, ] - Z[2, ])^2)
+sapply(c(0.05, 0.5, 5), function(g) exp(-g * d2))
 
+# ---- 2. A grade de C (cost) e gamma, por validação cruzada
+set.seed(1)
+aj &lt;- tune(svm, f, data = cafe, kernel = "radial",
+           ranges = list(cost = c(0.1, 1, 10, 100), gamma = c(0.01, 0.05, 0.2, 1, 5)),
+           tunecontrol = tune.control(cross = 10))
+summary(aj)
+plot(aj, transform.x = log10, transform.y = log10)   # mapa do erro na grade
+aj$best.parameters
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="svm-linear.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Máquinas de vetores de suporte lineares
-    </a>
-<a href="rede-uma-camada.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Rede sem camada oculta (classificador logístico)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Sobreajuste: gamma grande decora o treino
+for (g in c(0.05, 1, 5)) {
+  m &lt;- svm(f, data = cafe, kernel = "radial", cost = 10, gamma = g)
+  cat("gamma", g, ": erro de treino", mean(predict(m) != cafe$fino_f),
+      "| vetores de suporte", m$tot.nSV, "\n") }
+
+# ---- 4. A interação, com probabilidades de Platt
+m &lt;- svm(f, data = cafe, kernel = "radial", cost = aj$best.parameters$cost,
+         gamma = aj$best.parameters$gamma, probability = TRUE)
+grade &lt;- expand.grid(somb = seq(0, 80, 20), temp = c(18.5, 22.5))
+grade &lt;- transform(grade, alt = 1150, chuva = median(cafe$chuva),
+                   nfol = median(cafe$nfol), ph = median(cafe$ph))
+grade$p &lt;- attr(predict(m, grade, probability = TRUE), "probabilities")[, "fino"]
+grade
+
+# ---- 5. Regressão por vetores de suporte (SVR) na nota
+set.seed(1)
+ajr &lt;- tune(svm, nota ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+            ranges = list(cost = c(10, 100), gamma = c(0.05, 0.2), epsilon = c(0.1, 1, 2)))
+summary(ajr)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-svm-rbf" type="button">Copiar código</button></div><pre id="code-py-svm-rbf"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.svm import SVC, SVR
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestClassifier
+
+y=FINO
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (1) ou não (0). Erro de Bayes = %s.'%c(ERRO_BAYES))
+Z,mu,sd=padroniza(X)
+
+print('\n'+'='*70)
+print('O NÚCLEO GAUSSIANO: K(x, x\') = exp(-gamma |x - x\'|²)')
+print('Mede a semelhança entre dois lotes; vale 1 para lotes iguais e cai a')
+print('zero com a distância. gamma controla a velocidade da queda.')
+d2=((Z[0]-Z[1:6])**2).sum(1)
+print()
+print('%8s %12s %12s %12s %12s'%('lote','|x1 - x|²','gamma=0,05','gamma=0,5','gamma=5'))
+for i in range(5):
+    print('%8d %12s %12s %12s %12s'%(i+2,c(d2[i],3),*[c(np.exp(-g*d2[i])) for g in (0.05,0.5,5)]))
+print()
+print('Com gamma = 5 todo lote só "vê" a si mesmo: a fronteira contorna cada')
+print('ponto. Com gamma = 0,05 todos se parecem: a fronteira quase reta.')
+
+print('\n'+'='*70)
+print('A GRADE DE C E gamma: erro 10-fold (5 repetições)')
+Cs=[0.1,1,10,100]; gs=[0.01,0.05,0.2,1,5]
+E=np.zeros((len(Cs),len(gs)))
+for a,C in enumerate(Cs):
+    for b,g in enumerate(gs):
+        E[a,b],_=cv_clf(lambda C=C,g=g: make_pipeline(StandardScaler(),SVC(C=C,gamma=g)),X,y,10,0,5)
+print()
+print('%10s'%'C \\ gamma'+''.join('%10s'%c(g,2) for g in gs))
+for a,C in enumerate(Cs): print('%10s'%c(C,1)+''.join('%10s'%c(E[a,b]) for b in range(len(gs))))
+a,b=np.unravel_index(np.argmin(E),E.shape); Cb,gb=Cs[a],gs[b]
+print()
+print('  melhor: C = %s, gamma = %s, erro = %s'%(c(Cb,1),c(gb,2),c(E[a,b])))
+print('  padrão do sklearn: gamma = 1/(p var(Z)) = 1/6 = %s'%c(1/6))
+
+print('\n'+'='*70)
+print('SOBREAJUSTE: erro de treino contra erro validado')
+print()
+print('%8s %8s %14s %14s %14s'%('C','gamma','erro treino','erro 10-fold','vet. suporte'))
+for C,g in [(1,0.05),(Cb,gb),(10,1),(100,5)]:
+    m=make_pipeline(StandardScaler(),SVC(C=C,gamma=g)).fit(X,y)
+    er,_=cv_clf(lambda C=C,g=g: make_pipeline(StandardScaler(),SVC(C=C,gamma=g)),X,y,10,0,5)
+    print('%8s %8s %14s %14s %14d'%(c(C,1),c(g,2),c(1-acur(y,m.predict(X))),c(er),m[-1].n_support_.sum()))
+
+print('\n'+'='*70)
+print('A INTERAÇÃO, que a SVM linear não via')
+print('Probabilidade de fino (SVM com Platt) numa grade de sombreamento,')
+print('com altitude 1150 m e demais variáveis medianas, em dois climas:')
+m=make_pipeline(StandardScaler(),SVC(C=Cb,gamma=gb,probability=True,random_state=0)).fit(X,y)
+med=np.median(X,0)
+print()
+print('%12s %16s %16s %16s %16s'%('sombra (%)','SVM, 18,5 C','verdade, 18,5 C','SVM, 22,5 C','verdade, 22,5 C'))
+for s_ in [0,20,40,60,80]:
+    out=[]
+    for T in (18.5,22.5):
+        x=med.copy(); x[0]=1150; x[1]=T; x[3]=s_
+        out+= [c(m.predict_proba(x[None,:])[0,1],3), c(float(1-norm.cdf((80-verdade(x[None,:])[0])/SIGN)),3)]
+    print('%12d %16s %16s %16s %16s'%(s_,*out))
+
+print('\n'+'='*70)
+print('COMPARAÇÃO FINAL (10 dobras x 3 repetições)')
+print()
+print('%-34s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for nm,f in [('SVM linear (C = 0,01)',lambda: make_pipeline(StandardScaler(),SVC(kernel='linear',C=0.01,probability=True,random_state=0))),
+             ('SVM RBF (C e gamma escolhidos)',lambda: make_pipeline(StandardScaler(),SVC(C=Cb,gamma=gb,probability=True,random_state=0))),
+             ('SVM polinomial de grau 2',lambda: make_pipeline(StandardScaler(),SVC(kernel='poly',degree=2,C=1,coef0=1,probability=True,random_state=0))),
+             ('random forest (300 árvores)',lambda: RandomForestClassifier(300,max_features=2,random_state=0))]:
+    er,ll,br=cv_clf(f,X,y,10,0,3,prob=True)
+    print('%-34s %10s %10s %10s'%(nm,c(er),c(ll),c(br)))
+print('%-34s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+
+print('\n'+'='*70)
+print('REGRESSÃO POR VETORES DE SUPORTE (SVR) na nota')
+print('Perda epsilon-insensível: desvios menores que epsilon não custam nada.')
+print()
+print('%8s %8s %10s %14s %14s'%('C','gamma','epsilon','EQM 10-fold','vet. suporte'))
+for C,g,e in [(10,0.2,0.1),(10,0.2,1.0),(10,0.2,2.0),(100,0.05,1.0),(30,0.1,1.0)]:
+    v,_=cv_reg(lambda C=C,g=g,e=e: make_pipeline(StandardScaler(),SVR(C=C,gamma=g,epsilon=e)),X,NOTA,10,0,3)
+    ns=make_pipeline(StandardScaler(),SVR(C=C,gamma=g,epsilon=e)).fit(X,NOTA)[-1].support_.size
+    print('%8s %8s %10s %14s %14d'%(c(C,0),c(g,2),c(e,1),c(v),ns))
+print('  piso (sigma²) = %s'%c(EQM_PISO))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (1) ou não (0). Erro de Bayes = 0,1596.
+
+======================================================================
+O NÚCLEO GAUSSIANO: K(x, x') = exp(-gamma |x - x'|²)
+Mede a semelhança entre dois lotes; vale 1 para lotes iguais e cai a
+zero com a distância. gamma controla a velocidade da queda.
+
+    lote    |x1 - x|²   gamma=0,05    gamma=0,5      gamma=5
+       2        6,151       0,7353       0,0462       0,0000
+       3        3,200       0,8521       0,2019       0,0000
+       4        7,125       0,7003       0,0284       0,0000
+       5        5,130       0,7738       0,0769       0,0000
+       6        7,453       0,6889       0,0241       0,0000
+
+Com gamma = 5 todo lote só "vê" a si mesmo: a fronteira contorna cada
+ponto. Com gamma = 0,05 todos se parecem: a fronteira quase reta.
+
+======================================================================
+A GRADE DE C E gamma: erro 10-fold (5 repetições)
+
+ C \ gamma      0,01      0,05      0,20      1,00      5,00
+       0,1    0,3400    0,2037    0,2090    0,3380    0,3400
+       1,0    0,2133    0,2017    0,1950    0,2347    0,3290
+      10,0    0,2060    0,1920    0,2163    0,2427    0,3227
+     100,0    0,1943    0,2017    0,2517    0,2423    0,3227
+
+  melhor: C = 10,0, gamma = 0,05, erro = 0,1920
+  padrão do sklearn: gamma = 1/(p var(Z)) = 1/6 = 0,1667
+
+======================================================================
+SOBREAJUSTE: erro de treino contra erro validado
+
+       C    gamma    erro treino   erro 10-fold   vet. suporte
+     1,0     0,05         0,1800         0,2017            297
+    10,0     0,05         0,1500         0,1920            264
+    10,0     1,00         0,0017         0,2427            445
+   100,0     5,00         0,0000         0,3227            600
+
+======================================================================
+A INTERAÇÃO, que a SVM linear não via
+Probabilidade de fino (SVM com Platt) numa grade de sombreamento,
+com altitude 1150 m e demais variáveis medianas, em dois climas:
+
+  sombra (%)      SVM, 18,5 C  verdade, 18,5 C      SVM, 22,5 C  verdade, 22,5 C
+           0            0,654            0,832            0,653            0,832
+          20            0,609            0,718            0,728            0,949
+          40            0,565            0,575            0,808            0,989
+          60            0,500            0,422            0,850            0,999
+          80            0,376            0,279            0,833            1,000
+
+======================================================================
+COMPARAÇÃO FINAL (10 dobras x 3 repetições)
+
+modelo                                   erro   log-loss      Brier
+SVM linear (C = 0,01)                  0,2178     0,4547     0,1470
+SVM RBF (C e gamma escolhidos)         0,1933     0,4074     0,1316
+SVM polinomial de grau 2               0,1894     0,4056     0,1302
+random forest (300 árvores)            0,1911     0,3959     0,1286
+erro de Bayes                          0,1596
+
+======================================================================
+REGRESSÃO POR VETORES DE SUPORTE (SVR) na nota
+Perda epsilon-insensível: desvios menores que epsilon não custam nada.
+
+       C    gamma    epsilon    EQM 10-fold   vet. suporte
+      10     0,20        0,1         4,6310            570
+      10     0,20        1,0         4,6742            369
+      10     0,20        2,0         4,5740            204
+     100     0,05        1,0         4,3731            367
+      30     0,10        1,0         4,5249            362
+  piso (sigma²) = 2,4025</pre></div><figure class="fig"><img src="../assets/resultados/svm-rbf.png" alt="Mapa do erro validado na grade de C e gamma e a probabilidade de fino em função do sombreamento em dois climas" loading="lazy"/><figcaption><strong>A aplicação em duas vistas.</strong> À esquerda, o erro validado em cada combinação de C e γ: a região boa é uma diagonal — γ maior pede C menor. À direita, a probabilidade de fino estimada pela SVM (linhas cheias) e a verdadeira (tracejadas) em função do sombreamento, a 1.150 m: a SVM capta a interação, com inclinações menores que as verdadeiras. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Erro 10-fold na grade (5 repetições)</caption><thead><tr><th>C \ γ</th><th>0,01</th><th>0,05</th><th>0,2</th><th>1</th><th>5</th></tr></thead><tbody><tr><td>0,1</td><td>0,3400</td><td>0,2037</td><td>0,2090</td><td>0,3380</td><td>0,3400</td></tr><tr><td>1</td><td>0,2133</td><td>0,2017</td><td>0,1950</td><td>0,2347</td><td>0,3290</td></tr><tr><td>10</td><td>0,2060</td><td><strong>0,1920</strong></td><td>0,2163</td><td>0,2427</td><td>0,3227</td></tr><tr><td>100</td><td>0,1943</td><td>0,2017</td><td>0,2517</td><td>0,2423</td><td>0,3227</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Sobreajuste</caption><thead><tr><th>C</th><th>γ</th><th>Erro de treino</th><th>Erro 10-fold</th><th>Vetores de suporte</th></tr></thead><tbody><tr><td>1</td><td>0,05</td><td>0,1800</td><td>0,2017</td><td>297</td></tr><tr><td><strong>10</strong></td><td><strong>0,05</strong></td><td><strong>0,1500</strong></td><td><strong>0,1920</strong></td><td><strong>264</strong></td></tr><tr><td>10</td><td>1</td><td>0,0017</td><td>0,2427</td><td>445</td></tr><tr><td>100</td><td>5</td><td>0,0000</td><td>0,3227</td><td>600</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A interação: P(fino) a 1.150 m, demais variáveis na mediana</caption><thead><tr><th>Sombra (%)</th><th>SVM, 18,5 °C</th><th>Verdade, 18,5 °C</th><th>SVM, 22,5 °C</th><th>Verdade, 22,5 °C</th></tr></thead><tbody><tr><td>0</td><td>0,654</td><td>0,832</td><td>0,653</td><td>0,832</td></tr><tr><td>20</td><td>0,609</td><td>0,718</td><td>0,728</td><td>0,949</td></tr><tr><td>40</td><td>0,565</td><td>0,575</td><td>0,808</td><td>0,989</td></tr><tr><td>60</td><td>0,500</td><td>0,422</td><td>0,850</td><td>0,999</td></tr><tr><td>80</td><td>0,376</td><td>0,279</td><td>0,833</td><td>1,000</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação final (10 dobras × 3)</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>SVM linear (C = 0,01)</td><td>0,2178</td><td>0,4547</td><td>0,1470</td></tr><tr><td>SVM radial (C = 10, γ = 0,05)</td><td>0,1933</td><td>0,4074</td><td>0,1316</td></tr><tr><td>SVM polinomial de grau 2</td><td>0,1894</td><td>0,4056</td><td>0,1302</td></tr><tr><td>Random forest (300 árvores)</td><td>0,1911</td><td>0,3959</td><td>0,1286</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Regressão por vetores de suporte (SVR) na nota</caption><thead><tr><th>C</th><th>γ</th><th>ε</th><th>EQM 10-fold</th><th>Vetores de suporte</th></tr></thead><tbody><tr><td>10</td><td>0,2</td><td>0,1</td><td>4,6310</td><td>570</td></tr><tr><td>10</td><td>0,2</td><td>1,0</td><td>4,6742</td><td>369</td></tr><tr><td>10</td><td>0,2</td><td>2,0</td><td>4,5740</td><td>204</td></tr><tr><td>100</td><td>0,05</td><td>1,0</td><td>4,3731</td><td>367</td></tr><tr><td><em>Piso σ²</em></td><td></td><td></td><td><em>2,4025</em></td><td></td></tr></tbody></table></div><p><strong>Leitura:</strong> a grade mostra a interação entre C e γ. A linha de C = 0,1 tem erro 0,34 nas pontas — penalidade forte demais com γ pequeno, ou alcance curto demais com γ grande: nos dois casos, o modelo prevê "não fino" para quase todos. O mínimo, 0,1920, está em C = 10 e γ = 0,05; mas C = 1 com γ = 0,2 dá 0,1950, e C = 100 com γ = 0,01 dá 0,1943. Há uma diagonal de combinações quase equivalentes.</p><p><strong>O sobreajuste é nítido:</strong> com γ = 5 e C = 100, todos os 600 lotes são vetores de suporte, o erro de treino é zero e o validado é 0,3227 — praticamente o de quem chuta a classe majoritária.</p><p><strong>A interação aparece.</strong> No frio, a probabilidade estimada cai com a sombra (de 0,654 para 0,376); no calor, sobe (de 0,653 para 0,850) — o padrão verdadeiro, que a SVM linear não podia representar. As inclinações são menores que as verdadeiras: a fronteira suave de γ = 0,05 atenua os efeitos locais. A SVM polinomial de grau 2, que representa exatamente interações de pares, teve erro ainda um pouco menor (0,1894).</p><p><strong>Na regressão</strong>, a SVR é bem pior que os comitês de árvores (melhor EQM 4,3731, contra cerca de 3,0). Aumentar ε de 0,1 para 2,0 reduz os vetores de suporte de 570 para 204 sem piorar o erro — a perda ε-insensível ignora os desvios pequenos, que aqui são em grande parte ruído.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Escolher C e γ separadamente</td><td>Use uma grade conjunta, em escala log.</td></tr><tr><td>Não padronizar</td><td>O núcleo é função da distância.</td></tr><tr><td>Aceitar os padrões sem validar</td><td>γ = 1/p é só um ponto de partida.</td></tr><tr><td>Interpretar o erro de treino</td><td>Com γ grande, é zero.</td></tr><tr><td>Usar com n muito grande</td><td>O custo explode; use SVM linear ou aproximações.</td></tr><tr><td>Esperar coeficientes interpretáveis</td><td>Não há w no espaço original.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="svm-linear.html">SVM linear</a></td><td>Muitas variáveis (texto), fronteira linear.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>Variáveis em escalas diferentes, irrelevantes, categóricas.</td></tr><tr><td><a href="knn.html">kNN</a></td><td>Ideia semelhante (semelhança local), sem otimização.</td></tr><tr><td><a href="mlp.html">Rede neural (MLP)</a></td><td>Fronteiras curvas com n grande.</td></tr><tr><td>Processos gaussianos</td><td>Mesmos núcleos, com probabilidades bayesianas.</td></tr><tr><td>SVM polinomial</td><td>Quando se suspeita de interações de ordem baixa.</td></tr></tbody></table></div><ol class="steps"><li>Padronize as variáveis.</li><li>Faça uma grade de C e γ em escala log com validação cruzada.</li><li>Refine a grade em torno do mínimo.</li><li>Confira o número de vetores de suporte.</li><li>Compare com a SVM linear e com uma floresta.</li><li>Use Platt se precisar de probabilidades.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>CORTES, Corinna; VAPNIK, Vladimir. Support-vector networks. <em>Machine Learning</em>, v. 20, n. 3, p. 273-297, 1995.</li><li>BOSER, Bernhard E.; GUYON, Isabelle M.; VAPNIK, Vladimir N. A training algorithm for optimal margin classifiers. In: ANNUAL WORKSHOP ON COMPUTATIONAL LEARNING THEORY, 5., 1992, Pittsburgh. <em>Proceedings</em> [...]. New York: ACM, 1992. p. 144-152.</li><li>SCHÖLKOPF, Bernhard; SMOLA, Alexander J. <em>Learning with kernels.</em> Cambridge: MIT Press, 2002.</li><li>HSU, Chih-Wei; CHANG, Chih-Chung; LIN, Chih-Jen. <em>A practical guide to support vector classification.</em> Taipei: National Taiwan University, 2003. Disponível em: <a href="https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf" target="_blank" rel="noopener noreferrer">https://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf</a>.</li><li>SMOLA, Alex J.; SCHÖLKOPF, Bernhard. A tutorial on support vector regression. <em>Statistics and Computing</em>, v. 14, n. 3, p. 199-222, 2004.</li><li>KARATZOGLOU, Alexandros; SMOLA, Alex; HORNIK, Kurt; ZEILEIS, Achim. kernlab: an S4 package for kernel methods in R. <em>Journal of Statistical Software</em>, v. 11, n. 9, p. 1-20, 2004.</li><li>PLATT, John C. Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods. In: SMOLA, A. et al. (ed.). <em>Advances in large margin classifiers.</em> Cambridge: MIT Press, 1999. p. 61-74.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>MEYER, David et al. <em>e1071: misc functions of the Department of Statistics, Probability Theory Group, TU Wien.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=e1071" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=e1071</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, C e γ escolhidos conjuntamente por validação, variáveis relevantes e n moderado.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>e1071; kernlab (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="svm-linear.html"><span>← ANTERIOR</span>Máquinas de vetores de suporte lineares</a><a href="rede-uma-camada.html"><span>PRÓXIMO →</span>Rede sem camada oculta (classificador logístico)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,350 +4,311 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Redes neurais convolucionais (CNN): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Redes neurais convolucionais (CNN) | Estatística e Ciência de Dados
-  </title>
+<meta content="Redes neurais convolucionais (CNN): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Redes neurais convolucionais (CNN) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Redes neurais convolucionais (CNN)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 18 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Redes neurais convolucionais (CNN)
-    </h1>
-<p class="detail-lead">
-     Reconhece padrões locais em imagens e sinais para realizar previsões ou classificações.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/cnn.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Reconhece padrões locais em imagens e sinais para realizar previsões ou classificações.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Entradas com vizinhança espacial real, classes anotadas, divisão treino/teste sem vazamento espacial, quantidade de dados e regularização suficientes.</li><li>Exige backend computacional.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[(W*K)_{ij}=\sum_{u,v}W_{uv}\,K_{i+u,j+v}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de entradas
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf W\)
-        </dt>
-<dd>
-         matriz de pesos ajustáveis
-        </dd>
-</div>
-<div>
-<dt>
-         \(\phi\)
-        </dt>
-<dd>
-         função de ativação
-        </dd>
-</div>
-<div>
-<dt>
-         \(\widehat y\)
-        </dt>
-<dd>
-         saída predita pela rede
-        </dd>
-</div>
-</dl>
-<p>
-       Camadas convolucionais, função de perda (p.ex., entropia cruzada) e otimização por gradiente; acurácia em teste, AUC etc.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Não se usa automaticamente \(p&lt;0{,}05\) . Interprete a capacidade de classificar amostras espaciais não usadas no treino.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        A matriz volcano contém elevações topográficas em uma grade regular, com estrutura espacial.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificação de patches \(5\times5\) de um mapa de elevação (volcano, conjunto disponível no R), analogia à detecção de regiões topográficas elevadas.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-cnn" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-cnn"><code># Redes neurais convolucionais (CNN) ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("keras3", quietly = TRUE)) install.packages("keras3")
-library(keras3)
-set.seed(2026)
-mapa &lt;- as.matrix(volcano)
-pos &lt;- expand.grid(i = 3:(nrow(mapa)-2), j = 3:(ncol(mapa)-2))
-pos &lt;- pos[sample.int(nrow(pos), 600), ]
-x &lt;- array(0, dim = c(600, 5, 5, 1))
-y &lt;- numeric(600)
-for (k in seq_len(600)) {
-  i &lt;- pos$i[k]; j &lt;- pos$j[k]
-  x[k,,,1] &lt;- mapa[(i-2):(i+2), (j-2):(j+2)] / 200
-  x[k,3,3,1] &lt;- 0  # mascara altura central (alvo)
-  y[k] &lt;- as.integer(mapa[i,j] &gt; median(mapa))
-}
-i &lt;- sample.int(600, 480)
-modelo &lt;- keras_model_sequential(input_shape = c(5, 5, 1)) |&gt;
-  layer_conv_2d(filters = 8, kernel_size = 3, activation = "relu") |&gt;
-  layer_flatten() |&gt;
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Redes neurais convolucionais (CNN)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REDES NEURAIS</span><h1>Redes neurais convolucionais (CNN)</h1><p class="detail-lead">Filtros pequenos que percorrem a imagem com os mesmos pesos em toda parte — reconhecem um padrão onde quer que ele apareça, com poucos parâmetros.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/cnn.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/cnn.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma rede convolucional</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Uma imagem de 16 × 16 pixels tem 256 valores. Uma <a href="mlp.html">rede comum</a> trata cada pixel como uma variável, com um peso próprio: uma mancha no canto superior e a mesma mancha no canto inferior são, para ela, coisas sem relação. A rede convolucional parte de duas ideias sobre imagens: o que importa é <strong>local</strong> (uma mancha ocupa poucos pixels vizinhos) e o mesmo padrão pode aparecer em <strong>qualquer lugar</strong>. Por isso usa pequenos filtros que percorrem a imagem inteira, com os mesmos pesos em todas as posições.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: CNN" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O filtro</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Pesos 3 × 3 que</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">percorrem a imagem</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Compartilhamento</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Mesmos pesos em</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">todas as posições</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O mapa</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Resposta do filtro</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">em cada posição</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O pooling</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Resume o mapa:</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">máximo, média</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A invariância</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Reconhece o padrão</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">em outro lugar</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A economia</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Poucos</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">parâmetros</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">CNN</text></svg><figcaption>Visão geral da rede convolucional. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O experimento da ficha</strong><p>Todos os modelos são treinados com folhas cujas marcas estão só na metade <em>esquerda</em> e testados também em folhas com as marcas só na metade <em>direita</em>. Uma CNN com 89 parâmetros acerta 92,25% das folhas deslocadas. Uma rede comum com 16.513 parâmetros acerta 47,75% — menos que uma moeda.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma rede convolucional</h2><p>Uma camada convolucional aplica \(K\) filtros de tamanho pequeno (aqui 3 × 3). Cada filtro percorre a imagem: em cada posição, multiplica seus 9 pesos pelos 9 pixels sob ele, soma e acrescenta um viés — produzindo um <strong>mapa de características</strong>, que diz quanto aquele padrão está presente em cada lugar. Depois de uma ativação (ReLU), uma camada de <strong>pooling</strong> resume o mapa; o máximo global guarda só a resposta mais forte em toda a imagem. A saída final é uma logística nesses resumos.</p><figure class="fig"><img src="../assets/resultados/cnn-didatica.png" alt="Exemplos de imagens de treino e de teste deslocado para as duas classes" loading="lazy"/><figcaption><strong>Os dados.</strong> Primeira linha: três arranhões e três manchas de ferrugem do treino, com as marcas na metade esquerda. Segunda linha: o mesmo para o teste deslocado, com as marcas na metade direita. Em 16 × 16 pixels com ruído, a diferença entre um ponto redondo e um traço curto é sutil mesmo a olho. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Quatro modelos e seus parâmetros</caption><thead><tr><th>Modelo</th><th>Estrutura</th><th>Parâmetros</th></tr></thead><tbody><tr><td>Logística</td><td>256 pesos + viés</td><td>257</td></tr><tr><td>MLP</td><td>256 → 64 → 1</td><td>16.513</td></tr><tr><td>CNN com camada densa</td><td>8 filtros 3 × 3 → máximo 2 × 2 → densa (392 → 1)</td><td>473</td></tr><tr><td><strong>CNN com máximo global</strong></td><td><strong>8 filtros 3 × 3 → máximo global → densa (8 → 1)</strong></td><td><strong>89</strong></td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Estrutura espacial local</strong></td><td>Os filtros só veem vizinhanças.</td><td>Natureza dos dados (imagem, sinal, espectro).</td></tr><tr><td>Invariância desejada</td><td>O pooling global ignora a posição; às vezes a posição importa.</td><td>Pergunte se o lugar do padrão é informativo.</td></tr><tr><td>Dados de treino representativos</td><td>A rede não generaliza para o que não viu.</td><td>Teste em condições diferentes das do treino.</td></tr><tr><td>Vários pontos de partida</td><td>Otimização não convexa.</td><td>Repita sementes.</td></tr><tr><td>Validação honesta</td><td>Muitos hiperparâmetros.</td><td>Conjunto de teste intocado.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}A^{(k)}_{rs} &= b_k+\sum_{u=0}^{2}\sum_{v=0}^{2}W^{(k)}_{uv}\,I_{r+u,\,s+v},\end{aligned}\]\[M_k=\max_{r,s}\ \operatorname{ReLU}\left(A^{(k)}_{rs}\right),\]\[q=\sigma\left(c+\sum_{k=1}^{K}v_kM_k\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(I\)</dt><dd>a imagem, 16 × 16</dd></div><div><dt>\(W^{(k)},\ b_k\)</dt><dd>os 9 pesos e o viés do filtro \(k\)</dd></div><div><dt>\(A^{(k)}_{rs}\)</dt><dd>mapa de características: resposta do filtro na posição \((r,s)\); 14 × 14 posições</dd></div><div><dt>\(\operatorname{ReLU}(a)\)</dt><dd>\(\max(0,a)\)</dd></div><div><dt>\(M_k\)</dt><dd>máximo global do mapa \(k\)</dd></div><div><dt>\(v_k,\ c\)</dt><dd>pesos e viés da saída</dd></div></dl><h3>Exemplo numérico: uma convolução à mão</h3><p>Janela 3 × 3 em torno do pixel mais escuro de uma folha com ferrugem (linha 5, coluna 6):</p><div class="table-wrap"><table class="method-table"><caption>Pixels da janela</caption><thead><tr><th></th><th>Coluna 5</th><th>Coluna 6</th><th>Coluna 7</th></tr></thead><tbody><tr><td>Linha 4</td><td>0,304</td><td>0,390</td><td>0,444</td></tr><tr><td>Linha 5</td><td>0,379</td><td><strong>0,303</strong></td><td>0,636</td></tr><tr><td>Linha 6</td><td>0,483</td><td>0,654</td><td>0,604</td></tr></tbody></table></div><div class="worked"><strong>O filtro "detector de ponto"</strong><p>O filtro tem 8 no centro e −1 nos oito vizinhos, tudo dividido por 8. A soma dos produtos é o pixel central menos a média dos vizinhos: \(0{,}303-0{,}487=-0{,}1836\). Um valor negativo grande indica um ponto mais escuro que o entorno — o que caracteriza uma mancha redonda e pequena. O mesmo filtro, com os mesmos 9 pesos, é aplicado em todas as 196 posições: é o <strong>compartilhamento de pesos</strong>, que faz a rede ter 9 pesos por filtro em vez de 9 × 196.</p><p>Na rede treinada, os filtros não são escolhidos à mão: são aprendidos por retropropagação, exatamente como os pesos de um MLP.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Equivariância à translação: deslocar a imagem desloca o mapa.</li><li>Com pooling global, invariância à translação: a saída não depende da posição.</li><li>Poucos parâmetros por camada, independentemente do tamanho da imagem.</li><li>Camadas empilhadas detectam padrões cada vez maiores e mais abstratos.</li><li>Neurônios ReLU podem "morrer": se a entrada fica sempre negativa, o gradiente é zero.</li><li>Treino não convexo, sensível à semente.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Filtros aprendidos</td><td>Que padrões locais a rede procura.</td><td>Em camadas profundas, pouco legíveis.</td></tr><tr><td>Mapa de características</td><td>Onde o padrão aparece.</td><td>Útil para verificar se a rede olha o lugar certo.</td></tr><tr><td>Peso de cada filtro na saída</td><td>Se o padrão é evidência a favor ou contra.</td><td>Combinações importam.</td></tr><tr><td>Erro em dados deslocados</td><td>Se a rede aprendeu a forma ou a posição.</td><td>Teste em condições novas.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>No R, o pacote <code>keras3</code> (interface para o Keras, que roda sobre TensorFlow ou outros motores) exige uma instalação adicional do Python e do TensorFlow, feita uma vez com <code>keras3::install_keras()</code>. As camadas usadas são <code>layer_conv_2d()</code>, <code>layer_max_pooling_2d()</code>, <code>layer_global_max_pooling_2d()</code>, <code>layer_flatten()</code> e <code>layer_dense()</code>. O pacote <code>torch</code> é a alternativa sem Python. Em Python, <code>keras</code>, <code>tensorflow</code> ou <code>torch</code>. O script desta ficha implementa a CNN em <code>numpy</code>, com a retropropagação escrita à mão, para que cada passo fique visível.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-cnn-min" type="button">Copiar código</button></div><pre id="code-cnn-min"><code>library(keras3)
+cnn &lt;- keras_model_sequential(input_shape = c(16, 16, 1)) |&gt;
+  layer_conv_2d(filters = 8, kernel_size = c(3, 3), activation = "relu") |&gt;
+  layer_global_max_pooling_2d() |&gt;
   layer_dense(units = 1, activation = "sigmoid")
-modelo |&gt; compile(optimizer = "adam", loss = "binary_crossentropy",
-                  metrics = c("accuracy"))
-modelo |&gt; fit(x[i,,, , drop = FALSE], y[i], epochs = 12,
-              batch_size = 32, verbose = 0)
-print(modelo |&gt; evaluate(x[-i,,, , drop = FALSE], y[-i], verbose = 0))
+summary(cnn)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>1.600 imagens</strong> de 16 × 16 pixels, em tons de cinza, de folhas de café. As da classe 1 têm de uma a três <strong>manchas de ferrugem</strong>, redondas; as da classe 0, de um a três <strong>arranhões</strong>, alongados. As duas marcas escurecem a folha em quantidade parecida (brilho médio 0,6015 e 0,6043; fração de pixels escuros 6,03% e 5,56%), de modo que só a <strong>forma</strong> distingue as classes. Há textura de fundo, uma nervura e ruído. As 800 imagens de treino e 400 de teste têm as marcas apenas na <strong>metade esquerda</strong> da folha; outras 400, de teste <strong>deslocado</strong>, têm as marcas apenas na metade direita — posições que nenhum modelo viu no treino. O arquivo folhas.csv (pasta scripts/ do site) traz uma imagem por linha, com o conjunto, a classe e os 256 pixels.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-cnn" type="button">Copiar código</button></div><pre id="code-cnn"><code># Redes neurais convolucionais (CNN): exemplo completo ----
+# Pacote: keras3 (exige instalar o Python e o TensorFlow uma única vez)
+# install.packages("keras3"); keras3::install_keras()
+library(keras3)
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/folhas.csv"
+fol &lt;- if (file.exists("folhas.csv")) read.csv("folhas.csv") else read.csv(url)
+table(fol$conjunto, fol$classe)
+img &lt;- function(d) array_reshape(as.matrix(d[, paste0("p", 1:256)]), c(nrow(d), 16, 16, 1))
+tr &lt;- fol[fol$conjunto == "treino", ]; te &lt;- fol[fol$conjunto == "teste", ]
+ds &lt;- fol[fol$conjunto == "deslocado", ]
+Xtr &lt;- img(tr); Xte &lt;- img(te); Xds &lt;- img(ds)
+image(t(Xtr[1, 16:1, , 1]), col = gray.colors(64), axes = FALSE)   # uma folha
 
-# Visualização e diagnóstico ----
-image(volcano, main = "Mapa de elevações")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. CNN com máximo GLOBAL: 8 filtros 3x3, ReLU, máximo em toda a imagem
+set.seed(1); set_random_seed(1)
+cnn &lt;- keras_model_sequential(input_shape = c(16, 16, 1)) |&gt;
+  layer_conv_2d(filters = 8, kernel_size = c(3, 3), activation = "relu") |&gt;
+  layer_global_max_pooling_2d() |&gt;
+  layer_dense(units = 1, activation = "sigmoid")
+summary(cnn)                          # 89 parâmetros
+cnn |&gt; compile(optimizer = optimizer_adam(0.01), loss = "binary_crossentropy",
+               metrics = "accuracy")
+hist &lt;- cnn |&gt; fit(Xtr, tr$classe, epochs = 40, batch_size = 32, validation_split = 0.2)
+plot(hist)
+cnn |&gt; evaluate(Xte, te$classe)       # teste do mesmo tipo
+cnn |&gt; evaluate(Xds, ds$classe)       # teste DESLOCADO
 
+# ---- 2. CNN com máximo em blocos 2x2 seguido de camada densa
+cnn2 &lt;- keras_model_sequential(input_shape = c(16, 16, 1)) |&gt;
+  layer_conv_2d(8, c(3, 3), activation = "relu") |&gt;
+  layer_max_pooling_2d(c(2, 2)) |&gt;
+  layer_flatten() |&gt;
+  layer_dense(1, activation = "sigmoid")
+cnn2 |&gt; compile(optimizer = optimizer_adam(0.01), loss = "binary_crossentropy", metrics = "accuracy")
+cnn2 |&gt; fit(Xtr, tr$classe, epochs = 40, batch_size = 32, verbose = 0)
+cnn2 |&gt; evaluate(Xds, ds$classe)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       A CNN requer backend TensorFlow/Python, não incluído na instalação padrão do R. Os exemplos simples funcionam em R; este exemplo avançado exige instalação adicional e validação espacial apropriada.
-      </p>
-</aside>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       A demonstração usa dados espaciais com vizinhanças sobrepostas. Para avaliação rigorosa, separe regiões espaciais independentes e impeça vazamento de informações.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="mlp.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Rede neural multicamadas (MLP)
-    </a>
-<a href="rnn.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Redes neurais recorrentes (RNN)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Referências: logística e MLP nos 256 pixels
+mlp &lt;- keras_model_sequential(input_shape = 256) |&gt;
+  layer_dense(64, activation = "relu") |&gt; layer_dense(1, activation = "sigmoid")
+mlp |&gt; compile(optimizer = "adam", loss = "binary_crossentropy", metrics = "accuracy")
+mlp |&gt; fit(array_reshape(Xtr, c(800, 256)), tr$classe, epochs = 100, verbose = 0)
+mlp |&gt; evaluate(array_reshape(Xds, c(400, 256)), ds$classe)
+
+# ---- 4. Os filtros aprendidos
+W &lt;- get_weights(cnn)[[1]]            # 3 x 3 x 1 x 8
+par(mfrow = c(2, 4)); for (k in 1:8) image(W[, , 1, k], main = paste("filtro", k))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-cnn" type="button">Copiar código</button></div><pre id="code-py-cnn"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16cnn)
+# ------------------------------------------------------------------
+import numpy as np
+# Imagens fictícias de 16 x 16 pixels de folhas de café. Classe 1: manchas
+# de ferrugem (redondas); classe 0: arranhões mecânicos (traços alongados).
+# As duas marcas escurecem a folha em quantidade parecida: só a FORMA as
+# distingue. 'lado' restringe as marcas à metade esquerda ou direita.
+def folha(rg, classe, lado=None):
+    L = 16; yy, xx = np.mgrid[0:L, 0:L]
+    img = 0.62 + 0.06*np.sin(xx/5 + rg.uniform(0, 6)) + 0.04*(yy - 7.5)/7.5*rg.uniform(-1, 1)
+    v = rg.integers(3, 13); img[:, v] -= 0.05                      # nervura
+    lo, hi = (1, 14) if lado is None else ((1, 6) if lado == 'esq' else (9, 14))
+    for _ in range(rg.integers(1, 4)):
+        cy, cx = rg.uniform(2, 13), rg.uniform(lo, hi + 1)
+        if classe == 1:                                          # mancha redonda
+            r = rg.uniform(1.1, 1.6); d = np.sqrt((yy - cy)**2 + (xx - cx)**2)
+            img -= 0.34*np.clip(1.4 - d/r, 0, 1)
+        else:                                                    # traço alongado
+            ang = rg.uniform(0, np.pi); comp = rg.uniform(2.4, 3.4)
+            u = (xx - cx)*np.cos(ang) + (yy - cy)*np.sin(ang)
+            w = -(xx - cx)*np.sin(ang) + (yy - cy)*np.cos(ang)
+            img -= 0.34*np.clip(1.4 - np.sqrt((u/comp)**2 + (w/0.55)**2), 0, 1)
+    return np.clip(img + rg.normal(0, 0.07, (L, L)), 0, 1)
+
+def conjunto(n, semente, lado=None):
+    rg = np.random.default_rng(semente); y = rg.integers(0, 2, n)
+    return np.array([folha(rg, k, lado) for k in y]), y
+
+XTR, YTR = conjunto(800, 21, 'esq')      # treino: marcas só na metade ESQUERDA
+XTE, YTE = conjunto(400, 22, 'esq')      # teste do mesmo tipo
+XDS, YDS = conjunto(400, 23, 'dir')      # teste DESLOCADO: marcas na metade direita
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+
+print('IMAGENS DE FOLHAS DE CAFÉ (fictícias), 16 x 16 pixels em tons de cinza.')
+print('Classe 1: manchas de ferrugem, REDONDAS. Classe 0: arranhões, ALONGADOS.')
+print('As duas escurecem a folha em quantidade parecida:')
+for k,nm in [(0,'arranhão'),(1,'ferrugem')]:
+    print('  %-9s brilho médio %s | fração de pixels escuros (&lt; 0,45) %s'%(nm,c(XTR[YTR==k].mean()),c((XTR[YTR==k]&lt;.45).mean())))
+print('Treino: 800 imagens com as marcas SÓ NA METADE ESQUERDA da folha.')
+print('Teste: 400 do mesmo tipo, e 400 DESLOCADAS (marcas só na metade direita).')
+
+# ------------------------------------------------------------ a convolução
+def patches(I):                       # I: (n,16,16) -&gt; (n,196,9), janelas 3x3
+    n=I.shape[0]; P=np.empty((n,14,14,9))
+    for a in range(3):
+        for b in range(3): P[:,:,:,3*a+b]=I[:,a:a+14,b:b+14]
+    return P.reshape(n,196,9)
+
+print('\n'+'='*70)
+print('UMA CONVOLUÇÃO À MÃO: um filtro 3 x 3 percorre a imagem')
+F=np.array([[-1,-1,-1],[-1,8,-1],[-1,-1,-1]])/8.0
+I=XTR[np.where(YTR==1)[0][0]]
+r,s_=np.unravel_index(np.argmin(I[1:15,1:15]),(14,14)); r+=1; s_+=1
+J=I[r-1:r+2,s_-1:s_+2]
+print('Janela 3 x 3 em torno do pixel mais escuro (linha %d, coluna %d):'%(r,s_))
+for lin in J: print('   '+'  '.join(c(v,3) for v in lin))
+print('Filtro (detector de ponto: centro contra vizinhança), dividido por 8:')
+for lin in F*8: print('   '+'  '.join('%3d'%v for v in lin))
+print('Saída = soma dos produtos elemento a elemento = %s'%c(float((J*F).sum())))
+print('  (centro %s menos a média dos 8 vizinhos %s)'%(c(J[1,1],3),c((J.sum()-J[1,1])/8,3)))
+print('O mesmo filtro, com os mesmos 9 pesos, é aplicado em todas as 196')
+print('posições: é o COMPARTILHAMENTO DE PESOS.')
+
+# ------------------------------------------------------------ a rede
+def adam_passos(params, grads, est, t, eta=0.01, b1=0.9, b2=0.999):
+    for k in params:
+        m,v=est.setdefault(k,(np.zeros_like(params[k]),np.zeros_like(params[k])))
+        m=b1*m+(1-b1)*grads[k]; v=b2*v+(1-b2)*grads[k]**2; est[k]=(m,v)
+        params[k]-=eta*(m/(1-b1**t))/(np.sqrt(v/(1-b2**t))+1e-8)
+
+def cnn(I, prm, modo, guarda=False):
+    P=patches(I); A=P@prm['W']+prm['b']; R=np.maximum(A,0)          # (n,196,K)
+    n,_,K=R.shape
+    if modo=='global':                                               # máximo em toda a imagem
+        idx=R.argmax(1); M=np.take_along_axis(R,idx[:,None,:],1)[:,0,:]
+    else:                                                            # máximo em blocos 2x2 -&gt; 7x7xK
+        R4=R.reshape(n,7,2,7,2,K).transpose(0,1,3,5,2,4).reshape(n,7,7,K,4)
+        idx=R4.argmax(-1); M=np.take_along_axis(R4,idx[...,None],-1)[...,0].reshape(n,-1)
+    z=M@prm['v']+prm['c']; q=1/(1+np.exp(-z))
+    return (q,(P,A,R,idx,M)) if guarda else q
+
+def treina_cnn(modo, K=8, epocas=40, semente=0, lote=32):
+    rg=np.random.default_rng(semente)
+    d=K if modo=='global' else 49*K
+    prm=dict(W=rg.normal(0,0.3,(9,K)), b=np.zeros(K), v=rg.normal(0,0.1,d), c=np.zeros(1))
+    est={}; t=0; n=len(YTR)
+    for ep in range(epocas):
+        for ii in np.array_split(rg.permutation(n), n//lote):
+            I=XTR[ii]; y=YTR[ii]; q,(P,A,R,idx,M)=cnn(I,prm,modo,True)
+            g=(q-y)/len(y)                                        # dL/dz
+            gr=dict(v=M.T@g, c=np.array([g.sum()]))
+            gM=np.outer(g,prm['v'])
+            gR=np.zeros_like(R); m_=len(y)
+            if modo=='global':
+                np.put_along_axis(gR,idx[:,None,:],gM[:,None,:],1)
+            else:
+                K_=R.shape[2]; g4=np.zeros((m_,7,7,K_,4))
+                np.put_along_axis(g4,idx[...,None],gM.reshape(m_,7,7,K_)[...,None],-1)
+                gR=g4.reshape(m_,7,7,K_,2,2).transpose(0,1,4,2,5,3).reshape(m_,196,K_)
+            gA=gR*(A&gt;0)
+            gr['W']=np.einsum('npf,npk-&gt;fk',P,gA); gr['b']=gA.sum((0,1))
+            t+=1; adam_passos(prm,gr,est,t)
+    return prm
+
+def aval(q,y): 
+    qq=np.clip(q,1e-7,1-1e-7)
+    return np.mean((q&gt;=.5)!=y), float(-np.mean(y*np.log(qq)+(1-y)*np.log(1-qq)))
+
+print('\n'+'='*70)
+print('QUATRO MODELOS, e a contagem de parâmetros')
+Xa,Xt,Xd=XTR.reshape(800,-1),XTE.reshape(400,-1),XDS.reshape(400,-1)
+res=[]
+lg=LogisticRegression(C=1.0,max_iter=5000).fit(Xa,YTR)
+res.append(('regressão logística nos 256 pixels',257,lg.predict_proba(Xt)[:,1],lg.predict_proba(Xd)[:,1],1-np.mean(lg.predict(Xa)==YTR)))
+ml=MLPClassifier((64,),alpha=1e-3,max_iter=2000,random_state=0).fit(Xa,YTR)
+res.append(('MLP, 64 neurônios ocultos',256*64+64+65,ml.predict_proba(Xt)[:,1],ml.predict_proba(Xd)[:,1],1-np.mean(ml.predict(Xa)==YTR)))
+p2=treina_cnn('blocos'); 
+res.append(('CNN: 8 filtros, máx. 2x2, densa',9*8+8+49*8+1,cnn(XTE,p2,'blocos'),cnn(XDS,p2,'blocos'),aval(cnn(XTR,p2,'blocos'),YTR)[0]))
+p1=treina_cnn('global')
+res.append(('CNN: 8 filtros, máximo GLOBAL',9*8+8+8+1,cnn(XTE,p1,'global'),cnn(XDS,p1,'global'),aval(cnn(XTR,p1,'global'),YTR)[0]))
+print()
+print('%-36s %10s %10s %12s %14s'%('modelo','parâmetros','erro treino','erro teste','erro DESLOCADO'))
+for nm,k,qt,qd,et in res:
+    print('%-36s %10d %10s %12s %14s'%(nm,k,c(et),c(aval(qt,YTE)[0]),c(aval(qd,YDS)[0])))
+print()
+print('Nas imagens do mesmo tipo do treino, a CNN de máximo global é a melhor')
+print('com o menor número de parâmetros. Nas DESLOCADAS, os modelos que ligam')
+print('cada peso a um PIXEL não reconhecem a marca no lugar novo; o máximo')
+print('global não pergunta ONDE o filtro respondeu, só SE respondeu.')
+
+print('\n'+'='*70)
+print('O QUE OS FILTROS APRENDERAM (CNN de máximo global)')
+W=p1['W']; v=p1['v']
+print('Peso de cada filtro na saída (positivo = evidência de ferrugem):')
+print('   '+'  '.join('%7s'%c(x,2) for x in v))
+for k in np.argsort(-v)[:1].tolist()+np.argsort(v)[:1].tolist():
+    print('Filtro %d (peso %s):'%(k+1,c(v[k],2)))
+    for lin in W[:,k].reshape(3,3): print('   '+'  '.join('%7s'%c(x,3) for x in lin))
+Mt=cnn(XTE,p1,'global',True)[1][4]
+print()
+print('Resposta máxima média de cada filtro, por classe (teste):')
+print('%8s %12s %12s'%('filtro','arranhão','ferrugem'))
+for k in range(8): print('%8d %12s %12s'%(k+1,c(Mt[YTE==0,k].mean(),3),c(Mt[YTE==1,k].mean(),3)))
+
+print('\n'+'='*70)
+print('VARIABILIDADE ENTRE TREINOS: 5 sementes, CNN de máximo global')
+print()
+print('%8s %12s %14s'%('semente','erro teste','erro deslocado'))
+for s_ in range(1,6):
+    pp=treina_cnn('global',semente=s_)
+    print('%8d %12s %14s'%(s_,c(aval(cnn(XTE,pp,'global'),YTE)[0]),c(aval(cnn(XDS,pp,'global'),YDS)[0])))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">IMAGENS DE FOLHAS DE CAFÉ (fictícias), 16 x 16 pixels em tons de cinza.
+Classe 1: manchas de ferrugem, REDONDAS. Classe 0: arranhões, ALONGADOS.
+As duas escurecem a folha em quantidade parecida:
+  arranhão  brilho médio 0,6043 | fração de pixels escuros (&lt; 0,45) 0,0556
+  ferrugem  brilho médio 0,6015 | fração de pixels escuros (&lt; 0,45) 0,0603
+Treino: 800 imagens com as marcas SÓ NA METADE ESQUERDA da folha.
+Teste: 400 do mesmo tipo, e 400 DESLOCADAS (marcas só na metade direita).
+
+======================================================================
+UMA CONVOLUÇÃO À MÃO: um filtro 3 x 3 percorre a imagem
+Janela 3 x 3 em torno do pixel mais escuro (linha 5, coluna 6):
+   0,304  0,390  0,444
+   0,379  0,303  0,636
+   0,483  0,654  0,604
+Filtro (detector de ponto: centro contra vizinhança), dividido por 8:
+    -1   -1   -1
+    -1    8   -1
+    -1   -1   -1
+Saída = soma dos produtos elemento a elemento = -0,1836
+  (centro 0,303 menos a média dos 8 vizinhos 0,487)
+O mesmo filtro, com os mesmos 9 pesos, é aplicado em todas as 196
+posições: é o COMPARTILHAMENTO DE PESOS.
+
+======================================================================
+QUATRO MODELOS, e a contagem de parâmetros
+
+modelo                               parâmetros erro treino   erro teste erro DESLOCADO
+regressão logística nos 256 pixels          257     0,2450       0,4850         0,5125
+MLP, 64 neurônios ocultos                 16513     0,3075       0,4750         0,5225
+CNN: 8 filtros, máx. 2x2, densa             473     0,0862       0,1800         0,6325
+CNN: 8 filtros, máximo GLOBAL                89     0,0813       0,0625         0,0775
+
+Nas imagens do mesmo tipo do treino, a CNN de máximo global é a melhor
+com o menor número de parâmetros. Nas DESLOCADAS, os modelos que ligam
+cada peso a um PIXEL não reconhecem a marca no lugar novo; o máximo
+global não pergunta ONDE o filtro respondeu, só SE respondeu.
+
+======================================================================
+O QUE OS FILTROS APRENDERAM (CNN de máximo global)
+Peso de cada filtro na saída (positivo = evidência de ferrugem):
+      2,69    -1,02     3,08    -0,40    -0,01     3,31    -4,45    -2,90
+Filtro 6 (peso 3,31):
+     1,020    1,029    0,961
+     0,571   -1,200   -1,148
+    -0,142   -1,206   -1,264
+Filtro 7 (peso -4,45):
+     1,155   -2,156   -1,022
+    -2,098    1,294    0,886
+    -1,129    0,971    0,102
+
+Resposta máxima média de cada filtro, por classe (teste):
+  filtro     arranhão     ferrugem
+       1        0,434        0,770
+       2        0,334        0,248
+       3        0,382        0,766
+       4        2,295        2,310
+       5        0,000        0,000
+       6        0,464        0,818
+       7        0,634        0,447
+       8        0,454        0,270
+
+======================================================================
+VARIABILIDADE ENTRE TREINOS: 5 sementes, CNN de máximo global
+
+ semente   erro teste erro deslocado
+       1       0,1425         0,1875
+       2       0,0375         0,0575
+       3       0,0650         0,0725
+       4       0,0600         0,0425
+       5       0,1175         0,1575</pre></div><figure class="fig"><img src="../assets/resultados/cnn.png" alt="Erros no teste comum e no deslocado por modelo, os oito filtros aprendidos e um mapa de características" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro de cada modelo nas imagens do mesmo tipo do treino e nas deslocadas; a linha pontilhada é o erro de quem chuta. No centro, os oito filtros 3 × 3 aprendidos pela CNN de máximo global, ordenados pelo peso na saída. À direita, uma folha com ferrugem e o mapa do filtro de maior peso positivo: a resposta se concentra na mancha. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os quatro modelos</caption><thead><tr><th>Modelo</th><th>Parâmetros</th><th>Erro no treino</th><th>Erro no teste</th><th>Erro no teste DESLOCADO</th></tr></thead><tbody><tr><td>Logística nos 256 pixels</td><td>257</td><td>0,2450</td><td>0,4850</td><td>0,5125</td></tr><tr><td>MLP, 64 neurônios</td><td>16.513</td><td>0,3075</td><td>0,4750</td><td>0,5225</td></tr><tr><td>CNN: máximo 2 × 2 e camada densa</td><td>473</td><td>0,0862</td><td>0,1800</td><td>0,6325</td></tr><tr><td><strong>CNN: máximo global</strong></td><td><strong>89</strong></td><td><strong>0,0813</strong></td><td><strong>0,0625</strong></td><td><strong>0,0775</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resposta máxima média de cada filtro, por classe (teste)</caption><thead><tr><th>Filtro</th><th>Peso na saída</th><th>Arranhão</th><th>Ferrugem</th></tr></thead><tbody><tr><td>1</td><td>2,69</td><td>0,434</td><td>0,770</td></tr><tr><td>3</td><td>3,08</td><td>0,382</td><td>0,766</td></tr><tr><td>5</td><td>−0,01</td><td>0,000</td><td>0,000</td></tr><tr><td>6</td><td>3,31</td><td>0,464</td><td>0,818</td></tr><tr><td>7</td><td>−4,45</td><td>0,634</td><td>0,447</td></tr><tr><td>8</td><td>−2,90</td><td>0,454</td><td>0,270</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Cinco sementes da CNN de máximo global</caption><thead><tr><th>Semente</th><th>Erro no teste</th><th>Erro no deslocado</th></tr></thead><tbody><tr><td>1</td><td>0,1425</td><td>0,1875</td></tr><tr><td>2</td><td>0,0375</td><td>0,0575</td></tr><tr><td>3</td><td>0,0650</td><td>0,0725</td></tr><tr><td>4</td><td>0,0600</td><td>0,0425</td></tr><tr><td>5</td><td>0,1175</td><td>0,1575</td></tr></tbody></table></div><p><strong>Leitura:</strong> a logística e o MLP nos pixels erram quase metade das imagens <em>mesmo do tipo do treino</em> (0,4850 e 0,4750): com as marcas em posições variadas, nenhum peso por pixel captura a forma "redondo contra alongado". O MLP, com 16.513 parâmetros, nem decora o treino (erro de 30,75%).</p><p><strong>A CNN com camada densa</strong> aprende bem a forma no lugar em que a viu: erro de 18,00% no teste do mesmo tipo. Mas a camada densa liga cada posição do mapa a um peso próprio, e os pesos da metade direita nunca foram treinados: nas folhas deslocadas, o erro é 63,25% — pior que chutar. Os filtros são invariantes; a camada densa, não.</p><p><strong>A CNN com máximo global</strong> erra 6,25% no teste e 7,75% nas folhas deslocadas, com 89 parâmetros. O máximo global pergunta apenas <em>se</em> o filtro respondeu forte em algum lugar, não <em>onde</em>. É a invariância à translação construída na arquitetura — e é ela, não o número de parâmetros, que decide o resultado.</p><p><strong>Os filtros</strong> se dividem em dois grupos: os de peso positivo (1, 3 e 6) respondem mais à ferrugem (0,77 a 0,82 contra 0,38 a 0,46); os de peso negativo (7 e 8) respondem mais aos arranhões. O filtro 6 tem a metade superior positiva e a inferior negativa: um detector de borda que responde ao contorno de uma mancha. O filtro 5 tem resposta zero nas duas classes: é um neurônio ReLU "morto", cuja entrada ficou sempre negativa e que deixou de aprender.</p><p><strong>A semente importa:</strong> com a mesma arquitetura e os mesmos dados, o erro no teste variou de 3,75% a 14,25% e, no deslocado, de 4,25% a 18,75%. Em todas as cinco, a CNN global ficou muito à frente dos modelos de pixels. Na prática, treinam-se várias redes e escolhe-se por validação ou tira-se a média.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar rede densa em imagens</td><td>Perde a estrutura espacial e a invariância.</td></tr><tr><td>Testar só em dados iguais aos do treino</td><td>Teste em condições deslocadas.</td></tr><tr><td>Pooling global quando a posição importa</td><td>Ex.: lesão na nervura central contra na borda.</td></tr><tr><td>Treinar uma vez só</td><td>Repita sementes.</td></tr><tr><td>Ignorar neurônios mortos</td><td>Inspecione as ativações; use outra inicialização.</td></tr><tr><td>Muitas camadas com poucos dados</td><td>Aumento de dados ou redes pré-treinadas.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Redes pré-treinadas (transferência)</td><td>Poucas imagens próprias: adapte uma rede treinada em milhões.</td></tr><tr><td>Aumento de dados (rotação, espelhamento)</td><td>Quando se quer invariâncias que a arquitetura não dá.</td></tr><tr><td>Variáveis extraídas à mão + <a href="randomforest.html">floresta</a></td><td>Poucos dados e padrões conhecidos.</td></tr><tr><td><a href="mlp.html">MLP</a></td><td>Dados tabulares sem estrutura espacial.</td></tr><tr><td><a href="rnn.html">RNN</a> ou convoluções 1D</td><td>Sequências e sinais.</td></tr><tr><td>Transformadores de visão</td><td>Muitos dados.</td></tr></tbody></table></div><ol class="steps"><li>Defina a invariância desejada (posição, rotação, escala).</li><li>Comece com poucas camadas e filtros pequenos.</li><li>Use pooling compatível com a invariância.</li><li>Separe um teste em condições diferentes das do treino.</li><li>Repita com várias sementes.</li><li>Inspecione filtros e mapas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>LECUN, Yann; BOTTOU, Léon; BENGIO, Yoshua; HAFFNER, Patrick. Gradient-based learning applied to document recognition. <em>Proceedings of the IEEE</em>, v. 86, n. 11, p. 2278-2324, 1998.</li><li>FUKUSHIMA, Kunihiko. Neocognitron: a self-organizing neural network model for a mechanism of pattern recognition unaffected by shift in position. <em>Biological Cybernetics</em>, v. 36, n. 4, p. 193-202, 1980.</li><li>KRIZHEVSKY, Alex; SUTSKEVER, Ilya; HINTON, Geoffrey E. ImageNet classification with deep convolutional neural networks. <em>Communications of the ACM</em>, v. 60, n. 6, p. 84-90, 2017.</li><li>MOHANTY, Sharada P.; HUGHES, David P.; SALATHÉ, Marcel. Using deep learning for image-based plant disease detection. <em>Frontiers in Plant Science</em>, v. 7, art. 1419, 2016.</li><li>GOODFELLOW, Ian; BENGIO, Yoshua; COURVILLE, Aaron. <em>Deep learning.</em> Cambridge: MIT Press, 2016. Disponível em: <a href="https://www.deeplearningbook.org/" target="_blank" rel="noopener noreferrer">https://www.deeplearningbook.org/</a>.</li><li>CHOLLET, François; KALINOWSKI, Tomasz; ALLAIRE, J. J. <em>Deep learning with R.</em> 2. ed. Shelter Island: Manning, 2022.</li><li>KINGMA, Diederik P.; BA, Jimmy. Adam: a method for stochastic optimization. In: INTERNATIONAL CONFERENCE ON LEARNING REPRESENTATIONS, 3., 2015, San Diego. <em>Proceedings</em> [...]. San Diego: ICLR, 2015.</li><li>KALINOWSKI, Tomasz; ALLAIRE, J. J.; CHOLLET, François. <em>keras3: R interface to Keras.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=keras3" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=keras3</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Estrutura espacial local nos dados, invariância compatível com o problema, teste em condições diferentes das do treino e várias sementes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>keras3 + TensorFlow (instalação adicional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="mlp.html"><span>← ANTERIOR</span>Rede neural multicamadas (MLP)</a><a href="rnn.html"><span>PRÓXIMO →</span>Redes neurais recorrentes (RNN)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

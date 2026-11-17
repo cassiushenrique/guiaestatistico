@@ -4,313 +4,370 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Gradient boosting de árvores: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Gradient boosting de árvores | Estatística e Ciência de Dados
-  </title>
+<meta content="Gradient boosting de árvores: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Gradient boosting de árvores | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Gradient boosting de árvores
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Gradient boosting de árvores
-    </h1>
-<p class="detail-lead">
-     Melhora gradualmente as previsões ao combinar modelos ajustados em sequência.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/boosting.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Melhora gradualmente as previsões ao combinar modelos ajustados em sequência.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Validação de profundidade, taxa de aprendizado e número de árvores.</li><li>Cuidado com overfitting e variáveis correlacionadas.</li><li>Ausência de vazamento.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[F_M(\mathbf x)=F_0(\mathbf x)+\nu\sum_{m=1}^M h_m(\mathbf x)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Minimiza perda empírica sequencialmente; CV-RMSE e desvio na validação determinam seleção de hiperparâmetros.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Desempenho validado é central; importância relativa não equivale a efeito estatisticamente significativo.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Predição da autonomia veicular com massa, potência e cilindrada (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-boosting" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-boosting"><code># Gradient boosting de árvores ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Gradient boosting de árvores</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Gradient boosting de árvores</h1><p class="detail-lead">Soma árvores pequenas em sequência, cada uma ajustando o resíduo das anteriores — ataca o viés, e por isso exige parar na hora certa.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/boosting.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/boosting.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o gradient boosting</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="bagging.html">bagging</a> e a <a href="randomforest.html">random forest</a> ajustam muitas árvores <em>independentes</em> e tiram a média: atacam a variância. O boosting ajusta árvores <strong>em sequência</strong>, cada uma corrigindo o que as anteriores erraram, e soma todas: ataca o viés. Cada árvore é pequena e entra multiplicada por um fator de encolhimento \(\nu\); o modelo se aproxima dos dados devagar, e o número de passos é o que controla o sobreajuste.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Boosting" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Somar árvores</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">pequenas em série</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O passo</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Ajustar o resíduo</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">(o gradiente)</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O freio</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Encolhimento ν</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">e número M</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A profundidade</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Ordem das</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">interações</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O risco</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Sobreajusta</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">com M grande</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">As variantes</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">AdaBoost, gbm,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">xgboost</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Boosting</text></svg><figcaption>Visão geral do gradient boosting. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>A diferença que mais importa na prática</strong><p>Numa random forest, acrescentar árvores nunca piora. No boosting, <strong>piora</strong>: cada árvore nova ajusta um pouco mais do resíduo, que a partir de certo ponto é só ruído. O número de árvores \(M\) é um hiperparâmetro de verdade, escolhido por validação cruzada ou por parada antecipada.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o gradient boosting</h2><p>Começa-se com o modelo constante \(F_0(x)=\bar y\). A cada passo \(m\), calcula-se o resíduo \(r_i=y_i-F_{m-1}(x_i)\), ajusta-se uma árvore pequena \(h_m\) a esses resíduos e atualiza-se \(F_m=F_{m-1}+\nu\,h_m\). Para outras funções de perda (logística, de Poisson, absoluta), o resíduo é substituído pelo <strong>gradiente negativo</strong> da perda — daí o nome (Friedman, 2001).</p><figure class="fig"><img src="../assets/resultados/boosting-didatica.png" alt="O modelo crescendo em passos pequenos ao longo da altitude e o erro de treino caindo a cada toco" loading="lazy"/><figcaption><strong>O boosting em ação, com tocos e ν = 0,1.</strong> À esquerda, a predição em função da altitude depois de 1, 10, 50 e 300 tocos: cada toco acrescenta um degrau pequeno, e o modelo se aproxima da verdade de baixo para cima. À direita, o erro de treino cai a cada iteração — e continuaria caindo até zero com árvores maiores, o que mostra por que M precisa ser escolhido por validação. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os três hiperparâmetros</caption><thead><tr><th>Parâmetro</th><th>No gbm</th><th>Efeito</th></tr></thead><tbody><tr><td>Número de árvores M</td><td><code>n.trees</code></td><td>Mais M ajusta mais; demais sobreajusta.</td></tr><tr><td>Encolhimento ν</td><td><code>shrinkage</code></td><td>Menor ν exige mais M, e em geral generaliza melhor.</td></tr><tr><td>Profundidade</td><td><code>interaction.depth</code></td><td>Profundidade d permite interações de ordem até d.</td></tr><tr><td>Fração amostrada</td><td><code>bag.fraction</code></td><td>Abaixo de 1: boosting estocástico, menos variância.</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>A validação que escolhe M supõe isso.</td><td>Validação por grupo, se houver grupos.</td></tr><tr><td><strong>M escolhido por validação</strong></td><td>O erro sobe depois do ótimo.</td><td><code>gbm.perf(…, method = "cv")</code>; parada antecipada.</td></tr><tr><td>ν pequeno</td><td>Com ν = 1 o mínimo é alto e estreito.</td><td>Use 0,01 a 0,1.</td></tr><tr><td>Profundidade compatível com as interações</td><td>Tocos só fazem modelos aditivos.</td><td>Compare profundidades por validação.</td></tr><tr><td>Perda adequada à resposta</td><td>Gaussiana, bernoulli, poisson…</td><td><code>distribution</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[F_M(x)=F_0(x)+\nu\sum_{m=1}^{M}h_m(x),\]\[h_m=\arg\min_{h\in\mathcal{T}_d}\sum_{i=1}^{n}\left[g_{im}-h(x_i)\right]^2\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(F_0\)</dt><dd>o ponto de partida: a média (regressão) ou o logito da prevalência (classificação)</dd></div><div><dt>\(h_m\)</dt><dd>a árvore do passo \(m\), de profundidade \(d\)</dd></div><div><dt>\(\nu\)</dt><dd>encolhimento (taxa de aprendizado), entre 0 e 1</dd></div><div><dt>\(g_{im}\)</dt><dd>o gradiente negativo da perda no ponto \(i\), avaliado em \(F_{m-1}\)</dd></div><div><dt>\(\mathcal{T}_d\)</dt><dd>o conjunto das árvores de profundidade \(d\)</dd></div></dl><p>Para a perda quadrática \(L=\tfrac12(y-F)^2\), o gradiente negativo é \(g_{im}=y_i-F_{m-1}(x_i)\): o próprio resíduo. Para a perda logística, \(g_{im}=y_i-\hat p_{m-1}(x_i)\), o resíduo na escala da probabilidade.</p><h3>Exemplo numérico: os oito primeiros tocos</h3><div class="table-wrap"><table class="method-table"><caption>Boosting com tocos e ν = 0,1 nos dados de café</caption><thead><tr><th>m</th><th>Corte do toco</th><th>Passo (ν·h) esq. / dir.</th><th>EQM de treino</th></tr></thead><tbody><tr><td>0</td><td>(média)</td><td>—</td><td>9,6974</td></tr><tr><td>1</td><td>Altitude ≤ 1.050,9</td><td>−0,233 / 0,226</td><td>8,6972</td></tr><tr><td>2</td><td>Altitude ≤ 1.050,9</td><td>−0,210 / 0,203</td><td>7,8871</td></tr><tr><td>3</td><td>Altitude ≤ 1.050,9</td><td>−0,189 / 0,183</td><td>7,2309</td></tr><tr><td>4</td><td>Altitude ≤ 1.050,9</td><td>−0,170 / 0,164</td><td>6,6993</td></tr><tr><td>8</td><td>Altitude ≤ 1.050,9</td><td>−0,112 / 0,108</td><td>5,4087</td></tr></tbody></table></div><div class="worked"><strong>Por que o mesmo corte se repete</strong><p>Os oito primeiros tocos cortam todos em altitude ≤ 1.050,9. O degrau verdadeiro é de 4,6 pontos, e cada toco, multiplicado por \(\nu=0{,}1\), retira só 10% do que ainda falta explicar ali: o passo cai de 0,233 para 0,210, 0,189, … — uma progressão geométrica de razão 0,9. Só depois que o resíduo do degrau fica menor que o de outras variáveis o algoritmo passa a cortar em temperatura, pH, nitrogênio. É esse avanço lento que dá ao boosting sua resistência ao sobreajuste: nenhuma árvore isolada decide nada.</p></div><h3>A profundidade é a ordem das interações</h3><p>Um toco é função de uma variável só; somar tocos dá um modelo <strong>aditivo</strong>, \(F(x)=\sum_j f_j(x_j)\) — um GAM com funções em escada. Árvores de profundidade 2 representam interações entre pares de variáveis; profundidade \(d\), interações de ordem até \(d\).</p><h3>Propriedades</h3><ul class="checklist"><li>Reduz principalmente o viés; o encolhimento e a subamostragem controlam a variância.</li><li>Sobreajusta com M grande, ao contrário da random forest.</li><li>Com perda exponencial e classificadores fracos, recupera o AdaBoost (Friedman, Hastie e Tibshirani, 2000).</li><li>A subamostragem por árvore (boosting estocástico) reduz a variância e o tempo.</li><li>Aceita qualquer perda diferenciável: quantílica, Poisson, Cox, ranqueamento.</li><li>Em geral é o método de menor erro em dados tabulares, quando bem ajustado.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Curva do erro validado em função de M</td><td>Onde parar.</td><td>O erro de treino não serve.</td></tr><tr><td><code>summary(gb)</code>: influência relativa</td><td>Redução total da perda por variável.</td><td>Mesmo viés da importância por impureza.</td></tr><tr><td>Dependência parcial</td><td>Forma média do efeito.</td><td>Com tocos, é aditiva por construção.</td></tr><tr><td>Estatística H de Friedman (<code>interact.gbm</code>)</td><td>Força de uma interação entre duas variáveis.</td><td>Varia entre 0 e 1; ruidosa com n pequeno.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O pacote <code>gbm</code> (Ridgeway) implementa o gradient boosting de Friedman: <code>distribution</code> define a perda (<code>"gaussian"</code>, <code>"bernoulli"</code>, <code>"poisson"</code>, <code>"laplace"</code>, <code>"quantile"</code>, <code>"coxph"</code>), <code>n.trees</code>, <code>shrinkage</code>, <code>interaction.depth</code> e <code>bag.fraction</code> são os hiperparâmetros, e <code>cv.folds</code> faz a validação interna; <code>gbm.perf()</code> escolhe M. O <code>xgboost</code> (Chen e Guestrin, 2016) é a implementação moderna, mais rápida e com regularização L1/L2 nas folhas; <code>lightgbm</code> é outra opção. Em Python, <code>sklearn.ensemble.GradientBoostingRegressor</code> e <code>HistGradientBoostingRegressor</code>, além dos pacotes <code>xgboost</code> e <code>lightgbm</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-boosting-min" type="button">Copiar código</button></div><pre id="code-boosting-min"><code>library(gbm)
+set.seed(1)
+gb &lt;- gbm(nota ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+          distribution = "gaussian", n.trees = 3000, shrinkage = 0.05,
+          interaction.depth = 3, cv.folds = 10)
+M &lt;- gbm.perf(gb, method = "cv")
+summary(gb, n.trees = M)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-boosting" type="button">Copiar código</button></div><pre id="code-boosting"><code># Gradient boosting de árvores: exemplo completo ----
+# Pacotes: gbm (clássico) e xgboost (opcional, mais rápido)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("gbm", quietly = TRUE)) install.packages("gbm")
 library(gbm)
-set.seed(2026)
-ajuste &lt;- gbm(mpg ~ wt + hp + disp, data = mtcars,
-              distribution = "gaussian", n.trees = 300,
-              interaction.depth = 2, shrinkage = 0.03,
-              n.minobsinnode = 3, cv.folds = 5, verbose = FALSE)
-melhor &lt;- gbm.perf(ajuste, method = "cv", plot.it = FALSE)
-print(c(arvores_selecionadas = melhor))
-print(summary(ajuste, n.trees = melhor, plotit = FALSE))
+f &lt;- nota ~ alt + temp + chuva + somb + nfol + ph
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. Boosting à mão, com tocos (árvores de um corte) e nu = 0,1
+library(rpart)
+F &lt;- rep(mean(cafe$nota), nrow(cafe)); nu &lt;- 0.1
+for (m in 1:300) {
+  r &lt;- cafe$nota - F                                   # resíduo atual
+  h &lt;- rpart(r ~ alt + temp + chuva + somb + nfol + ph, data = cbind(cafe, r = r),
+             control = rpart.control(maxdepth = 1, cp = 0, xval = 0))
+  F &lt;- F + nu * predict(h, cafe)
+}
+mean((cafe$nota - F)^2)                                # EQM de treino
 
+# ---- 2. gbm, com o número de árvores escolhido por validação cruzada
+set.seed(1)
+gb &lt;- gbm(f, data = cafe, distribution = "gaussian",
+          n.trees = 3000, shrinkage = 0.05, interaction.depth = 3,
+          bag.fraction = 0.8, cv.folds = 10, n.minobsinnode = 10)
+M &lt;- gbm.perf(gb, method = "cv")       # gráfico e melhor número de árvores
+M
+min(gb$cv.error)                       # EQM validado no melhor M
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="randomforest.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Random forests
-    </a>
-<a href="bart.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Bayesian additive regression trees (BART)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. A profundidade é a ordem das interações
+cv_prof &lt;- sapply(1:6, function(k) {
+  set.seed(1)
+  g &lt;- gbm(f, data = cafe, distribution = "gaussian", n.trees = 2000,
+           shrinkage = 0.05, interaction.depth = k, cv.folds = 10)
+  min(g$cv.error) })
+plot(1:6, cv_prof, type = "b", xlab = "interaction.depth", ylab = "EQM validado")
+
+# ---- 4. Influência relativa e dependência parcial
+summary(gb, n.trees = M)                         # importância
+plot(gb, i.var = "alt", n.trees = M)             # efeito da altitude
+plot(gb, i.var = c("temp", "somb"), n.trees = M) # a interação, em duas variáveis
+interact.gbm(gb, data = cafe, i.var = c("temp", "somb"), n.trees = M)  # estatística H
+
+# ---- 5. Classificação (perda logística = "bernoulli")
+set.seed(1)
+gbc &lt;- gbm(fino ~ alt + temp + chuva + somb + nfol + ph, data = cafe,
+           distribution = "bernoulli", n.trees = 2000, shrinkage = 0.05,
+           interaction.depth = 3, cv.folds = 10)
+Mc &lt;- gbm.perf(gbc, method = "cv")
+p &lt;- predict(gbc, cafe, n.trees = Mc, type = "response")
+
+# ---- 6. xgboost (opcional): a mesma ideia, com regularização e muito mais rápido
+# install.packages("xgboost")
+library(xgboost)
+X &lt;- as.matrix(cafe[, c("alt","temp","chuva","somb","nfol","ph")])
+set.seed(1)
+cvx &lt;- xgb.cv(params = list(objective = "reg:squarederror", eta = 0.05, max_depth = 3,
+                            subsample = 0.8), data = xgb.DMatrix(X, label = cafe$nota),
+              nrounds = 2000, nfold = 10, early_stopping_rounds = 50, verbose = 0)
+cvx$best_iteration
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-boosting" type="button">Copiar código</button></div><pre id="code-py-boosting"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+y=NOTA
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: a nota. Piso irredutível sigma² = %s.'%c(EQM_PISO))
+
+print('\n'+'='*70)
+print('BOOSTING À MÃO: cada árvore pequena ajusta o RESÍDUO das anteriores')
+print('F_0 = média; F_m = F_(m-1) + nu * árvore ajustada a (y - F_(m-1))')
+print('Árvores de profundidade 1 (tocos) e nu = 0,1:')
+nu=0.1; F=np.full(NC,y.mean())
+print()
+print('%4s %-26s %12s %12s'%('m','corte do toco','passo (nu*h)','EQM treino'))
+print('%4d %-26s %12s %12s'%(0,'(média)','',c(eqm(y,F))))
+for m in range(1,9):
+    r=y-F; h=DecisionTreeRegressor(max_depth=1).fit(X,r); t=h.tree_
+    F=F+nu*h.predict(X)
+    v=t.value.ravel()
+    print('%4d %-26s %12s %12s'%(m,'%s &lt;= %s'%(ROT[NOMES[t.feature[0]]],c(t.threshold[0],1)),
+          '%s / %s'%(c(nu*v[1],3),c(nu*v[2],3)),c(eqm(y,F))))
+print()
+print('Os primeiros tocos insistem na altitude: o degrau é grande, e cada passo')
+print('de tamanho 0,1 retira só 10% do que falta explicar ali.')
+
+print('\n'+'='*70)
+print('AO CONTRÁRIO DA RANDOM FOREST, O BOOSTING SOBREAJUSTA COM M')
+print('Treino em 400 lotes, teste em 200; profundidade 3.')
+rg=np.random.default_rng(5); idx=rg.permutation(NC); te,tr=idx[:200],idx[200:]
+print()
+print('%7s %14s %14s %14s'%('M','nu = 1,0','nu = 0,1','nu = 0,01'))
+cur={}
+for nu_ in [1.0,0.1,0.01]:
+    g=GradientBoostingRegressor(n_estimators=3000,learning_rate=nu_,max_depth=3,random_state=0).fit(X[tr],y[tr])
+    cur[nu_]=np.array([eqm(y[te],p) for p in g.staged_predict(X[te])])
+for M in [1,10,30,100,300,1000,3000]:
+    print('%7d %14s %14s %14s'%(M,c(cur[1.0][M-1]),c(cur[0.1][M-1]),c(cur[0.01][M-1])))
+print()
+for nu_ in [1.0,0.1,0.01]:
+    k=int(np.argmin(cur[nu_])); print('  nu = %-5s melhor M = %5d, EQM teste = %s'%(c(nu_,2),k+1,c(cur[nu_][k])))
+print('Com nu = 1 o mínimo é alto e estreito: duas árvores, e depois só piora.')
+print('Passar a nu = 0,1 baixa o mínimo e o alarga. Passar a 0,01 já não baixa:')
+print('só exige cerca de dez vezes mais árvores para chegar ao mesmo lugar.')
+
+print('\n'+'='*70)
+print('A PROFUNDIDADE É A ORDEM DAS INTERAÇÕES')
+print('Tocos (profundidade 1) só somam funções de UMA variável: o modelo é')
+print('aditivo e não representa a interação sombreamento x temperatura.')
+print('M escolhido por validação interna (10% dos dados, parada antecipada).')
+print()
+print('%13s %14s %14s'%('profundidade','EQM 10-fold','M médio'))
+for dp in [1,2,3,4,6]:
+    Ms=[]
+    def fab(dp=dp):
+        return GradientBoostingRegressor(n_estimators=3000,learning_rate=0.05,max_depth=dp,subsample=1.0,
+                 validation_fraction=0.1,n_iter_no_change=50,random_state=0)
+    d=dobras(NC,10,0); e=np.empty(NC)
+    for j in range(10):
+        trj,tej=d!=j,d==j; m=fab().fit(X[trj],y[trj]); e[tej]=y[tej]-m.predict(X[tej]); Ms.append(m.n_estimators_)
+    print('%13d %14s %14d'%(dp,c(float(np.mean(e**2))),int(np.mean(Ms))))
+
+print('\n'+'='*70)
+print('A INTERAÇÃO, vista diretamente')
+print('Efeito de passar o sombreamento de 10% a 60%, em dois climas:')
+g1=GradientBoostingRegressor(n_estimators=600,learning_rate=0.05,max_depth=1,random_state=0).fit(X,y)
+g3=GradientBoostingRegressor(n_estimators=400,learning_rate=0.05,max_depth=3,random_state=0).fit(X,y)
+print()
+print('%-22s %14s %14s %14s'%('','tocos','profund. 3','verdade'))
+for T in [18.5,22.5]:
+    Z=X.copy(); Z[:,1]=T; A=Z.copy(); A[:,3]=10; Bm=Z.copy(); Bm[:,3]=60
+    r=[float((m.predict(Bm)-m.predict(A)).mean()) for m in (g1,g3)]+[float((verdade(Bm)-verdade(A)).mean())]
+    print('%-22s %14s %14s %14s'%('temperatura %s C'%c(T,1),*[c(v,3) for v in r]))
+print()
+print('Os tocos dão o MESMO efeito do sombreamento nos dois climas, porque')
+print('não podem fazer outra coisa. A verdade muda de sinal.')
+
+print('\n'+'='*70)
+print('BOOSTING ESTOCÁSTICO: cada árvore numa subamostra sem reposição')
+print()
+print('%11s %14s'%('subamostra','EQM 10-fold'))
+for sub in [1.0,0.8,0.5,0.3]:
+    v,_=cv_reg(lambda sub=sub: GradientBoostingRegressor(n_estimators=300,learning_rate=0.05,max_depth=3,subsample=sub,random_state=0),X,y,10,0,3)
+    print('%11s %14s'%(c(sub,1),c(v)))
+
+print('\n'+'='*70)
+print('CLASSIFICAÇÃO: o AdaBoost e o boosting com perda logística')
+yc=FINO
+print()
+print('%-40s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for nm,f in [('um toco',lambda: DecisionTreeClassifier(max_depth=1)),
+             ('AdaBoost, 200 tocos',lambda: AdaBoostClassifier(DecisionTreeClassifier(max_depth=1),n_estimators=200,random_state=0)),
+             ('gradient boosting, logística, prof. 1',lambda: GradientBoostingClassifier(n_estimators=300,learning_rate=0.05,max_depth=1,random_state=0)),
+             ('gradient boosting, logística, prof. 3',lambda: GradientBoostingClassifier(n_estimators=150,learning_rate=0.05,max_depth=3,random_state=0))]:
+    er,ll,br=cv_clf(f,X,yc,10,0,3,prob=True)
+    print('%-40s %10s %10s %10s'%(nm,c(er),c(ll),c(br)))
+print('%-40s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: a nota. Piso irredutível sigma² = 2,4025.
+
+======================================================================
+BOOSTING À MÃO: cada árvore pequena ajusta o RESÍDUO das anteriores
+F_0 = média; F_m = F_(m-1) + nu * árvore ajustada a (y - F_(m-1))
+Árvores de profundidade 1 (tocos) e nu = 0,1:
+
+   m corte do toco              passo (nu*h)   EQM treino
+   0 (média)                                       9,6974
+   1 Altitude &lt;= 1050,9         -0,233 / 0,226       8,6972
+   2 Altitude &lt;= 1050,9         -0,210 / 0,203       7,8871
+   3 Altitude &lt;= 1050,9         -0,189 / 0,183       7,2309
+   4 Altitude &lt;= 1050,9         -0,170 / 0,164       6,6993
+   5 Altitude &lt;= 1050,9         -0,153 / 0,148       6,2688
+   6 Altitude &lt;= 1050,9         -0,138 / 0,133       5,9200
+   7 Altitude &lt;= 1050,9         -0,124 / 0,120       5,6375
+   8 Altitude &lt;= 1050,9         -0,112 / 0,108       5,4087
+
+Os primeiros tocos insistem na altitude: o degrau é grande, e cada passo
+de tamanho 0,1 retira só 10% do que falta explicar ali.
+
+======================================================================
+AO CONTRÁRIO DA RANDOM FOREST, O BOOSTING SOBREAJUSTA COM M
+Treino em 400 lotes, teste em 200; profundidade 3.
+
+      M       nu = 1,0       nu = 0,1      nu = 0,01
+      1         4,4264         8,8721         9,8856
+     10         5,0084         4,5592         8,8828
+     30         6,1459         3,5385         7,2503
+    100         6,4281         3,5720         4,6029
+    300         6,4010         4,1673         3,5537
+   1000         6,4009         4,3483         3,7002
+   3000         6,4009         4,3623         4,1168
+
+  nu = 1,00  melhor M =     2, EQM teste = 4,3452
+  nu = 0,10  melhor M =    51, EQM teste = 3,4793
+  nu = 0,01  melhor M =   448, EQM teste = 3,5011
+Com nu = 1 o mínimo é alto e estreito: duas árvores, e depois só piora.
+Passar a nu = 0,1 baixa o mínimo e o alarga. Passar a 0,01 já não baixa:
+só exige cerca de dez vezes mais árvores para chegar ao mesmo lugar.
+
+======================================================================
+A PROFUNDIDADE É A ORDEM DAS INTERAÇÕES
+Tocos (profundidade 1) só somam funções de UMA variável: o modelo é
+aditivo e não representa a interação sombreamento x temperatura.
+M escolhido por validação interna (10% dos dados, parada antecipada).
+
+ profundidade    EQM 10-fold        M médio
+            1         3,2726            561
+            2         3,0558            258
+            3         3,0169            180
+            4         2,9404            105
+            6         3,2373            108
+
+======================================================================
+A INTERAÇÃO, vista diretamente
+Efeito de passar o sombreamento de 10% a 60%, em dois climas:
+
+                                tocos     profund. 3        verdade
+temperatura 18,5 C              0,152         -0,308         -1,500
+temperatura 22,5 C              0,152          1,239          2,600
+
+Os tocos dão o MESMO efeito do sombreamento nos dois climas, porque
+não podem fazer outra coisa. A verdade muda de sinal.
+
+======================================================================
+BOOSTING ESTOCÁSTICO: cada árvore numa subamostra sem reposição
+
+ subamostra    EQM 10-fold
+        1,0         3,1021
+        0,8         3,0450
+        0,5         3,0471
+        0,3         3,0888
+
+======================================================================
+CLASSIFICAÇÃO: o AdaBoost e o boosting com perda logística
+
+modelo                                         erro   log-loss      Brier
+um toco                                      0,2067     0,4203     0,1379
+AdaBoost, 200 tocos                          0,1872     0,5927     0,2007
+gradient boosting, logística, prof. 1        0,1839     0,3979     0,1267
+gradient boosting, logística, prof. 3        0,1817     0,3997     0,1295
+erro de Bayes                                0,1596</pre></div><figure class="fig"><img src="../assets/resultados/boosting.png" alt="Erro no teste em função do número de árvores para três taxas, erro validado por profundidade e o efeito do sombreamento em dois climas" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o erro no teste em função de M para três valores de ν: com ν = 1 o mínimo vem com duas árvores e depois o erro sobe; com ν = 0,1 e 0,01 o mínimo é mais baixo e mais largo. No centro, o erro validado por profundidade: tocos não representam a interação. À direita, o efeito de passar o sombreamento de 10% a 60% em dois climas: os tocos dão o mesmo efeito nos dois. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Erro no teste em função de M (profundidade 3)</caption><thead><tr><th>M</th><th>ν = 1,0</th><th>ν = 0,1</th><th>ν = 0,01</th></tr></thead><tbody><tr><td>1</td><td>4,4264</td><td>8,8721</td><td>9,8856</td></tr><tr><td>10</td><td>5,0084</td><td>4,5592</td><td>8,8828</td></tr><tr><td>30</td><td>6,1459</td><td>3,5385</td><td>7,2503</td></tr><tr><td>100</td><td>6,4281</td><td>3,5720</td><td>4,6029</td></tr><tr><td>300</td><td>6,4010</td><td>4,1673</td><td>3,5537</td></tr><tr><td>1.000</td><td>6,4009</td><td>4,3483</td><td>3,7002</td></tr><tr><td>3.000</td><td>6,4009</td><td>4,3623</td><td>4,1168</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O melhor M de cada taxa</caption><thead><tr><th>ν</th><th>Melhor M</th><th>EQM no teste</th></tr></thead><tbody><tr><td>1,0</td><td>2</td><td>4,3452</td></tr><tr><td><strong>0,1</strong></td><td><strong>51</strong></td><td><strong>3,4793</strong></td></tr><tr><td>0,01</td><td>448</td><td>3,5011</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A profundidade (M por parada antecipada)</caption><thead><tr><th>Profundidade</th><th>EQM 10-fold</th><th>M médio</th></tr></thead><tbody><tr><td>1 (tocos)</td><td>3,2726</td><td>561</td></tr><tr><td>2</td><td>3,0558</td><td>258</td></tr><tr><td>3</td><td>3,0169</td><td>180</td></tr><tr><td><strong>4</strong></td><td><strong>2,9404</strong></td><td><strong>105</strong></td></tr><tr><td>6</td><td>3,2373</td><td>108</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Efeito de passar o sombreamento de 10% a 60%</caption><thead><tr><th>Clima</th><th>Tocos</th><th>Profundidade 3</th><th>Verdade</th></tr></thead><tbody><tr><td>18,5 °C</td><td>0,152</td><td>−0,308</td><td>−1,500</td></tr><tr><td>22,5 °C</td><td>0,152</td><td>1,239</td><td>2,600</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Boosting estocástico</caption><thead><tr><th>Fração amostrada por árvore</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>1,0</td><td>3,1021</td></tr><tr><td>0,8</td><td>3,0450</td></tr><tr><td>0,5</td><td>3,0471</td></tr><tr><td>0,3</td><td>3,0888</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Classificação (fino ou não), 10 dobras × 3</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>Um toco</td><td>0,2067</td><td>0,4203</td><td>0,1379</td></tr><tr><td>AdaBoost, 200 tocos</td><td>0,1872</td><td>0,5927</td><td>0,2007</td></tr><tr><td>Boosting logístico, profundidade 1</td><td>0,1839</td><td>0,3979</td><td>0,1267</td></tr><tr><td>Boosting logístico, profundidade 3</td><td>0,1817</td><td>0,3997</td><td>0,1295</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><p><strong>Leitura:</strong> o boosting com profundidade 4 e parada antecipada tem o menor erro de todo o grupo de árvores, 2,9404, contra 3,0805 da melhor random forest e 2,5695 do piso. É o resultado típico: bem ajustado, o boosting fica à frente; mal ajustado, fica atrás.</p><p><strong>O encolhimento importa, e só até certo ponto.</strong> Com \(\nu=1\), o melhor modelo tem duas árvores e erro 4,3452; depois, o erro sobe e para em 6,40 — o modelo decorou o treino. Com \(\nu=0{,}1\), o mínimo cai a 3,4793 e é largo: de 30 a 100 árvores, o erro fica entre 3,54 e 3,57. Com \(\nu=0{,}01\), o mínimo é praticamente o mesmo (3,5011) e exige 448 árvores. Encolher mais não melhorou; só ficou mais caro.</p><p><strong>A profundidade é a ordem das interações, e a tabela do sombreamento mostra isso sem nenhuma ambiguidade.</strong> Os tocos estimam o mesmo efeito, 0,152, nos dois climas — não podem fazer outra coisa, pois o modelo é aditivo. A verdade é −1,500 no frio e +2,600 no calor. As árvores de profundidade 3 recuperam o sinal (−0,308 e +1,239), ainda atenuado. O erro validado confirma: de tocos para profundidade 4, cai de 3,2726 para 2,9404. Profundidade 6 já piora: árvores grandes demais tornam cada passo grosseiro.</p><p><strong>O AdaBoost tem erro de classificação competitivo (0,1872) e probabilidades ruins</strong> (log-loss 0,5927, o pior da tabela): a perda exponencial empurra as pontuações para os extremos, e a conversão em probabilidade não é calibrada. O boosting com perda logística tem erro parecido e log-loss de 0,3979, o melhor de todos os métodos de árvores nesta ficha e nas anteriores.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Escolher M pelo erro de treino</td><td>Ele só cai; use validação ou parada antecipada.</td></tr><tr><td>Usar ν = 1</td><td>Mínimo alto e estreito; use 0,01 a 0,1.</td></tr><tr><td>Usar tocos quando há interações</td><td>Teste profundidades 2 a 6.</td></tr><tr><td>Ajustar muitos hiperparâmetros com uma única validação</td><td>Use validação aninhada para estimar o erro final.</td></tr><tr><td>Ler probabilidades do AdaBoost como calibradas</td><td>Use perda logística ou calibre.</td></tr><tr><td>Tratar a influência relativa como efeito</td><td>Mesmos cuidados da importância das florestas.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="randomforest.html">Random forest</a></td><td>Quando se quer um bom resultado com pouco ajuste.</td></tr><tr><td><a href="bart.html">BART</a></td><td>Soma de árvores com prior que regulariza; dá incerteza.</td></tr><tr><td>xgboost, lightgbm, catboost</td><td>Dados grandes; regularização adicional; variáveis categóricas (catboost).</td></tr><tr><td>Boosting de componentes (<code>mboost</code>)</td><td>Quando se quer um modelo aditivo interpretável construído por boosting.</td></tr><tr><td><a href="gam.html">GAM</a></td><td>Relações suaves e aditivas.</td></tr></tbody></table></div><ol class="steps"><li>Fixe ν = 0,05 e profundidade 3.</li><li>Escolha M por validação cruzada ou parada antecipada.</li><li>Compare profundidades de 1 a 6.</li><li>Experimente subamostragem de 0,5 a 0,8.</li><li>Estime o erro final com validação aninhada.</li><li>Examine influência relativa e dependências parciais.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FRIEDMAN, Jerome H. Greedy function approximation: a gradient boosting machine. <em>The Annals of Statistics</em>, v. 29, n. 5, p. 1189-1232, 2001.</li><li>FRIEDMAN, Jerome H. Stochastic gradient boosting. <em>Computational Statistics &amp; Data Analysis</em>, v. 38, n. 4, p. 367-378, 2002.</li><li>FREUND, Yoav; SCHAPIRE, Robert E. A decision-theoretic generalization of on-line learning and an application to boosting. <em>Journal of Computer and System Sciences</em>, v. 55, n. 1, p. 119-139, 1997.</li><li>FRIEDMAN, Jerome; HASTIE, Trevor; TIBSHIRANI, Robert. Additive logistic regression: a statistical view of boosting. <em>The Annals of Statistics</em>, v. 28, n. 2, p. 337-407, 2000.</li><li>SCHAPIRE, Robert E. The strength of weak learnability. <em>Machine Learning</em>, v. 5, n. 2, p. 197-227, 1990.</li><li>FRIEDMAN, Jerome H.; POPESCU, Bogdan E. Predictive learning via rule ensembles. <em>The Annals of Applied Statistics</em>, v. 2, n. 3, p. 916-954, 2008.</li><li>BÜHLMANN, Peter; HOTHORN, Torsten. Boosting algorithms: regularization, prediction and model fitting. <em>Statistical Science</em>, v. 22, n. 4, p. 477-505, 2007.</li><li>NATEKIN, Alexey; KNOLL, Alois. Gradient boosting machines, a tutorial. <em>Frontiers in Neurorobotics</em>, v. 7, art. 21, 2013.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>RIDGEWAY, Greg et al. <em>gbm: generalized boosted regression models.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=gbm" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=gbm</a>.</li><li>CHEN, Tianqi; GUESTRIN, Carlos. XGBoost: a scalable tree boosting system. In: ACM SIGKDD INTERNATIONAL CONFERENCE ON KNOWLEDGE DISCOVERY AND DATA MINING, 22., 2016, San Francisco. <em>Proceedings</em> [...]. New York: ACM, 2016. p. 785-794.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, número de árvores escolhido por validação, encolhimento pequeno e profundidade compatível com as interações.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>gbm; xgboost (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="randomforest.html"><span>← ANTERIOR</span>Random forests</a><a href="bart.html"><span>PRÓXIMO →</span>Bayesian additive regression trees (BART)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

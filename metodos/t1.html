@@ -4,381 +4,160 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste t para uma amostra: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste t para uma amostra | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste t para uma amostra: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste t para uma amostra | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste t para uma amostra
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 04 · COMPARAÇÃO DE MÉDIAS
-    </span>
-<h1>
-     Teste t para uma amostra
-    </h1>
-<p class="detail-lead">
-     Verifica se a média de uma população difere de um valor de referência.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/t1.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se a média de uma população difere de um valor de referência.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Amostra aleatória/observações independentes.</li><li>Normalidade aproximada da distribuição de Y para inferência exata em amostra pequena.</li><li>Inspecione Q–Q e outliers.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu=\mu_0\\ H_1&amp;:\ \mu\neq\mu_0\end{aligned}\right.\]
-      </div>
-<h3>
-       Alternativas bilateral e unilaterais
-      </h3>
-<div class="tail-cases">
-<p>
-<strong>
-         Bilateral:
-        </strong>
-        \(\mu\neq \mu_0\). Detecta desvios em qualquer direção.
-       </p>
-<p>
-<strong>
-         Unilateral à direita:
-        </strong>
-        \(\mu&gt;\mu_0\). Investiga aumento ou associação positiva.
-       </p>
-<p>
-<strong>
-         Unilateral à esquerda:
-        </strong>
-        \(\mu&lt;\mu_0\). Investiga redução ou associação negativa.
-       </p>
-<p>
-        A direção deve ser escolhida antes de observar os resultados. Para o teste t e os testes de associação, use
-        <code>
-         alternative = "two.sided"
-        </code>
-        ,
-        <code>
-         "greater"
-        </code>
-        ou
-        <code>
-         "less"
-        </code>
-        . Em testes com grupos ou pares, a interpretação da direção depende da ordem dos grupos ou da subtração.
-       </p>
-</div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[t=\frac{\bar Y-\mu_0}{S/\sqrt{n}},\qquad t\sim t_{n-1}\ \text{ sob }H_0\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\mu)=\bar Y\pm t_{0{,}975;n-1}\frac{S}{\sqrt n}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\bar Y\)
-        </dt>
-<dd>
-         média amostral
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu_0\)
-        </dt>
-<dd>
-         média de referência especificada previamente
-        </dd>
-</div>
-<div>
-<dt>
-         \(S\)
-        </dt>
-<dd>
-         desvio-padrão amostral calculado com divisor n-1
-        </dd>
-</div>
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         número de observações
-        </dd>
-</div>
-<div>
-<dt>
-         \(t_{n-1}\)
-        </dt>
-<dd>
-         distribuição t de Student com n-1 graus de liberdade, sob H0 e normalidade
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : rejeite \(H_0\) . \(IC_{95\%}\) para \(\mu\) que exclua \(\mu_{0}\) concorda com teste bilateral a 5%.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-<p>
-       Em um teste unilateral, a rejeição só sustenta a direção previamente definida. Um resultado de sinal contrário não autoriza inverter a hipótese após examinar os dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Em mtcars, mpg representa a autonomia de 32 modelos de automóveis. O valor 20 mpg é uma referência hipotética de comparação, não uma especificação de engenharia observada.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Verificar se a autonomia média da população representada pelos dados difere de 20 mpg.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-t1" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-t1"><code># Teste t para uma amostra ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste t para uma amostra</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÃO DE MÉDIAS</span><h1>Teste t para uma amostra</h1><p class="detail-lead">Verifica se a média de uma população difere de um valor de referência definido previamente.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/t1.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/t1.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O pacote diz 500 g. Uma amostra de 25 unidades tem peso médio de 497,8 g. Isso é um desvio real do processo ou apenas a variação esperada de uma amostra? O teste t para uma amostra responde exatamente a essa pergunta: compara a média observada com um <strong>valor de referência</strong> fixado antes da coleta, levando em conta a variabilidade dos dados e o tamanho da amostra.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste t de uma amostra" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara a média amostral</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">a um valor de referência</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Estatística t</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">(média − μ₀) / erro-padrão</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">com n − 1 g.l.</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade (ou n grande)</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Amostra aleatória</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Valor-p e, sobretudo,</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">intervalo de confiança</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">t.test(x, mu = 500)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Wilcoxon</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Teste do sinal</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Bootstrap</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste t de uma amostra</text></svg><figcaption>Visão geral do teste t para uma amostra. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>A distribuição t foi deduzida por William Sealy Gosset em 1908, enquanto trabalhava na cervejaria Guinness, em Dublin. Como a empresa proibia publicações dos funcionários, ele assinou o artigo com o pseudônimo <em>Student</em> — e o teste carrega esse nome até hoje.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>A média de uma amostra varia de amostra para amostra. Se soubéssemos o desvio-padrão da população, poderíamos usar a distribuição normal para medir essa variação. Como ele também é estimado dos dados, há uma incerteza extra, e a distribuição de referência passa a ser a t de Student, com caudas mais pesadas. Quanto menor a amostra, mais pesadas elas são.</p><figure class="fig"><img src="../assets/resultados/t1-didatica.png" alt="Distribuição t comparada à normal e regiões de rejeição" loading="lazy"/><figcaption><strong>A distribuição de referência e a decisão.</strong> À esquerda, a distribuição t para três tamanhos de amostra: com 3 graus de liberdade, as caudas são bem mais pesadas que as da normal; com 24, as duas quase coincidem. À direita, as duas regiões de rejeição a 5% e a posição do valor observado no exemplo desta ficha. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Amostra aleatória da população de interesse</td><td>Sem isso, nenhuma inferência é válida.</td><td>Plano de amostragem.</td></tr><tr><td>Observações independentes</td><td>É o pressuposto mais grave quando violado.</td><td>Delineamento; medidas repetidas da mesma unidade exigem o <a href="tpareado.html">teste t pareado</a>.</td></tr><tr><td>Normalidade da população (ou n grande)</td><td>Define a distribuição de referência.</td><td><a href="sw.html">Shapiro–Wilk</a> e gráfico Q–Q. Pelo teorema central do limite, com n acima de 30 a 40 o teste é robusto a desvios moderados.</td></tr><tr><td>Variável quantitativa</td><td>O teste compara médias.</td><td>Natureza da variável.</td></tr><tr><td>Valor de referência definido a priori</td><td>Escolher μ₀ depois de ver os dados invalida o valor-p.</td><td>Registre a origem do valor (norma, especificação, histórico).</td></tr><tr><td>Ausência de valores extremos influentes</td><td>A média e o desvio-padrão são sensíveis a eles.</td><td>Boxplot; repita o teste com e sem o ponto suspeito.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu=\mu_0\\ H_1&:\ \mu\neq\mu_0\quad\text{(bilateral)}\end{aligned}\right.\qquad \text{ou}\]\[\begin{aligned}H_1:\ \mu &&lt; \mu_0\ \text{ ou }\ \mu \\ &&gt; \mu_0\ \text{(unilateral)}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[t=\frac{\bar x-\mu_0}{s/\sqrt{n}}\sim t_{\,n-1},\]\[IC_{1-\alpha}(\mu)=\bar x\pm t_{\,n-1;\,1-\alpha/2}\,\frac{s}{\sqrt n},\]\[d=\frac{\bar x-\mu_0}{s}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\bar x\)</dt><dd>média amostral</dd></div><div><dt>\(\mu_0\)</dt><dd>valor de referência, fixado antes da coleta</dd></div><div><dt>\(\mu\)</dt><dd>média populacional (parâmetro de interesse)</dd></div><div><dt>\(s\)</dt><dd>desvio-padrão amostral (divisor \(n-1\))</dd></div><div><dt>\(n\)</dt><dd>tamanho da amostra</dd></div><div><dt>\(s/\sqrt n\)</dt><dd>erro-padrão da média: a incerteza da média, não dos dados</dd></div><div><dt>\(d\)</dt><dd>d de Cohen: tamanho do efeito, em desvios-padrão</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Dados do exemplo: \(n=25\), \(\bar x=497{,}84\) g, \(s=4{,}0776\) g e \(\mu_0=500\) g.</p><div class="table-wrap"><table class="method-table"><caption>Da amostra à decisão</caption><thead><tr><th>Passo</th><th>Cálculo</th><th>Resultado</th></tr></thead><tbody><tr><td>Erro-padrão da média</td><td>4,0776 / √25</td><td>0,8155 g</td></tr><tr><td>Estatística de teste</td><td>(497,84 − 500) / 0,8155</td><td>t = −2,6486</td></tr><tr><td>Graus de liberdade</td><td>25 − 1</td><td>24</td></tr><tr><td>Valor-p bilateral</td><td>2 × P(t₍₂₄₎ ≤ −2,6486)</td><td>0,0141</td></tr><tr><td>Valor crítico</td><td>t(0,975; 24)</td><td>2,0639</td></tr><tr><td>Intervalo de confiança</td><td>497,84 ± 2,0639 × 0,8155</td><td>[496,16; 499,52]</td></tr><tr><td>Tamanho do efeito</td><td>(497,84 − 500) / 4,0776</td><td>d = −0,53</td></tr></tbody></table></div><div class="worked"><strong>A conclusão</strong><p>\(|t|=2{,}649&gt;2{,}064\), e o valor-p de 0,0141 é menor que 0,05: rejeita-se \(H_0\).</p><p>O intervalo de confiança conta a mesma história de forma mais útil: o peso médio do lote está entre 496,2 g e 499,5 g, e os 500 g nominais ficam de fora. A melhor estimativa do desvio é de 2,16 g, com margem de erro de 1,68 g.</p></div><h3>Propriedades</h3><ul class="checklist"><li>O teste bilateral rejeita \(H_0\) exatamente quando \(\mu_0\) fica fora do intervalo de confiança: teste e intervalo são duas leituras do mesmo cálculo.</li><li>O intervalo é mais informativo que o valor-p, porque indica a magnitude plausível do desvio.</li><li>A estatística não muda se somarmos uma constante a todos os valores e a \(\mu_0\); e não muda se multiplicarmos tudo por uma constante positiva.</li><li>Com \(n\) grande, a distribuição t converge para a normal padrão.</li><li>O valor-p unilateral é a metade do bilateral quando a diferença observada está no sentido da hipótese alternativa.</li><li>O poder cresce com \(n\), com a diferença real e com a precisão do processo.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Valor-p</td><td>Evidência contra o valor de referência.</td><td>Não mede a magnitude do desvio nem a probabilidade de H₀.</td></tr><tr><td>Intervalo de confiança</td><td>Faixa de valores plausíveis para a média.</td><td>É a informação mais útil para decidir na prática.</td></tr><tr><td>d de Cohen</td><td>Magnitude do desvio em desvios-padrão.</td><td>0,2 pequeno; 0,5 médio; 0,8 grande (COHEN, 1988).</td></tr><tr><td>Poder</td><td>Capacidade do teste de detectar o efeito.</td><td>Baixo poder explica não rejeições pouco informativas.</td></tr><tr><td>n grande e p pequeno</td><td>Pode detectar desvios irrelevantes.</td><td>Avalie se a diferença importa na prática.</td></tr></tbody></table></div><p>Reporte sempre: n, média, desvio-padrão, t, graus de liberdade, valor-p, intervalo de confiança e tamanho do efeito. Por exemplo: “n = 25; média de 497,8 g (DP 4,1); t(24) = −2,65; p = 0,014; IC 95% [496,2; 499,5]; d = −0,53”.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>t.test()</code> pertence ao pacote <code>stats</code>, já instalado com o R. O valor de referência vai em <code>mu=</code>, e <code>alternative=</code> aceita <code>"two.sided"</code> (padrão), <code>"less"</code> ou <code>"greater"</code>. O nível de confiança é ajustado em <code>conf.level=</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-t1-min" type="button">Copiar código</button></div><pre id="code-t1-min"><code>t.test(peso, mu = 500)                        # bilateral
+t.test(peso, mu = 500, alternative = "less")   # unilateral
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Um lote de pacotes declara peso líquido de 500 g. Para verificar a conformidade, 25 pacotes foram pesados. A pergunta é se o lote atende à especificação ou se há um desvio sistemático do processo de envase. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-t1" type="button">Copiar código</button></div><pre id="code-t1"><code># Teste t para uma amostra: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R).
 
-# Ajuste e resultados ----
-summary(mtcars$mpg)
-sd(mtcars$mpg)
-resultado &lt;- t.test(mtcars$mpg, mu = 20, conf.level = 0.95)
-print(resultado)
-qqnorm(mtcars$mpg); qqline(mtcars$mpg, col = "red")
+# 1. Dados: peso líquido de 25 pacotes (g). Valor nominal: 500 g (dados fictícios)
+peso &lt;- c(492.2, 493.3, 500.6, 490.3, 499.8, 499.2, 501.3, 496.2, 500.0, 492.3,
+          501.6, 500.2, 496.3, 497.2, 493.8, 500.1, 494.6, 504.2, 494.4, 496.0,
+          501.6, 496.6, 500.2, 507.5, 496.5)
+mu0 &lt;- 500
+c(n = length(peso), media = mean(peso), dp = sd(peso), mediana = median(peso))
 
-# Visualização e diagnóstico ----
-hist(mtcars$mpg, main = "Autonomia dos veículos", xlab = "mpg", breaks = "FD")
-abline(v = 20, col = "red", lwd = 2, lty = 2)
+# 2. Diagnóstico gráfico, antes do teste
+par(mfrow = c(1, 2))
+hist(peso, col = "gray85", xlab = "Peso (g)", main = ""); abline(v = mu0, col = "red", lwd = 2)
+qqnorm(peso, pch = 19); qqline(peso, col = "red", lwd = 2)
+par(mfrow = c(1, 1))
 
+# 3. Pressuposto de normalidade
+shapiro.test(peso)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# H1: mu &gt; 20 (maior média)
-print(t.test(mtcars$mpg, mu = 20, alternative = "greater", conf.level = 0.95))
-# H1: mu &lt; 20 (menor média)
-print(t.test(mtcars$mpg, mu = 20, alternative = "less", conf.level = 0.95))
-</code></pre><div class="verified-example"><h3>Saída numérica para conferência</h3><p class="verification-source">Valores recalculados independentemente com os mesmos dados; a formatação da saída pode diferir da apresentada pelo R.</p><pre class="output-r">One Sample t-test
-t = 0.08506, df = 31, p-value = 0.932761
-95 percent confidence interval: [17.91768, 22.26357]
-sample mean: 20.09063</pre><h3>Gráfico dos dados</h3><img alt="Visualização dos dados do exemplo: Teste t para uma amostra" class="result-figure" loading="lazy" src="../assets/resultados/t1.png"/><p>A média observada foi 20.09 mpg (desvio-padrão 6.03). O intervalo de 95% inclui 20 mpg; não se rejeita H₀ a 5%.</p></div>
-<h3>Resultados e interpretação</h3>
-<p class="observed-result">
-<strong>
-        Resultado para estes dados:
-       </strong>
-       média amostral ≈ 20,09 mpg; t ≈ 0,0851 (31 graus de liberdade) e valor-p ≈ 0,9328. Não há evidência estatística de diferença entre a média populacional e a referência de 20 mpg no teste bilateral.
-      </p>
+# 4. Teste t bilateral
+t.test(peso, mu = mu0)
 
+# 5. Cálculo manual
+n &lt;- length(peso); ep &lt;- sd(peso) / sqrt(n)
+t &lt;- (mean(peso) - mu0) / ep
+c(erro_padrao = ep, t = t, gl = n - 1, valor_p = 2 * pt(abs(t), n - 1, lower.tail = FALSE))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="gee.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Equações de estimação generalizadas (GEE)
-    </a>
-<a href="t2.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste t de Student (dois grupos)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 6. Versão unilateral: o interesse é saber se o peso está ABAIXO do nominal
+t.test(peso, mu = mu0, alternative = "less")
+
+# 7. Tamanho do efeito e poder
+d &lt;- (mean(peso) - mu0) / sd(peso)
+d
+# install.packages("pwr")
+# pwr::pwr.t.test(n = n, d = d, sig.level = 0.05, type = "one.sample")
+
+# 8. Alternativas não paramétricas
+wilcox.test(peso, mu = mu0)
+binom.test(sum(peso &lt; mu0), sum(peso != mu0))      # teste do sinal
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-t1" type="button">Copiar código</button></div><pre id="code-py-t1"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Dados: peso líquido de 25 pacotes de um lote (g). Valor nominal declarado: 500 g (dados fictícios)
+peso = np.array([492.2, 493.3, 500.6, 490.3, 499.8, 499.2, 501.3, 496.2, 500.0, 492.3,
+                 501.6, 500.2, 496.3, 497.2, 493.8, 500.1, 494.6, 504.2, 494.4, 496.0,
+                 501.6, 496.6, 500.2, 507.5, 496.5])
+mu0 = 500.0
+n = len(peso); media = peso.mean(); dp = peso.std(ddof=1)
+print(f"n = {n} | média = {media:.4f} g | desvio-padrão = {dp:.4f} g | mediana = {np.median(peso):.1f} g")
+print(f"Mínimo = {peso.min()} | máximo = {peso.max()}")
+
+# 1. Erro-padrão e estatística de teste
+ep = dp / np.sqrt(n)
+t = (media - mu0) / ep
+gl = n - 1
+p_bilateral = 2 * stats.t.sf(abs(t), gl)
+print(f"\nErro-padrão da média = {dp:.4f} / raiz({n}) = {ep:.4f}")
+print(f"t = ({media:.4f} - {mu0}) / {ep:.4f} = {t:.4f} com {gl} gl")
+print(f"Valor-p bilateral = {p_bilateral:.5f} | unilateral à esquerda = {stats.t.cdf(t, gl):.5f}")
+
+# 2. Conferência com a função pronta
+print("scipy.stats.ttest_1samp:", stats.ttest_1samp(peso, mu0))
+
+# 3. Intervalo de confiança de 95% para a média
+tc = stats.t.ppf(0.975, gl)
+ic = media + np.array([-1, 1]) * tc * ep
+print(f"\nValor crítico t(0,975; {gl}) = {tc:.4f}")
+print(f"IC 95% = {media:.4f} +/- {tc:.4f} x {ep:.4f} = [{ic[0]:.4f}; {ic[1]:.4f}]")
+print(f"O valor nominal de {mu0} g está dentro do intervalo? {'sim' if ic[0] &lt;= mu0 &lt;= ic[1] else 'não'}")
+
+# 4. Tamanho do efeito (d de Cohen) e diferença média
+print(f"\nDiferença média = {media - mu0:.4f} g | d de Cohen = {(media - mu0) / dp:.4f}")
+
+# 5. Pressuposto de normalidade
+W, pw = stats.shapiro(peso)
+print(f"\nShapiro-Wilk: W = {W:.4f}, p-valor = {pw:.4f}")
+
+# 6. Alternativas não paramétricas, para comparação
+print("Wilcoxon (posto sinalizado):", stats.wilcoxon(peso - mu0).pvalue.round(5))
+abaixo = int(np.sum(peso &lt; mu0)); acima = int(np.sum(peso &gt; mu0))
+p_sinal = min(1.0, 2 * stats.binom.cdf(min(abaixo, acima), abaixo + acima, 0.5))
+print(f"Teste do sinal: {abaixo} pesos abaixo de 500 g e {acima} acima | p-valor = {p_sinal:.5f}")
+
+# 7. Poder do teste para a diferença observada
+delta = abs(media - mu0) / dp * np.sqrt(n)
+poder = stats.nct.sf(tc, gl, delta) + stats.nct.cdf(-tc, gl, delta)
+print(f"\nPoder do teste para o efeito observado (alfa = 0,05): {poder:.4f}")
+n_nec = 1
+while True:
+    d_ = abs(media - mu0) / dp * np.sqrt(n_nec); tc_ = stats.t.ppf(0.975, n_nec - 1)
+    if n_nec &gt; 2 and stats.nct.sf(tc_, n_nec - 1, d_) + stats.nct.cdf(-tc_, n_nec - 1, d_) &gt;= 0.80: break
+    n_nec += 1
+print(f"n necessário para poder de 80% com esse tamanho de efeito: {n_nec}")
+
+# 8. Gráficos
+fig, ax = plt.subplots(1, 3, figsize=(13, 4))
+ax[0].hist(peso, bins=8, color="lightgray", edgecolor="white")
+ax[0].axvline(mu0, color="red", lw=2); ax[0].axvline(media, color="darkgreen", lw=2, ls="--")
+ax[0].set_xlabel("Peso (g)"); ax[0].set_ylabel("Frequência")
+stats.probplot(peso, dist="norm", plot=ax[1]); ax[1].set_title("Gráfico Q-Q")
+ax[2].errorbar([0], [media], yerr=tc * ep, fmt="o", capsize=8)
+ax[2].axhline(mu0, color="red", lw=2); ax[2].set_xlim(-1, 1); ax[2].set_xticks([])
+ax[2].set_ylabel("Peso médio (g)")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 25 | média = 497.8400 g | desvio-padrão = 4.0776 g | mediana = 497.2 g
+Mínimo = 490.3 | máximo = 507.5
+
+Erro-padrão da média = 4.0776 / raiz(25) = 0.8155
+t = (497.8400 - 500.0) / 0.8155 = -2.6486 com 24 gl
+Valor-p bilateral = 0.01406 | unilateral à esquerda = 0.00703
+scipy.stats.ttest_1samp: TtestResult(statistic=np.float64(-2.648629186534573), pvalue=np.float64(0.014064106306839658), df=np.int64(24))
+
+Valor crítico t(0,975; 24) = 2.0639
+IC 95% = 497.8400 +/- 2.0639 x 0.8155 = [496.1569; 499.5231]
+O valor nominal de 500.0 g está dentro do intervalo? não
+
+Diferença média = -2.1600 g | d de Cohen = -0.5297
+
+Shapiro-Wilk: W = 0.9725, p-valor = 0.7081
+Wilcoxon (posto sinalizado): 0.02777
+Teste do sinal: 15 pesos abaixo de 500 g e 9 acima | p-valor = 0.30746
+
+Poder do teste para o efeito observado (alfa = 0,05): 0.7196
+n necessário para poder de 80% com esse tamanho de efeito: 30</pre></div><figure class="fig"><img src="../assets/resultados/t1.png" alt="Histograma com o valor nominal, Q-Q e intervalo de confiança da média" loading="lazy"/><figcaption><strong>Os 25 pacotes.</strong> À esquerda, a distribuição dos pesos, com o valor nominal em vermelho e a média observada tracejada. No centro, o Q–Q: os pontos acompanham a reta, de modo que a normalidade é plausível. À direita, a média com seu intervalo de 95%, que não alcança os 500 g. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>n / média / desvio-padrão</td><td>25 / 497,84 g / 4,078 g</td><td></td></tr><tr><td>Erro-padrão da média</td><td>0,8155 g</td><td></td></tr><tr><td>t (24 g.l.)</td><td>−2,6486</td><td>Valor-p bilateral = 0,0141.</td></tr><tr><td>Valor-p unilateral (μ &lt; 500)</td><td>0,0070</td><td>Se o interesse for só o desvio para baixo.</td></tr><tr><td>IC 95% para a média</td><td>[496,16; 499,52] g</td><td>Não contém 500 g.</td></tr><tr><td>Diferença média</td><td>−2,16 g</td><td>d de Cohen = −0,53 (efeito médio).</td></tr><tr><td>Shapiro–Wilk</td><td>W = 0,973; p = 0,708</td><td>Sem evidência contra a normalidade.</td></tr><tr><td>Wilcoxon</td><td>p = 0,0278</td><td>Mesma conclusão.</td></tr><tr><td>Teste do sinal</td><td>15 abaixo e 9 acima; p = 0,307</td><td>Bem menos potente: descarta a magnitude.</td></tr><tr><td>Poder observado</td><td>0,720</td><td>Para detectar d = 0,53 com n = 25.</td></tr><tr><td>n para poder de 80%</td><td>30</td><td>Com esse mesmo tamanho de efeito.</td></tr></tbody></table></div><p><strong>Leitura:</strong> há evidência de que o peso médio do lote está abaixo do nominal. O desvio estimado é de 2,16 g, com intervalo de confiança entre 0,48 g e 3,84 g abaixo dos 500 g — um desvio pequeno em termos relativos (cerca de 0,4%), mas sistemático. A decisão prática depende da tolerância do processo e da legislação metrológica aplicável, não apenas do valor-p.</p><p>Vale observar a diferença entre as três abordagens. O teste t (p = 0,014) usa a magnitude de cada desvio; o Wilcoxon (p = 0,028) usa apenas a ordem; o teste do sinal (p = 0,307) usa somente quantos pacotes ficaram abaixo de 500 g e, por descartar tanta informação, não detecta nada. Quando a normalidade é plausível, como aqui, o teste t é o mais potente dos três.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Escolher μ₀ depois de ver os dados</td><td>O valor de referência vem da especificação, não da amostra.</td></tr><tr><td>Decidir entre bilateral e unilateral pelo resultado</td><td>A direção precisa ser definida antes da coleta.</td></tr><tr><td>Testar a normalidade da amostra e usar isso como porteiro</td><td>Veja a discussão na ficha de <a href="sw.html">Shapiro–Wilk</a>; decida pelo desenho e pelo gráfico.</td></tr><tr><td>Aplicar a medidas repetidas da mesma unidade</td><td>Use o <a href="tpareado.html">teste t pareado</a>.</td></tr><tr><td>Reportar só o valor-p</td><td>O intervalo de confiança é mais útil para a decisão.</td></tr><tr><td>Confundir desvio-padrão com erro-padrão</td><td>O erro-padrão é s dividido pela raiz de n.</td></tr><tr><td>Concluir que o processo está conforme porque p &gt; 0,05</td><td>Ausência de evidência não é evidência de ausência; avalie o poder.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="wilcoxon-assinado.html">Wilcoxon (posto sinalizado)</a></td><td>Assimetria forte ou valores extremos; compara a mediana (ou a distribuição).</td></tr><tr><td>Teste do sinal</td><td>Apenas a ordem em relação a μ₀ é confiável; muito pouco potente.</td></tr><tr><td><a href="bootstrap.html">Bootstrap da média</a></td><td>Amostra pequena e distribuição desconhecida.</td></tr><tr><td>Teste t aparado (Yuen de uma amostra)</td><td>Caudas pesadas, mantendo o foco na parte central.</td></tr><tr><td>Testes de equivalência (TOST)</td><td>O objetivo é demonstrar conformidade, e não diferença.</td></tr><tr><td><a href="t2.html">Teste t de duas amostras</a></td><td>A comparação é entre dois grupos, e não com um valor fixo.</td></tr></tbody></table></div><ol class="steps"><li>Defina μ₀, a direção da hipótese e o nível de significância antes de coletar.</li><li>Examine histograma, boxplot e Q–Q.</li><li>Aplique o teste e, sobretudo, calcule o intervalo de confiança.</li><li>Reporte o tamanho do efeito.</li><li>Traduza o resultado para a escala do problema.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>STUDENT [GOSSET, William Sealy]. The probable error of a mean. <em>Biometrika</em>, v. 6, n. 1, p. 1-25, 1908.</li><li>MORETTIN, Pedro Alberto; BUSSAB, Wilton de Oliveira. <em>Estatística básica.</em> 9. ed. São Paulo: Saraiva, 2017.</li><li>COHEN, Jacob. <em>Statistical power analysis for the behavioral sciences.</em> 2. ed. Hillsdale: Lawrence Erlbaum, 1988.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>CASELLA, George; BERGER, Roger L. <em>Statistical inference.</em> 2. ed. Pacific Grove: Duxbury, 2002.</li><li>CHAMPELY, Stephane. <em>pwr: basic functions for power analysis.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=pwr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=pwr</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>t.test</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Amostra aleatória de uma variável quantitativa, observações independentes e população aproximadamente normal (ou n grande).</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="gee.html"><span>← ANTERIOR</span>Equações de estimação generalizadas (GEE)</a><a href="t2.html"><span>PRÓXIMO →</span>Teste t de Student (dois grupos)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

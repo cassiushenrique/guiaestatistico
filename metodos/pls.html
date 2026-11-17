@@ -4,309 +4,837 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão por mínimos quadrados parciais (PLS): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão por mínimos quadrados parciais (PLS) | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão por mínimos quadrados parciais (PLS): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão por mínimos quadrados parciais (PLS) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão por mínimos quadrados parciais (PLS)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 14 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Regressão por mínimos quadrados parciais (PLS)
-    </h1>
-<p class="detail-lead">
-     Combina variáveis explicativas para prever uma resposta usando componentes orientados pela associação com ela.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/pls.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Combina variáveis explicativas para prever uma resposta usando componentes orientados pela associação com ela.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Padronização apropriada, relação preditiva estável e escolha do número de componentes por CV.</li><li>Interpretação causal não é automática.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbf t_j=\mathbf X\mathbf w_j,\qquad\mathbf w_j\ \text{prioriza covariância entre }\mathbf X\text{ e }Y\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\lambda\)
-        </dt>
-<dd>
-         parâmetro de penalização, quando existente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor de coeficientes do modelo
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X\)
-        </dt>
-<dd>
-         matriz dos preditores
-        </dd>
-</div>
-</dl>
-<p>
-       Algoritmo de maximização sequencial de covariância entre projeções de X e Y; RMSE_CV para selecionar componentes.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Prefira o número de componentes de menor erro validado; compare com OLS, ridge e PCR na mesma validação.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Previsão da autonomia com atributos de veículos (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-pls" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-pls"><code># Regressão por mínimos quadrados parciais (PLS) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão por mínimos quadrados parciais (PLS)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REGULARIZAÇÃO E SELEÇÃO</span><h1>Regressão por mínimos quadrados parciais (PLS)</h1><p class="detail-lead">Constrói componentes que maximizam a covariância com a resposta, alcançando a mesma precisão da PCR com cerca de metade deles — o método que nasceu para espectros com p > n.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/pls.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/pls.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a PLS</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A PLS resolve o defeito da <a href="pcr.html">PCR</a> com uma mudança mínima: em vez de construir os componentes olhando apenas \(X\), constrói-os maximizando a <strong>covariância com \(y\)</strong>. Cada componente é, assim, relevante por construção. O método nasceu na quimiometria, para calibrar instrumentos a partir de espectros com centenas de canais e poucas dezenas de amostras, e é ali que a vantagem dele aparece com clareza.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: PLS" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que faz</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Componentes que maximizam</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">a covariância com y</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Contra a PCR</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">A PCR só olha X;</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">a PLS olha X e y</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A vantagem</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Chega ao mesmo erro</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">com metade dos componentes</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que NÃO faz</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Não reduz o erro MÍNIMO</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">abaixo do da PCR</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O algoritmo</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">NIPALS: projeta,</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">deflaciona, repete</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">A regra VIP &gt; 1 é</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">convenção, não teste</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">PLS</text></svg><figcaption>Visão geral da PLS. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O resultado central, com as duas partes</strong><p>No conjunto espectral, a PLS com <strong>três</strong> componentes alcança \(R^2\) validado de <strong>0,9094</strong>, enquanto a <a href="pcr.html">PCR</a> com três componentes alcança 0,4412 e precisa de <strong>seis</strong> para igualar. Mas no ótimo de cada método os dois praticamente <strong>empatam</strong>: PLS com \(m=5\) dá EQM 0,1987 e PCR com \(m=6\) dá 0,1991. A PLS não atinge um erro menor; ela chega ao mesmo erro com menos componentes.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a PLS</h2><p>Em cada passo, a PLS escolhe o vetor de pesos \(w\) que maximiza \(|\operatorname{cov}(Xw,y)|\) sob \(\|w\|=1\), calcula o escore \(t=Xw\), regride \(y\) nele, e então <strong>deflaciona</strong> \(X\) e \(y\) — subtrai deles a parte explicada por \(t\) — antes de repetir nos resíduos. A deflação garante que os escores sejam ortogonais, como na PCR, mas a direção de cada um é determinada pela resposta.</p><figure class="fig"><img src="../assets/resultados/pls-didatica.png" alt="O primeiro componente de cada método, a velocidade de explicação de y, e as curvas de validação" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, os escores do primeiro componente de cada método contra o teor de proteína: o da <a href="pcr.html">PCR</a> carrega mais variância do espectro e correlaciona-se menos com a resposta. No centro, a variância de \(y\) explicada acumulada: com três componentes a PLS chega a 92,8% e a PCR a 53,5%. À direita, as curvas de \(R^2\) validado, com a seta indicando a mesma precisão alcançada com metade dos componentes. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>O primeiro componente, lado a lado (espectro)</caption><thead><tr><th>Quantidade</th><th>PCR (CP1)</th><th>PLS (t1)</th></tr></thead><tbody><tr><td>% da variância de X capturada</td><td><strong>83,54</strong></td><td>77,93</td></tr><tr><td>% da variância de y capturada</td><td>2,29</td><td><strong>14,43</strong></td></tr><tr><td>|r| com o teor de proteína</td><td>0,1512</td><td><strong>0,3799</strong></td></tr><tr><td>O que otimiza</td><td>variância de X</td><td>covariância com y</td></tr></tbody></table></div><p>A PLS abre mão de 5,6 pontos percentuais de variância do espectro — 77,93% contra 83,54% — e em troca mais que duplica a correlação com a resposta. É a única diferença entre os dois métodos, e explica tudo o que vem depois.</p></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>Os pesos dependem da escala.</td><td><code>scale = TRUE</code> no pacote <code>pls</code>.</td></tr><tr><td><strong>m escolhido por validação cruzada</strong></td><td>Mais componentes levam ao MQO.</td><td><code>validation = "CV"</code>; examine <code>validationplot</code>.</td></tr><tr><td><strong>m reescolhido dentro de cada dobra ao avaliar</strong></td><td>Fixar m na amostra inteira é otimista.</td><td>Validação cruzada aninhada.</td></tr><tr><td>Linearidade na média</td><td>A PLS é um modelo linear.</td><td>Resíduos contra ajustados.</td></tr><tr><td>Observações independentes</td><td>A validação cruzada pressupõe isso.</td><td>Com agrupamento, valide por grupo.</td></tr><tr><td>Não se espera seleção de variáveis</td><td>Todas as p continuam no modelo.</td><td>Use <a href="lasso.html">lasso</a> para selecionar.</td></tr><tr><td><strong>VIP tratado como convenção</strong></td><td>Não há valor-p associado ao limiar 1.</td><td>Veja a verificação desta ficha.</td></tr><tr><td>Pré-processamento espectral adequado</td><td>Deriva de linha de base compete com o sinal.</td><td>SNV, MSC, derivadas de Savitzky-Golay antes.</td></tr></tbody></table></div><div class="callout warn"><strong>O risco próprio da PLS: usar y duas vezes</strong><p>A PLS constrói os componentes <em>usando</em> \(y\). Isso significa que, ao avaliar o erro por validação cruzada, a construção dos componentes tem de ser refeita dentro de cada dobra — exatamente como a seleção de variáveis no <a href="stepwise.html">stepwise</a>. Se os componentes forem calculados uma vez com todos os dados e só a regressão for validada, a estimativa é otimista pelo mesmo mecanismo. O pacote <code>pls</code> com <code>validation = "CV"</code> faz a coisa certa; uma implementação artesanal pode não fazer.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>O algoritmo NIPALS, com \(X_0=X\) padronizado e \(y_0=y-\bar y\). Para \(a=1,\dots,m\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[w_a=\frac{X_{a-1}^{\top}y_{a-1}}{\left\|X_{a-1}^{\top}y_{a-1}\right\|},\]\[t_a=X_{a-1}w_a,\]\[p_a=\frac{X_{a-1}^{\top}t_a}{t_a^{\top}t_a},\]\[q_a=\frac{y_{a-1}^{\top}t_a}{t_a^{\top}t_a}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[X_a=X_{a-1}-t_ap_a^{\top},\]\[y_a=y_{a-1}-q_at_a\quad \text{(deflação)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\beta^{\text{PLS}}=R_mq,\]\[R_m=W_m\left(P_m^{\top}W_m\right)^{-1}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(w_a\)</dt><dd>vetor de pesos do componente \(a\): a direção de maior covariância com o resíduo de \(y\)</dd></div><div><dt>\(t_a\)</dt><dd>escore do componente \(a\)</dd></div><div><dt>\(p_a\)</dt><dd>carga: a projeção de \(X\) sobre o escore</dd></div><div><dt>\(q_a\)</dt><dd>coeficiente da regressão de \(y\) no escore</dd></div><div><dt>\(W_m,P_m\)</dt><dd>matrizes dos pesos e das cargas</dd></div><div><dt>\(R_m\)</dt><dd>matriz que leva os pesos aos coeficientes na escala original</dd></div></dl><p>A deflação é o que distingue \(w_a\) de \(p_a\) e torna os escores ortogonais. O passo \(w_a\propto X^{\top}y\) é o ponto inteiro do método: ele é a direção que maximiza \(|\operatorname{cov}(Xw,y)|\) sob norma unitária, enquanto a <a href="pcr.html">PCR</a> usaria a direção que maximiza \(\operatorname{Var}(Xw)\).</p><h3>Exemplo numérico: o primeiro componente, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>NIPALS no espectro, componente 1</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>\(\|X^{\top}y\|\) antes de normalizar</td><td>348,11</td></tr><tr><td>\(\|w_1\|\) depois de normalizar</td><td>1,0000</td></tr><tr><td>Variância do escore \(t_1\)</td><td>69,0160</td></tr><tr><td>\(\|p_1\|\)</td><td>1,5028</td></tr><tr><td>\(q_1=y^{\top}t_1/t_1^{\top}t_1\)</td><td>0,0855</td></tr><tr><td>\(r(t_1,y)\)</td><td>0,3799</td></tr><tr><td>% da variância de X em \(t_1\)</td><td>77,93</td></tr><tr><td>% da variância de y em \(t_1\)</td><td>14,43</td></tr></tbody></table></div><div class="worked"><strong>PLS com m = posto(X) é o MQO</strong><p>Quando \(m\) iguala o posto de \(X\), os escores geram o mesmo espaço coluna que \(X\), e a PLS recupera exatamente os mínimos quadrados. Nos dados de solo, com posto 12, a maior diferença entre os doze coeficientes calculados pelos dois caminhos é de <strong>0,0000000000</strong>. O mesmo vale para a <a href="pcr.html">PCR</a>.</p><p>A consequência é a mesma das demais fichas do grupo: a PLS é um <strong>caminho</strong> entre o modelo nulo (\(m=0\)) e o MQO (\(m=\text{posto}\)), e escolher \(m\) é escolher o grau de regularização. Um relato que diga "usamos PLS" sem informar \(m\) não informou nada.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Os escores são ortogonais, como na PCR, mas as direções dependem de \(y\).</li><li>\(m=\text{posto}(X)\) devolve o MQO; \(m=0\) devolve a média de \(y\).</li><li>Cada componente maximiza \(|\operatorname{cov}(Xw,y)|\) sob \(\|w\|=1\), no resíduo do passo anterior.</li><li>Não produz zeros: todas as \(p\) variáveis recebem coeficiente não nulo.</li><li>Funciona com \(p&gt;n\), e é o regime em que foi concebida.</li><li>Aceita múltiplas respostas (PLS2) e versões para classificação (PLS-DA).</li><li>Fica entre o MQO e a PCR no espectro de regularização (Frank e Friedman, 1993).</li><li>Depende da escala: exige padronização quando as unidades diferem.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td><code>summary(ml)</code> — duas linhas</td><td>Variância explicada de X e de y.</td><td>Compare com a PCR: a diferença é o método.</td></tr><tr><td><code>validationplot</code></td><td>O erro validado por m.</td><td>É o critério de escolha.</td></tr><tr><td><code>RMSEP</code></td><td>A raiz do erro quadrático validado.</td><td>Eleve ao quadrado para comparar com EQM.</td></tr><tr><td><code>coef(ml, ncomp = m)</code></td><td>Coeficientes na escala original.</td><td>Nenhum é zero.</td></tr><tr><td><code>loading.weights</code> (W)</td><td>As direções escolhidas olhando y.</td><td>Não confundir com as cargas P.</td></tr><tr><td><code>loadings</code> (P)</td><td>A projeção de X sobre os escores.</td><td>Usadas na deflação.</td></tr><tr><td><code>scores</code> (T)</td><td>A posição de cada amostra.</td><td>Úteis para detectar atípicas.</td></tr><tr><td><strong>VIP</strong></td><td>Convenção de importância.</td><td><strong>Verifique antes de confiar</strong> — veja abaixo.</td></tr></tbody></table></div><h3>A regra "VIP > 1", posta à prova</h3><p>O VIP (<em>variable importance in projection</em>) é a medida de importância convencional na quimiometria, e o limiar 1 decorre de o VIP quadrático médio ser 1 por construção. Como neste espectro se sabe quais bandas determinam a resposta, é possível verificar se a regra funciona — e o resultado não a favorece.</p><div class="table-wrap"><table class="method-table"><caption>O que o VIP e os coeficientes dizem, região por região (m = 5)</caption><thead><tr><th>Região (nm)</th><th>Faixas</th><th>VIP médio</th><th>VIP máx.</th><th>VIP &gt; 1</th><th>Σ|coef|</th><th>Determina y?</th></tr></thead><tbody><tr><td>1.100–1.260</td><td>27</td><td>1,102</td><td>1,198</td><td><strong>24</strong></td><td>1,583</td><td>não</td></tr><tr><td><strong>1.350</strong></td><td>30</td><td>1,089</td><td>1,588</td><td>15</td><td><strong>2,350</strong></td><td><strong>SIM</strong></td></tr><tr><td>1.500 (linha de base)</td><td>20</td><td>1,061</td><td>1,105</td><td>18</td><td>0,853</td><td>não</td></tr><tr><td>1.680</td><td>40</td><td>0,938</td><td>1,051</td><td>5</td><td>0,676</td><td>não</td></tr><tr><td><strong>1.920</strong></td><td>39</td><td>0,812</td><td><strong>0,973</strong></td><td><strong>0</strong></td><td><strong>2,186</strong></td><td><strong>SIM</strong></td></tr><tr><td>2.180</td><td>43</td><td>1,001</td><td>1,084</td><td><strong>22</strong></td><td>0,747</td><td>não</td></tr></tbody></table></div><div class="callout warn"><strong>Nestes dados, os coeficientes acertam e o VIP erra</strong><p>Os coeficientes somam 2,350 e 2,186 em valor absoluto nas duas bandas que <em>determinam</em> a proteína, contra 0,676 e 0,747 nas duas que não determinam — razão de cerca de três para um, na direção correta. O VIP, ao contrário, aponta 24 faixas acima de 1 na região de 1.100–1.260 nm e 22 na de 2.180 nm, nenhuma das quais determina a resposta, e aponta <strong>zero</strong> faixas na região de 1.920 nm, que determina: o VIP máximo ali é 0,973, abaixo do limiar. É um falso negativo completo sobre uma banda causal, acompanhado de dezenas de falsos positivos. E a regra selecionou 85 das 200 faixas — quase metade — o que por si indica que não está discriminando.</p></div><p>A razão é estrutural, e é a mesma que aparece nas demais fichas do grupo. O VIP é construído a partir dos <em>pesos</em> \(w\), que se concentram onde o produto variância-por-covariância é maior. As colunas vizinhas do espectro têm \(r=0{,}998\), de modo que uma região serve de procuração para outra: a banda de 1.350 nm, com \(r=0{,}6503\) contra a resposta, absorve o peso da de 1.920 nm, que tem \(r=0{,}3560\). É o fenômeno da argila e da areia nos dados de solo, em outra escala — com colunas quase redundantes, não há como atribuir a importância a uma e não à outra.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função <code>plsr</code> do pacote <code>pls</code> tem a mesma interface do <code>lm</code> e da <code>pcr</code> da ficha anterior, o que facilita a comparação. <code>scale = TRUE</code> padroniza; <code>validation = "CV"</code> com <code>segments = 10</code> faz a validação cruzada <em>refazendo os componentes em cada dobra</em>, que é o comportamento correto. <code>summary()</code> imprime as duas linhas de variância explicada — a de \(X\) e a de \(y\) — e é na segunda que a vantagem sobre a PCR aparece. Quando \(X\) é uma matriz larga, convém passá-la como coluna-matriz em um <code>data.frame</code> com <code>I()</code>, como no código. O argumento <code>method</code> escolhe o algoritmo: <code>"kernelpls"</code> (padrão, rápido para \(p\) grande), <code>"oscorespls"</code> e <code>"simpls"</code>, todos equivalentes para uma resposta. Para várias respostas simultâneas, basta dar uma matriz como resposta (PLS2). Para discriminação, <code>caret::train(method = "pls")</code> ou o pacote <code>mixOmics</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-pls-min" type="button">Copiar código</button></div><pre id="code-pls-min"><code>library(pls)
+dados &lt;- data.frame(proteina = ye, Xe = I(Xe))
+ml &lt;- plsr(proteina ~ Xe, data = dados, validation = "CV", segments = 10)
+summary(ml)       # compare as duas linhas de variância explicada
+validationplot(ml, val.type = "R2")
+coef(ml, ncomp = 5)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>O segundo conjunto, também fictício, é um espectro de reflectância no infravermelho próximo: 60 amostras, <strong>200 comprimentos de onda</strong> entre 1.100 e 2.300 nm, e o teor de proteína (%) como resposta. Quatro bandas de absorção foram construídas, mas apenas duas determinam a proteína; a maior fonte de variação do espectro é uma deriva de linha de base sem relação com ela. Aqui <strong>p > n</strong>, e os métodos clássicos de seleção deixam de ser aplicáveis.</p><p>Os dados são fictícios e foram criados pelo autor: 90 amostras de solo de uma área experimental, com a produtividade da cultura (t/ha) e <strong>doze</strong> variáveis candidatas de análise de rotina — pH, matéria orgânica, fósforo resina, potássio, cálcio, magnésio, alumínio, CTC, saturação por bases (V%), argila, silte e areia. O processo gerador é conhecido e usa <strong>apenas quatro</strong> delas: matéria orgânica, fósforo, V% e argila, com erro de desvio-padrão 0,60 t/ha. A colinearidade é deliberada e realista: argila, silte e areia somam aproximadamente 100% por construção física, e cálcio, magnésio e potássio estão ligados à CTC e ao V%. Saber qual é o modelo verdadeiro permite verificar se cada método o encontra — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as seis fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-pls" type="button">Copiar código</button></div><pre id="code-pls"><code># Regressão por mínimos quadrados parciais (PLS): exemplo completo ----
+# Pacotes: pls (função plsr)
+# Dados fictícios: espectro NIR, 60 amostras, 200 comprimentos de onda.
+# O arquivo espectro.csv acompanha o site, na pasta scripts/.
+esp &lt;- read.csv("espectro.csv")
+dim(esp)                      # 60 x 201: proteina + nm1100 ... nm2300
+Xe &lt;- as.matrix(esp[, -1]); ye &lt;- esp$proteina
+qr(scale(Xe))$rank            # 59: o posto é menor que o número de colunas
 
-# Ajuste e resultados ----
-if (!requireNamespace("pls", quietly = TRUE)) install.packages("pls")
+# ---- 1. A PLS no espectro, com validação cruzada
 library(pls)
-ajuste &lt;- plsr(mpg ~ wt + hp + disp + qsec,
-               data = mtcars, scale = TRUE, validation = "CV")
-print(summary(ajuste))
-print(RMSEP(ajuste, estimate = "CV"))
+dados &lt;- data.frame(proteina = ye, Xe = I(Xe))
+ml &lt;- plsr(proteina ~ Xe, data = dados, validation = "CV", segments = 10)
+summary(ml)        # DUAS linhas de variância explicada: X e proteina
+validationplot(ml, val.type = "R2")
+RMSEP(ml)
+which.min(RMSEP(ml)$val[1, 1, -1])      # o m escolhido
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# A comparação que interessa: PLS contra PCR, no mesmo conjunto
+mp &lt;- pcr(proteina ~ Xe, data = dados, validation = "CV", segments = 10)
+cbind(PLS = drop(RMSEP(ml)$val)[1:13], PCR = drop(RMSEP(mp)$val)[1:13])
+# A PLS chega a um erro útil com cerca de METADE dos componentes.
+
+# ---- 2. O algoritmo NIPALS, passo a passo (um componente)
+Ep &lt;- scale(Xe); yc &lt;- ye - mean(ye)
+w1 &lt;- t(Ep) %*% yc; w1 &lt;- w1/sqrt(sum(w1^2))    # direção de maior COVARIÂNCIA
+t1 &lt;- Ep %*% w1
+p1 &lt;- t(Ep) %*% t1/sum(t1^2)                    # a carga
+q1 &lt;- sum(yc*t1)/sum(t1^2)
+cor(t1, ye)                                      # |r| do escore com y
+sum(t1^2*sum(p1^2))/sum(Ep^2)                    # fração da variância de X
+# Deflação, e repete-se nos resíduos:
+Ep2 &lt;- Ep - t1 %*% t(p1); yc2 &lt;- yc - q1*t1
+
+# Para comparar, o primeiro componente PRINCIPAL do mesmo espectro:
+cp1 &lt;- svd(Ep)$u[, 1]
+cor(cp1, ye)                                     # muito menor
+# A PLS abre mão de variância em X para ganhar correlação com y.
+
+# ---- 3. PLS com m = posto(X) é o MQO
+# Dados fictícios: 90 amostras de solo, 12 candidatas.
+# O arquivo solo.csv acompanha o site, na pasta scripts/.
+solo &lt;- read.csv("solo.csv")
+str(solo)          # y (t/ha) e as 12 candidatas
+dim(solo)
+# O modelo VERDADEIRO (conhecido por construção) usa só quatro:
+#   y = 4,00 + 0,80*mo + 0,0250*pres + 0,0300*v + 0,0200*argila + erro
+cand &lt;- c("ph","mo","pres","k","ca","mg","al","ctc","v","argila","silte","areia")
+verdadeiras &lt;- c("mo","pres","v","argila")
+
+# A colinearidade, que é o problema central do grupo
+library(car)
+vif(lm(y ~ ., data = solo))
+round(cor(solo[, cand]), 2)
+
+Xs &lt;- scale(as.matrix(solo[, cand]))
+ms &lt;- plsr(solo$y ~ Xs, ncomp = 12)
+max(abs(drop(coef(ms, ncomp = 12)) - coef(lm(y ~ ., data = solo))[-1]*apply(solo[, cand], 2, sd)))
+
+# ---- 4. E quando a colinearidade é apenas moderada? (solo)
+m1 &lt;- plsr(y ~ ., data = solo, scale = TRUE, validation = "CV", segments = 10)
+m2 &lt;- pcr(y ~ ., data = solo, scale = TRUE, validation = "CV", segments = 10)
+cbind(PLS = drop(RMSEP(m1)$val)^2, PCR = drop(RMSEP(m2)$val)^2)
+# Aqui a PLS não tem vantagem: o MQO já funciona.
+
+# ---- 5. OS PESOS: coeficientes contra VIP
+b &lt;- drop(coef(ml, ncomp = 5))
+W &lt;- ml$loading.weights[, 1:5]; Tt &lt;- ml$scores[, 1:5]
+q &lt;- drop(ml$Yloadings)[1:5]
+ss &lt;- q^2*colSums(Tt^2)
+VIP &lt;- sqrt(ncol(Xe)*rowSums(sweep(W^2, 2, ss, "*"))/sum(ss))
+lam &lt;- as.numeric(sub("nm", "", colnames(Xe)))
+
+# As bandas CONSTRUÍDAS: 1.350 e 1.920 determinam a proteína; 1.680 e
+# 2.180 não. Qual das duas medidas acerta?
+for (r in list(c(1100,1260,"nao"), c(1260,1440,"SIM"), c(1440,1560,"nao"),
+               c(1560,1800,"nao"), c(1800,2040,"SIM"), c(2040,2300,"nao"))) {
+  m &lt;- lam &gt;= as.numeric(r[1]) &amp; lam &lt; as.numeric(r[2])
+  cat(sprintf("%4s-%4s nm: VIP medio %.3f, acima de 1: %2d, soma|coef| %.3f  determina: %s\n",
+      r[1], r[2], mean(VIP[m]), sum(VIP[m] &gt; 1), sum(abs(b[m])), r[3]))
+}
+sum(VIP &gt; 1)      # 85 das 200: a regra "VIP &gt; 1" não discrimina aqui
+mean(VIP^2)       # é sempre 1 por construção
+
+# ---- 6. Para classificação e múltiplas respostas
+# plsr aceita matriz de respostas (PLS2); para discriminação, ver
+# caret::train(method = "pls") ou o pacote mixOmics (PLS-DA).
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-pls" type="button">Copiar código</button></div><pre id="code-py-pls"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab14)
+# ------------------------------------------------------------------
+import numpy as np, itertools
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 90 amostras de solo (arquivo solo.csv, pasta scripts/ do site)
+solo = le_csv('solo.csv')
+NOMES=['ph', 'mo', 'pres', 'k', 'ca', 'mg', 'al', 'ctc', 'v', 'argila', 'silte', 'areia']
+ROT={'ph':'pH','mo':'M.O.','pres':'P (resina)','k':'K','ca':'Ca','mg':'Mg','al':'Al','ctc':'CTC','v':'V%','argila':'Argila','silte':'Silte','areia':'Areia'}
+X=solo[NOMES].to_numpy(float); Y=solo['y'].to_numpy(float)
+VERD={"mo":0.80,"pres":0.0250,"v":0.0300,"argila":0.0200}
+N,P=X.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+def pad(A, mu=None, sd=None):
+    """Padroniza colunas (média 0, desvio 1, com n-1)."""
+    if mu is None: mu = A.mean(0)
+    if sd is None: sd = A.std(0, ddof=1)
+    sd = np.where(sd &lt; 1e-12, 1.0, sd)
+    return (A - mu)/sd, mu, sd
+
+def ols(A, y):
+    Ad = np.column_stack([np.ones(len(A)), A])
+    return np.linalg.lstsq(Ad, y, rcond=None)[0]
+
+def prev(A, b):
+    return b[0] + A @ b[1:]
+
+def sqr(obs, p_): return float(np.sum((obs - p_)**2))
+def eqm(obs, p_): return float(np.mean((obs - p_)**2))
+
+def ridge(A, y, lam):
+    """Ridge em A JÁ padronizado; não penaliza o intercepto."""
+    n_, p_ = A.shape
+    G = A.T @ A + lam*n_*np.eye(p_)
+    b = np.linalg.solve(G, A.T @ (y - y.mean()))
+    return np.concatenate([[y.mean()], b])
+
+def lasso(A, y, lam, it=20000, tol=1e-11):
+    """Descida por coordenadas em A JÁ padronizado (Friedman et al., 2010)."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean()
+    nrm = (A**2).sum(0)/n_
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = A[:, j] @ (r + A[:, j]*bj)/n_
+            nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+            if nb != bj:
+                r = r - A[:, j]*(nb - bj); b[j] = nb
+                mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return np.concatenate([[y.mean()], b])
+
+def pcr(A, y, m):
+    """Regressão nos m primeiros componentes principais de A padronizado."""
+    u, s, vt = np.linalg.svd(A, full_matrices=False)
+    T = (u*s)[:, :m]
+    g = np.linalg.lstsq(T, y - y.mean(), rcond=None)[0]
+    b = vt[:m].T @ g
+    return np.concatenate([[y.mean()], b])
+
+def pls(A, y, m):
+    """NIPALS para uma resposta; devolve coeficientes na escala de A."""
+    Xr = A.copy(); yr = y - y.mean()
+    W = np.zeros((A.shape[1], m)); Pm = np.zeros((A.shape[1], m)); q = np.zeros(m)
+    for a in range(m):
+        w = Xr.T @ yr; w = w/np.linalg.norm(w)
+        t = Xr @ w; tt = t @ t
+        pj = Xr.T @ t/tt; qa = (yr @ t)/tt
+        Xr = Xr - np.outer(t, pj); yr = yr - qa*t
+        W[:, a] = w; Pm[:, a] = pj; q[a] = qa
+    Rm = W @ np.linalg.inv(Pm.T @ W)
+    b = Rm @ q
+    return np.concatenate([[y.mean()], b])
+
+def dobras(n_, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n_/k)))[:n_]
+    rg.shuffle(d); return d
+
+def cv(ajusta, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada; TODA a padronização dentro do laço."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 1000*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            b = ajusta(Ap, y[tr])
+            e[te] = y[te] - prev((A[te] - mu)/sd, b)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0
+
+def crit(A, y, cols, s2):
+    """Cp de Mallows, AIC e BIC de um submodelo."""
+    Ad = np.column_stack([np.ones(len(A))] + [A[:, j] for j in cols])
+    b = np.linalg.lstsq(Ad, y, rcond=None)[0]
+    sq = sqr(y, Ad @ b); n_, d = len(y), len(cols) + 1
+    return dict(sqr=sq, p=d, r2=1 - sq/np.sum((y - y.mean())**2),
+                r2a=1 - (sq/(n_ - d))/(np.sum((y - y.mean())**2)/(n_ - 1)),
+                cp=sq/s2 - n_ + 2*d,
+                aic=n_*np.log(sq/n_) + 2*d, bic=n_*np.log(sq/n_) + np.log(n_)*d)
+
+def vif(A):
+    Ap, _, _ = pad(A); out = []
+    for j in range(A.shape[1]):
+        o = [i for i in range(A.shape[1]) if i != j]
+        b = ols(Ap[:, o], Ap[:, j]); r = Ap[:, j] - prev(Ap[:, o], b)
+        out.append(1/(1 - (1 - r @ r/np.sum((Ap[:, j] - Ap[:, j].mean())**2))))
+    return np.array(out)
+
+def c(v, d=4):
+    return ('%.*f' % (d, v)).replace('.', ',')
+
+def lasso_path(A, y, lams, it=5000, tol=1e-10):
+    """Caminho do lasso com partida quente (como o glmnet). lams DECRESCENTE."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def enet_path(A, y, lams, al, it=5000, tol=1e-10):
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(nrm[j] + lam*(1 - al))
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def cv_path(ajusta_path, A, y, lams, k=10, seed=0, reps=1):
+    """EQM por VC para TODA a grade de lambda de uma vez, com partida quente."""
+    acc = np.zeros((reps, len(lams)))
+    for rp in range(reps):
+        d = dobras(len(y), k, seed + 1000*rp); E = np.zeros((len(lams), len(y)))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            bs = ajusta_path(Ap, y[tr], lams)
+            Ate = (A[te] - mu)/sd
+            for i, b in enumerate(bs): E[i, te] = y[te] - prev(Ate, b)
+        acc[rp] = (E**2).mean(1)
+    return acc.mean(0), acc.std(0, ddof=1) if reps &gt; 1 else np.zeros(len(lams))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="pcr.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão por componentes principais (PCR)
-    </a>
-<a href="polinomial.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão polinomial
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def _cd_gram(G, Ay, lam, al, b, dg, it=10000, tol=1e-11):
+    """Descida por coordenadas usando a matriz de Gram: só escalares no laço."""
+    p_ = len(b)
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return b
+
+def enet_path_g(A, y, lams, al=1.0):
+    """Caminho da rede elástica (al=1 é o lasso) com Gram e partida quente."""
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_gram(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_g(A, y, lams): return enet_path_g(A, y, lams, 1.0)
+
+
+def _cd_ativo(G, Ay, lam, al, b, dg, it=200, tol=1e-11):
+    """Descida por coordenadas com CONJUNTO ATIVO (estratégia do glmnet):
+    varre tudo, depois itera só nos coeficientes não nulos."""
+    p_ = len(b)
+    for _ in range(it):
+        # varredura completa
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        ativo = np.flatnonzero(b)
+        if len(ativo) == 0 or mx &lt; tol: break
+        Ga = G[np.ix_(ativo, ativo)]; Aya = Ay[ativo]; dga = dg[ativo]
+        ba = b[ativo].copy()
+        for _ in range(2000):
+            mxa = 0.0
+            for i in range(len(ativo)):
+                bi = ba[i]
+                rho = Aya[i] - (Ga[i] @ ba - dga[i]*bi)
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dga[i] + lam*(1 - al))
+                if nb != bi:
+                    ba[i] = nb; mxa = max(mxa, abs(nb - bi))
+            if mxa &lt; tol: break
+        b[ativo] = ba
+        if mx &lt; tol: break
+    return b
+
+def enet_path_a(A, y, lams, al=1.0):
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_ativo(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_a(A, y, lams): return enet_path_a(A, y, lams, 1.0)
+# ------------------------------------------------------------------ fim do bloco comum
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14b)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 60 espectros NIR de 200 bandas (arquivo espectro.csv)
+esp = le_csv('espectro.csv')
+LAM=np.round(np.linspace(1100,2300,200),1)          # comprimentos de onda (nm)
+XE=esp.drop(columns='proteina').to_numpy(float); YE=esp['proteina'].to_numpy(float)
+NE,PE=XE.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+Xp,mu,sd=pad(X); yc=Y-Y.mean()
+Ep,emu,esd=pad(XE); yec=YE-YE.mean()
+vye=float(YE.var(ddof=1)); vy=float(Y.var(ddof=1))
+
+print('A PLS foi criada para o problema do ESPECTRO: muitas variáveis')
+print('fortemente correlacionadas, poucas amostras, e a maior fonte de variação')
+print('das variáveis sem relação com a resposta. Os dois conjuntos da ficha pcr')
+print('reaparecem aqui, e o contraste entre eles é o argumento central.')
+
+print('\n'+'='*70)
+print('O ALGORITMO NIPALS, o primeiro componente passo a passo (espectro)')
+print()
+Xr=Ep.copy(); yr=yec.copy()
+w=Xr.T@yr
+print("  w1 = X'y (direção de maior COVARIÂNCIA com y): norma %s"%c(float(np.linalg.norm(w)),2))
+w=w/np.linalg.norm(w)
+t=Xr@w; tt=float(t@t); pj=Xr.T@t/tt; q=float((yr@t)/tt)
+print('  ||w1|| = %s, depois de normalizar'%c(float(np.linalg.norm(w))))
+print('  t1 = X w1 (o escore): variância = %s'%c(float(t.var(ddof=1))))
+print("  p1 = X't1/t1't1 (a carga): norma %s"%c(float(np.linalg.norm(pj))))
+print("  q1 = y't1/t1't1 = %s"%c(q))
+print('  r(t1, y) = %s'%c(float(np.corrcoef(t,yec)[0,1])))
+print('  %% da variância de X capturada por t1 = %s'%c(100*float(tt*(pj@pj))/float(np.sum(Ep**2)),2))
+print('  %% da variância de y capturada por t1 = %s'%c(100*q*q*tt/float(yec@yec),2))
+print()
+print("Em seguida X e y são DEFLACIONADOS (X &lt;- X - t1 p1', y &lt;- y - q1 t1) e o")
+print('passo se repete nos resíduos, o que garante escores ortogonais.')
+print()
+eu,es,evt=np.linalg.svd(Ep,full_matrices=False); t1p=(eu*es)[:,0]
+print('Para comparar, o primeiro componente PRINCIPAL do mesmo espectro:')
+print('%-34s %12s %12s'%('','PCR (CP1)','PLS (t1)'))
+print('%-34s %12s %12s'%('% da variância de X',c(100*float(es[0]**2/np.sum(es**2)),2),
+      c(100*float(tt*(pj@pj))/float(np.sum(Ep**2)),2)))
+print('%-34s %12s %12s'%('|r| com a proteína',c(abs(float(np.corrcoef(t1p,YE)[0,1]))),
+      c(abs(float(np.corrcoef(t,YE)[0,1])))))
+print()
+print('A PLS abre mão de variância em X para ganhar correlação com y. É a única')
+print('diferença entre os dois métodos, e explica tudo o que vem depois.')
+
+print('\n'+'='*70)
+print('(a) ESPECTRO: variância explicada componente por componente')
+def decomp(A,y,m):
+    Xr=A.copy(); yr=y-y.mean(); vx=[];vy_=[]
+    for a in range(m):
+        w=Xr.T@yr; w=w/np.linalg.norm(w); t=Xr@w; tt=t@t
+        pp=Xr.T@t/tt; qa=(yr@t)/tt
+        vx.append(float(tt*(pp@pp)/np.sum(A**2))); vy_.append(float(qa*qa*tt/np.sum((y-y.mean())**2)))
+        Xr=Xr-np.outer(t,pp); yr=yr-qa*t
+    return np.array(vx),np.array(vy_)
+vx,vyp=decomp(Ep,YE,10)
+epv=es**2/np.sum(es**2)
+r2pcr=[1-sqr(YE,prev(Ep,pcr(Ep,YE,m)))/float(np.sum((YE-YE.mean())**2)) for m in range(11)]
+print()
+print('%4s %26s %26s'%('','PLS','PCR'))
+print('%4s %12s %13s %12s %13s'%('m','% var X','% var y','% var X','% var y'))
+for m in range(10):
+    print('%4d %12s %13s %12s %13s'%(m+1,c(100*vx[m],2),c(100*vyp[m],2),
+          c(100*epv[m],2),c(100*(r2pcr[m+1]-r2pcr[m]),2)))
+print('%4s %12s %13s %12s %13s'%('acum',c(100*vx.sum(),2),c(100*vyp.sum(),2),
+      c(100*epv[:10].sum(),2),c(100*r2pcr[10],2)))
+print()
+print('A PLS põe %s%% da variância de y nos TRÊS primeiros componentes; a PCR,'%c(100*vyp[:3].sum(),2))
+print('nos três primeiros, explica %s%%. Em troca, a PCR captura mais'%c(100*r2pcr[3],2))
+print('variância de X (%s%% contra %s%%), que é o que ela otimiza.'%(
+      c(100*epv[:3].sum(),2),c(100*vx[:3].sum(),2)))
+
+print('\n'+'='*70)
+print('(b) ESPECTRO: a validação cruzada decide (10 dobras, 5 repetições)')
+print()
+print('%4s %14s %14s %13s %13s'%('m','EQM PLS','EQM PCR','R² val PLS','R² val PCR'))
+bp=bq=None; cvp={};cvq={}
+for m in range(1,13):
+    a_,_=cv(lambda A,y,m=m: pls(A,y,m),XE,YE,10,0,5)
+    b_,_=cv(lambda A,y,m=m: pcr(A,y,m),XE,YE,10,0,5)
+    cvp[m]=a_; cvq[m]=b_
+    if bp is None or a_&lt;bp[1]: bp=(m,a_)
+    if bq is None or b_&lt;bq[1]: bq=(m,b_)
+    print('%4d %14s %14s %13s %13s'%(m,c(a_),c(b_),c(1-a_/vye),c(1-b_/vye)))
+print()
+print('  melhor PLS: m = %d, EQM %s, R² val %s'%(bp[0],c(bp[1]),c(1-bp[1]/vye)))
+print('  melhor PCR: m = %d, EQM %s, R² val %s'%(bq[0],c(bq[1]),c(1-bq[1]/vye)))
+print()
+cvq2={m:cv(lambda A,y,m=m: pcr(A,y,m),XE,YE,10,0,5)[0] for m in range(1,21)}
+print('Quantos componentes a PCR precisa para igualar a PLS?')
+print('%-28s %14s %s'%('PLS','EQM','PCR equivalente'))
+for m in [1,2,3,4,5]:
+    k=[kk for kk in range(1,21) if cvq2[kk]&lt;=cvp[m]]
+    print('%-28s %14s %s'%('m = %d'%m,c(cvp[m]),('m = %d'%k[0]) if k else 'mais de 20'))
+print()
+print('A leitura exige cuidado, porque o resultado tem DUAS partes. No MELHOR')
+print('de cada método os dois praticamente EMPATAM: PLS com m = %d dá %s e'%(bp[0],c(bp[1])))
+print('PCR com m = %d dá %s — diferença de %s, dentro do erro de simulação.'%(bq[0],c(bq[1]),c(abs(bp[1]-bq[1]))))
+print('A PLS NÃO alcança um erro menor que a PCR.')
+print()
+print('A vantagem da PLS está nos componentes INICIAIS, e é grande: com m = 3')
+print('ela já tem R² validado de %s, enquanto a PCR com m = 3 tem %s e'%(c(1-cvp[3]/vye),c(1-cvq[3]/vye)))
+print('precisa de m = 6 para igualar. Com m = 2 a PLS tem %s contra %s.'%(c(1-cvp[2]/vye),c(1-cvq[2]/vye)))
+print('Em termos práticos: se o objetivo é um modelo PARCIMONIOSO em')
+print('componentes — para interpretar, para calibrar um instrumento, para')
+print('transferir entre equipamentos — a PLS chega lá com metade deles. Se o')
+print('objetivo é apenas o menor erro possível, os dois servem igualmente.')
+
+print('\n'+'='*70)
+print('(c) SOLO: e quando a colinearidade é apenas moderada?')
+print()
+mq,_=cv(ols,X,Y,10,0,10); mr,_=cv(lambda A,y: ridge(A,y,0.03162),X,Y,10,0,10)
+print('%4s %14s %14s'%('m','EQM PLS','EQM PCR'))
+bs=bt=None
+for m in range(1,P+1):
+    a_,_=cv(lambda A,y,m=m: pls(A,y,m),X,Y,10,0,10)
+    b_,_=cv(lambda A,y,m=m: pcr(A,y,m),X,Y,10,0,10)
+    if bs is None or a_&lt;bs[1]: bs=(m,a_)
+    if bt is None or b_&lt;bt[1]: bt=(m,b_)
+    print('%4d %14s %14s'%(m,c(a_),c(b_)))
+print()
+print('  melhor PLS: m = %d, EQM %s'%(bs[0],c(bs[1])))
+print('  melhor PCR: m = %d, EQM %s'%(bt[0],c(bt[1])))
+print('  MQO com as 12:  EQM %s'%c(mq))
+print('  ridge por VC:   EQM %s'%c(mr))
+print()
+print('Com p = 12 e n = 90 a PLS não tem vantagem: o MQO já funciona, e tanto a')
+print('PLS como a PCR precisam de quase todos os componentes para igualá-lo.')
+print('A PLS rende quando p é grande e as colunas são muito correlacionadas.')
+
+print('\n'+'='*70)
+print('PLS COM m = posto(X) É O MQO')
+print()
+r_=int(np.sum(np.linalg.svd(Xp,compute_uv=False)&gt;1e-8))
+bo=ols(Xp,Y); bl=pls(Xp,Y,r_); bc=pcr(Xp,Y,r_)
+print('  posto de X (solo) = %d'%r_)
+print('  maior diferença entre PLS(m=%d) e MQO: %s'%(r_,c(float(np.abs(bo-bl).max()),10)))
+print('  maior diferença entre PCR(m=%d) e MQO: %s'%(r_,c(float(np.abs(bo-bc).max()),10)))
+print()
+print('A PLS e a PCR são CAMINHOS entre o modelo nulo (m = 0) e o MQO')
+print('(m = posto). Escolher m é escolher o grau de regularização.')
+
+print('\n'+'='*70)
+print('OS PESOS DA PLS: quais comprimentos de onda importam')
+print()
+print('Duas quantidades competem para responder a essa pergunta: os')
+print('COEFICIENTES da regressão e o VIP (importância na projeção), que é a')
+print('convenção da quimiometria. Neste espectro sabe-se a resposta correta —')
+print('as bandas em 1.350 e 1.920 nm determinam a proteína; as em 1.680 e')
+print('2.180 nm não — e é possível verificar qual das duas acerta.')
+print()
+def pls_full(A,y,m):
+    Xr=A.copy(); yr=y-y.mean()
+    W=np.zeros((A.shape[1],m));Pm=np.zeros((A.shape[1],m));q=np.zeros(m);Tt=np.zeros((len(y),m))
+    for a in range(m):
+        w=Xr.T@yr; w=w/np.linalg.norm(w); t=Xr@w; tt=t@t
+        pp=Xr.T@t/tt; qa=(yr@t)/tt
+        Xr=Xr-np.outer(t,pp); yr=yr-qa*t
+        W[:,a]=w;Pm[:,a]=pp;q[a]=qa;Tt[:,a]=t
+    return W,Pm,q,Tt
+M=bp[0]
+W,Pm,q,Tt=pls_full(Ep,YE,M)
+ss=np.array([q[a]**2*(Tt[:,a]@Tt[:,a]) for a in range(M)])
+VIP=np.sqrt(PE*np.sum(ss[None,:]*(W**2),axis=1)/ss.sum())
+bfin=pls(Ep,YE,M); ab=np.abs(bfin[1:])
+REG=[(1100,1260,'1.100-1.260','não'),(1260,1440,'1.350','SIM'),
+     (1440,1560,'1.500 (linha de base)','não'),(1560,1800,'1.680','não'),
+     (1800,2040,'1.920','SIM'),(2040,2300,'2.180','não')]
+print('Com m = %d, região por região:'%M)
+print('%-24s %6s %9s %9s %8s %9s  %s'%('região (nm)','faixas','VIP médio','VIP máx.','VIP &gt; 1','Σ|coef|','determina y?'))
+for lo,hi,rot,det in REG:
+    mk=(LAM&gt;=lo)&amp;(LAM&lt;hi)
+    print('%-24s %6d %9s %9s %8d %9s  %s'%(rot,int(mk.sum()),c(float(VIP[mk].mean()),3),
+          c(float(VIP[mk].max()),3),int((VIP[mk]&gt;1).sum()),c(float(ab[mk].sum()),3),det))
+print()
+print('  faixas com VIP &gt; 1: %d de %d'%(int(np.sum(VIP&gt;1)),PE))
+print('  VIP quadrático médio = %s (é sempre 1 por construção)'%c(float(np.mean(VIP**2)),4))
+print()
+print('O resultado contraria a prática corrente, e por isso merece ser dito sem')
+print('rodeios: NESTE conjunto, em que a resposta é conhecida, os COEFICIENTES')
+print('acertam e o VIP erra.')
+print()
+print('Os coeficientes somam %s e %s em valor absoluto nas duas bandas que'%(
+      c(float(ab[(LAM&gt;=1260)&amp;(LAM&lt;1440)].sum()),3),c(float(ab[(LAM&gt;=1800)&amp;(LAM&lt;2040)].sum()),3)))
+print('DETERMINAM a proteína, contra %s e %s nas duas que não determinam —'%(
+      c(float(ab[(LAM&gt;=1560)&amp;(LAM&lt;1800)].sum()),3),c(float(ab[(LAM&gt;=2040)&amp;(LAM&lt;2300)].sum()),3)))
+print('uma razão de cerca de três para um, na direção correta.')
+print()
+print('O VIP, ao contrário, aponta %d faixas acima de 1 na região 1.100-1.260 e'%int(((VIP&gt;1)&amp;(LAM&gt;=1100)&amp;(LAM&lt;1260)).sum()))
+print('%d na região 2.180, nenhuma das quais determina a resposta — e aponta'%int(((VIP&gt;1)&amp;(LAM&gt;=2040)&amp;(LAM&lt;2300)).sum()))
+print('ZERO faixas na região de 1.920, que determina. O VIP máximo ali é %s,'%c(float(VIP[(LAM&gt;=1800)&amp;(LAM&lt;2040)].max()),3))
+print('abaixo do limiar. É um falso negativo completo sobre uma banda causal,')
+print('acompanhado de dezenas de falsos positivos.')
+print()
+print('A razão é estrutural. O VIP é construído a partir dos PESOS w de cada')
+print('componente, e os pesos se concentram onde o produto variância-por-')
+print('covariância é maior. As colunas vizinhas do espectro têm r = 0,998, de')
+print('modo que uma região pode servir de procuração para outra: a banda de')
+print('1.350 nm, que tem r = %s com a proteína contra %s da banda de 1.920,'%(
+      c(float(np.corrcoef(Ep[:,int(np.argmin(np.abs(LAM-1350)))],YE)[0,1])),
+      c(float(np.corrcoef(Ep[:,int(np.argmin(np.abs(LAM-1920)))],YE)[0,1]))))
+print('absorve o peso das duas. É o mesmo fenômeno da argila e da areia nos')
+print('dados de solo, em outra escala: com colunas quase redundantes, não há')
+print('como atribuir a importância a uma e não à outra.')
+print()
+print('A regra "VIP &gt; 1" é uma CONVENÇÃO, não um teste: não há valor-p')
+print('associado, e o limiar 1 vem apenas de o VIP quadrático médio ser 1 por')
+print('construção. Aqui ela selecionou %d das 200 faixas — quase metade — o que'%int(np.sum(VIP&gt;1)))
+print('por si já indica que não está discriminando.')
+print()
+print('As dez faixas de maior VIP, para registro:')
+print('%12s %10s %14s'%('nm','VIP','coef. PLS'))
+for j in np.argsort(-VIP)[:10]:
+    print('%12s %10s %14s'%('%.0f'%LAM[j],c(float(VIP[j]),3),c(float(bfin[1+j]),4)))
+
+print('\n'+'='*70)
+print('A SÍNTESE DO GRUPO, no conjunto em que p &gt; n')
+print('Espectro: %d amostras, %d comprimentos de onda.'%(NE,PE))
+print()
+LME=float(np.abs(Ep.T@yec).max()/NE)
+GL=np.logspace(np.log10(LME),np.log10(LME/500),14)
+ML,_=cv_path(lasso_path_a,XE,YE,GL,10,0,2)
+jl=int(np.argmin(ML)); nal=int(np.sum(np.abs(lasso_path_a(Ep,YE,GL)[jl][1:])&gt;1e-8))
+MR=[]
+for l in np.logspace(-4,2,25):
+    m_,_=cv(lambda A,y,l=l: ridge(A,y,l),XE,YE,10,0,3); MR.append((l,m_))
+MR=np.array(MR); jr=int(np.argmin(MR[:,1]))
+m0,_=cv(lambda A,y: np.array([y.mean()]+[0.0]*A.shape[1]),XE,YE,10,0,5)
+print('%-34s %13s %10s   %s'%('método','EQM validado','R² val.','o que se ajusta'))
+for nome,v,obs in [('Modelo nulo (só a média)',m0,'nenhum parâmetro'),
+                   ('Ridge, lambda = %s'%c(MR[jr,0],5),MR[jr,1],'200 coeficientes, nenhum zero'),
+                   ('Lasso, lambda = %s'%c(GL[jl],5),ML[jl],'%d faixas ativas de 200'%nal),
+                   ('PCR, %d componentes'%bq[0],bq[1],'%d componentes'%bq[0]),
+                   ('PLS, %d componentes'%bp[0],bp[1],'%d componentes'%bp[0])]:
+    print('%-34s %13s %10s   %s'%(nome,c(v),c(1-v/vye),obs))
+print()
+print('%-34s %13s %10s   %s'%('MQO com as 200 colunas','—','—',"IMPOSSÍVEL: X'X é singular"))
+print('%-34s %13s %10s   %s'%('Seleção exaustiva','—','—','IMPOSSÍVEL: 2^200 modelos'))
+print('%-34s %13s %10s   %s'%('Seleção para frente','—','—','roda, mas sem controle do erro'))
+print()
+print('É este o quadro que justifica o grupo inteiro: quando p &gt; n, os métodos')
+print('de seleção clássicos não são apenas piores — são INAPLICÁVEIS — e os')
+print('quatro métodos regularizados são as únicas opções disponíveis.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">A PLS foi criada para o problema do ESPECTRO: muitas variáveis
+fortemente correlacionadas, poucas amostras, e a maior fonte de variação
+das variáveis sem relação com a resposta. Os dois conjuntos da ficha pcr
+reaparecem aqui, e o contraste entre eles é o argumento central.
+
+======================================================================
+O ALGORITMO NIPALS, o primeiro componente passo a passo (espectro)
+
+  w1 = X'y (direção de maior COVARIÂNCIA com y): norma 348,11
+  ||w1|| = 1,0000, depois de normalizar
+  t1 = X w1 (o escore): variância = 69,0160
+  p1 = X't1/t1't1 (a carga): norma 1,5028
+  q1 = y't1/t1't1 = 0,0855
+  r(t1, y) = 0,3799
+  % da variância de X capturada por t1 = 77,93
+  % da variância de y capturada por t1 = 14,43
+
+Em seguida X e y são DEFLACIONADOS (X &lt;- X - t1 p1', y &lt;- y - q1 t1) e o
+passo se repete nos resíduos, o que garante escores ortogonais.
+
+Para comparar, o primeiro componente PRINCIPAL do mesmo espectro:
+                                      PCR (CP1)     PLS (t1)
+% da variância de X                       83,54        77,93
+|r| com a proteína                       0,1512       0,3799
+
+A PLS abre mão de variância em X para ganhar correlação com y. É a única
+diferença entre os dois métodos, e explica tudo o que vem depois.
+
+======================================================================
+(a) ESPECTRO: variância explicada componente por componente
+
+                            PLS                        PCR
+   m      % var X       % var y      % var X       % var y
+   1        77,93         14,43        83,54          2,29
+   2        10,21         66,11         6,26         15,26
+   3         4,39         12,26         3,49         35,92
+   4         2,51          2,41         2,83          4,89
+   5         2,06          0,24         2,30         22,64
+   6         2,73          0,02         1,39         14,41
+   7         0,01          3,03         0,01          0,00
+   8         0,01          0,92         0,01          0,11
+   9         0,00          0,41         0,01          0,01
+  10         0,00          0,11         0,01          0,06
+acum        99,85         99,94        99,86         95,59
+
+A PLS põe 92,80% da variância de y nos TRÊS primeiros componentes; a PCR,
+nos três primeiros, explica 53,47%. Em troca, a PCR captura mais
+variância de X (93,30% contra 92,52%), que é o que ela otimiza.
+
+======================================================================
+(b) ESPECTRO: a validação cruzada decide (10 dobras, 5 repetições)
+
+   m        EQM PLS        EQM PCR    R² val PLS    R² val PCR
+   1         3,0471         3,5948        0,1280       -0,0287
+   2         0,8480         3,1853        0,7573        0,0885
+   3         0,3165         1,9529        0,9094        0,4412
+   4         0,2156         1,7939        0,9383        0,4866
+   5         0,1987         0,8988        0,9431        0,7428
+   6         0,2093         0,1991        0,9401        0,9430
+   7         0,3009         0,2018        0,9139        0,9423
+   8         0,3267         0,2049        0,9065        0,9414
+   9         0,3546         0,2067        0,8985        0,9408
+  10         0,3697         0,2108        0,8942        0,9397
+  11         0,3714         0,2124        0,8937        0,9392
+  12         0,3704         0,2164        0,8940        0,9381
+
+  melhor PLS: m = 5, EQM 0,1987, R² val 0,9431
+  melhor PCR: m = 6, EQM 0,1991, R² val 0,9430
+
+Quantos componentes a PCR precisa para igualar a PLS?
+PLS                                     EQM PCR equivalente
+m = 1                                3,0471 m = 3
+m = 2                                0,8480 m = 6
+m = 3                                0,3165 m = 6
+m = 4                                0,2156 m = 6
+m = 5                                0,1987 mais de 20
+
+A leitura exige cuidado, porque o resultado tem DUAS partes. No MELHOR
+de cada método os dois praticamente EMPATAM: PLS com m = 5 dá 0,1987 e
+PCR com m = 6 dá 0,1991 — diferença de 0,0004, dentro do erro de simulação.
+A PLS NÃO alcança um erro menor que a PCR.
+
+A vantagem da PLS está nos componentes INICIAIS, e é grande: com m = 3
+ela já tem R² validado de 0,9094, enquanto a PCR com m = 3 tem 0,4412 e
+precisa de m = 6 para igualar. Com m = 2 a PLS tem 0,7573 contra 0,0885.
+Em termos práticos: se o objetivo é um modelo PARCIMONIOSO em
+componentes — para interpretar, para calibrar um instrumento, para
+transferir entre equipamentos — a PLS chega lá com metade deles. Se o
+objetivo é apenas o menor erro possível, os dois servem igualmente.
+
+======================================================================
+(c) SOLO: e quando a colinearidade é apenas moderada?
+
+   m        EQM PLS        EQM PCR
+   1         0,7237         0,9867
+   2         0,5715         0,8510
+   3         0,4884         0,7644
+   4         0,4381         0,7819
+   5         0,4214         0,6902
+   6         0,4263         0,6433
+   7         0,4338         0,4191
+   8         0,4392         0,4237
+   9         0,4366         0,4222
+  10         0,4331         0,4371
+  11         0,4293         0,4319
+  12         0,4347         0,4347
+
+  melhor PLS: m = 5, EQM 0,4214
+  melhor PCR: m = 7, EQM 0,4191
+  MQO com as 12:  EQM 0,4347
+  ridge por VC:   EQM 0,4219
+
+Com p = 12 e n = 90 a PLS não tem vantagem: o MQO já funciona, e tanto a
+PLS como a PCR precisam de quase todos os componentes para igualá-lo.
+A PLS rende quando p é grande e as colunas são muito correlacionadas.
+
+======================================================================
+PLS COM m = posto(X) É O MQO
+
+  posto de X (solo) = 12
+  maior diferença entre PLS(m=12) e MQO: 0,0000000000
+  maior diferença entre PCR(m=12) e MQO: 0,0000000000
+
+A PLS e a PCR são CAMINHOS entre o modelo nulo (m = 0) e o MQO
+(m = posto). Escolher m é escolher o grau de regularização.
+
+======================================================================
+OS PESOS DA PLS: quais comprimentos de onda importam
+
+Duas quantidades competem para responder a essa pergunta: os
+COEFICIENTES da regressão e o VIP (importância na projeção), que é a
+convenção da quimiometria. Neste espectro sabe-se a resposta correta —
+as bandas em 1.350 e 1.920 nm determinam a proteína; as em 1.680 e
+2.180 nm não — e é possível verificar qual das duas acerta.
+
+Com m = 5, região por região:
+região (nm)              faixas VIP médio  VIP máx.  VIP &gt; 1   Σ|coef|  determina y?
+1.100-1.260                  27     1,102     1,198       24     1,583  não
+1.350                        30     1,089     1,588       15     2,350  SIM
+1.500 (linha de base)        20     1,061     1,105       18     0,853  não
+1.680                        40     0,938     1,051        5     0,676  não
+1.920                        39     0,812     0,973        0     2,186  SIM
+2.180                        43     1,001     1,084       22     0,747  não
+
+  faixas com VIP &gt; 1: 85 de 200
+  VIP quadrático médio = 1,0000 (é sempre 1 por construção)
+
+O resultado contraria a prática corrente, e por isso merece ser dito sem
+rodeios: NESTE conjunto, em que a resposta é conhecida, os COEFICIENTES
+acertam e o VIP erra.
+
+Os coeficientes somam 2,350 e 2,186 em valor absoluto nas duas bandas que
+DETERMINAM a proteína, contra 0,676 e 0,747 nas duas que não determinam —
+uma razão de cerca de três para um, na direção correta.
+
+O VIP, ao contrário, aponta 24 faixas acima de 1 na região 1.100-1.260 e
+22 na região 2.180, nenhuma das quais determina a resposta — e aponta
+ZERO faixas na região de 1.920, que determina. O VIP máximo ali é 0,973,
+abaixo do limiar. É um falso negativo completo sobre uma banda causal,
+acompanhado de dezenas de falsos positivos.
+
+A razão é estrutural. O VIP é construído a partir dos PESOS w de cada
+componente, e os pesos se concentram onde o produto variância-por-
+covariância é maior. As colunas vizinhas do espectro têm r = 0,998, de
+modo que uma região pode servir de procuração para outra: a banda de
+1.350 nm, que tem r = 0,6503 com a proteína contra 0,3560 da banda de 1.920,
+absorve o peso das duas. É o mesmo fenômeno da argila e da areia nos
+dados de solo, em outra escala: com colunas quase redundantes, não há
+como atribuir a importância a uma e não à outra.
+
+A regra "VIP &gt; 1" é uma CONVENÇÃO, não um teste: não há valor-p
+associado, e o limiar 1 vem apenas de o VIP quadrático médio ser 1 por
+construção. Aqui ela selecionou 85 das 200 faixas — quase metade — o que
+por si já indica que não está discriminando.
+
+As dez faixas de maior VIP, para registro:
+          nm        VIP      coef. PLS
+        1347      1,588         0,1447
+        1341      1,570         0,1447
+        1353      1,553         0,1367
+        1359      1,547         0,1401
+        1335      1,516         0,1390
+        1329      1,509         0,1355
+        1365      1,451         0,1283
+        1323      1,439         0,1296
+        1371      1,379         0,1213
+        1317      1,374         0,1262
+
+======================================================================
+A SÍNTESE DO GRUPO, no conjunto em que p &gt; n
+Espectro: 60 amostras, 200 comprimentos de onda.
+
+método                              EQM validado    R² val.   o que se ajusta
+Modelo nulo (só a média)                  3,5791    -0,0242   nenhum parâmetro
+Ridge, lambda = 0,10000                   0,2038     0,9417   200 coeficientes, nenhum zero
+Lasso, lambda = 0,00622                   0,2456     0,9297   17 faixas ativas de 200
+PCR, 6 componentes                        0,1991     0,9430   6 componentes
+PLS, 5 componentes                        0,1987     0,9431   5 componentes
+
+MQO com as 200 colunas                         —          —   IMPOSSÍVEL: X'X é singular
+Seleção exaustiva                              —          —   IMPOSSÍVEL: 2^200 modelos
+Seleção para frente                            —          —   roda, mas sem controle do erro
+
+É este o quadro que justifica o grupo inteiro: quando p &gt; n, os métodos
+de seleção clássicos não são apenas piores — são INAPLICÁVEIS — e os
+quatro métodos regularizados são as únicas opções disponíveis.</pre></div><figure class="fig"><img src="../assets/resultados/pls.png" alt="Os coeficientes contra o VIP ao longo do espectro, e a síntese do grupo com p > n" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, os coeficientes da PLS ao longo dos 200 comprimentos de onda, com as quatro bandas construídas sombreadas: as duas que determinam a resposta estão em vermelho, e é sobre elas que os coeficientes se concentram. No centro, o VIP nas mesmas faixas: ele passa do limiar 1 em regiões que não determinam a resposta e fica <em>abaixo</em> dele em toda a banda de 1.920 nm, que determina. À direita, a síntese do grupo no conjunto em que \(p&gt;n\). <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Variância explicada componente por componente (espectro)</caption><thead><tr><th>m</th><th>PLS: % var. X</th><th>PLS: % var. y</th><th>PCR: % var. X</th><th>PCR: % var. y</th></tr></thead><tbody><tr><td>1</td><td>77,93</td><td><strong>14,43</strong></td><td>83,54</td><td>2,29</td></tr><tr><td>2</td><td>10,21</td><td><strong>66,11</strong></td><td>6,26</td><td>15,26</td></tr><tr><td>3</td><td>4,39</td><td>12,26</td><td>3,49</td><td>35,92</td></tr><tr><td>4</td><td>2,51</td><td>2,41</td><td>2,83</td><td>4,89</td></tr><tr><td>5</td><td>2,06</td><td>0,24</td><td>2,30</td><td>22,64</td></tr><tr><td>6</td><td>2,73</td><td>0,02</td><td>1,39</td><td>14,41</td></tr><tr><td>7</td><td>0,01</td><td>3,03</td><td>0,01</td><td>0,00</td></tr><tr><td>8</td><td>0,01</td><td>0,92</td><td>0,01</td><td>0,11</td></tr><tr><td><strong>acumulado em 10</strong></td><td>99,85</td><td><strong>99,94</strong></td><td>99,86</td><td>95,59</td></tr></tbody></table></div><p>Com três componentes, a PLS explica <strong>92,80%</strong> da variância de \(y\) e a PCR <strong>53,47%</strong>. Em troca, a PCR captura um pouco mais de variância de \(X\) — 93,30% contra 92,52% — que é precisamente o que ela otimiza.</p><div class="table-wrap"><table class="method-table"><caption>As curvas de validação cruzada (10 dobras, 5 repetições)</caption><thead><tr><th>m</th><th>EQM PLS</th><th>EQM PCR</th><th>R² val. PLS</th><th>R² val. PCR</th></tr></thead><tbody><tr><td>1</td><td>3,0471</td><td>3,5948</td><td>0,1280</td><td><strong>−0,0287</strong></td></tr><tr><td>2</td><td>0,8480</td><td>3,1853</td><td>0,7573</td><td>0,0885</td></tr><tr><td><strong>3</strong></td><td>0,3165</td><td>1,9529</td><td><strong>0,9094</strong></td><td><strong>0,4412</strong></td></tr><tr><td>4</td><td>0,2156</td><td>1,7939</td><td>0,9383</td><td>0,4866</td></tr><tr><td><strong>5</strong></td><td><strong>0,1987</strong></td><td>0,8988</td><td><strong>0,9431</strong></td><td>0,7428</td></tr><tr><td><strong>6</strong></td><td>0,2093</td><td><strong>0,1991</strong></td><td>0,9401</td><td><strong>0,9430</strong></td></tr><tr><td>7</td><td>0,3009</td><td>0,2018</td><td>0,9139</td><td>0,9423</td></tr><tr><td>8</td><td>0,3267</td><td>0,2049</td><td>0,9065</td><td>0,9414</td></tr><tr><td>12</td><td>0,3704</td><td>0,2164</td><td>0,8940</td><td>0,9381</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Quantos componentes a PCR precisa para igualar a PLS</caption><thead><tr><th>PLS</th><th>EQM da PLS</th><th>PCR equivalente</th></tr></thead><tbody><tr><td>m = 1</td><td>3,0471</td><td>m = 3</td></tr><tr><td>m = 2</td><td>0,8480</td><td>m = 6</td></tr><tr><td><strong>m = 3</strong></td><td><strong>0,3165</strong></td><td><strong>m = 6</strong></td></tr><tr><td>m = 4</td><td>0,2156</td><td>m = 6</td></tr><tr><td>m = 5</td><td>0,1987</td><td>mais de 20</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>E no conjunto de solo, com colinearidade apenas moderada (VC, 10 repetições)</caption><thead><tr><th>m</th><th>EQM PLS</th><th>EQM PCR</th></tr></thead><tbody><tr><td>1</td><td>0,7237</td><td>0,9867</td></tr><tr><td>2</td><td>0,5715</td><td>0,8510</td></tr><tr><td>3</td><td>0,4884</td><td>0,7644</td></tr><tr><td>4</td><td>0,4381</td><td>0,7819</td></tr><tr><td><strong>5</strong></td><td><strong>0,4214</strong></td><td>0,6902</td></tr><tr><td>6</td><td>0,4263</td><td>0,6433</td></tr><tr><td><strong>7</strong></td><td>0,4338</td><td><strong>0,4191</strong></td></tr><tr><td>8</td><td>0,4392</td><td>0,4237</td></tr><tr><td>12 (= MQO)</td><td>0,4347</td><td>0,4347</td></tr></tbody></table></div><p>Para comparação, no mesmo conjunto: MQO com as doze candidatas 0,4347 e <a href="ridge.html">ridge</a> com \(\lambda\) por validação cruzada 0,4219.</p><div class="table-wrap"><table class="method-table"><caption>A síntese do grupo, no conjunto em que p = 200 e n = 60</caption><thead><tr><th>Método</th><th>EQM validado</th><th>R² val.</th><th>O que se ajusta</th></tr></thead><tbody><tr><td>Modelo nulo (só a média)</td><td>3,5791</td><td>−0,0242</td><td>nenhum parâmetro</td></tr><tr><td><a href="ridge.html">Ridge</a>, λ = 0,100</td><td>0,2038</td><td>0,9417</td><td>200 coeficientes, nenhum zero</td></tr><tr><td><a href="lasso.html">Lasso</a>, λ = 0,0062</td><td>0,2456</td><td>0,9297</td><td>17 faixas ativas de 200</td></tr><tr><td><a href="pcr.html">PCR</a>, 6 componentes</td><td>0,1991</td><td>0,9430</td><td>6 componentes</td></tr><tr><td><strong>PLS, 5 componentes</strong></td><td><strong>0,1987</strong></td><td><strong>0,9431</strong></td><td>5 componentes</td></tr><tr><td>MQO com as 200 colunas</td><td>—</td><td>—</td><td><strong>impossível: X'X é singular</strong></td></tr><tr><td><a href="subset.html">Seleção exaustiva</a></td><td>—</td><td>—</td><td><strong>impossível: 2²⁰⁰ modelos</strong></td></tr><tr><td><a href="stepwise.html">Seleção para frente</a></td><td>—</td><td>—</td><td>roda, mas sem controle do erro</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela de variância explicada é o método em números, e a comparação coluna a coluna é instrutiva. A PLS põe 14,43% da variância de \(y\) no primeiro componente e 66,11% no segundo; a PCR põe 2,29% e 15,26%. Mas note a coluna seguinte da PCR: no terceiro componente ela sobe para 35,92% e no quinto para 22,64%. A PCR <em>encontra</em> o sinal — ela só não o encontra primeiro. A informação está lá, distribuída entre componentes que a PCR ordenou por um critério que ignora a resposta.</p><p><strong>Sobre as curvas de validação:</strong> a leitura exige cuidado, porque o resultado tem duas partes e a literatura de divulgação costuma reportar apenas a primeira. A vantagem da PLS nos componentes iniciais é grande e inequívoca: com \(m=3\) ela tem \(R^2\) validado de 0,9094 contra 0,4412 da PCR, e com \(m=2\) a diferença é de 0,7573 contra 0,0885. A PCR precisa de seis componentes para igualar o que a PLS faz com três. Mas <strong>no ótimo de cada método os dois empatam</strong>: PLS com \(m=5\) dá 0,1987 e PCR com \(m=6\) dá 0,1991 — diferença de 0,0004, dentro do erro de simulação. A PLS <em>não</em> alcança um erro menor que a PCR.</p><p>Em termos práticos, portanto: se o objetivo é um modelo parcimonioso em componentes — para interpretar, para calibrar um instrumento, para transferir uma calibração entre equipamentos, para explicar a um laboratório o que está sendo medido — a PLS chega lá com metade deles, e isso é uma vantagem real. Se o objetivo é apenas o menor erro de predição possível, os dois servem igualmente, e o <a href="ridge.html">ridge</a> com 0,2038 também.</p><p><strong>Sobre o excesso de componentes:</strong> as duas curvas sobem depois do mínimo, e a da PLS sobe mais rápido — de 0,1987 em \(m=5\) para 0,3704 em \(m=12\), isto é, quase o dobro do erro. A razão é que a PLS, por usar \(y\) para construir as direções, superajusta mais rápido quando \(m\) cresce. É mais uma razão para escolher \(m\) por validação cruzada e não por regra de bolso.</p><p><strong>Sobre o conjunto de solo:</strong> aqui a PLS não tem vantagem, e vale dizê-lo sem rodeios. O melhor da PLS é 0,4214 com cinco componentes, o melhor da PCR é 0,4191 com sete, o <a href="ridge.html">ridge</a> dá 0,4219 e o MQO com todas as doze dá 0,4347. As diferenças entre os quatro são de 3% ou menos, e os três métodos regularizados precisam de quase todos os componentes para se igualarem ao MQO. Com \(n=90\) para \(p=12\), não há o que regularizar: a colinearidade incomoda a <em>interpretação</em> dos coeficientes, como a ficha <a href="ridge.html">ridge</a> mostra, mas não a predição.</p><p><strong>Sobre a síntese final:</strong> é esta a tabela que justifica o grupo inteiro de seis fichas. Quando \(p&gt;n\), os métodos clássicos de seleção não são apenas piores — são <strong>inaplicáveis</strong>. O MQO não tem solução única, porque \(X^{\top}X\) é singular e existem infinitas combinações com resíduo zero. A <a href="subset.html">busca exaustiva</a> teria \(2^{200}\) modelos, um número maior que o de átomos no universo observável. O <a href="stepwise.html">stepwise</a> roda — e é justamente por isso que é perigoso: ele devolve um modelo, com \(R^2\) alto e variáveis "significativas", sem nenhum controle sobre o erro, como a ficha dele demonstra com 45 candidatas e nenhum efeito real.</p><p>Os quatro métodos regularizados, por outro lado, todos funcionam e todos chegam a \(R^2\) validado entre 0,93 e 0,94. A escolha entre eles não é de desempenho, é de <strong>propósito</strong>: o <a href="lasso.html">lasso</a> entrega 17 faixas em vez de 200, o que permite projetar um instrumento mais simples; a PLS entrega 5 componentes interpretáveis; o <a href="ridge.html">ridge</a> entrega o melhor erro bruto mas 200 coeficientes; a <a href="pcr.html">PCR</a> entrega componentes que não dependem da resposta e podem ser reaproveitados para outra variável de interesse. É essa a pergunta a fazer, e não "qual é o melhor".</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td><strong>Confiar na regra "VIP > 1" sem verificar</strong></td><td>Compare com os coeficientes; veja a tabela desta ficha.</td></tr><tr><td>Calcular os componentes fora do laço de validação</td><td>A PLS usa y; refaça em cada dobra.</td></tr><tr><td>Não padronizar</td><td><code>scale = TRUE</code>.</td></tr><tr><td>Escolher m por variância explicada</td><td>Use validação cruzada.</td></tr><tr><td>Usar m grande "para garantir"</td><td>A PLS superajusta rápido; o erro sobe.</td></tr><tr><td>Afirmar que a PLS prediz melhor que a PCR</td><td>No ótimo elas empatam; a vantagem é em parcimônia.</td></tr><tr><td>Esperar que a PLS selecione variáveis</td><td>Ela reduz dimensão; use lasso para selecionar.</td></tr><tr><td>Interpretar pesos W como cargas P</td><td>São objetos diferentes.</td></tr><tr><td>Reportar "usamos PLS" sem informar m</td><td>Sem m não se sabe o grau de regularização.</td></tr><tr><td>Ignorar o pré-processamento espectral</td><td>Corrija a linha de base antes: SNV, MSC, derivadas.</td></tr><tr><td>Atribuir importância a um canal isolado</td><td>Canais vizinhos têm r = 0,998.</td></tr><tr><td>Usar PLS-DA sem validação externa</td><td>A separação aparente é frequentemente artefato.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="pcr.html">PCR</a></td><td>Quando os componentes devem servir a mais de uma resposta.</td></tr><tr><td><a href="ridge.html">Ridge</a></td><td>Quando o alvo é só o menor erro: aqui foi o melhor em erro bruto.</td></tr><tr><td><a href="lasso.html">Lasso</a></td><td>Quando se quer reduzir o número de canais MEDIDOS.</td></tr><tr><td>Rede elástica</td><td>Grupos correlacionados, com seleção.</td></tr><tr><td>PLS esparsa</td><td>Combina a PLS com seleção de variáveis.</td></tr><tr><td>PLS-DA</td><td>Quando a resposta é categórica.</td></tr><tr><td>PLS2 (múltiplas respostas)</td><td>Quando há várias respostas correlacionadas.</td></tr><tr><td>Pré-processamento espectral (SNV, MSC, Savitzky-Golay)</td><td>Antes de qualquer método: remove a deriva de base.</td></tr><tr><td>Modelos não lineares (florestas, redes)</td><td>Quando a relação não é linear nos canais.</td></tr><tr><td>Seleção de intervalos espectrais (iPLS)</td><td>Quando se quer identificar regiões, não canais.</td></tr></tbody></table></div><ol class="steps"><li>Considere corrigir a linha de base antes de tudo.</li><li>Padronize as variáveis.</li><li>Ajuste com <code>validation = "CV"</code>, que refaz os componentes em cada dobra.</li><li>Escolha m pelo <code>validationplot</code>, nunca por regra de bolso.</li><li>Compare as duas linhas de variância explicada do <code>summary</code>.</li><li>Compare sempre com a PCR, com o ridge e com o lasso.</li><li>Examine os coeficientes ao longo do espectro antes de olhar o VIP.</li><li>Se usar VIP, verifique-o contra os coeficientes e diga que é convenção.</li><li>Estime o erro reescolhendo m dentro de cada dobra.</li><li>Reporte m, o critério de escolha, o pré-processamento e o erro validado.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>WOLD, Herman. Soft modelling by latent variables: the non-linear iterative partial least squares (NIPALS) approach. In: GANI, J. (ed.). <em>Perspectives in probability and statistics.</em> London: Academic Press, 1975. p. 117-142.</li><li>WOLD, Svante; RUHE, Arnold; WOLD, Herman; DUNN, W. J. The collinearity problem in linear regression: the partial least squares (PLS) approach to generalized inverses. <em>SIAM Journal on Scientific and Statistical Computing</em>, v. 5, n. 3, p. 735-743, 1984.</li><li>WOLD, Svante; SJÖSTRÖM, Michael; ERIKSSON, Lennart. PLS-regression: a basic tool of chemometrics. <em>Chemometrics and Intelligent Laboratory Systems</em>, v. 58, n. 2, p. 109-130, 2001.</li><li>DE JONG, Sijmen. SIMPLS: an alternative approach to partial least squares regression. <em>Chemometrics and Intelligent Laboratory Systems</em>, v. 18, n. 3, p. 251-263, 1993.</li><li>FRANK, Ildiko E.; FRIEDMAN, Jerome H. A statistical view of some chemometrics regression tools. <em>Technometrics</em>, v. 35, n. 2, p. 109-135, 1993.</li><li>HELLAND, Inge S. On the structure of partial least squares regression. <em>Communications in Statistics: Simulation and Computation</em>, v. 17, n. 2, p. 581-607, 1988.</li><li>CHUN, Hyonho; KELEŞ, Sündüz. Sparse partial least squares regression for simultaneous dimension reduction and variable selection. <em>Journal of the Royal Statistical Society: Series B</em>, v. 72, n. 1, p. 3-25, 2010.</li><li>CHONG, Il-Gyo; JUN, Chi-Hyuck. Performance of some variable selection methods when multicollinearity is present. <em>Chemometrics and Intelligent Laboratory Systems</em>, v. 78, n. 1-2, p. 103-112, 2005. (Discussão do VIP.)</li><li>FARRÉS, Marta; PLATIKANOV, Stefan; TSAKOVSKI, Stefan; TAULER, Romà. Comparison of the variable importance in projection (VIP) and of the selectivity ratio (SR) methods for variable selection and interpretation. <em>Journal of Chemometrics</em>, v. 29, n. 10, p. 528-536, 2015.</li><li>KRISHNAN, Anjali; WILLIAMS, Lynne J.; McINTOSH, Anthony R.; ABDI, Hervé. Partial least squares (PLS) methods for neuroimaging: a tutorial and review. <em>NeuroImage</em>, v. 56, n. 2, p. 455-475, 2011.</li><li>BARNES, R. J.; DHANOA, M. S.; LISTER, Susan J. Standard normal variate transformation and de-trending of near-infrared diffuse reflectance spectra. <em>Applied Spectroscopy</em>, v. 43, n. 5, p. 772-777, 1989.</li><li>SAVITZKY, Abraham; GOLAY, Marcel J. E. Smoothing and differentiation of data by simplified least squares procedures. <em>Analytical Chemistry</em>, v. 36, n. 8, p. 1627-1639, 1964.</li><li>MEVIK, Bjørn-Helge; WEHRENS, Ron. The pls package: principal component and partial least squares regression in R. <em>Journal of Statistical Software</em>, v. 18, n. 2, p. 1-23, 2007.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>MEVIK, Bjørn-Helge; WEHRENS, Ron; LILAND, Kristian H. <em>pls: partial least squares and principal component regression.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=pls" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=pls</a>.</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, m escolhido por validação cruzada e reescolhido dentro de cada dobra ao avaliar, linearidade na média, observações independentes e VIP tratado como convenção, não como teste.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>pls, caret</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="pcr.html"><span>← ANTERIOR</span>Regressão por componentes principais (PCR)</a><a href="polinomial.html"><span>PRÓXIMO →</span>Regressão polinomial</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

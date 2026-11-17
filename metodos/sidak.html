@@ -4,322 +4,293 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Ajuste de Šidák: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Ajuste de Šidák | Estatística e Ciência de Dados
-  </title>
+<meta content="Ajuste de Šidák: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Ajuste de Šidák | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Ajuste de Šidák
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Ajuste de Šidák
-    </h1>
-<p class="detail-lead">
-     Ajusta o critério de significância quando são realizados vários testes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/sidak.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Ajusta o critério de significância quando são realizados vários testes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>P-valores válidos.</li><li>Independência das hipóteses/testes para controle exato simples, ou condições positivas específicas.</li><li>Para controle sem essa suposição prefira Bonferroni/Holm.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_i=\mu_j\\ H_1&amp;:\ \mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\alpha_*=1-(1-\alpha)^{1/m},\qquad p_{j,\mathrm{aj}}=1-(1-p_j)^m\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p_{\mathrm{aj}}&lt;0{,}05\) indica rejeição pela correção. Evite chamar o ajuste de independente quando contrastes partilham amostras.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar médias de quebras em pares de tensões (warpbreaks) com ajustes ilustrativos.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-sidak" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-sidak"><code># Ajuste de Šidák ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Ajuste de Šidák</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Ajuste de Šidák</h1><p class="detail-lead">Versão exata do ajuste de Bonferroni quando os testes são independentes, com um nível individual ligeiramente maior.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/sidak.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/sidak.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o ajuste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O ajuste de <a href="bonferroni.html">Bonferroni</a> usa uma desigualdade: a chance da união é <em>no máximo</em> a soma das chances. Šidák substitui a desigualdade pela igualdade exata — que vale quando os testes são independentes. O resultado é um nível individual ligeiramente maior e, portanto, um pouco mais de poder.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Šidák" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">A versão exata do</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">Bonferroni, sob independência</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Fórmula</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">1 − (1−α)^(1/m)</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">em vez de α/m</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Testes independentes</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">(ou positivamente dependentes)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Ganho</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">No máximo 2,6%</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">sobre Bonferroni</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">1-(1-p)^m</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">emmeans: adjust = "sidak"</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Versão sequencial</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Holm–Šidák, mais</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">poderosa</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Šidák</text></svg><figcaption>Visão geral do ajuste de Šidák. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Quanto vale o ganho</strong><p>Com m = 15, Bonferroni exige 0,003333 por teste e Šidák, 0,003417: apenas 2,5% a mais de folga. Essa razão cresce com m, mas converge rápido para \(-\ln(1-\alpha)/\alpha\approx1{,}0259\). <strong>O ganho nunca passa de 2,6%.</strong> Vale saber que Šidák existe; raramente vale trocar por ele uma decisão.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o ajuste</h2><p>Se \(m\) testes são independentes e cada um rejeita indevidamente com probabilidade \(\alpha^\ast\), a probabilidade de <em>nenhum</em> rejeitar é \((1-\alpha^\ast)^m\). Igualando o complemento ao nível global desejado e resolvendo para \(\alpha^\ast\) chega-se diretamente à fórmula de Šidák. Não há desigualdade no caminho: sob independência, a taxa de erro do conjunto fica exatamente em \(\alpha\).</p><figure class="fig"><img src="../assets/resultados/sidak-didatica.png" alt="Níveis individuais e taxas de erro atingidas" loading="lazy"/><figcaption><strong>A diferença entre os dois ajustes.</strong> À esquerda, o nível individual adotado por cada método em função de m, em escala logarítmica: as curvas praticamente se sobrepõem. O gráfico embutido mostra a razão entre elas, que sobe de 1 e estabiliza em 1,0259 — o ganho máximo possível. À direita, a taxa de erro do conjunto que cada método atinge sob independência: Šidák acerta 0,05 em cheio, enquanto Bonferroni fica entre 0,0488 e 0,0492. A folga do Bonferroni, que é o seu conservadorismo, aparece na quarta casa decimal. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Quando a independência não vale</strong><p>Nas comparações pareadas de uma ANOVA os testes <em>não</em> são independentes: cada grupo entra em várias delas, e todos compartilham o mesmo quadrado médio do resíduo. Nessa situação, Šidák deixa de ser exato e volta a ser conservador, como Bonferroni. A simulação do exemplo mostra os dois em 4,03% e 4,09% — a vantagem teórica evapora. Para comparações pareadas, o método construído para a dependência correta é o de <a href="tukey.html">Tukey</a>.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Cada valor-p individual é válido</td><td>O ajuste trata a multiplicidade, não a validade.</td><td>Verifique os pressupostos de cada teste.</td></tr><tr><td>Família definida antes da análise</td><td>Como em qualquer ajuste.</td><td>Plano de análise.</td></tr><tr><td><strong>Independência entre os testes</strong></td><td>É o que torna a fórmula exata.</td><td>Pela estrutura do problema; não há teste prático.</td></tr><tr><td>Dependência positiva, na falta de independência</td><td>Šidák continua controlando a taxa de erro, de forma conservadora.</td><td>Natureza dos testes.</td></tr><tr><td>Valores-p contínuos</td><td>Com valores-p discretos, o ajuste fica ainda mais conservador.</td><td>Tipo de teste empregado.</td></tr></tbody></table></div><div class="callout "><strong>O caso que exige cuidado</strong><p>Šidák não garante o controle da taxa de erro sob dependência <em>negativa</em> arbitrária, porque a identidade \((1-\alpha^\ast)^m\) deixa de ser um limite. Em situações de dependência desconhecida ou negativa, Bonferroni e Holm são as escolhas seguras, já que não supõem nada.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>Como Bonferroni, Šidák é um ajuste, não um teste. O que ele controla é a taxa de erro do conjunto:</p><div class="hypothesis-block">\[\begin{aligned}\text{FWER} &= P\!\bigl(\text{rejeitar ao menos uma }H_{0i} \\ &\quad \text{ verdadeira}\bigr) \\ &\leq \alpha\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\alpha^{\ast}=1-(1-\alpha)^{1/m}\]\[\Longleftrightarrow\]\[p_i^{\text{aj}}=1-\left(1-p_i\right)^{m}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&P\!\left(\text{nenhuma rejeição indevida}\right) \\ &= \left(1-\alpha^{\ast}\right)^{m} = 1-\alpha\end{aligned}\]\[\text{(sob independência)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(m\)</dt><dd>número de testes da família</dd></div><div><dt>\(\alpha\)</dt><dd>taxa de erro do conjunto pretendida</dd></div><div><dt>\(\alpha^{\ast}\)</dt><dd>nível individual adotado</dd></div><div><dt>\(p_i\)</dt><dd>valor-p bruto do i-ésimo teste</dd></div><div><dt>\(p_i^{\text{aj}}\)</dt><dd>valor-p ajustado</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="worked"><strong>Os níveis individuais</strong><p>Com \(\alpha=0{,}05\) e \(m=15\): Bonferroni usa \(0{,}05/15=0{,}0033333\); Šidák usa \[\begin{aligned}&1-(1-0{,}05)^{1/15} \\ &= 1-0{,}95^{0{,}0\overline{6}} \\ &= 0{,}0034137.\end{aligned}\]</p><p>A razão é \(0{,}0034137/0{,}0033333=1{,}0241\): Šidák é 2,4% menos exigente.</p><p>Na escala do teste t com 65 graus de liberdade, o valor crítico passa de 3,0476 (Bonferroni) para 3,0393 (Šidák) — uma diferença de 0,008.</p></div><div class="worked"><strong>Os valores-p ajustados</strong><p>Para a comparação <em>casein − soybean</em>, com \(p=0{,}00067\): Bonferroni dá \(15\times0{,}00067=0{,}00998\); Šidák dá \(1-(1-0{,}00067)^{15}=0{,}00993\).</p><p>Para a comparação <em>casein − meatmeal</em>, com \(p=0{,}04557\): Bonferroni dá 0,68350 e Šidák, 0,50320. A diferença entre os dois é grande em termos relativos, mas ambos estão longe de 0,05: nenhuma conclusão muda.</p><p>Em valores-p pequenos, \(1-(1-p)^m\approx mp\) — a aproximação de primeira ordem —, e os dois métodos coincidem. A diferença só aparece quando \(p\) é grande, exatamente onde a decisão já está tomada.</p></div><h3>Holm–Šidák: a versão sequencial</h3><p>Assim como Holm melhora Bonferroni aplicando-o passo a passo, Holm–Šidák melhora Šidák pelo mesmo mecanismo: o \(i\)-ésimo menor valor-p enfrenta \(1-(1-\alpha)^{1/(m-i+1)}\) em vez de \(1-(1-\alpha)^{1/m}\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[p_{(i)}^{\text{aj}}=\max_{j\leq i}\left[1-\left(1-p_{(j)}\right)^{m-j+1}\right]\]</div><p>É o procedimento mais poderoso dos quatro, ao custo de supor independência. Entre Holm e Holm–Šidák, a diferença é a mesma de sempre: menos de 2,6%.</p><h3>Propriedades</h3><ul class="checklist"><li>\(\alpha/m&lt;1-(1-\alpha)^{1/m}\) para todo \(m&gt;1\): Šidák é sempre menos exigente.</li><li>A razão entre os dois níveis tende a \(-\ln(1-\alpha)/\alpha\), que vale 1,0259 para \(\alpha=0{,}05\).</li><li>Sob independência, atinge exatamente a taxa pretendida; sob dependência positiva, fica abaixo dela.</li><li>Para valores-p pequenos, \(1-(1-p)^m\approx mp\): os dois ajustes coincidem onde importa.</li><li>Fornece intervalos simultâneos diretos, trocando o multiplicador crítico.</li><li>É o ajuste que o pacote <code>emmeans</code> aplica com <code>adjust = "sidak"</code>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>p ajustado</td><td>Compare com α.</td><td>Quase igual ao de Bonferroni quando p é pequeno.</td></tr><tr><td>Nível individual</td><td>A exigência por teste.</td><td>No máximo 2,6% acima do de Bonferroni.</td></tr><tr><td>Razão Šidák/Bonferroni</td><td>O ganho do método.</td><td>Limitada a 1,0259.</td></tr><tr><td>Holm–Šidák</td><td>Versão sequencial, mais poderosa.</td><td>Supõe independência.</td></tr><tr><td>Taxa atingida sob dependência</td><td>Abaixo de α.</td><td>A vantagem teórica desaparece.</td></tr></tbody></table></div><p>Reporte a família, o número de testes, o método e os valores-p ajustados. Se usar Šidák, justifique por que a independência é plausível — e, se não for, prefira Holm.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não há função dedicada no R base: o ajuste de Šidák se obtém diretamente com <code>1 - (1 - p)^m</code>, e <code>p.adjust()</code> não o inclui entre seus métodos. O pacote <code>emmeans</code> aceita <code>adjust = "sidak"</code> em qualquer comparação, e <code>mutoss</code> traz os procedimentos de passo único e sequencial. Para os intervalos simultâneos, basta trocar o multiplicador crítico por <code>qt(1 - (1 - (1 - alfa)^(1/m))/2, gl)</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-sidak-min" type="button">Copiar código</button></div><pre id="code-sidak-min"><code>sidak &lt;- 1 - (1 - p)^m                     # p = vetor de valores-p brutos
+emmeans::pairs(emmeans::emmeans(modelo, ~feed), adjust = "sidak")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>chickwts</code> registra o peso, aos seis dias, de 71 pintinhos alimentados com seis rações diferentes. Os grupos têm tamanhos ligeiramente desiguais (de 10 a 14 aves), os resíduos passam no teste de normalidade (p = 0,627) e as variâncias são homogêneas (Brown–Forsythe p = 0,590). A ANOVA devolve F(5; 65) = 15,365 com p = 5,9 × 10⁻¹⁰: há diferença, e a pergunta passa a ser <em>onde</em>. Com seis rações são quinze comparações — e é esse número que cria o problema de multiplicidade. As fichas de <a href="bonferroni.html">Bonferroni</a>, <a href="sidak.html">Šidák</a>, <a href="tukey.html">Tukey</a> e <a href="games-howell.html">Games–Howell</a> usam este mesmo conjunto, para que os resultados possam ser comparados diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-sidak" type="button">Copiar código</button></div><pre id="code-sidak"><code># Ajuste de Šidák: exemplo completo ----
+# Pacotes: stats (base). Opcionais: emmeans, mutoss
+# install.packages(c("emmeans", "mutoss"))
 
-# Ajuste e resultados ----
-pbrutos &lt;- pairwise.t.test(warpbreaks$breaks, warpbreaks$tension,
-                          pool.sd = FALSE, p.adjust.method = "none")$p.value
-m &lt;- sum(!is.na(pbrutos))
-p_aj_sidak &lt;- 1 - (1 - pbrutos)^m
-print(p_aj_sidak)
-print(p.adjust(pbrutos[!is.na(pbrutos)], method = "holm"))
+# 1. A fórmula, em uma linha
+alfa &lt;- 0.05; m &lt;- 15
+alfa / m                       # Bonferroni
+1 - (1 - alfa)^(1/m)           # Šidák
+(1 - (1 - alfa)^(1/m)) / (alfa / m)    # quanto Šidák é menos exigente
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. Como as duas se comportam quando m cresce
+comparacao &lt;- data.frame(
+  m          = c(1, 2, 3, 5, 10, 15, 20, 50, 100, 1000),
+  bonferroni = alfa / c(1, 2, 3, 5, 10, 15, 20, 50, 100, 1000),
+  sidak      = 1 - (1 - alfa)^(1 / c(1, 2, 3, 5, 10, 15, 20, 50, 100, 1000)))
+comparacao$razao &lt;- comparacao$sidak / comparacao$bonferroni
+round(comparacao, 8)
 
+# 3. Taxa de erro do conjunto que cada um atinge, SE os testes forem independentes
+mm &lt;- c(1, 3, 5, 10, 15, 50)
+data.frame(m = mm,
+           sem_ajuste  = 1 - (1 - alfa)^mm,
+           bonferroni  = 1 - (1 - alfa/mm)^mm,
+           sidak       = 1 - (1 - (1 - (1 - alfa)^(1/mm)))^mm)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       A fórmula de Šidák é apresentada com seu requisito de independência; Holm é a opção conservadora mais geral para o mesmo caso.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="regwf.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Ryan–Einot–Gabriel–Welsch (REGW)
-    </a>
-<a href="duncan.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Duncan
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Aplicando aos dados: chickwts
+data(chickwts)
+modelo &lt;- aov(weight ~ feed, data = chickwts)
+summary(modelo)
+
+brutos &lt;- with(chickwts, pairwise.t.test(weight, feed, p.adjust.method = "none"))$p.value
+p &lt;- as.vector(brutos); p &lt;- p[!is.na(p)]
+m &lt;- length(p); m
+
+sidak      &lt;- 1 - (1 - p)^m                  # Šidák de passo único
+bonferroni &lt;- p.adjust(p, "bonferroni")
+holm       &lt;- p.adjust(p, "holm")
+# Holm-Šidák (passo descendente): sequencial, usando a fórmula de Šidák
+ordem &lt;- order(p); hs &lt;- numeric(m); acumulado &lt;- 0
+for (i in seq_len(m)) {
+  acumulado &lt;- max(acumulado, 1 - (1 - p[ordem[i]])^(m - i + 1))
+  hs[ordem[i]] &lt;- min(1, acumulado)
+}
+resultado &lt;- data.frame(p_bruto = p, sidak, bonferroni, holm, holm_sidak = hs)
+round(resultado[order(p), ], 5)
+colSums(resultado &lt; 0.05)                    # quantas sobrevivem a cada ajuste
+
+# 5. Šidák em emmeans, onde ele aparece com nome próprio
+library(emmeans)
+em &lt;- emmeans(modelo, ~feed)
+pairs(em, adjust = "sidak")
+pairs(em, adjust = "bonferroni")
+pairs(em, adjust = "tukey")
+
+# 6. Intervalos simultâneos: multiplicadores críticos lado a lado
+gl &lt;- df.residual(modelo); k &lt;- nlevels(chickwts$feed)
+c(sem_ajuste = qt(1 - alfa/2, gl),
+  sidak      = qt(1 - (1 - (1 - alfa)^(1/m))/2, gl),
+  bonferroni = qt(1 - alfa/(2*m), gl),
+  tukey      = qtukey(1 - alfa, k, gl) / sqrt(2),
+  scheffe    = sqrt((k - 1) * qf(1 - alfa, k - 1, gl)))
+
+# 7. Gráfico: as duas curvas de nível individual
+curve(0.05/x, 1, 50, log = "y", col = "red", lwd = 2,
+      xlab = "Número de testes (m)", ylab = "Nível individual")
+curve(1 - 0.95^(1/x), 1, 50, col = "darkgreen", lwd = 2, lty = 2, add = TRUE)
+legend("topright", c("Bonferroni", "Šidák"), col = c("red", "darkgreen"), lwd = 2, lty = 1:2)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-sidak" type="button">Copiar código</button></div><pre id="code-py-sidak"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: chickwts (R). Peso (g) de 71 pintinhos aos 6 dias, segundo seis rações.
+# É o mesmo conjunto usado nas fichas de Bonferroni e de Tukey, para comparação direta.
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes = list(dados)
+gs = [np.array(v, float) for v in dados.values()]
+k = len(gs); ns = np.array([len(g) for g in gs], float); N = int(ns.sum())
+medias = np.array([g.mean() for g in gs])
+QM = np.sum((ns - 1) * np.array([g.var(ddof=1) for g in gs])) / (N - k)
+gl = N - k
+m = k * (k - 1) // 2
+print(f"ANOVA: F({k-1}; {gl}) = {stats.f_oneway(*gs)[0]:.4f} | QM do resíduo = {QM:.3f} | m = {m} comparações")
+
+# 1. A conta exata contra a desigualdade de Bonferroni
+alfa = 0.05
+print("\nO nível individual que cada ajuste adota, para um alfa global de 5%")
+print(" m testes   Bonferroni: alfa/m   Šidák: 1-(1-alfa)^(1/m)   razão Šidák/Bonferroni")
+for mm in (1, 2, 3, 5, 10, 15, 20, 50, 100, 1000):
+    b = alfa / mm
+    s = 1 - (1 - alfa)**(1/mm)
+    print(f"  {mm:5d}      {b:16.8f}   {s:22.8f}   {s/b:21.6f}")
+print("\nŠidák é sempre um pouco menos exigente, e a vantagem encolhe quando m cresce:")
+print("com m = 15, o nível individual passa de 0,00333 para 0,00342, apenas 2,5% maior.")
+
+# 2. Taxa de erro do conjunto, sob independência
+print("\nSe os m testes fossem independentes, a taxa de erro do conjunto seria:")
+print(" m testes   sem ajuste   com Bonferroni   com Šidák")
+for mm in (1, 3, 5, 10, 15, 50):
+    print(f"  {mm:5d}     {1-(1-alfa)**mm:10.6f}   {1-(1-alfa/mm)**mm:14.6f}   "
+          f"{1-(1-(1-(1-alfa)**(1/mm)))**mm:9.6f}")
+print("Šidák atinge exatamente 0,05; Bonferroni fica abaixo. É essa folga não usada")
+print("que torna o Bonferroni conservador.")
+
+# 3. Simulação com testes de fato independentes, e depois com os dependentes
+print("\nSimulação A: 20.000 famílias de 15 testes INDEPENDENTES, todas as nulas verdadeiras")
+rng = np.random.default_rng(7)
+M = 20000
+sem = bon = sid = 0
+for _ in range(M):
+    pv = rng.random(m)
+    if (pv &lt; alfa).any(): sem += 1
+    if (pv &lt; alfa/m).any(): bon += 1
+    if (pv &lt; 1-(1-alfa)**(1/m)).any(): sid += 1
+print(f"  sem ajuste: {100*sem/M:.2f}% | Bonferroni: {100*bon/M:.2f}% | Šidák: {100*sid/M:.2f}%")
+
+print("\nSimulação B: 10.000 experimentos com 6 grupos de médias iguais (n = 12),")
+print("em que as 15 comparações pareadas NÃO são independentes")
+rng = np.random.default_rng(11)
+M2 = 10000
+pares = list(itertools.combinations(range(6), 2))
+sem = bon = sid = 0
+for _ in range(M2):
+    g6 = [rng.normal(0, 1, 12) for _ in range(6)]
+    pv = np.array([stats.ttest_ind(g6[a], g6[b]).pvalue for a, b in pares])
+    if (pv &lt; alfa).any(): sem += 1
+    if (pv &lt; alfa/m).any(): bon += 1
+    if (pv &lt; 1-(1-alfa)**(1/m)).any(): sid += 1
+print(f"  sem ajuste: {100*sem/M2:.2f}% | Bonferroni: {100*bon/M2:.2f}% | Šidák: {100*sid/M2:.2f}%")
+print("  Com dependência, os dois ficam abaixo de 5%: a independência suposta por Šidák")
+print("  não vale, e a vantagem teórica dele sobre o Bonferroni praticamente some.")
+
+# 4. As 15 comparações dos dados reais
+print(f"\nAs {m} comparações ({gl} gl), ordenadas pelo valor-p bruto")
+brutos = []; difs = []; rot = []
+for a, b in itertools.combinations(range(k), 2):
+    dif = medias[b] - medias[a]
+    t = dif / np.sqrt(QM * (1/ns[a] + 1/ns[b]))
+    brutos.append(2*stats.t.sf(abs(t), gl)); difs.append(dif); rot.append(f"{nomes[b]} - {nomes[a]}")
+brutos = np.array(brutos); difs = np.array(difs)
+bonf = np.minimum(1, m*brutos)
+sida = 1 - (1 - brutos)**m
+ordem = np.argsort(brutos)
+holm = np.empty(m); ac = 0.0
+hs = np.empty(m); ac2 = 0.0
+for pos, idx in enumerate(ordem):
+    ac = max(ac, (m - pos)*brutos[idx]); holm[idx] = min(1.0, ac)
+    ac2 = max(ac2, 1 - (1 - brutos[idx])**(m - pos)); hs[idx] = min(1.0, ac2)
+tuk = np.array([stats.studentized_range.sf(abs(d)/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl)
+                for d, (a, b) in zip(difs, itertools.combinations(range(k), 2))])
+mk = lambda v: "*" if v &lt; 0.05 else " "
+print(f"{'comparação':&lt;26}{'p bruto':&gt;10}{'Bonferroni':&gt;12}{'Šidák':&gt;11}{'Holm':&gt;11}{'Holm-Šidák':&gt;13}{'Tukey':&gt;11}")
+for i in ordem:
+    print(f"{rot[i]:&lt;26}{brutos[i]:10.5f}{bonf[i]:11.5f}{mk(bonf[i])}{sida[i]:10.5f}{mk(sida[i])}"
+          f"{holm[i]:10.5f}{mk(holm[i])}{hs[i]:12.5f}{mk(hs[i])}{tuk[i]:10.5f}{mk(tuk[i])}")
+print(f"\nSignificativas: bruto {np.sum(brutos&lt;0.05)} | Bonferroni {np.sum(bonf&lt;0.05)} | "
+      f"Šidák {np.sum(sida&lt;0.05)} | Holm {np.sum(holm&lt;0.05)} | Holm-Šidák {np.sum(hs&lt;0.05)} | "
+      f"Tukey {np.sum(tuk&lt;0.05)}")
+print(f"\nMaior diferença entre Šidák e Bonferroni nestes dados: "
+      f"{np.max(bonf - sida):.6f} (em valor-p ajustado)")
+print("Nenhuma conclusão muda. Essa é a situação típica.")
+
+# 5. Intervalos simultâneos
+tb = stats.t.ppf(1 - alfa/(2*m), gl)
+ts = stats.t.ppf(1 - (1 - (1-alfa)**(1/m))/2, gl)
+tt = stats.studentized_range.ppf(1-alfa, k, gl)/np.sqrt(2)
+print(f"\nMultiplicadores críticos na escala t ({gl} gl)")
+print(f"  sem ajuste  : {stats.t.ppf(1-alfa/2, gl):.4f}")
+print(f"  Šidák       : {ts:.4f}")
+print(f"  Bonferroni  : {tb:.4f}")
+print(f"  Tukey       : {tt:.4f}")
+print("Tukey é o menor dos três ajustes porque foi construído especificamente para")
+print("o conjunto de todas as comparações pareadas, aproveitando a dependência entre elas.")
+i = int(np.argmax(np.abs(difs)))
+a, b = list(itertools.combinations(range(k), 2))[i]
+ep = np.sqrt(QM*(1/ns[a] + 1/ns[b]))
+print(f"\nPara {rot[i]} (diferença de {difs[i]:.2f} g, EP = {ep:.3f}):")
+for nome, cr in [("sem ajuste", stats.t.ppf(1-alfa/2, gl)), ("Šidák", ts), ("Bonferroni", tb), ("Tukey", tt)]:
+    print(f"  {nome:&lt;12} IC 95% = [{difs[i]-cr*ep:7.2f}; {difs[i]+cr*ep:7.2f}]  (largura {2*cr*ep:.2f} g)")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ANOVA: F(5; 65) = 15.3648 | QM do resíduo = 3008.554 | m = 15 comparações
+
+O nível individual que cada ajuste adota, para um alfa global de 5%
+ m testes   Bonferroni: alfa/m   Šidák: 1-(1-alfa)^(1/m)   razão Šidák/Bonferroni
+      1            0.05000000               0.05000000                1.000000
+      2            0.02500000               0.02532057                1.012823
+      3            0.01666667               0.01695243                1.017146
+      5            0.01000000               0.01020622                1.020622
+     10            0.00500000               0.00511620                1.023239
+     15            0.00333333               0.00341371                1.024114
+     20            0.00250000               0.00256138                1.024552
+     50            0.00100000               0.00102534                1.025340
+    100            0.00050000               0.00051280                1.025603
+   1000            0.00005000               0.00005129                1.025840
+
+Šidák é sempre um pouco menos exigente, e a vantagem encolhe quando m cresce:
+com m = 15, o nível individual passa de 0,00333 para 0,00342, apenas 2,5% maior.
+
+Se os m testes fossem independentes, a taxa de erro do conjunto seria:
+ m testes   sem ajuste   com Bonferroni   com Šidák
+      1       0.050000         0.050000    0.050000
+      3       0.142625         0.049171    0.050000
+      5       0.226219         0.049010    0.050000
+     10       0.401263         0.048890    0.050000
+     15       0.536709         0.048850    0.050000
+     50       0.923055         0.048794    0.050000
+Šidák atinge exatamente 0,05; Bonferroni fica abaixo. É essa folga não usada
+que torna o Bonferroni conservador.
+
+Simulação A: 20.000 famílias de 15 testes INDEPENDENTES, todas as nulas verdadeiras
+  sem ajuste: 53.19% | Bonferroni: 4.73% | Šidák: 4.83%
+
+Simulação B: 10.000 experimentos com 6 grupos de médias iguais (n = 12),
+em que as 15 comparações pareadas NÃO são independentes
+  sem ajuste: 35.65% | Bonferroni: 4.03% | Šidák: 4.09%
+  Com dependência, os dois ficam abaixo de 5%: a independência suposta por Šidák
+  não vale, e a vantagem teórica dele sobre o Bonferroni praticamente some.
+
+As 15 comparações (65 gl), ordenadas pelo valor-p bruto
+comparação                   p bruto  Bonferroni      Šidák       Holm   Holm-Šidák      Tukey
+sunflower - horsebean        0.00000    0.00000*   0.00000*   0.00000*     0.00000*   0.00000*
+casein - horsebean           0.00000    0.00000*   0.00000*   0.00000*     0.00000*   0.00000*
+sunflower - linseed          0.00001    0.00009*   0.00009*   0.00008*     0.00008*   0.00009*
+meatmeal - horsebean         0.00001    0.00011*   0.00011*   0.00009*     0.00009*   0.00011*
+casein - linseed             0.00001    0.00022*   0.00022*   0.00016*     0.00016*   0.00021*
+sunflower - soybean          0.00030    0.00447*   0.00446*   0.00298*     0.00298*   0.00388*
+soybean - horsebean          0.00032    0.00487*   0.00486*   0.00298*     0.00298*   0.00422*
+casein - soybean             0.00067    0.00998*   0.00993*   0.00532*     0.00531*   0.00837*
+meatmeal - linseed           0.01348    0.20218    0.18418    0.09435      0.09062    0.12770 
+linseed - horsebean          0.01522    0.22833    0.20553    0.09435      0.09062    0.14133 
+meatmeal - sunflower         0.02644    0.39653    0.33093    0.13218      0.12537    0.22070 
+casein - meatmeal            0.04557    0.68350    0.50320    0.18227      0.17018    0.33246 
+meatmeal - soybean           0.17255    1.00000    0.94164    0.51766      0.43347    0.73914 
+soybean - linseed            0.20414    1.00000    0.96745    0.51766      0.43347    0.79329 
+casein - sunflower           0.81249    1.00000    1.00000    0.81249      0.81249    0.99989 
+
+Significativas: bruto 12 | Bonferroni 8 | Šidák 8 | Holm 8 | Holm-Šidák 8 | Tukey 8
+
+Maior diferença entre Šidák e Bonferroni nestes dados: 0.180303 (em valor-p ajustado)
+Nenhuma conclusão muda. Essa é a situação típica.
+
+Multiplicadores críticos na escala t (65 gl)
+  sem ajuste  : 1.9971
+  Šidák       : 3.0393
+  Bonferroni  : 3.0476
+  Tukey       : 2.9364
+Tukey é o menor dos três ajustes porque foi construído especificamente para
+o conjunto de todas as comparações pareadas, aproveitando a dependência entre elas.
+
+Para sunflower - horsebean (diferença de 168.72 g, EP = 23.485):
+  sem ajuste   IC 95% = [ 121.81;  215.62]  (largura 93.81 g)
+  Šidák        IC 95% = [  97.34;  240.10]  (largura 142.76 g)
+  Bonferroni   IC 95% = [  97.14;  240.29]  (largura 143.15 g)
+  Tukey        IC 95% = [  99.75;  237.68]  (largura 137.93 g)</pre></div><figure class="fig"><img src="../assets/resultados/sidak.png" alt="Quatro ajustes aplicados às mesmas comparações e seus multiplicadores críticos" loading="lazy"/><figcaption><strong>O que separa os métodos.</strong> À esquerda, as quinze comparações com os valores-p brutos e os ajustados por Šidák, Bonferroni e Tukey, em escala logarítmica: os três ajustes ficam praticamente sobrepostos nas comparações decisivas e todos levam às mesmas oito conclusões. À direita, o multiplicador crítico de cada procedimento na escala do teste t: Šidák fica 0,008 abaixo de Bonferroni, e Tukey, construído para a estrutura de dependência das comparações pareadas, fica abaixo dos dois. Scheffé, que protege qualquer contraste, é o mais exigente. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Níveis individuais para α = 0,05</caption><thead><tr><th>m</th><th>Bonferroni (α/m)</th><th>Šidák</th><th>Razão</th></tr></thead><tbody><tr><td>1</td><td>0,0500000</td><td>0,0500000</td><td>1,000000</td></tr><tr><td>3</td><td>0,0166667</td><td>0,0169524</td><td>1,017146</td></tr><tr><td>5</td><td>0,0100000</td><td>0,0102062</td><td>1,020622</td></tr><tr><td>15</td><td>0,0033333</td><td>0,0034137</td><td>1,024114</td></tr><tr><td>50</td><td>0,0010000</td><td>0,0010253</td><td>1,025340</td></tr><tr><td>1 000</td><td>0,0000500</td><td>0,0000513</td><td>1,025840</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Taxa de erro do conjunto atingida, sob independência</caption><thead><tr><th>m</th><th>Sem ajuste</th><th>Bonferroni</th><th>Šidák</th></tr></thead><tbody><tr><td>3</td><td>0,142625</td><td>0,049171</td><td>0,050000</td></tr><tr><td>10</td><td>0,401263</td><td>0,048890</td><td>0,050000</td></tr><tr><td>15</td><td>0,536709</td><td>0,048850</td><td>0,050000</td></tr><tr><td>50</td><td>0,923055</td><td>0,048794</td><td>0,050000</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Simulações</caption><thead><tr><th>Cenário</th><th>Sem ajuste</th><th>Bonferroni</th><th>Šidák</th></tr></thead><tbody><tr><td>A: 15 testes <strong>independentes</strong> (20.000 famílias)</td><td>53,19%</td><td>4,73%</td><td>4,83%</td></tr><tr><td>B: 15 comparações pareadas de 6 grupos (10.000 experimentos)</td><td>35,65%</td><td>4,03%</td><td>4,09%</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados nos dados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Significativas: bruto</td><td>12 de 15</td><td>Inflacionado.</td></tr><tr><td>Significativas: Bonferroni / Šidák</td><td>8 / 8</td><td>Idênticas.</td></tr><tr><td>Significativas: Holm / Holm–Šidák</td><td>8 / 8</td><td>Idênticas.</td></tr><tr><td>Significativas: Tukey</td><td>8</td><td>Idênticas.</td></tr><tr><td>Maior diferença entre Šidák e Bonferroni</td><td>0,180 (em p ajustado)</td><td>Numa comparação com p = 0,046, longe de 0,05.</td></tr><tr><td>Multiplicador crítico: sem ajuste</td><td>1,9971</td><td>Referência.</td></tr><tr><td>Multiplicador crítico: Šidák</td><td>3,0393</td><td>—</td></tr><tr><td>Multiplicador crítico: Bonferroni</td><td>3,0476</td><td>0,008 acima do de Šidák.</td></tr><tr><td>Multiplicador crítico: Tukey</td><td>2,9364</td><td>O menor dos ajustes para comparações pareadas.</td></tr><tr><td>Largura do IC de sunflower − horsebean</td><td>142,76 g (Šidák) contra 143,15 g (Bonferroni)</td><td>Diferença de 0,4 g em 143.</td></tr></tbody></table></div><p><strong>Leitura:</strong> os dois ajustes levam exatamente às mesmas conclusões, e os intervalos de confiança diferem em menos de meio grama numa diferença de 169 g. A simulação A confirma o que a teoria prevê: com testes de fato independentes, Šidák atinge 4,83% e Bonferroni 4,73%, ambos próximos do alvo, com Šidák ligeiramente mais próximo. A simulação B mostra o caso real das comparações pareadas, em que a independência não vale: os dois caem para cerca de 4%, e a distinção entre eles se torna irrelevante.</p><p>A conclusão prática é direta: Šidák é teoricamente mais correto que Bonferroni quando os testes são independentes, e a diferença é pequena demais para mudar decisões. A escolha entre os dois raramente importa; o que importa é escolher o <em>tipo</em> certo de ajuste — e, para comparações pareadas entre médias, isso significa Tukey.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar Šidák esperando um ganho relevante</td><td>O ganho máximo é de 2,6%.</td></tr><tr><td>Supor independência sem justificativa</td><td>Comparações pareadas de uma ANOVA não são independentes.</td></tr><tr><td>Procurar <code>"sidak"</code> em <code>p.adjust()</code></td><td>Não está entre os métodos; calcule com <code>1 - (1 - p)^m</code>.</td></tr><tr><td>Aplicar sob dependência negativa</td><td>Nesse caso o controle da taxa de erro não é garantido; use Bonferroni ou Holm.</td></tr><tr><td>Usar a versão de passo único quando a sequencial serve</td><td>Holm–Šidák domina Šidák.</td></tr><tr><td>Confundir o p ajustado com uma probabilidade do teste individual</td><td>É um instrumento de decisão sobre a família.</td></tr><tr><td>Preferir Šidák a Tukey em comparações pareadas</td><td>Tukey aproveita a dependência correta e é mais poderoso.</td></tr><tr><td>Ajustar duas vezes</td><td>Aplicar Šidák a valores-p já ajustados.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="bonferroni.html">Bonferroni</a></td><td>Dependência desconhecida ou negativa; quando a simplicidade importa.</td></tr><tr><td>Holm</td><td>Sempre que o objetivo seja apenas decidir; domina Bonferroni.</td></tr><tr><td>Holm–Šidák</td><td>Testes independentes, com a versão sequencial.</td></tr><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Todas as comparações pareadas entre médias.</td></tr><tr><td><a href="games-howell.html">Games–Howell</a></td><td>Comparações pareadas com variâncias desiguais.</td></tr><tr><td>Dunnett</td><td>Tratamentos contra um controle.</td></tr><tr><td>Benjamini–Hochberg</td><td>Muitos testes exploratórios; controle da FDR.</td></tr><tr><td>Westfall–Young (reamostragem)</td><td>Dependência complexa; usa a estrutura real dos dados.</td></tr></tbody></table></div><ol class="steps"><li>Defina a família antes de ver os dados.</li><li>Pergunte se os testes são plausivelmente independentes.</li><li>Se forem comparações pareadas entre médias, use Tukey e pare por aqui.</li><li>Se não, escolha entre Holm (seguro) e Holm–Šidák (sob independência).</li><li>Reporte família, m, método e valores-p ajustados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>ŠIDÁK, Zbyněk. Rectangular confidence regions for the means of multivariate normal distributions. <em>Journal of the American Statistical Association</em>, v. 62, n. 318, p. 626-633, 1967.</li><li>HOLM, Sture. A simple sequentially rejective multiple test procedure. <em>Scandinavian Journal of Statistics</em>, v. 6, n. 2, p. 65-70, 1979.</li><li>ABDI, Hervé. The Bonferroni and Šidák corrections for multiple comparisons. In: SALKIND, Neil J. (ed.). <em>Encyclopedia of measurement and statistics.</em> Thousand Oaks: Sage, 2007. p. 103-107.</li><li>SEAMAN, Michael A.; LEVIN, Joel R.; SERLIN, Ronald C. New developments in pairwise multiple comparisons: some powerful and practicable procedures. <em>Psychological Bulletin</em>, v. 110, n. 3, p. 577-586, 1991.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>MILLER JR., Rupert G. <em>Simultaneous statistical inference.</em> 2. ed. New York: Springer, 1981.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>p.adjust</code> e <code>pairwise.t.test</code>, pacote <code>stats</code>.)</li><li>LENTH, Russell V. <em>emmeans: estimated marginal means, aka least-squares means.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=emmeans" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=emmeans</a>. (Argumento <code>adjust = "sidak"</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Cada teste individual deve ser válido, a família deve estar definida antes da análise e os testes devem ser independentes ou positivamente dependentes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>emmeans, mutoss</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="regwf.html"><span>← ANTERIOR</span>Ryan–Einot–Gabriel–Welsch (REGW)</a><a href="duncan.html"><span>PRÓXIMO →</span>Duncan</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

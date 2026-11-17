@@ -4,325 +4,330 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Ryan–Einot–Gabriel–Welsch (REGW): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Ryan–Einot–Gabriel–Welsch (REGW) | Estatística e Ciência de Dados
-  </title>
+<meta content="Ryan–Einot–Gabriel–Welsch (REGW): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Ryan–Einot–Gabriel–Welsch (REGW) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Ryan–Einot–Gabriel–Welsch (REGW)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Ryan–Einot–Gabriel–Welsch (REGW)
-    </h1>
-<p class="detail-lead">
-     Identifica diferenças entre médias de vários grupos por comparações múltiplas ordenadas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/regwf.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Identifica diferenças entre médias de vários grupos por comparações múltiplas ordenadas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Grupos independentes, normalidade aproximada dos erros e variância residual comum.</li><li>Interpretação depende da implementação REGW (F ou Q).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_i=\mu_j\\H_1&amp;:\ \mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[q_{ij}=\frac{|\bar Y_i-\bar Y_j|}{\widehat{\operatorname{EP}}_{ij}}\quad\text{(críticos sequenciais REGW)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Sequência de estatísticas baseadas em amplitudes ou F com níveis críticos dependentes do tamanho dos subconjuntos.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Rejeição/agrupamento a 5% indica diferenças detectadas pelo procedimento; grupos com mesma letra não têm diferença detectada.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparação de tensões de fiação por número médio de quebras (warpbreaks).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-regwf" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-regwf"><code># Ryan–Einot–Gabriel–Welsch (REGW) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Ryan–Einot–Gabriel–Welsch (REGW)</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Ryan–Einot–Gabriel–Welsch (REGW)</h1><p class="detail-lead">Procedimento descendente de comparações múltiplas que ganha poder sobre o Tukey sem abrir mão do controle da taxa de erro do conjunto.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/regwf.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/regwf.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o procedimento</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O procedimento de <a href="tukey.html">Tukey</a> usa o mesmo valor crítico para todas as comparações: o que protege a maior delas. Isso é seguro, mas desperdiça poder nas comparações entre médias vizinhas, que não precisam de uma régua tão longa. Os procedimentos <em>descendentes</em> tentam recuperar esse poder testando primeiro os blocos grandes e só depois os pequenos — e o REGW é o único da família que faz isso sem perder o controle da taxa de erro do conjunto.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: REGW" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Procedimento descendente</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">de amplitudes múltiplas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Testa blocos de p médias,</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">do maior para o menor</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A chave</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Nível reduzido nas etapas</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">pequenas: 1 − 0,95^(p/k)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Resultado</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Controla a taxa de erro</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">e supera o Tukey em poder</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">agricolae::REGW.test()</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">PMCMRplus::regwqTest()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Duas versões</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">REGWQ (amplitude)</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">REGWF (estatística F)</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">REGW</text></svg><figcaption>Visão geral do procedimento de Ryan–Einot–Gabriel–Welsch. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que ele corrige</strong><p>O teste de Newman–Keuls, proposto nos anos 1950, já testava blocos do maior para o menor, mas usava 0,05 em todas as etapas — e com isso perde o controle da taxa de erro quando há mais de três grupos. Ryan (1960), Einot e Gabriel (1975) e Welsch (1977) mostraram qual nível usar em cada etapa para que a proteção se mantenha. O resultado é o procedimento descendente correto.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o procedimento</h2><p>As \(k\) médias são ordenadas. Testa-se primeiro se o bloco inteiro é homogêneo; se for, o procedimento para e nenhuma média difere de nenhuma outra. Se não for, passa-se aos dois blocos de \(k-1\) médias consecutivas, e assim por diante, até os pares. A regra decisiva é a <strong>regra de parada</strong>: um subconjunto só é testado se nenhum bloco que o contém já tiver sido declarado homogêneo.</p><figure class="fig"><img src="../assets/resultados/regwf-didatica.png" alt="Níveis de significância e valores críticos por etapa" loading="lazy"/><figcaption><strong>O que distingue os três procedimentos.</strong> À esquerda, o nível adotado em cada etapa. O REGW <em>reduz</em> o nível nas etapas de poucas médias, justamente para poder usar 0,05 nas etapas grandes sem estourar a taxa de erro do conjunto; o <a href="duncan.html">Duncan</a> faz o contrário, afrouxando conforme o bloco cresce. À direita, o valor crítico correspondente: na comparação de um par vizinho, o REGW exige q = 3,47 contra os 4,15 do Tukey, e é aí que ele ganha poder. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que 1 − 0,95^(p/k)</strong><p>Se um bloco de \(p\) médias é de fato homogêneo, há no máximo \(k/p\) blocos disjuntos desse tamanho que poderiam ser testados. Ryan percebeu que distribuir o erro entre eles — isto é, usar um nível individual tal que \((1-\alpha_p)^{k/p}=1-\alpha\) — basta para proteger o conjunto. Einot e Gabriel mostraram que para \(p=k\) e \(p=k-1\) pode-se usar o próprio \(\alpha\) sem prejuízo, e Welsch provou a validade do procedimento resultante.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>O mesmo da ANOVA.</td><td>Delineamento.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a amplitude estudentizada.</td><td><code>shapiro.test(residuals(modelo))</code>.</td></tr><tr><td>Variâncias homogêneas</td><td>O procedimento usa um único QM do resíduo.</td><td>Levene e Brown-Forsythe; se falhar, <a href="games-howell.html">Games–Howell</a>.</td></tr><tr><td>Grupos balanceados (preferível)</td><td>Com n desiguais o procedimento usa o erro-padrão de cada par, e o controle fica aproximado.</td><td><code>table(grupo)</code>.</td></tr><tr><td>Comparações pareadas entre médias</td><td>É para isso que ele serve.</td><td>Para contrastes gerais, <a href="bonferroni.html">Bonferroni</a> ou Scheffé.</td></tr><tr><td>Interesse em decidir quais pares diferem</td><td>O procedimento <strong>não</strong> fornece intervalos de confiança.</td><td>Se precisar de intervalos, use Tukey.</td></tr></tbody></table></div><div class="callout "><strong>A limitação prática mais importante</strong><p>Como todo procedimento descendente, o REGW devolve apenas decisões — não há intervalo de confiança simultâneo associado. Isso é consequência da própria estrutura: o valor crítico de um par depende de quais blocos foram testados antes. Quando o relatório precisa de estimativas com margem de erro, e não apenas de letras, o <a href="tukey.html">Tukey</a> é a escolha.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>A cada etapa testa-se a homogeneidade de um subconjunto, mantendo a taxa de erro do conjunto sob controle:</p><div class="hypothesis-block">\[H_0^{(S)}:\ \mu_i=\mu_j\]\[\text{para todo par }i,j\in S\]\[\begin{aligned}\text{com }\text{FWER} &\leq \alpha\text{ sobre todos os } \\ &\quad \text{subconjuntos}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\alpha_p=\begin{cases}\alpha, & p\geq k-1\\[4pt] 1-(1-\alpha)^{p/k}, & 2\leq p\leq k-2\end{cases}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{REGWQ}:\]\[\begin{aligned}q_S&=\frac{\bar{y}_{(1)}-\bar{y}_{(p)}}{\sqrt{\dfrac{QM_{\text{res}}}{2}\left(\dfrac{1}{n_{(1)}}+\dfrac{1}{n_{(p)}}\right)}}\\ &&gt;q_{\alpha_p;\,p,\,\nu}\end{aligned}\]\[\text{REGWF}:\]\[\begin{aligned}F_S&=\frac{\displaystyle\sum_{i\in S}n_i\left(\bar{y}_i-\bar{y}_S\right)^2/(p-1)}{QM_{\text{res}}}\\ &&gt;F_{\alpha_p;\,p-1,\,\nu}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(S\)</dt><dd>subconjunto de p médias consecutivas na ordenação</dd></div><div><dt>\(p\)</dt><dd>número de médias no subconjunto</dd></div><div><dt>\(k\)</dt><dd>número total de grupos</dd></div><div><dt>\(\alpha_p\)</dt><dd>nível de significância da etapa</dd></div><div><dt>\(\bar{y}_{(1)},\ \bar{y}_{(p)}\)</dt><dd>maior e menor médias do subconjunto</dd></div><div><dt>\(\bar{y}_S\)</dt><dd>média ponderada do subconjunto</dd></div><div><dt>\(\nu\)</dt><dd>graus de liberdade do resíduo</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Com os dados das seis rações (QM do resíduo = 3 008,554 e 65 graus de liberdade), os níveis e os valores críticos de cada etapa:</p><div class="table-wrap"><table class="method-table"><caption>Níveis e valores críticos por etapa</caption><thead><tr><th>p</th><th>α_p do REGW</th><th>q crítico</th><th>F crítico</th><th>q de Tukey (referência)</th></tr></thead><tbody><tr><td>2</td><td>0,016952</td><td>3,4660</td><td>6,0065</td><td>4,1527</td></tr><tr><td>3</td><td>0,025321</td><td>3,7816</td><td>3,8921</td><td>4,1527</td></tr><tr><td>4</td><td>0,033617</td><td>3,9526</td><td>3,0767</td><td>4,1527</td></tr><tr><td>5</td><td>0,050000</td><td>3,9680</td><td>2,5130</td><td>4,1527</td></tr><tr><td>6</td><td>0,050000</td><td>4,1527</td><td>2,3560</td><td>4,1527</td></tr></tbody></table></div><div class="worked"><strong>O caminho que o procedimento percorre</strong><p>A ordem das médias é sunflower (328,92) > casein (323,58) > meatmeal (276,91) > soybean (246,43) > linseed (218,75) > horsebean (160,20).</p><ul class="checklist"><li><strong>p = 6</strong>: o bloco inteiro dá q = 10,159 contra 4,1527. Heterogêneo; continua.</li><li><strong>p = 5</strong>: os dois blocos dão q = 6,958 e 9,838 contra 3,9680. Ambos heterogêneos.</li><li><strong>p = 4</strong>: os três blocos dão q = 5,406, 6,621 e 6,887 contra 3,9526. Todos heterogêneos.</li><li><strong>p = 3</strong>: sunflower–casein–meatmeal dá q = 3,212 contra 3,7816: <strong>homogêneo</strong>, e o procedimento para nesse ramo. O bloco casein–meatmeal–soybean dá 5,057: heterogêneo. O bloco meatmeal–soybean–linseed dá 3,592: <strong>homogêneo</strong>. O bloco soybean–linseed–horsebean dá 5,370: heterogêneo.</li><li><strong>p = 2</strong>: quatro dos cinco pares vizinhos já estão dentro de blocos homogêneos e não são testados. Resta linseed–horsebean, com q = 3,526 contra 3,4660: heterogêneo.</li></ul><p>Resultado: nove dos quinze pares diferem. O par linseed–horsebean, que o Tukey não separa (p = 0,1413), é separado aqui, porque na etapa p = 2 a exigência é 3,4660 e não 4,1527.</p></div><h3>REGWQ e REGWF</h3><p>As duas variantes diferem apenas na estatística usada para julgar o subconjunto: a amplitude entre as médias extremas (REGWQ) ou a estatística F calculada sobre todas as médias do bloco (REGWF). A primeira é mais sensível a um bloco em que as extremas se afastam; a segunda, a um bloco em que a dispersão está distribuída. <strong>Nos dados deste exemplo as duas chegam exatamente ao mesmo resultado</strong>, o que é o caso típico.</p><h3>Propriedades</h3><ul class="checklist"><li>Controla a taxa de erro do conjunto no sentido forte, ao contrário de Newman–Keuls e <a href="duncan.html">Duncan</a>.</li><li>É mais poderoso que o <a href="tukey.html">Tukey</a>: nunca declara menos pares diferentes, e às vezes declara mais.</li><li>Não fornece intervalos de confiança simultâneos.</li><li>As letras resultantes podem, em casos raros, ser não transitivas — A não difere de B, B não difere de C, mas A difere de C é possível em Tukey e não aqui, porque a regra de parada o impede.</li><li>Com k = 2 reduz-se ao teste t comum; com k = 3, α_p = α em todas as etapas e ele coincide com Newman–Keuls.</li><li>A versão para variâncias desiguais não é padrão; nesse caso, <a href="games-howell.html">Games–Howell</a>.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Sequência de etapas</td><td>O caminho percorrido pelo procedimento.</td><td>A regra de parada é o que o torna válido.</td></tr><tr><td>Blocos homogêneos</td><td>Conjuntos de médias que não se separam.</td><td>São eles que geram as letras.</td></tr><tr><td>Letras</td><td>Resumo final.</td><td>Compartilhar letra é ausência de evidência de diferença.</td></tr><tr><td>Ausência de intervalos</td><td>Consequência da estrutura descendente.</td><td>Apresente as médias com IC individuais ao lado.</td></tr><tr><td>Comparação com Tukey</td><td>Quantos pares a mais foram separados.</td><td>Costuma ser um ou dois.</td></tr></tbody></table></div><p>Reporte: o procedimento usado (REGWQ ou REGWF), o quadro de letras, as médias com erros-padrão e, quando a diferença em relação ao Tukey for relevante, os dois resultados.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não há função no R base. <code>agricolae::REGW.test()</code> é a rota mais direta e devolve o quadro de letras pronto; o mesmo pacote traz <code>HSD.test</code>, <code>duncan.test</code>, <code>LSD.test</code> e <code>SNK.test</code>, o que permite comparar os procedimentos com a mesma sintaxe. <code>PMCMRplus::regwqTest()</code> implementa a versão com amplitude estudentizada. <code>qtukey()</code> e <code>qf()</code>, do pacote <code>stats</code>, dão os valores críticos de cada etapa, caso se queira reproduzir o procedimento manualmente.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-regwf-min" type="button">Copiar código</button></div><pre id="code-regwf-min"><code>modelo &lt;- aov(weight ~ feed, data = chickwts)
+agricolae::REGW.test(modelo, "feed", console = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>chickwts</code> registra o peso, aos seis dias, de 71 pintinhos alimentados com seis rações diferentes. Os grupos têm tamanhos ligeiramente desiguais (de 10 a 14 aves), os resíduos passam no teste de normalidade (p = 0,627) e as variâncias são homogêneas (Brown–Forsythe p = 0,590). A ANOVA devolve F(5; 65) = 15,365 com p = 5,9 × 10⁻¹⁰: há diferença, e a pergunta passa a ser <em>onde</em>. Com seis rações são quinze comparações — e é esse número que cria o problema de multiplicidade. As fichas de <a href="bonferroni.html">Bonferroni</a>, <a href="sidak.html">Šidák</a>, <a href="tukey.html">Tukey</a> e <a href="games-howell.html">Games–Howell</a> usam este mesmo conjunto, para que os resultados possam ser comparados diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-regwf" type="button">Copiar código</button></div><pre id="code-regwf"><code># Procedimento de Ryan-Einot-Gabriel-Welsch: exemplo completo ----
+# Pacotes: agricolae (REGW.test), PMCMRplus, mutoss. Base: stats
+# install.packages(c("agricolae", "PMCMRplus", "mutoss"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("agricolae", quietly = TRUE)) install.packages("agricolae")
+# 1. Dados: chickwts, peso de pintinhos por tipo de ração
+data(chickwts)
+modelo &lt;- aov(weight ~ feed, data = chickwts)
+summary(modelo)
+k &lt;- nlevels(chickwts$feed); gl &lt;- df.residual(modelo)
+QM &lt;- sum(residuals(modelo)^2) / gl
+sort(tapply(chickwts$weight, chickwts$feed, mean), decreasing = TRUE)
+
+# 2. Os níveis de significância de cada etapa
+alfa &lt;- 0.05
+p &lt;- 2:k
+alfa_regw &lt;- ifelse(p &gt;= k - 1, alfa, 1 - (1 - alfa)^(p / k))
+data.frame(p,
+           alfa_regw,
+           q_regw   = qtukey(1 - alfa_regw, p, gl),
+           alfa_duncan = 1 - (1 - alfa)^(p - 1),
+           q_duncan = qtukey((1 - alfa)^(p - 1), p, gl),
+           q_tukey  = qtukey(1 - alfa, k, gl))
+
+# 3. O procedimento, com agricolae
 library(agricolae)
-modelo &lt;- aov(breaks ~ tension, data = warpbreaks)
-resultado &lt;- REGW.test(modelo, "tension", alpha = 0.05,
-                       group = TRUE, console = TRUE)
-print(resultado$groups)
+REGW.test(modelo, "feed", console = TRUE)
+# comparando com os demais, no mesmo pacote:
+HSD.test(modelo, "feed", console = TRUE)       # Tukey
+duncan.test(modelo, "feed", console = TRUE)    # Duncan
+LSD.test(modelo, "feed", console = TRUE)       # sem ajuste
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 4. Versão com estatística F (REGWF) e versão com amplitude (REGWQ)
+library(PMCMRplus)
+summary(regwqTest(weight ~ feed, data = chickwts))   # REGWQ
+# a variante REGWF usa a estatística F do subconjunto em vez da amplitude
 
+# 5. Reproduzindo o passo descendente à mão, para entender o mecanismo
+medias &lt;- sort(tapply(chickwts$weight, chickwts$feed, mean), decreasing = TRUE)
+ns &lt;- table(chickwts$feed)[names(medias)]
+for (pp in k:2) {
+  for (a in 1:(k - pp + 1)) {
+    bloco &lt;- names(medias)[a:(a + pp - 1)]
+    i &lt;- bloco[1]; j &lt;- bloco[pp]
+    ep &lt;- sqrt(QM / 2 * (1/ns[i] + 1/ns[j]))
+    q  &lt;- abs(medias[i] - medias[j]) / ep
+    ac &lt;- if (pp &gt;= k - 1) alfa else 1 - (1 - alfa)^(pp / k)
+    cat(sprintf("p=%d  %-42s q=%6.3f  critico=%6.3f  %s\n",
+                pp, paste(bloco, collapse = " &gt; "), q, qtukey(1 - ac, pp, gl),
+                ifelse(q &gt; qtukey(1 - ac, pp, gl), "heterogeneo", "HOMOGENEO")))
+  }
+}
+# Atenção: a regra de parada (não testar subconjuntos contidos em um bloco já
+# declarado homogêneo) é essencial e NÃO está neste laço simplificado.
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       O procedimento REGW é sequencial e não deve ser confundido com Tukey HSD; a implementação deve corresponder exatamente ao procedimento informado.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="games-howell.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Games–Howell
-    </a>
-<a href="sidak.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Ajuste de Šidák
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 6. Gráfico
+par(mar = c(5, 8, 4, 2))
+bp &lt;- barplot(medias, horiz = TRUE, las = 1, col = "gray85", xlim = c(0, 420),
+              xlab = "Peso aos 6 dias (g)")
+eps &lt;- sqrt(QM / ns)
+arrows(medias - 1.96 * eps, bp, medias + 1.96 * eps, bp, angle = 90, code = 3, length = 0.05)
+par(mar = c(5, 4, 4, 2))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-regwf" type="button">Copiar código</button></div><pre id="code-py-regwf"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: chickwts (R). Peso (g) de 71 pintinhos aos 6 dias, segundo seis rações.
+# É o mesmo conjunto das fichas de Bonferroni, Šidák, Tukey e Duncan.
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes = list(dados)
+gs = [np.array(v, float) for v in dados.values()]
+k = len(gs); ns = np.array([len(g) for g in gs], float); N = int(ns.sum())
+medias = np.array([g.mean() for g in gs]); vars_ = np.array([g.var(ddof=1) for g in gs])
+QM = np.sum((ns - 1) * vars_) / (N - k); gl = N - k
+alfa = 0.05
+ordem = np.argsort(-medias)                      # do maior para o menor
+
+print("ração        n    média     DP")
+for i in ordem:
+    print(f"{nomes[i]:&lt;12}{int(ns[i]):2d}  {medias[i]:7.3f}  {np.sqrt(vars_[i]):6.2f}")
+print(f"\nANOVA: F({k-1}; {gl}) = {stats.f_oneway(*gs)[0]:.4f}, p = {stats.f_oneway(*gs)[1]:.3e}")
+print(f"QM do resíduo = {QM:.4f} | gl = {gl}")
+
+# 1. O nível de significância que o REGW usa em cada etapa
+def alfa_regw(p, k, alfa=0.05):
+    return alfa if p &gt;= k - 1 else 1 - (1 - alfa)**(p / k)
+print("\nNíveis de significância por etapa (p = número de médias no subconjunto)")
+print(" p   alfa_p (REGW)   q crítico   F crítico   q de Tukey (referência)")
+for p in range(2, k + 1):
+    ap = alfa_regw(p, k)
+    print(f" {p}    {ap:.6f}     {stats.studentized_range.ppf(1-ap, p, gl):8.4f}    "
+          f"{stats.f.ppf(1-ap, p-1, gl):8.4f}   {stats.studentized_range.ppf(1-alfa, k, gl):10.4f}")
+print("Para p = k e p = k-1 o nível é o próprio alfa; abaixo disso ele é reduzido,")
+print("de modo que a taxa de erro do conjunto permanece controlada.")
+
+# 2. O procedimento descendente
+def passo_descendente(estatistica):
+    """Testa subconjuntos de médias consecutivas, do maior para o menor.
+    Um subconjunto só é testado se nenhum subconjunto que o contém foi declarado homogêneo."""
+    difere = np.zeros((k, k), bool)
+    homogeneos = []
+    passos = []
+    for p in range(k, 1, -1):
+        for a in range(0, k - p + 1):
+            bloco = ordem[a:a + p]
+            cj = frozenset(bloco)
+            if any(cj &lt;= h for h in homogeneos):
+                passos.append((p, [nomes[i] for i in bloco], None, None, "não testado"))
+                continue
+            est, crit = estatistica(bloco, p)
+            if est &gt; crit:
+                difere[bloco[0], bloco[-1]] = difere[bloco[-1], bloco[0]] = True
+                passos.append((p, [nomes[i] for i in bloco], est, crit, "heterogêneo"))
+            else:
+                homogeneos.append(cj)
+                passos.append((p, [nomes[i] for i in bloco], est, crit, "HOMOGÊNEO: para aqui"))
+    return difere, homogeneos, passos
+
+def est_q(bloco, p):
+    i, j = bloco[0], bloco[-1]
+    ep = np.sqrt(QM / 2 * (1/ns[i] + 1/ns[j]))
+    return abs(medias[i] - medias[j]) / ep, stats.studentized_range.ppf(1 - alfa_regw(p, k), p, gl)
+
+def est_F(bloco, p):
+    mb = np.sum(ns[bloco] * medias[bloco]) / np.sum(ns[bloco])
+    SQ = np.sum(ns[bloco] * (medias[bloco] - mb)**2)
+    return (SQ / (p - 1)) / QM, stats.f.ppf(1 - alfa_regw(p, k), p - 1, gl)
+
+for titulo, est in [("REGWQ (amplitude estudentizada)", est_q), ("REGWF (estatística F)", est_F)]:
+    print(f"\n{titulo}")
+    dif, hom, passos = passo_descendente(est)
+    print(f"{'p':&gt;2}  {'subconjunto (do maior ao menor)':&lt;52}{'est.':&gt;8}{'crítico':&gt;9}  situação")
+    for p, bl, e, c, sit in passos:
+        bls = " &gt; ".join(bl)
+        if e is None:
+            print(f"{p:&gt;2}  {bls:&lt;52}{'':&gt;8}{'':&gt;9}  {sit}")
+        else:
+            print(f"{p:&gt;2}  {bls:&lt;52}{e:8.4f}{c:9.4f}  {sit}")
+    # conjuntos homogêneos maximais -&gt; pares que NÃO diferem
+    naodifere = np.zeros((k, k), bool)
+    for h in hom:
+        for x, y in itertools.combinations(h, 2):
+            naodifere[x, y] = naodifere[y, x] = True
+    pares = [(nomes[a], nomes[b]) for a, b in itertools.combinations(range(k), 2) if not naodifere[a, b]]
+    print(f"Pares que diferem: {len(pares)}")
+    print("  " + "; ".join(f"{b} - {a}" for a, b in pares))
+
+# 3. Comparação com os demais procedimentos
+print("\nComparação dos procedimentos (número de pares declarados diferentes, de 15)")
+tuk = [(a, b) for a, b in itertools.combinations(range(k), 2)
+       if stats.studentized_range.sf(abs(medias[b]-medias[a])/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl) &lt; alfa]
+lsd = [(a, b) for a, b in itertools.combinations(range(k), 2)
+       if 2*stats.t.sf(abs(medias[b]-medias[a])/np.sqrt(QM*(1/ns[a]+1/ns[b])), gl) &lt; alfa]
+dif_q, hom_q, _ = passo_descendente(est_q)
+dif_f, hom_f, _ = passo_descendente(est_F)
+def conta(hom):
+    nd = np.zeros((k, k), bool)
+    for h in hom:
+        for x, y in itertools.combinations(h, 2): nd[x, y] = nd[y, x] = True
+    return sum(1 for a, b in itertools.combinations(range(k), 2) if not nd[a, b])
+print(f"  LSD (sem ajuste): {len(lsd)}")
+print(f"  Duncan:           12   (ver a ficha do teste de Duncan)")
+print(f"  REGWQ:            {conta(hom_q)}")
+print(f"  REGWF:            {conta(hom_f)}")
+print(f"  Tukey:            {len(tuk)}")
+print("  Bonferroni:       8")
+
+# 4. O que o REGW encontra e o Tukey não
+nd = np.zeros((k, k), bool)
+for h in hom_q:
+    for x, y in itertools.combinations(h, 2): nd[x, y] = nd[y, x] = True
+extra = [(a, b) for a, b in itertools.combinations(range(k), 2)
+         if not nd[a, b] and (a, b) not in tuk]
+print("\nPares em que REGWQ difere do Tukey:")
+for a, b in extra:
+    pt = stats.studentized_range.sf(abs(medias[b]-medias[a])/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl)
+    print(f"  {nomes[b]} - {nomes[a]}: diferença = {medias[b]-medias[a]:+.2f} g | "
+          f"p de Tukey = {pt:.4f} | declarado significativo pelo REGWQ")
+
+# 5. Simulação da taxa de erro do conjunto
+print("\nSimulação: 10.000 experimentos com 6 grupos de médias IGUAIS (n = 12 cada)")
+rng = np.random.default_rng(99)
+M = 10000
+glr = 6 * 11
+q_tuk = stats.studentized_range.ppf(1 - alfa, 6, glr)
+t_lsd = stats.t.ppf(1 - alfa/2, glr)
+q_reg = {p: stats.studentized_range.ppf(1 - alfa_regw(p, 6), p, glr) for p in range(2, 7)}
+q_dun = {p: stats.studentized_range.ppf(0.95**(p-1), p, glr) for p in range(2, 7)}
+cont = dict(lsd=0, duncan=0, regwq=0, tukey=0)
+G = rng.normal(0, 1, (M, 6, 12))
+MM = G.mean(axis=2); VV = G.var(axis=2, ddof=1).mean(axis=1)
+EP = np.sqrt(VV / 12)
+for e in range(M):
+    mm = MM[e]; ep = EP[e]
+    ordm = np.argsort(-mm)
+    dif = np.abs(mm[:, None] - mm[None, :]) / ep
+    iu = np.triu_indices(6, 1)
+    if (dif[iu] / np.sqrt(2) &gt; t_lsd).any(): cont['lsd'] += 1
+    if (dif[iu] &gt; q_tuk).any(): cont['tukey'] += 1
+    for chave, qc in (('regwq', q_reg), ('duncan', q_dun)):
+        achou = False; hom = []
+        for p in range(6, 1, -1):
+            for a in range(0, 7 - p):
+                bl = ordm[a:a+p]; cj = frozenset(bl)
+                if any(cj &lt;= h for h in hom): continue
+                if dif[bl[0], bl[-1]] &gt; qc[p]: achou = True
+                else: hom.append(cj)
+        if achou: cont[chave] += 1
+for nome, c in [("LSD (sem ajuste)", cont['lsd']), ("Duncan", cont['duncan']),
+                ("REGWQ", cont['regwq']), ("Tukey", cont['tukey'])]:
+    print(f"  {nome:&lt;18}{100*c/M:5.2f}% dos experimentos com ao menos um falso positivo")
+print("  (o alvo é 5%; Duncan fica claramente acima, REGWQ e Tukey ficam no alvo)")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ração        n    média     DP
+sunflower   12  328.917   48.84
+casein      12  323.583   64.43
+meatmeal    11  276.909   64.90
+soybean     14  246.429   54.13
+linseed     12  218.750   52.24
+horsebean   10  160.200   38.63
+
+ANOVA: F(5; 65) = 15.3648, p = 5.936e-10
+QM do resíduo = 3008.5542 | gl = 65
+
+Níveis de significância por etapa (p = número de médias no subconjunto)
+ p   alfa_p (REGW)   q crítico   F crítico   q de Tukey (referência)
+ 2    0.016952       3.4660      6.0065       4.1527
+ 3    0.025321       3.7816      3.8921       4.1527
+ 4    0.033617       3.9526      3.0767       4.1527
+ 5    0.050000       3.9680      2.5130       4.1527
+ 6    0.050000       4.1527      2.3560       4.1527
+Para p = k e p = k-1 o nível é o próprio alfa; abaixo disso ele é reduzido,
+de modo que a taxa de erro do conjunto permanece controlada.
+
+REGWQ (amplitude estudentizada)
+ p  subconjunto (do maior ao menor)                         est.  crítico  situação
+ 6  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean 10.1595   4.1527  heterogêneo
+ 5  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed     6.9576   3.9680  heterogêneo
+ 5  casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean     9.8384   3.9680  heterogêneo
+ 4  sunflower &gt; casein &gt; meatmeal &gt; soybean               5.4062   3.9526  heterogêneo
+ 4  casein &gt; meatmeal &gt; soybean &gt; linseed                 6.6208   3.9526  heterogêneo
+ 4  meatmeal &gt; soybean &gt; linseed &gt; horsebean              6.8870   3.9526  heterogêneo
+ 3  sunflower &gt; casein &gt; meatmeal                         3.2124   3.7816  HOMOGÊNEO: para aqui
+ 3  casein &gt; meatmeal &gt; soybean                           5.0567   3.7816  heterogêneo
+ 3  meatmeal &gt; soybean &gt; linseed                          3.5923   3.7816  HOMOGÊNEO: para aqui
+ 3  soybean &gt; linseed &gt; horsebean                         5.3696   3.7816  heterogêneo
+ 2  sunflower &gt; casein                                                     não testado
+ 2  casein &gt; meatmeal                                                      não testado
+ 2  meatmeal &gt; soybean                                                     não testado
+ 2  soybean &gt; linseed                                                      não testado
+ 2  linseed &gt; horsebean                                   3.5257   3.4660  heterogêneo
+Pares que diferem: 9
+  linseed - horsebean; soybean - horsebean; sunflower - horsebean; meatmeal - horsebean; casein - horsebean; sunflower - linseed; casein - linseed; sunflower - soybean; casein - soybean
+
+REGWF (estatística F)
+ p  subconjunto (do maior ao menor)                         est.  crítico  situação
+ 6  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean 15.3648   2.3560  heterogêneo
+ 5  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed     9.3182   2.5130  heterogêneo
+ 5  casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean    13.7213   2.5130  heterogêneo
+ 4  sunflower &gt; casein &gt; meatmeal &gt; soybean               6.6363   3.0767  heterogêneo
+ 4  casein &gt; meatmeal &gt; soybean &gt; linseed                 8.1140   3.0767  heterogêneo
+ 4  meatmeal &gt; soybean &gt; linseed &gt; horsebean              8.6489   3.0767  heterogêneo
+ 3  sunflower &gt; casein &gt; meatmeal                         3.0802   3.8921  HOMOGÊNEO: para aqui
+ 3  casein &gt; meatmeal &gt; soybean                           6.4263   3.8921  heterogêneo
+ 3  meatmeal &gt; soybean &gt; linseed                          3.2262   3.8921  HOMOGÊNEO: para aqui
+ 3  soybean &gt; linseed &gt; horsebean                         7.2988   3.8921  heterogêneo
+ 2  sunflower &gt; casein                                                     não testado
+ 2  casein &gt; meatmeal                                                      não testado
+ 2  meatmeal &gt; soybean                                                     não testado
+ 2  soybean &gt; linseed                                                      não testado
+ 2  linseed &gt; horsebean                                   6.2152   6.0065  heterogêneo
+Pares que diferem: 9
+  linseed - horsebean; soybean - horsebean; sunflower - horsebean; meatmeal - horsebean; casein - horsebean; sunflower - linseed; casein - linseed; sunflower - soybean; casein - soybean
+
+Comparação dos procedimentos (número de pares declarados diferentes, de 15)
+  LSD (sem ajuste): 12
+  Duncan:           12   (ver a ficha do teste de Duncan)
+  REGWQ:            9
+  REGWF:            9
+  Tukey:            8
+  Bonferroni:       8
+
+Pares em que REGWQ difere do Tukey:
+  linseed - horsebean: diferença = +58.55 g | p de Tukey = 0.1413 | declarado significativo pelo REGWQ
+
+Simulação: 10.000 experimentos com 6 grupos de médias IGUAIS (n = 12 cada)
+  LSD (sem ajuste)  35.18% dos experimentos com ao menos um falso positivo
+  Duncan            22.47% dos experimentos com ao menos um falso positivo
+  REGWQ              4.74% dos experimentos com ao menos um falso positivo
+  Tukey              4.74% dos experimentos com ao menos um falso positivo
+  (o alvo é 5%; Duncan fica claramente acima, REGWQ e Tukey ficam no alvo)</pre></div><figure class="fig"><img src="../assets/resultados/regwf.png" alt="As seis médias e as letras dos três procedimentos" loading="lazy"/><figcaption><strong>O resultado comparado.</strong> À esquerda, as médias com intervalos de confiança individuais e as observações ao fundo. À direita, as letras produzidas por Duncan, REGW e Tukey sobre exatamente os mesmos dados: Duncan separa doze pares, o REGW nove e o Tukey oito. O REGW ocupa a posição intermediária — e é o único dos três, além do Tukey, que mantém a taxa de erro do conjunto em 5%. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Pares separados pelo REGWQ</td><td>9 de 15</td><td>—</td></tr><tr><td>Pares separados pelo REGWF</td><td>9 de 15</td><td>Resultado idêntico ao do REGWQ.</td></tr><tr><td>Pares separados pelo Tukey</td><td>8 de 15</td><td>—</td></tr><tr><td>Pares separados pelo Duncan</td><td>12 de 15</td><td>Sem controle da taxa de erro.</td></tr><tr><td>Pares separados sem ajuste (LSD)</td><td>12 de 15</td><td>—</td></tr><tr><td>O par que o REGW acrescenta</td><td>linseed − horsebean: +58,55 g</td><td>p de Tukey = 0,1413.</td></tr><tr><td>Letras do REGW</td><td>a / a / ab / b / b / c</td><td>Para sunflower, casein, meatmeal, soybean, linseed, horsebean.</td></tr><tr><td>Letras do Tukey</td><td>a / a / ab / b / bc / c</td><td>A linhaça muda de bloco.</td></tr><tr><td>Simulação: LSD</td><td>35,18% de falsos positivos</td><td>—</td></tr><tr><td>Simulação: Duncan</td><td>22,47%</td><td>—</td></tr><tr><td>Simulação: REGWQ</td><td>4,74%</td><td>Dentro do alvo.</td></tr><tr><td>Simulação: Tukey</td><td>4,74%</td><td>Idêntico.</td></tr></tbody></table></div><p><strong>Leitura:</strong> o REGW separa a linhaça do feijão-de-cavalo, o que o Tukey não faz. A diferença entre eles é de 58,55 g, com p de Tukey igual a 0,1413 — um resultado de fronteira. O REGW chega a essa conclusão porque, ao testar esse par, já havia estabelecido que ele não pertence a nenhum bloco homogêneo maior, e por isso pode usar um critério menos exigente.</p><p>Vale observar o que a simulação mostra: REGWQ e Tukey têm <em>exatamente</em> a mesma taxa de erro do conjunto nos experimentos simulados — 4,74% em 10.000 repetições. O REGW, portanto, não compra poder vendendo proteção: ele obtém poder adicional de graça, usando a informação de que certos blocos já foram descartados. Essa é a diferença essencial em relação ao <a href="duncan.html">Duncan</a>, que compra poder justamente abrindo mão da proteção.</p><p>O preço é a ausência de intervalos de confiança. Num relatório de experimentação agrícola em que a apresentação é feita por letras, o REGW é uma escolha defensável e um pouco mais sensível que o Tukey. Num relatório em que se queira dizer <em>quanto</em> uma ração supera a outra, com margem de erro, o Tukey continua sendo o instrumento adequado.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Confundir com Newman–Keuls (SNK)</td><td>O SNK usa α em todas as etapas e não controla a taxa de erro do conjunto.</td></tr><tr><td>Implementar sem a regra de parada</td><td>Sem ela, o procedimento perde a validade.</td></tr><tr><td>Procurar intervalos de confiança na saída</td><td>Procedimentos descendentes não os fornecem.</td></tr><tr><td>Usar com variâncias desiguais</td><td>Depende de um QM do resíduo comum.</td></tr><tr><td>Aplicar a contrastes que não são pares</td><td>Serve só para comparações pareadas.</td></tr><tr><td>Apresentar só as letras</td><td>Mostre também as médias e seus erros-padrão.</td></tr><tr><td>Esperar grande diferença em relação ao Tukey</td><td>O ganho costuma ser de um ou dois pares.</td></tr><tr><td>Escolher o procedimento depois de ver qual dá mais significativos</td><td>A escolha é metodológica, feita antes.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Quando forem necessários intervalos de confiança simultâneos.</td></tr><tr><td>Newman–Keuls (SNK)</td><td>Nunca, se o objetivo é controlar a taxa de erro do conjunto; é o REGW sem a correção.</td></tr><tr><td><a href="duncan.html">Duncan</a></td><td>Quando se aceita explicitamente uma taxa de erro maior; ver as ressalvas na ficha.</td></tr><tr><td><a href="bonferroni.html">Bonferroni</a> ou Holm</td><td>Famílias que não são comparações pareadas.</td></tr><tr><td>Dunnett</td><td>Todos os tratamentos contra um controle.</td></tr><tr><td><a href="games-howell.html">Games–Howell</a></td><td>Variâncias heterogêneas.</td></tr><tr><td>Scheffé</td><td>Contrastes decididos depois de ver os dados.</td></tr><tr><td>Contrastes planejados</td><td>Perguntas definidas antes do experimento.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste a ANOVA e verifique os pressupostos.</li><li>Confirme a homogeneidade de variâncias.</li><li>Decida se o relatório precisa de intervalos: se precisar, use Tukey.</li><li>Aplique o REGW e examine a sequência de etapas, não apenas as letras.</li><li>Apresente as médias com erros-padrão ao lado do quadro de letras.</li><li>Se houver diferença em relação ao Tukey, informe os dois resultados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>RYAN, Thomas A. Significance tests for multiple comparison of proportions, variances, and other statistics. <em>Psychological Bulletin</em>, v. 57, n. 4, p. 318-328, 1960.</li><li>EINOT, Israel; GABRIEL, K. Ruben. A study of the powers of several methods of multiple comparisons. <em>Journal of the American Statistical Association</em>, v. 70, n. 351, p. 574-583, 1975.</li><li>WELSCH, Roy E. Stepwise multiple comparison procedures. <em>Journal of the American Statistical Association</em>, v. 72, n. 359, p. 566-575, 1977.</li><li>NEWMAN, D. The distribution of range in samples from a normal population, expressed in terms of an independent estimate of standard deviation. <em>Biometrika</em>, v. 31, n. 1-2, p. 20-30, 1939.</li><li>KEULS, M. The use of the "studentized range" in connection with an analysis of variance. <em>Euphytica</em>, v. 1, n. 2, p. 112-122, 1952.</li><li>SEAMAN, Michael A.; LEVIN, Joel R.; SERLIN, Ronald C. New developments in pairwise multiple comparisons: some powerful and practicable procedures. <em>Psychological Bulletin</em>, v. 110, n. 3, p. 577-586, 1991.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>qtukey</code> e <code>qf</code>, pacote <code>stats</code>.)</li><li>DE MENDIBURU, Felipe. <em>agricolae: statistical procedures for agricultural research.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=agricolae" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=agricolae</a>. (Função <code>REGW.test</code>.)</li><li>POHLERT, Thorsten. <em>PMCMRplus: calculate pairwise multiple comparisons of mean rank sums extended.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=PMCMRplus" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=PMCMRplus</a>. (Função <code>regwqTest</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os mesmos da ANOVA: observações independentes, resíduos aproximadamente normais e variâncias homogêneas. Não fornece intervalos de confiança simultâneos.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>agricolae, PMCMRplus</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="games-howell.html"><span>← ANTERIOR</span>Games–Howell</a><a href="sidak.html"><span>PRÓXIMO →</span>Ajuste de Šidák</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

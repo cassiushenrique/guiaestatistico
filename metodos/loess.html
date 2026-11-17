@@ -4,308 +4,754 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão local (LOESS): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão local (LOESS) | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão local (LOESS): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão local (LOESS) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão local (LOESS)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 15 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Regressão local (LOESS)
-    </h1>
-<p class="detail-lead">
-     Estima tendências locais quando a relação entre variáveis não segue uma forma simples.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/loess.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima tendências locais quando a relação entre variáveis não segue uma forma simples.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Densidade de dados local suficiente, escolha de span, sensibilidade a outliers e extrapolação.</li><li>Não tratar valores previstos como leis físicas.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat f(x_0)=\underset{a,b}{\operatorname{argmin}}\sum_i w_i(x_0)[y_i-a-b(x_i-x_0)]^2\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(x\)
-        </dt>
-<dd>
-         preditor
-        </dd>
-</div>
-<div>
-<dt>
-         \(f(x)\)
-        </dt>
-<dd>
-         função desconhecida aproximada por bases ou ajustes locais
-        </dd>
-</div>
-<div>
-<dt>
-         \(\beta\)
-        </dt>
-<dd>
-         coeficiente estimado
-        </dd>
-</div>
-</dl>
-<p>
-       Minimização ponderada local com pesos função da distância; span define tamanho da vizinhança.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Compare curvas para diferentes span e desempenho de validação; \(\alpha=5\%\) só entra se um procedimento inferencial adicional for especificado.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Distância de frenagem versus velocidade no conjunto cars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-loess" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-loess"><code># Regressão local (LOESS) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão local (LOESS)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · RELAÇÕES NÃO LINEARES</span><h1>Regressão local (LOESS)</h1><p class="detail-lead">Faz uma regressão própria em cada ponto, usando só os vizinhos e dando mais peso aos mais próximos — o suavizador que não produz fórmula, e o melhor instrumento de diagnóstico do grupo.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/loess.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/loess.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a regressão local</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>As três fichas anteriores ajustaram uma função <strong>global</strong> aos dados — um polinômio, uma spline, uma spline penalizada. O LOESS não ajusta função nenhuma. Para cada ponto onde se quer uma predição, faz-se uma regressão <em>própria</em>, usando apenas os vizinhos e dando mais peso aos mais próximos. O resultado é uma curva, não uma equação.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: LOESS" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Uma regressão por ponto,</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">só com os vizinhos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Os pesos</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Tricubo: zero fora</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">da janela</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O span</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Fração dos pontos</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">em cada janela</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O grau</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">1 ou 2 dentro</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">da janela</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A versão robusta</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Reponderação bisquare</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">contra aberrantes</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que falta</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Fórmula, extrapolação</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">e valores-p</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">LOESS</text></svg><figcaption>Visão geral da regressão local. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O nome e a origem</strong><p>Cleveland (1979) chamou o procedimento de <em>locally weighted scatterplot smoothing</em>, abreviado <strong>lowess</strong>. A versão posterior, estendida por Cleveland e Devlin (1988) para várias preditoras e com teoria de inferência aproximada, ficou conhecida como <strong>loess</strong>. No R as duas existem: <code>lowess()</code> é a antiga, serve para desenhar e nada mais; <code>loess()</code> é a completa, com <code>predict</code>, graus de liberdade e intervalos.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a regressão local</h2><p>Para prever em \(x_0\): tomam-se os \(q=\lceil\text{span}\cdot n\rceil\) pontos mais próximos, atribuem-se pesos que decrescem com a distância, ajusta-se por mínimos quadrados ponderados uma reta (ou parábola) <em>só naqueles pontos</em>, e a predição é o valor dessa reta em \(x_0\). Repete-se em cada ponto onde se quer a curva.</p><figure class="fig"><img src="../assets/resultados/loess-didatica.png" alt="O procedimento em um ponto, o núcleo tricubo e a escolha do span" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, o que acontece em PAR = 600 μmol com span 0,35: os 91 vizinhos mais próximos entram, coloridos pelo peso tricubo, e a reta local ponderada é ajustada só neles — a estrela é a predição ali. No centro, o núcleo tricubo comparado ao gaussiano e ao uniforme. À direita, o erro de resubstituição e o validado em função do span, com os graus de liberdade correspondentes anotados. <span class="source-line">Fonte: o autor.</span></figcaption></figure><h3>O procedimento, em números, no ponto PAR = 600</h3><div class="table-wrap"><table class="method-table"><caption>span = 0,35, logo q = ⌈0,35 × 260⌉ = 91 vizinhos</caption><thead><tr><th>Vizinho</th><th>PAR</th><th>Distância a 600</th><th>Peso tricubo</th></tr></thead><tbody><tr><td>1º</td><td>604,2</td><td>4,2</td><td>1,0000</td></tr><tr><td>2º</td><td>609,0</td><td>9,0</td><td>0,9998</td></tr><tr><td>3º</td><td>588,9</td><td>11,1</td><td>0,9995</td></tr><tr><td>11º</td><td>570,6</td><td>29,4</td><td>0,9916</td></tr><tr><td>31º</td><td>666,1</td><td>66,1</td><td>0,9077</td></tr><tr><td>61º</td><td>458,0</td><td>142,0</td><td>0,3214</td></tr><tr><td>82º</td><td>416,8</td><td>183,2</td><td>0,0339</td></tr><tr><td>90º</td><td>393,1</td><td>206,9</td><td>0,0000</td></tr><tr><td>91º</td><td>808,7</td><td>208,7</td><td><strong>0,0000</strong></td></tr></tbody></table></div><p>O 91º vizinho está a 208,7 μmol de distância: essa é a largura da janela, e o peso dele é exatamente zero, como manda o tricubo. A soma dos 91 pesos é 52,75 — isto é, em termos efetivos a reta é ajustada ao equivalente de 53 observações, não de 91.</p><p>A reta local ajustada nesses 91 pontos, com esses pesos, tem intercepto <strong>13,9515</strong> — que <em>é</em> a predição em PAR = 600 — e inclinação 0,014925 μmol por μmol de radiação. A função verdadeira ali vale 14,0038, de modo que o erro neste ponto é de 0,05 μmol.</p></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Relação suave em escala local</td><td>Uma reta deve servir dentro da janela.</td><td>Reduza o span onde a curvatura for forte.</td></tr><tr><td>Dados suficientes em toda a faixa</td><td>Janela sem pontos não tem ajuste.</td><td>Histograma de x; cuidado com caudas.</td></tr><tr><td>Variância do erro constante</td><td>Os pesos são só de distância, não de precisão.</td><td>Resíduos contra ajustados; ou use <code>weights</code>.</td></tr><tr><td>Erros independentes</td><td>A validação do span supõe isso.</td><td>Com séries temporais, valide por blocos.</td></tr><tr><td><strong>Nenhuma extrapolação</strong></td><td>Fora do domínio não existem vizinhos.</td><td>O R devolve NA por padrão; não force.</td></tr><tr><td>span escolhido e reportado</td><td>É o único parâmetro, e muda tudo.</td><td>Validação cruzada; reporte o valor.</td></tr><tr><td>span fixado antes, se houver inferência</td><td>Escolhê-lo olhando y invalida os testes.</td><td>Fixe-o, ou não reporte valores-p.</td></tr><tr><td>Observações aberrantes consideradas</td><td>A versão comum é arrastada por elas.</td><td><code>family = "symmetric"</code>.</td></tr></tbody></table></div><div class="callout warn"><strong>O que fazer quando a densidade de x é muito desigual</strong><p>O span é uma fração dos pontos, não uma largura fixa, de modo que a janela se <em>estreita</em> onde há muitos dados e se <em>alarga</em> onde há poucos. Isso é geralmente desejável: mantém o número de pontos por ajuste constante. Mas quando a densidade varia muito, a janela nas regiões vazias pode ficar larga demais e achatar estrutura real. O diagnóstico é olhar a largura efetiva da janela ao longo do domínio — nestes dados ela vai de cerca de 100 μmol no miolo a mais de 300 μmol no extremo direito.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>Para cada ponto de interesse \(x_0\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat f(x_0)=\hat\beta_0,\]\[\begin{aligned}\left(\hat\beta_0,\dots,\hat\beta_d\right) &= \arg\min_{\beta}\sum_{i\in N(x_0)}w_i(x_0)\biggl[y_i \\ &\quad -\sum_{j=0}^{d}\beta_j(x_i-x_0)^{j}\biggr]^{2}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[w_i(x_0)=W\!\left(\frac{|x_i-x_0|}{\Delta_q(x_0)}\right),\]\[\begin{aligned}W(u) &= \left(1-|u|^{3}\right)^{3}\ \text{para}\ |u| \\ &\le 1,\ 0\ \text{fora}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(N(x_0)\)</dt><dd>os \(q\) vizinhos mais próximos de \(x_0\)</dd></div><div><dt>\(\Delta_q(x_0)\)</dt><dd>a distância ao \(q\)-ésimo vizinho: a largura da janela</dd></div><div><dt>\(W\)</dt><dd>o núcleo tricubo</dd></div><div><dt>\(d\)</dt><dd>o grau local, 1 ou 2</dd></div><div><dt>\(q\)</dt><dd>\(\lceil\text{span}\cdot n\rceil\)</dd></div></dl><p>O ajuste é <strong>linear em y</strong>, como o da <a href="smoothing-spline.html">spline de suavização</a>: existe uma matriz \(L\) tal que \(\hat f=Ly\), e os graus de liberdade efetivos são \(\operatorname{tr}(L)\). É por isso que o <code>summary</code> do <code>loess</code> imprime um "número equivalente de parâmetros".</p><h3>Por que o núcleo tricubo</h3><div class="table-wrap"><table class="method-table"><caption>Três núcleos comparados</caption><thead><tr><th>u</th><th>Tricubo</th><th>Gaussiano</th><th>Uniforme</th></tr></thead><tbody><tr><td>0,00</td><td>1,0000</td><td>1,0000</td><td>1</td></tr><tr><td>0,20</td><td>0,9762</td><td>0,9802</td><td>1</td></tr><tr><td>0,40</td><td>0,8200</td><td>0,9231</td><td>1</td></tr><tr><td>0,60</td><td>0,4819</td><td>0,8353</td><td>1</td></tr><tr><td>0,80</td><td>0,1162</td><td>0,7261</td><td>1</td></tr><tr><td>0,95</td><td>0,0029</td><td>0,6368</td><td>1</td></tr><tr><td>1,00</td><td><strong>0,0000</strong></td><td>0,6065</td><td>1</td></tr><tr><td>1,20</td><td>0,0000</td><td>0,4868</td><td>0</td></tr></tbody></table></div><p>Duas propriedades decidem a escolha. O peso vai a <strong>zero exatamente em \(u=1\)</strong>, de modo que a janela é finita e pontos distantes não entram — o gaussiano nunca zera, e isso o torna caro e sensível a caudas. E a <strong>derivada</strong> do tricubo também se anula em \(u=1\), de modo que a curva não dá solavancos quando um ponto entra ou sai da janela — o uniforme zera de forma abrupta e produz degraus visíveis.</p><h3>A versão robusta</h3><p>Depois do primeiro ajuste, calculam-se os resíduos \(r_i\) e os pesos de robustez:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\delta_i=\left[1-\left(\frac{r_i}{6s}\right)^{2}\right]_+^{2},\]\[s=\operatorname{mediana}|r_i|\]</div><p>O ajuste é refeito com pesos \(w_i\delta_i\), e o ciclo se repete duas ou três vezes. Um ponto a mais de 6 desvios absolutos medianos recebe peso <strong>zero</strong> e sai do cálculo.</p><h3>Propriedades</h3><ul class="checklist"><li>Não existe função ajustada: existe um procedimento de predição.</li><li>O ajuste é linear em \(y\); os g.l. efetivos são \(\operatorname{tr}(L)\).</li><li>span pequeno = janela estreita = muitos graus de liberdade.</li><li>span > 1 é permitido: todos os pontos entram, com pesos de uma janela maior.</li><li>O grau 1 tem menos variância; o grau 2 acompanha melhor a curvatura no miolo.</li><li>A versão robusta custa quase nada quando não há aberrantes.</li><li>Não extrapola: fora do domínio não há vizinhos.</li><li>O custo cresce com \(n\): uma regressão por ponto de predição.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>O gráfico da curva</td><td>O resultado, e o que se publica.</td><td>Sempre com os pontos por trás.</td></tr><tr><td><code>$trace.hat</code></td><td>Graus de liberdade efetivos.</td><td>Comparável aos g.l. dos outros métodos.</td></tr><tr><td><code>summary(m)</code></td><td>"equivalent number of parameters".</td><td>É o mesmo tr(L).</td></tr><tr><td><code>$s</code></td><td>Desvio-padrão residual.</td><td>Otimista se o span foi escolhido olhando y.</td></tr><tr><td><code>predict(…, se = TRUE)</code></td><td>Erro-padrão aproximado.</td><td>Supõe o span fixado antes.</td></tr><tr><td><code>anova(m1, m2)</code></td><td>Teste F aproximado entre spans.</td><td>Mesma ressalva.</td></tr><tr><td>span</td><td>O parâmetro.</td><td><strong>Reporte-o sempre</strong>: sem ele o resultado não é reprodutível.</td></tr></tbody></table></div><h3>O que se reporta</h3><p>Um resultado de LOESS se reporta com três coisas: o <strong>gráfico</strong> da curva sobre os pontos, o <strong>span</strong> e o <strong>grau</strong>. Sem os dois últimos a análise não é reprodutível, e é comum vê-los omitidos. Se a curva vai embasar alguma conclusão quantitativa — um ponto de máximo, uma diferença entre dois níveis de \(x\) — essa quantidade deve vir com incerteza, obtida por <a href="bootstrap.html">bootstrap</a>.</p><div class="callout try"><strong>O LOESS como diagnóstico, não como modelo</strong><p>O uso mais comum e mais defensável do LOESS não é modelar: é <em>olhar</em>. Uma curva LOESS sobre um gráfico de resíduos contra ajustados mostra curvatura que o olho não pega; sobre um gráfico de dispersão, sugere a forma antes de qualquer ajuste; sobre resíduos contra uma preditora omitida, denuncia a omissão. Nesses usos o span não precisa ser validado com rigor — basta que a curva não esteja nem rígida demais nem perseguindo ruído — e não há inferência a proteger.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>loess(y ~ x, span = 0.35, degree = 1)</code> faz o ajuste. O <code>span</code> é a fração dos pontos em cada janela e o <code>degree</code> é 1 ou 2 (o padrão é 2). <code>family = "symmetric"</code> liga a reponderação robusta de Cleveland; o padrão, <code>"gaussian"</code>, não a usa. O objeto traz <code>$trace.hat</code> com os graus de liberdade efetivos e <code>$s</code> com o desvio residual, e <code>summary()</code> imprime o "equivalent number of parameters".</p><p>Dois detalhes importam na prática. O argumento <code>control = loess.control(surface = "direct")</code> faz a conta exata em todos os pontos, enquanto o padrão <code>"interpolate"</code> avalia o ajuste em poucos pontos e interpola — muito mais rápido, e necessário para \(n\) grande, mas pode diferir ligeiramente. E <code>predict</code> devolve <code>NA</code> fora do domínio por padrão, o que é um recurso e não um defeito: não force a extrapolação. A função <code>lowess()</code>, mais antiga, serve só para desenhar: não aceita <code>newdata</code> nem produz erro-padrão.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-loess-min" type="button">Copiar código</button></div><pre id="code-loess-min"><code>m &lt;- loess(A ~ par, data = fot, span = 0.35, degree = 1)
+summary(m)        # "equivalent number of parameters" = tr(L)
+m$trace.hat
 
-# Ajuste e resultados ----
-ajuste &lt;- loess(dist ~ speed, data = cars, span = 0.7)
-x &lt;- data.frame(speed = seq(min(cars$speed), max(cars$speed), len = 100))
-plot(dist ~ speed, data = cars)
-lines(x$speed, predict(ajuste, newdata = x), col = "red", lwd = 2)
-print(summary(ajuste))
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680")
+gx &lt;- seq(min(fot$par), max(fot$par), length = 300)
+lines(gx, predict(m, newdata = data.frame(par = gx)), lwd = 3)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 260 medições de trocas gasosas em folhas de cafeeiro. A resposta é a <strong>fotossíntese líquida</strong> \(A\) (μmol CO₂ m⁻² s⁻¹) e as três preditoras são a <strong>radiação</strong> PAR (μmol m⁻² s⁻¹, de 57 a 1.998), a <strong>temperatura foliar</strong> (°C, de 11,3 a 38,3) e o <strong>déficit de pressão de vapor</strong> VPD (kPa, de 0,30 a 2,45). O processo gerador é conhecido: \(A=\alpha+f_1(\text{PAR})+f_2(\text{temp})+f_3(\text{VPD})+\varepsilon\), com erro de desvio-padrão 1,30. A curva de luz \(f_1\) sobe depressa, satura e cai um pouco por fotoinibição acima de 1.000 μmol; \(f_2\) tem ótimo em 27 °C; \(f_3\) é um declínio convexo. Saber as funções verdadeiras permite medir o viés de cada método — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as cinco fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-loess" type="button">Copiar código</button></div><pre id="code-loess"><code># Regressão local (LOESS): exemplo completo ----
+# Pacotes: nenhum (loess e lowess sao do R base)
+# Dados fictícios: 260 medições de trocas gasosas em folhas de cafeeiro.
+# O arquivo fotossintese.csv acompanha o site, na pasta scripts/.
+fot &lt;- read.csv("fotossintese.csv")
+str(fot)            # A (umol CO2 m-2 s-1), par, temp, vpd
+summary(fot)
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680",
+     xlab = "PAR (umol m-2 s-1)", ylab = "A (umol CO2 m-2 s-1)")
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O ponto de partida: quanto o modelo LINEAR deixa na mesa
+summary(lm(A ~ par + temp + vpd, data = fot))$r.squared   # 0,6747
+# O processo gerador verdadeiro daria R² = 0,9514. É esse buraco que o
+# grupo inteiro de fichas tenta preencher.
 
+# ---- 1. O ajuste, e o que o span faz
+m &lt;- loess(A ~ par, data = fot, span = 0.35, degree = 1)
+summary(m)          # traz "equivalent number of parameters": os g.l. efetivos
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="smoothing-spline.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Smoothing splines
-    </a>
-<a href="gam.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Modelos aditivos generalizados (GAM)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680")
+gx &lt;- seq(min(fot$par), max(fot$par), length.out = 300)
+for (sp in c(0.12, 0.35, 0.90)) {
+  mm &lt;- loess(A ~ par, data = fot, span = sp, degree = 1)
+  lines(gx, predict(mm, newdata = data.frame(par = gx)), lwd = 2)
+}
+
+# ---- 2. A ESCOLHA DO SPAN por validação cruzada
+# O loess nao tem cv.glm pronto; faz-se a mao.
+set.seed(1)
+for (sp in c(0.08, 0.12, 0.18, 0.25, 0.35, 0.5, 0.7, 0.9, 1.2)) {
+  d &lt;- sample(rep(1:10, length.out = nrow(fot))); er &lt;- numeric(nrow(fot))
+  for (j in 1:10) {
+    mm &lt;- loess(A ~ par, data = fot[d != j, ], span = sp, degree = 1,
+                control = loess.control(surface = "direct"))
+    er[d == j] &lt;- fot$A[d == j] - predict(mm, newdata = fot[d == j, ]) }
+  gl &lt;- loess(A ~ par, data = fot, span = sp, degree = 1)$trace.hat
+  cat(sprintf("span %.2f: %3d vizinhos, %5.2f g.l., EQM 10-fold %.4f\n",
+              sp, ceiling(sp*nrow(fot)), gl, mean(er^2)))
+}
+
+# ---- 3. GRAU 1 contra GRAU 2
+for (sp in c(0.15, 0.25, 0.35, 0.5, 0.7)) {
+  e &lt;- sapply(1:2, function(g) {
+    d &lt;- sample(rep(1:10, length.out = nrow(fot))); er &lt;- numeric(nrow(fot))
+    for (j in 1:10) {
+      mm &lt;- loess(A ~ par, data = fot[d != j, ], span = sp, degree = g,
+                  control = loess.control(surface = "direct"))
+      er[d == j] &lt;- fot$A[d == j] - predict(mm, newdata = fot[d == j, ]) }
+    mean(er^2) })
+  cat(sprintf("span %.2f: grau 1 %.4f | grau 2 %.4f\n", sp, e[1], e[2]))
+}
+
+# ---- 4. A VERSÃO ROBUSTA
+# family = "symmetric" liga a reponderacao bisquare de Cleveland.
+set.seed(19)
+fot2 &lt;- fot
+idx &lt;- sample(which(fot$par &gt; 400 &amp; fot$par &lt; 1200), 10)
+fot2$A[idx] &lt;- fot2$A[idx] + 18          # 10 pontos deslocados
+
+m_g &lt;- loess(A ~ par, data = fot2, span = .35, degree = 1, family = "gaussian")
+m_s &lt;- loess(A ~ par, data = fot2, span = .35, degree = 1, family = "symmetric")
+plot(A ~ par, data = fot2, pch = 16, col = "#8aa59680")
+points(fot2$par[idx], fot2$A[idx], pch = 16, col = "#b5442f")
+lines(gx, predict(m_g, data.frame(par = gx)), col = "#bf924c", lwd = 3)
+lines(gx, predict(m_s, data.frame(par = gx)), col = "#1f5b43", lwd = 3)
+# O ajuste comum e arrastado; o robusto praticamente nao se move.
+
+# ---- 5. O QUE O LOESS NÃO TEM
+# (a) formula: nao ha equacao para reportar, so a curva.
+# (b) extrapolacao: fora do dominio o R devolve NA por padrao.
+predict(m, newdata = data.frame(par = c(1990, 2100, 2400)))
+# (c) custo: uma regressao por ponto de predicao. O padrao
+#     surface = "interpolate" avalia o ajuste exato em poucos pontos
+#     e interpola; surface = "direct" faz a conta em todos.
+system.time(loess(A ~ par, data = fot, span = .35,
+                  control = loess.control(surface = "direct")))
+# (d) nao ha valor-p padronizado. Ha um teste F aproximado entre
+#     ajustes aninhados, que supoe o span FIXADO antes de ver os dados:
+anova(loess(A ~ par, data = fot, span = .7, degree = 1),
+      loess(A ~ par, data = fot, span = .3, degree = 1))
+
+# ---- 6. lowess: a versão mais antiga e mais simples
+# Serve para o grafico exploratorio e nada mais: nao aceita newdata,
+# nao faz predicao, nao tem erro-padrao.
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680")
+lines(lowess(fot$par, fot$A, f = 0.35), col = "#b5442f", lwd = 3)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-loess" type="button">Copiar código</button></div><pre id="code-py-loess"><code>import numpy as np, sys, time
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab15)
+# ------------------------------------------------------------------
+import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados15)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 260 medições de trocas gasosas (arquivo fotossintese.csv)
+fot = le_csv('fotossintese.csv')
+PAR=fot['par'].to_numpy(float); TEMP=fot['temp'].to_numpy(float)
+VPD=fot['vpd'].to_numpy(float); A=fot['A'].to_numpy(float)
+NG=len(A)
+SIG=1.30
+INT=14.0
+
+def f_par(x):
+    x=np.asarray(x,float)
+    return 26.0*(1-np.exp(-0.0024*x))-1.9e-6*np.maximum(x-1000,0)**2
+def f_temp(t): t=np.asarray(t,float); return -0.042*(t-27.0)**2
+def f_vpd(v):  v=np.asarray(v,float); return -2.9*v+0.33*v**2
+C1=19.9605909253; C2=-1.4311050277; C3=-2.0245067433
+def verdade(x,t,v): return INT+(f_par(x)-C1)+(f_temp(t)-C2)+(f_vpd(v)-C3)
+# ------------------------------------------------------------------ fim do bloco comum
+
+# ------------------------------------------------------------------ utilidades
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def sqr(o, p): return float(np.sum((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - sqr(o, p)/float(np.sum((np.asarray(o) - np.mean(o))**2))
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_uni(ajusta, x, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada para um suavizador univariado.
+    ajusta(xtr, ytr, xte) -&gt; predições em xte."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 991*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            e[te] = y[te] - ajusta(x[tr], y[tr], x[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+# ------------------------------------------------------------------ polinômios
+def poli(x, g, xr=None):
+    """Base polinomial ORTOGONAL (Legendre reescalada ao intervalo de xr)."""
+    x = np.asarray(x, float); xr = x if xr is None else np.asarray(xr, float)
+    a, b = xr.min(), xr.max()
+    z = 2*(x - a)/(b - a) - 1
+    return np.polynomial.legendre.legvander(z, g)
+
+def poli_cru(x, g):
+    x = np.asarray(x, float)
+    return np.column_stack([x**j for j in range(g+1)])
+
+# ------------------------------------------------------------------ B-splines
+def bspline(x, nos, grau=3):
+    """Base B-spline por Cox-de Boor. 'nos' = vetor de nós INTERNOS."""
+    x = np.asarray(x, float); nos = np.asarray(nos, float)
+    a, b = bspline.lim
+    t = np.concatenate([[a]*(grau+1), nos, [b]*(grau+1)])
+    m = len(t) - grau - 1
+    B = np.zeros((len(x), m))
+    for i in range(m):
+        B[:, i] = (x &gt;= t[i]) &amp; (x &lt; t[i+1])
+    B[np.isclose(x, b), m-1] = 1.0
+    for d in range(1, grau+1):
+        Bn = np.zeros((len(x), len(t) - d - 1))
+        for i in range(Bn.shape[1]):
+            den1 = t[i+d] - t[i]; den2 = t[i+d+1] - t[i+1]
+            a1 = (x - t[i])/den1*B[:, i] if den1 &gt; 0 else 0.0
+            a2 = (t[i+d+1] - x)/den2*B[:, i+1] if den2 &gt; 0 else 0.0
+            Bn[:, i] = a1 + a2
+        B = Bn
+    return B
+
+def base_bs(x, nos, grau=3, lim=None):
+    bspline.lim = lim if lim is not None else (float(np.min(x)), float(np.max(x)))
+    return bspline(x, nos, grau)
+
+def trunc_pot(x, nos, grau=3):
+    """Base de potências truncadas: 1, x, ..., x^g, (x-k)_+^g."""
+    x = np.asarray(x, float)
+    cols = [x**j for j in range(grau+1)]
+    for k in np.asarray(nos, float):
+        cols.append(np.maximum(x - k, 0.0)**grau)
+    return np.column_stack(cols)
+
+def natural_cs(x, nos, lim):
+    """Base de spline cúbica NATURAL (linear fora dos nós de fronteira)."""
+    x = np.asarray(x, float); K = np.concatenate([[lim[0]], np.asarray(nos, float), [lim[1]]])
+    k = len(K)
+    def d(j):
+        return (np.maximum(x - K[j], 0)**3 - np.maximum(x - K[k-1], 0)**3)/(K[k-1] - K[j])
+    cols = [np.ones_like(x), x] + [d(j) - d(k-2) for j in range(k-2)]
+    return np.column_stack(cols)
+
+def ajusta_base(B, y):
+    return np.linalg.lstsq(B, y, rcond=None)[0]
+
+# --------------------------------------------------- spline de suavização
+def suav_spline(x, y, lam, escala=True):
+    """Spline cúbica de suavização EXATA, pelo algoritmo de Reinsch
+    (Green e Silverman, 1994, cap. 2). Resolve o sistema BANDADO
+        (R + lam Q' W^-1 Q) gama = Q' ybar ,   ajustado = ybar - lam W^-1 Q gama
+    que é numericamente muito mais estável que inverter (W + lam K).
+    Com escala=True, x é levado a [0, 1] antes de penalizar, de modo que lambda
+    tenha o mesmo significado para variáveis de unidades diferentes — é o que o
+    smooth.spline faz por trás do argumento spar.
+    Devolve (ajustados, x únicos na escala original, contagens, médias, g.l. efetivos)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    a0, b0 = (x.min(), x.max()) if escala else (0.0, 1.0)
+    xs = (x - a0)/(b0 - a0) if escala else x
+    xo_s, inv = np.unique(np.round(xs, 12), return_inverse=True)
+    m = len(xo_s)
+    xo = xo_s*(b0 - a0) + a0 if escala else xo_s
+    cont = np.bincount(inv, minlength=m).astype(float)
+    ybar = np.bincount(inv, weights=y, minlength=m)/cont
+    h = np.diff(xo_s)
+    Q = np.zeros((m, m-2)); R = np.zeros((m-2, m-2))
+    for j in range(1, m-1):
+        Q[j-1, j-1] = 1/h[j-1]; Q[j, j-1] = -1/h[j-1] - 1/h[j]; Q[j+1, j-1] = 1/h[j]
+        R[j-1, j-1] = (h[j-1] + h[j])/3
+        if j &lt; m-2:
+            R[j-1, j] = h[j]/6; R[j, j-1] = h[j]/6
+    Winv = 1.0/cont
+    M = R + lam*(Q.T*Winv) @ Q
+    gama = np.linalg.solve(M, Q.T @ ybar)
+    aj = ybar - lam*Winv*(Q @ gama)
+    # g.l. efetivos = tr(S) = m - lam * tr( W^-1 Q M^-1 Q' )
+    tr = m - lam*float(np.sum(Winv*np.einsum('ij,ji-&gt;i', Q, np.linalg.solve(M, Q.T))))
+    return aj, xo, cont, ybar, tr
+
+def ss_edf(x, lam):
+    return suav_spline(x, np.zeros(len(x)), lam)[4]
+
+def ss_gcv(x, y, lam):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    n = len(y)
+    res = np.asarray(y, float) - np.interp(x, xo, aj)
+    return float(np.sum(res**2)/n)/((1 - tr/n)**2), tr
+
+def ss_prev(x, y, lam, xnovo):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    # extrapolação LINEAR fora do domínio, como manda a spline natural
+    d0 = (aj[1]-aj[0])/(xo[1]-xo[0]); d1 = (aj[-1]-aj[-2])/(xo[-1]-xo[-2])
+    xn = np.asarray(xnovo, float); out = np.interp(xn, xo, aj)
+    out = np.where(xn &lt; xo[0],  aj[0]  + d0*(xn - xo[0]),  out)
+    out = np.where(xn &gt; xo[-1], aj[-1] + d1*(xn - xo[-1]), out)
+    return out
+
+# ------------------------------------------------------------------ LOESS
+def tricubo(u): return (1 - np.abs(u)**3)**3
+
+def loess(x, y, xnovo, span=0.35, grau=1, iteracoes=0):
+    """Regressão local ponderada (Cleveland, 1979).
+    iteracoes &gt; 0 ativa a reponderação robusta bisquare: os pesos de robustez
+    são sempre calculados a partir dos resíduos NOS PONTOS DE AJUSTE x, e não
+    nos pontos onde se quer prever."""
+    x = np.asarray(x, float); y = np.asarray(y, float); xn = np.asarray(xnovo, float)
+    n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+
+    def ajusta_em(alvos, rob):
+        out = np.empty(len(alvos))
+        for i, x0 in enumerate(alvos):
+            dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+            dmax = dd[viz[-1]]
+            w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+            w = w*rob[viz]
+            Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+            WZ = Z*w[:, None]
+            try: b = np.linalg.solve(Z.T @ WZ, WZ.T @ y[viz])
+            except np.linalg.LinAlgError: b = np.linalg.lstsq(Z.T @ WZ, WZ.T @ y[viz], rcond=None)[0]
+            out[i] = b[0]
+        return out
+
+    rob = np.ones(n)
+    for _ in range(iteracoes):
+        aj = ajusta_em(x, rob)            # SEMPRE nos x de ajuste
+        res = y - aj
+        s = np.median(np.abs(res))
+        rob = np.clip(1 - (res/(6*s))**2, 0, None)**2 if s &gt; 0 else np.ones(n)
+    return ajusta_em(xn, rob)
+
+def loess_edf(x, span=0.35, grau=1):
+    """Graus de liberdade efetivos: traço da matriz suavizadora."""
+    x = np.asarray(x, float); n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+    tr = 0.0
+    for i, x0 in enumerate(x):
+        dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+        dmax = dd[viz[-1]]
+        w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+        Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+        WZ = Z*w[:, None]
+        try: li = np.linalg.solve(Z.T @ WZ, WZ.T)
+        except np.linalg.LinAlgError: li = np.linalg.lstsq(Z.T @ WZ, WZ.T, rcond=None)[0]
+        k = np.where(viz == i)[0]
+        if len(k): tr += li[0, k[0]]
+    return tr
+
+# ------------------------------------------------------------------ GAM
+def gam_backfit(Xs, y, suav, it=60, tol=1e-9):
+    """Retroajuste (backfitting) de Hastie e Tibshirani.
+    Xs: lista de vetores; suav[j](x, r) -&gt; parcela ajustada, centrada."""
+    y = np.asarray(y, float); p = len(Xs)
+    f = [np.zeros(len(y)) for _ in range(p)]; a0 = y.mean()
+    for _ in range(it):
+        maxd = 0.0
+        for j in range(p):
+            r = y - a0 - sum(f[k] for k in range(p) if k != j)
+            nv = suav[j](Xs[j], r); nv = nv - nv.mean()
+            maxd = max(maxd, float(np.max(np.abs(nv - f[j])))); f[j] = nv
+        if maxd &lt; tol: break
+    return a0, f
+# ------------------------------------------------------------------ fim do bloco comum
+
+x=PAR.copy(); y=A.copy(); o=np.argsort(x); xs=x[o]; ys=y[o]
+print('Os mesmos 260 pontos de trocas gasosas. As três fichas anteriores')
+print('ajustaram uma função GLOBAL a todos os dados de uma vez. Esta não ajusta')
+print('função nenhuma: para cada ponto onde se quer uma predição, faz-se uma')
+print('regressão PRÓPRIA, usando só os vizinhos e dando mais peso aos mais')
+print('próximos. É o que Cleveland (1979) chamou de regressão local ponderada.')
+
+print('\n'+'='*70)
+print('O PROCEDIMENTO, passo a passo, em um ponto')
+x0=600.0; span=0.35; q=int(np.ceil(span*NG))
+dd=np.abs(x-x0); ordem=np.argsort(dd); viz=ordem[:q]
+dmax=dd[viz[-1]]; w=tricubo(dd[viz]/dmax)
+print()
+print('  ponto de interesse: PAR = %s'%c(x0,0))
+print('  span = %s, logo q = ceil(%s x %d) = %d vizinhos'%(c(span,2),c(span,2),NG,q))
+print('  o %dº vizinho mais próximo está a %s umol: essa é a largura da janela'%(q,c(dmax,1)))
+print()
+print('%16s %12s %12s %14s'%('vizinho','PAR','distância','peso tricubo'))
+for k in [0,1,2,10,30,60,q-10,q-2,q-1]:
+    j=viz[k]
+    print('%16s %12s %12s %14s'%('%dº'%(k+1),c(x[j],1),c(dd[j],1),c(w[k],4)))
+print()
+print('  soma dos pesos = %s | peso máximo = %s | peso mínimo = %s'%(c(float(w.sum()),2),c(float(w.max())),c(float(w.min()),6)))
+Z=np.column_stack([np.ones(q),(x[viz]-x0)])
+WZ=Z*w[:,None]; b=np.linalg.solve(Z.T@WZ,WZ.T@y[viz])
+print()
+print('  reta local ajustada nos %d vizinhos, com esses pesos:'%q)
+print('    intercepto (= a predição em PAR = %s) = %s'%(c(x0,0),c(b[0])))
+print('    inclinação                             = %s por umol'%c(b[1],6))
+print('  predição do loess em PAR = %s: %s'%(c(x0,0),c(float(loess(x,y,[x0],span,1)[0]))))
+print('  valor VERDADEIRO ali:                %s'%c(float(f_par(np.array([x0]))[0]-f_par(x).mean()+y.mean())))
+print()
+print('O mesmo é repetido em cada ponto onde se quer a curva. Não há uma')
+print('fórmula para a função inteira: há n regressões pequenas.')
+
+print('\n'+'='*70)
+print('O PESO TRICUBO')
+print('  w(u) = (1 - |u|^3)^3 para |u| &lt;= 1, e 0 fora')
+print()
+print('%10s %14s %18s'%('u','tricubo','gaussiano exp(-u²/2)'))
+for u in [0,0.2,0.4,0.6,0.8,0.95,1.0,1.2]:
+    print('%10s %14s %18s'%(c(u,2),c(float(tricubo(np.array([min(u,1.0)]))[0]) if u&lt;=1 else 0.0),
+          c(float(np.exp(-u**2/2)))))
+print()
+print('Duas propriedades importam. O peso vai a ZERO exatamente em u = 1, de')
+print('modo que a janela é finita e os pontos distantes não entram; e a')
+print('derivada também se anula ali, de modo que a curva não dá solavancos')
+print('quando um ponto entra ou sai da janela. O núcleo gaussiano não tem')
+print('nenhuma das duas propriedades.')
+
+print('\n'+'='*70)
+print('O SPAN: o único parâmetro que importa')
+print()
+print('%10s %10s %14s %14s %16s'%('span','vizinhos','g.l. efetivos','EQM resub','EQM 10-fold'))
+res=[]
+for sp in [0.08,0.12,0.18,0.25,0.35,0.5,0.7,0.9,1.2]:
+    gl=loess_edf(x,sp,1)
+    aj=loess(x,y,x,sp,1); rs=eqm(y,aj)
+    cvm,_=cv_uni(lambda xt,yt,xe,s_=sp: loess(xt,yt,xe,s_,1),x,y,10,1,4)
+    res.append((sp,gl,rs,cvm))
+    print('%10s %10d %14s %14s %16s'%(c(sp,2),int(np.ceil(sp*NG)),c(gl,2),c(rs),c(cvm)))
+res=np.array(res); jb=int(np.argmin(res[:,3]))
+print()
+print('  menor EQM validado: span = %s (%s g.l. efetivos), EQM = %s'%(c(res[jb,0],2),c(res[jb,1],2),c(res[jb,3])))
+print('  para comparar: spline de suavização com 8 g.l. deu 5,8237')
+print('                 e a função VERDADEIRA dá %s'%c(eqm(y,f_par(x)-f_par(x).mean()+y.mean())))
+print()
+print('Note que span &gt; 1 é permitido e usado: com span = 1,2 todos os pontos')
+print('entram em toda janela, mas com pesos tricubo calculados como se a janela')
+print('fosse 1,2 vezes maior — o resultado é um ajuste mais suave, não idêntico')
+print('ao global.')
+
+print('\n'+'='*70)
+print('GRAU 1 CONTRA GRAU 2: o viés nas bordas e nos picos')
+print()
+print('%10s %22s %22s'%('span','grau 1 (EQM 10-fold)','grau 2 (EQM 10-fold)'))
+for sp in [0.15,0.25,0.35,0.5,0.7]:
+    a=cv_uni(lambda xt,yt,xe,s_=sp: loess(xt,yt,xe,s_,1),x,y,10,1,4)[0]
+    b2=cv_uni(lambda xt,yt,xe,s_=sp: loess(xt,yt,xe,s_,2),x,y,10,1,4)[0]
+    print('%10s %22s %22s'%(c(sp,2),c(a),c(b2)))
+print()
+print('O viés por REGIÃO, com span = 0,35 (comparando à função verdadeira):')
+vd=f_par(xs)-f_par(x).mean()+y.mean()
+a1=loess(x,y,xs,0.35,1); a2=loess(x,y,xs,0.35,2)
+print()
+print('%22s %16s %16s'%('faixa de PAR','grau 1: |viés|','grau 2: |viés|'))
+for lo,hi in [(0,200),(200,500),(500,900),(900,1400),(1400,2100)]:
+    mk=(xs&gt;=lo)&amp;(xs&lt;hi)
+    print('%22s %16s %16s'%('%d a %d'%(lo,hi),c(float(np.abs(a1[mk]-vd[mk]).mean())),
+          c(float(np.abs(a2[mk]-vd[mk]).mean()))))
+print()
+print('O padrão não é o que o manual costuma dizer, e vale lê-lo com cuidado.')
+print('No MIOLO (200 a 900 umol), onde a curva dobra, o grau 2 é claramente')
+print('melhor — 0,1656 contra 0,3136 e 0,1279 contra 0,1780 — porque uma reta')
+print('dentro da janela corta a curvatura. Nas duas BORDAS, porém, o grau 2 é')
+print('PIOR: 0,8493 contra 0,5782 abaixo de 200, e 0,5064 contra 0,3914 acima')
+print('de 1.400. Ali a janela é assimétrica e o termo quadrático, estimado com')
+print('dados de um lado só, acrescenta variância sem reduzir viés.')
+print()
+print('Pelo erro validado, os dois praticamente empatam com span pequeno e o')
+print('grau 2 ganha com span grande (5,7728 contra 6,4694 em span = 0,70), o')
+print('que é coerente: janela larga exige curvatura dentro dela.')
+
+print('\n'+'='*70)
+print('A VERSÃO ROBUSTA: o que o loess faz com observações aberrantes')
+print('Depois do primeiro ajuste, os resíduos são usados para reponderar: um')
+print('ponto a mais de 6 desvios absolutos medianos recebe peso ZERO, e o')
+print('ajuste é refeito. Cleveland chamou isso de iteração bisquare.')
+print()
+rg=np.random.default_rng(19)
+for nout,desl in [(0,0.0),(5,10.0),(10,10.0),(10,18.0)]:
+    yc_=y.copy()
+    if nout:
+        idx=rg.choice(np.where((x&gt;400)&amp;(x&lt;1200))[0],nout,replace=False)
+        yc_[idx]=yc_[idx]+desl
+    vdx=f_par(xs)-f_par(x).mean()+y.mean()
+    s0=loess(x,yc_,xs,0.35,1,0); s2=loess(x,yc_,xs,0.35,1,3)
+    print('  %2d pontos deslocados em +%4s umol: |viés| médio  sem robustez %s | com %s'%(
+          nout,c(desl,0),c(float(np.abs(s0-vdx).mean())),c(float(np.abs(s2-vdx).mean()))))
+print()
+print('Aqui a teoria se confirma, e com folga. SEM contaminação, as duas')
+print('versões praticamente coincidem — 0,2614 e 0,2652, diferença de 1,5% —')
+print('de modo que a robustez não custa quase nada quando não é necessária.')
+print()
+print('Com contaminação, a diferença aparece e cresce: com 10 pontos deslocados')
+print('em 10 umol, o ajuste comum piora 62% (de 0,2614 para 0,4241) e o robusto')
+print('piora 6% (de 0,2652 para 0,2814). Com o deslocamento de 18 umol, o comum')
+print('vai a 0,7300 — quase o triplo do original — e o robusto fica em 0,2355,')
+print('isto é, NÃO SE DEGRADA.')
+print()
+print('A razão de o robusto chegar a melhorar um pouco com a contaminação é')
+print('que a reponderação bisquare também apara observações legitimamente')
+print('extremas do ruído comum. É um efeito pequeno e não é a finalidade do')
+print('procedimento, mas explica por que o número cai em vez de subir.')
+print('\n'+'='*70)
+print('O QUE O LOESS NÃO TEM')
+print()
+print('(a) NÃO tem fórmula. Não há equação para reportar, nem coeficientes com')
+print('    interpretação. O resultado é uma curva, e o que se publica é o')
+print('    gráfico mais o span e o grau.')
+print()
+print('(b) NÃO tem como extrapolar. Fora do domínio não existem vizinhos, e')
+print('    por isso o R devolve NA para newdata fora do intervalo, a menos que')
+print('    se peça surface = "direct". A implementação desta ficha é a direta,')
+print('    e o que ela devolve fora do domínio é a reta local da borda,')
+print('    estendida — o que fica praticamente CONSTANTE e erra cada vez mais:')
+xf=np.array([1990.,2100.,2400.])
+for xv in xf:
+    vv=float((f_par(np.array([xv]))-f_par(x).mean()+y.mean())[0])
+    pr=float(loess(x,y,[xv],0.35,1)[0])
+    print('    PAR = %s: loess %s | verdade %s'%(c(xv,0),c(pr,2),c(vv,2)))
+print()
+print('(c) É CARO. Uma predição exige uma regressão própria; n predições')
+print('    exigem n regressões, cada uma com cerca de span*n pontos — de modo')
+print('    que o trabalho cresce com n². Na prática, a vetorização esconde')
+print('    parte disso, e o tempo medido cresce mais devagar:')
+for nn in [100,250,500,1000]:
+    rg2=np.random.default_rng(1); xi=np.sort(rg2.uniform(0,2000,nn)); yi=f_par(xi)+rg2.normal(0,SIG,nn)
+    t0=time.perf_counter(); loess(xi,yi,xi,0.35,1); t1=time.perf_counter()
+    print('    n = %5d: %8.1f ms'%(nn,1000*(t1-t0)))
+print('    (de n = 100 a n = 1.000, o tempo cresce cerca de 19 vezes, e não 100.')
+print('     Mesmo assim, é o mais caro dos quatro métodos do grupo. O R usa a')
+print('     aproximação por interpolação de Cleveland, que avalia o')
+print('     ajuste exato em poucos pontos e interpola entre eles: é o argumento')
+print('     surface = "interpolate", ligado por padrão)')
+print()
+print('(d) NÃO há teste nem valor-p padronizado. Há intervalos aproximados')
+print('    baseados nos g.l. efetivos, e eles supõem que o span foi fixado')
+print('    ANTES de ver os dados — o que quase nunca é o caso.')
+
+print('\n'+'='*70)
+print('AS QUATRO FICHAS, lado a lado, com a MESMA flexibilidade')
+print()
+tabss=[]
+for lam in np.logspace(-7,1,60):
+    tabss.append((lam,ss_edf(x,lam)))
+tabss=np.array(tabss)
+print('%10s %14s %14s %14s %14s'%('g.l.','polinômio','spline c/ nós','suavização','loess'))
+for gl in [4,5,6,8,10,14]:
+    g=gl-1; K_=gl-4
+    fp=cv_uni(lambda xt,yt,xe,g=g: poli(xe,g,x)@ajusta_base(poli(xt,g,x),yt),x,y,10,1,6)[0]
+    nk=np.percentile(x,np.linspace(0,100,K_+2)[1:-1]) if K_&gt;0 else np.array([])
+    fs=cv_uni(lambda xt,yt,xe,nk=nk: base_bs(xe,nk,3,(x.min(),x.max()))@ajusta_base(base_bs(xt,nk,3,(x.min(),x.max())),yt),x,y,10,1,6)[0] if K_&gt;=0 else float('nan')
+    lam=tabss[int(np.argmin(np.abs(tabss[:,1]-gl))),0]
+    fz=cv_uni(lambda xt,yt,xe,l=lam: ss_prev(xt,yt,l,xe),x,y,10,1,6)[0]
+    spn=min([(abs(loess_edf(x,s_,1)-gl),s_) for s_ in np.linspace(0.08,1.5,40)])[1]
+    fl=cv_uni(lambda xt,yt,xe,s_=spn: loess(xt,yt,xe,s_,1),x,y,10,1,4)[0]
+    print('%10d %14s %14s %14s %14s'%(gl,c(fp),c(fs) if K_&gt;=0 else '—',c(fz),c(fl)))
+print()
+print('  piso possível (função verdadeira) = %s'%c(eqm(y,f_par(x)-f_par(x).mean()+y.mean())))
+print()
+print('Com a flexibilidade igualada, os quatro métodos ficam dentro de 5% um do')
+print('outro na faixa de 4 a 10 g.l. — mas há um padrão, e ele é o esperado.')
+print('Com POUCOS g.l. o polinômio e a spline com nós levam ligeira vantagem;')
+print('a partir de 10 g.l. os dois métodos de janela ou penalidade passam à')
+print('frente, e em 14 g.l. o polinômio já está arruinado (8,98) enquanto os')
+print('outros três continuam entre 5,83 e 6,11.')
+print()
+print('A conclusão prática: com a flexibilidade bem escolhida, a escolha entre')
+print('os quatro não é de desempenho — é de que problema se quer evitar.')
+print('Oscilação global e falha de extrapolação afastam o polinômio; a escolha')
+print('de nós afasta a spline de regressão; o custo computacional e a ausência')
+print('de fórmula afastam o loess; e nenhum dos quatro resolve o caso de')
+print('VÁRIAS preditoras, que é o assunto da próxima ficha.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Os mesmos 260 pontos de trocas gasosas. As três fichas anteriores
+ajustaram uma função GLOBAL a todos os dados de uma vez. Esta não ajusta
+função nenhuma: para cada ponto onde se quer uma predição, faz-se uma
+regressão PRÓPRIA, usando só os vizinhos e dando mais peso aos mais
+próximos. É o que Cleveland (1979) chamou de regressão local ponderada.
+
+======================================================================
+O PROCEDIMENTO, passo a passo, em um ponto
+
+  ponto de interesse: PAR = 600
+  span = 0,35, logo q = ceil(0,35 x 260) = 91 vizinhos
+  o 91º vizinho mais próximo está a 208,7 umol: essa é a largura da janela
+
+         vizinho          PAR    distância   peso tricubo
+              1º        604,2          4,2         1,0000
+              2º        609,0          9,0         0,9998
+              3º        588,9         11,1         0,9995
+             11º        570,6         29,4         0,9916
+             31º        666,1         66,1         0,9077
+             61º        458,0        142,0         0,3214
+             82º        416,8        183,2         0,0339
+             90º        393,1        206,9         0,0000
+             91º        808,7        208,7         0,0000
+
+  soma dos pesos = 52,75 | peso máximo = 1,0000 | peso mínimo = 0,000000
+
+  reta local ajustada nos 91 vizinhos, com esses pesos:
+    intercepto (= a predição em PAR = 600) = 13,9515
+    inclinação                             = 0,014925 por umol
+  predição do loess em PAR = 600: 13,9515
+  valor VERDADEIRO ali:                14,0038
+
+O mesmo é repetido em cada ponto onde se quer a curva. Não há uma
+fórmula para a função inteira: há n regressões pequenas.
+
+======================================================================
+O PESO TRICUBO
+  w(u) = (1 - |u|^3)^3 para |u| &lt;= 1, e 0 fora
+
+         u        tricubo gaussiano exp(-u²/2)
+      0,00         1,0000             1,0000
+      0,20         0,9762             0,9802
+      0,40         0,8200             0,9231
+      0,60         0,4819             0,8353
+      0,80         0,1162             0,7261
+      0,95         0,0029             0,6368
+      1,00         0,0000             0,6065
+      1,20         0,0000             0,4868
+
+Duas propriedades importam. O peso vai a ZERO exatamente em u = 1, de
+modo que a janela é finita e os pontos distantes não entram; e a
+derivada também se anula ali, de modo que a curva não dá solavancos
+quando um ponto entra ou sai da janela. O núcleo gaussiano não tem
+nenhuma das duas propriedades.
+
+======================================================================
+O SPAN: o único parâmetro que importa
+
+      span   vizinhos  g.l. efetivos      EQM resub      EQM 10-fold
+      0,08         21          25,02         4,7790           6,0607
+      0,12         32          16,04         5,0509           5,8391
+      0,18         47          10,96         5,3015           5,8610
+      0,25         65           8,20         5,4587           5,8988
+      0,35         91           6,16         5,5707           5,9082
+      0,50        130           4,65         5,6983           5,9563
+      0,70        182           3,55         6,2801           6,4694
+      0,90        234           2,86         7,4487           7,6261
+      1,20        312           2,49         8,9835           9,1556
+
+  menor EQM validado: span = 0,12 (16,04 g.l. efetivos), EQM = 5,8391
+  para comparar: spline de suavização com 8 g.l. deu 5,8237
+                 e a função VERDADEIRA dá 5,5255
+
+Note que span &gt; 1 é permitido e usado: com span = 1,2 todos os pontos
+entram em toda janela, mas com pesos tricubo calculados como se a janela
+fosse 1,2 vezes maior — o resultado é um ajuste mais suave, não idêntico
+ao global.
+
+======================================================================
+GRAU 1 CONTRA GRAU 2: o viés nas bordas e nos picos
+
+      span   grau 1 (EQM 10-fold)   grau 2 (EQM 10-fold)
+      0,15                 5,8340                 5,9970
+      0,25                 5,8988                 5,8585
+      0,35                 5,9082                 5,8854
+      0,50                 5,9563                 5,8367
+      0,70                 6,4694                 5,7728
+
+O viés por REGIÃO, com span = 0,35 (comparando à função verdadeira):
+
+          faixa de PAR   grau 1: |viés|   grau 2: |viés|
+               0 a 200           0,5782           0,8493
+             200 a 500           0,3136           0,1656
+             500 a 900           0,1780           0,1279
+            900 a 1400           0,1500           0,1965
+           1400 a 2100           0,3914           0,5064
+
+O padrão não é o que o manual costuma dizer, e vale lê-lo com cuidado.
+No MIOLO (200 a 900 umol), onde a curva dobra, o grau 2 é claramente
+melhor — 0,1656 contra 0,3136 e 0,1279 contra 0,1780 — porque uma reta
+dentro da janela corta a curvatura. Nas duas BORDAS, porém, o grau 2 é
+PIOR: 0,8493 contra 0,5782 abaixo de 200, e 0,5064 contra 0,3914 acima
+de 1.400. Ali a janela é assimétrica e o termo quadrático, estimado com
+dados de um lado só, acrescenta variância sem reduzir viés.
+
+Pelo erro validado, os dois praticamente empatam com span pequeno e o
+grau 2 ganha com span grande (5,7728 contra 6,4694 em span = 0,70), o
+que é coerente: janela larga exige curvatura dentro dela.
+
+======================================================================
+A VERSÃO ROBUSTA: o que o loess faz com observações aberrantes
+Depois do primeiro ajuste, os resíduos são usados para reponderar: um
+ponto a mais de 6 desvios absolutos medianos recebe peso ZERO, e o
+ajuste é refeito. Cleveland chamou isso de iteração bisquare.
+
+   0 pontos deslocados em +   0 umol: |viés| médio  sem robustez 0,2614 | com 0,2652
+   5 pontos deslocados em +  10 umol: |viés| médio  sem robustez 0,2432 | com 0,2500
+  10 pontos deslocados em +  10 umol: |viés| médio  sem robustez 0,4241 | com 0,2814
+  10 pontos deslocados em +  18 umol: |viés| médio  sem robustez 0,7300 | com 0,2355
+
+Aqui a teoria se confirma, e com folga. SEM contaminação, as duas
+versões praticamente coincidem — 0,2614 e 0,2652, diferença de 1,5% —
+de modo que a robustez não custa quase nada quando não é necessária.
+
+Com contaminação, a diferença aparece e cresce: com 10 pontos deslocados
+em 10 umol, o ajuste comum piora 62% (de 0,2614 para 0,4241) e o robusto
+piora 6% (de 0,2652 para 0,2814). Com o deslocamento de 18 umol, o comum
+vai a 0,7300 — quase o triplo do original — e o robusto fica em 0,2355,
+isto é, NÃO SE DEGRADA.
+
+A razão de o robusto chegar a melhorar um pouco com a contaminação é
+que a reponderação bisquare também apara observações legitimamente
+extremas do ruído comum. É um efeito pequeno e não é a finalidade do
+procedimento, mas explica por que o número cai em vez de subir.
+
+======================================================================
+O QUE O LOESS NÃO TEM
+
+(a) NÃO tem fórmula. Não há equação para reportar, nem coeficientes com
+    interpretação. O resultado é uma curva, e o que se publica é o
+    gráfico mais o span e o grau.
+
+(b) NÃO tem como extrapolar. Fora do domínio não existem vizinhos, e
+    por isso o R devolve NA para newdata fora do intervalo, a menos que
+    se peça surface = "direct". A implementação desta ficha é a direta,
+    e o que ela devolve fora do domínio é a reta local da borda,
+    estendida — o que fica praticamente CONSTANTE e erra cada vez mais:
+    PAR = 1990: loess 18,95 | verdade 18,08
+    PAR = 2100: loess 18,89 | verdade 17,70
+    PAR = 2400: loess 18,74 | verdade 16,36
+
+(c) É CARO. Uma predição exige uma regressão própria; n predições
+    exigem n regressões, cada uma com cerca de span*n pontos — de modo
+    que o trabalho cresce com n². Na prática, a vetorização esconde
+    parte disso, e o tempo medido cresce mais devagar:
+    n =   100:      2.3 ms
+    n =   250:      6.4 ms
+    n =   500:     22.2 ms
+    n =  1000:     48.8 ms
+    (de n = 100 a n = 1.000, o tempo cresce cerca de 19 vezes, e não 100.
+     Mesmo assim, é o mais caro dos quatro métodos do grupo. O R usa a
+     aproximação por interpolação de Cleveland, que avalia o
+     ajuste exato em poucos pontos e interpola entre eles: é o argumento
+     surface = "interpolate", ligado por padrão)
+
+(d) NÃO há teste nem valor-p padronizado. Há intervalos aproximados
+    baseados nos g.l. efetivos, e eles supõem que o span foi fixado
+    ANTES de ver os dados — o que quase nunca é o caso.
+
+======================================================================
+AS QUATRO FICHAS, lado a lado, com a MESMA flexibilidade
+
+      g.l.      polinômio  spline c/ nós     suavização          loess
+         4         5,8521         5,8521         6,2736         6,2077
+         5         5,7716         5,7050         5,9391         5,9174
+         6         5,6744         5,7319         5,8464         5,9090
+         8         5,7632         5,7738         5,8237         5,9005
+        10         6,0006         5,8797         5,8326         5,8700
+        14         8,9763         6,1116         5,8605         5,8340
+
+  piso possível (função verdadeira) = 5,5255
+
+Com a flexibilidade igualada, os quatro métodos ficam dentro de 5% um do
+outro na faixa de 4 a 10 g.l. — mas há um padrão, e ele é o esperado.
+Com POUCOS g.l. o polinômio e a spline com nós levam ligeira vantagem;
+a partir de 10 g.l. os dois métodos de janela ou penalidade passam à
+frente, e em 14 g.l. o polinômio já está arruinado (8,98) enquanto os
+outros três continuam entre 5,83 e 6,11.
+
+A conclusão prática: com a flexibilidade bem escolhida, a escolha entre
+os quatro não é de desempenho — é de que problema se quer evitar.
+Oscilação global e falha de extrapolação afastam o polinômio; a escolha
+de nós afasta a spline de regressão; o custo computacional e a ausência
+de fórmula afastam o loess; e nenhum dos quatro resolve o caso de
+VÁRIAS preditoras, que é o assunto da próxima ficha.</pre></div><figure class="fig"><img src="../assets/resultados/loess.png" alt="Grau 1 contra grau 2 por região, a versão robusta sob contaminação e os quatro métodos lado a lado" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a diferença entre o ajuste e a função verdadeira ao longo do domínio, para os graus 1 e 2, com as bordas sombreadas. No centro, dez pontos deslocados em +18 μmol e o que cada versão faz com eles. À direita, os quatro métodos do grupo com a mesma flexibilidade. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A escolha do span (validação cruzada de 10 dobras, 4 repetições)</caption><thead><tr><th>span</th><th>Vizinhos</th><th>g.l. efetivos</th><th>EQM resubstituição</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>0,08</td><td>21</td><td>25,02</td><td>4,7790</td><td>6,0607</td></tr><tr><td><strong>0,12</strong></td><td>32</td><td>16,04</td><td>5,0509</td><td><strong>5,8391</strong></td></tr><tr><td>0,18</td><td>47</td><td>10,96</td><td>5,3015</td><td>5,8610</td></tr><tr><td>0,25</td><td>65</td><td>8,20</td><td>5,4587</td><td>5,8988</td></tr><tr><td>0,35</td><td>91</td><td>6,16</td><td>5,5707</td><td>5,9082</td></tr><tr><td>0,50</td><td>130</td><td>4,65</td><td>5,6983</td><td>5,9563</td></tr><tr><td>0,70</td><td>182</td><td>3,55</td><td>6,2801</td><td>6,4694</td></tr><tr><td>0,90</td><td>234</td><td>2,86</td><td>7,4487</td><td>7,6261</td></tr><tr><td>1,20</td><td>312</td><td>2,49</td><td>8,9835</td><td>9,1556</td></tr></tbody></table></div><p>Para comparação: a <a href="smoothing-spline.html">spline de suavização</a> com 8 g.l. deu 5,8237, e a função verdadeira dá 5,5255.</p><div class="table-wrap"><table class="method-table"><caption>Grau 1 contra grau 2, pelo erro validado</caption><thead><tr><th>span</th><th>Grau 1</th><th>Grau 2</th></tr></thead><tbody><tr><td>0,15</td><td><strong>5,8340</strong></td><td>5,9970</td></tr><tr><td>0,25</td><td>5,8988</td><td><strong>5,8585</strong></td></tr><tr><td>0,35</td><td>5,9082</td><td><strong>5,8854</strong></td></tr><tr><td>0,50</td><td>5,9563</td><td><strong>5,8367</strong></td></tr><tr><td>0,70</td><td>6,4694</td><td><strong>5,7728</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O |viés| por região, com span = 0,35</caption><thead><tr><th>Faixa de PAR</th><th>Grau 1</th><th>Grau 2</th></tr></thead><tbody><tr><td>57 a 200</td><td><strong>0,5782</strong></td><td>0,8493</td></tr><tr><td>200 a 500</td><td>0,3136</td><td><strong>0,1656</strong></td></tr><tr><td>500 a 900</td><td>0,1780</td><td><strong>0,1279</strong></td></tr><tr><td>900 a 1 400</td><td><strong>0,1500</strong></td><td>0,1965</td></tr><tr><td>1 400 a 1 998</td><td><strong>0,3914</strong></td><td>0,5064</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A versão robusta sob contaminação crescente (|viés| médio)</caption><thead><tr><th>Contaminação</th><th>Sem robustez</th><th>Com robustez (3 iterações)</th></tr></thead><tbody><tr><td>nenhuma</td><td>0,2614</td><td>0,2652</td></tr><tr><td>5 pontos em +10 μmol</td><td>0,2432</td><td>0,2500</td></tr><tr><td>10 pontos em +10 μmol</td><td>0,4241</td><td><strong>0,2814</strong></td></tr><tr><td>10 pontos em +18 μmol</td><td><strong>0,7300</strong></td><td><strong>0,2355</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Fora do domínio: o que a extrapolação direta devolve</caption><thead><tr><th>PAR</th><th>LOESS (surface = "direct")</th><th>VERDADE</th></tr></thead><tbody><tr><td>1 990 (dentro)</td><td>18,95</td><td>18,08</td></tr><tr><td>2 100</td><td>18,89</td><td>17,70</td></tr><tr><td>2 400</td><td>18,74</td><td>16,36</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O custo computacional</caption><thead><tr><th>n</th><th>Tempo</th></tr></thead><tbody><tr><td>100</td><td>2,3 ms</td></tr><tr><td>250</td><td>7,2 ms</td></tr><tr><td>500</td><td>16,6 ms</td></tr><tr><td>1 000</td><td>44,7 ms</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os quatro métodos do grupo, com a MESMA flexibilidade</caption><thead><tr><th>g.l.</th><th>Polinômio</th><th>Spline com nós</th><th>Spline de suavização</th><th>LOESS</th></tr></thead><tbody><tr><td>4</td><td>5,8521</td><td>5,8521</td><td>6,2736</td><td>6,2077</td></tr><tr><td>5</td><td>5,7716</td><td><strong>5,7050</strong></td><td>5,9391</td><td>5,9174</td></tr><tr><td>6</td><td><strong>5,6744</strong></td><td>5,7319</td><td>5,8464</td><td>5,9090</td></tr><tr><td>8</td><td>5,7632</td><td>5,7738</td><td><strong>5,8237</strong></td><td>5,9005</td></tr><tr><td>10</td><td>6,0006</td><td>5,8797</td><td>5,8326</td><td><strong>5,8700</strong></td></tr><tr><td>14</td><td><strong>8,9763</strong></td><td>6,1116</td><td>5,8605</td><td><strong>5,8340</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela do span mostra a relação que organiza o método: span pequeno significa janela estreita, que significa muitos graus de liberdade. Com span 0,08 são 21 vizinhos e 25 graus de liberdade; com span 1,20 são todos os 260 pontos e apenas 2,49 — praticamente uma reta. O mínimo validado está em span 0,12, com 16 graus de liberdade, e a curva é rasa entre 0,12 e 0,35 (variação de 1,2%).</p><p>Vale explicar o span maior que 1, que confunde quem vê pela primeira vez. Com span 1,20 todos os pontos entram em toda janela, mas os pesos tricubo são calculados como se a janela fosse 1,2 vezes a distância ao ponto mais distante — de modo que nenhum peso chega a zero e o ajuste fica mais suave do que com span 1,0. É um recurso legítimo e usado.</p><p><strong>Sobre grau 1 e grau 2:</strong> o padrão não é o que os manuais costumam dizer, e vale lê-lo com cuidado. No <em>miolo</em>, onde a curva dobra, o grau 2 é claramente melhor — 0,1656 contra 0,3136 e 0,1279 contra 0,1780 — porque uma reta dentro da janela corta a curvatura. Nas duas <em>bordas</em>, porém, o grau 2 é <strong>pior</strong>: 0,8493 contra 0,5782 abaixo de 200 μmol, e 0,5064 contra 0,3914 acima de 1.400. Ali a janela é assimétrica e o termo quadrático, estimado com dados de um lado só, acrescenta variância sem reduzir viés. Pelo erro validado os dois praticamente empatam com span pequeno e o grau 2 ganha com span grande (5,7728 contra 6,4694 em span 0,70), o que é coerente: janela larga exige curvatura dentro dela.</p><p><strong>Sobre a robustez:</strong> aqui a teoria se confirma com folga. Sem contaminação, as duas versões praticamente coincidem — 0,2614 e 0,2652, diferença de 1,5% — de modo que a robustez não custa quase nada quando não é necessária. Com dez pontos deslocados em 10 μmol, o ajuste comum piora 62% e o robusto 6%. Com o deslocamento de 18 μmol, o comum vai a 0,7300, quase o triplo do original, e o robusto fica em <strong>0,2355</strong>: ele não se degrada. A conclusão prática é direta — com dados de campo, em que valores aberrantes são a regra e não a exceção, <code>family = "symmetric"</code> deveria ser o padrão mental.</p><p><strong>Sobre a extrapolação:</strong> a tabela merece atenção porque o comportamento é diferente de todos os outros métodos do grupo. Fora do domínio, o LOESS forçado a prever devolve essencialmente o valor da borda estendido: 18,89 a 2.100 μmol e 18,74 a 2.400, contra 17,70 e 16,36 da verdade. Não explode como o polinômio nem diverge como a B-spline; fica <em>parado</em>. É o comportamento menos perigoso dos quatro, e ainda assim errado — e é por isso que o R devolve <code>NA</code> por padrão. A escolha de não responder é mais honesta que responder qualquer coisa.</p><p><strong>Sobre o custo:</strong> uma predição exige uma regressão própria, com cerca de \(\text{span}\cdot n\) pontos cada, de modo que o trabalho cresce com \(n^2\). A vetorização esconde parte disso — de \(n=100\) a \(n=1\,000\) o tempo cresce 19 vezes e não 100 — mas o LOESS é o mais caro dos quatro métodos do grupo. O R contorna isso com a aproximação por interpolação de Cleveland, ligada por padrão.</p><p><strong>Sobre a comparação final:</strong> com a flexibilidade igualada, os quatro métodos ficam dentro de 5% um do outro na faixa de 4 a 10 graus de liberdade — mas há um padrão, e é o esperado. Com <em>poucos</em> graus de liberdade o polinômio e a spline com nós levam ligeira vantagem, porque uma base global aproveita melhor a informação quando há pouca flexibilidade a distribuir. A partir de 10 os dois métodos de janela ou penalidade passam à frente, e em 14 o polinômio já está arruinado (8,98) enquanto os outros três continuam entre 5,83 e 6,11.</p><p>A conclusão prática do grupo univariado: com a flexibilidade bem escolhida, a escolha entre os quatro <strong>não é de desempenho</strong> — é de que problema se quer evitar. Oscilação global e falha de extrapolação afastam o polinômio; a escolha de nós afasta a spline de regressão; o custo computacional e a ausência de fórmula afastam o LOESS. E nenhum dos quatro resolve o caso de <em>várias</em> preditoras, que é o assunto da próxima ficha.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td><strong>Não reportar o span</strong></td><td>Sem ele a análise não é reprodutível.</td></tr><tr><td>Usar o padrão sem pensar</td><td>O padrão do R é span = 0,75 e grau 2.</td></tr><tr><td>Forçar a extrapolação</td><td>O NA é um recurso; não use <code>surface = "direct"</code> para isso.</td></tr><tr><td>Reportar valores-p após escolher o span</td><td>É inferência pós-seleção.</td></tr><tr><td>Usar a versão comum com dados de campo</td><td><code>family = "symmetric"</code> custa quase nada.</td></tr><tr><td>Confundir <code>lowess</code> com <code>loess</code></td><td>A primeira só desenha.</td></tr><tr><td>Aplicar a dados com erros correlacionados</td><td>A validação do span pede flexibilidade demais.</td></tr><tr><td>Usar com n muito grande e <code>surface = "direct"</code></td><td>O custo cresce com n².</td></tr><tr><td>Esperar uma equação para publicar</td><td>Não há; publique a curva.</td></tr><tr><td>Usar com várias preditoras sem pensar na dimensão</td><td>Vizinhança em 3D ou mais fica vazia; veja <a href="gam.html">GAM</a>.</td></tr><tr><td>Suavizar demais e concluir que não há estrutura</td><td>Varie o span e veja se a conclusão muda.</td></tr><tr><td>Comparar spans entre conjuntos de n diferente</td><td>span é fração, não largura.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="smoothing-spline.html">Splines de suavização</a></td><td>Quando se quer um objeto matemático definido, e não um procedimento.</td></tr><tr><td><a href="splines.html">Splines de regressão</a></td><td>Quando se quer um modelo linear explícito, com inferência usual.</td></tr><tr><td><a href="polinomial.html">Polinomial</a></td><td>Até 6 g.l., e quando os coeficientes importam.</td></tr><tr><td><a href="gam.html">GAM</a></td><td>Várias preditoras — e o <code>gam</code> aceita LOESS como suavizador.</td></tr><tr><td>Suavização por núcleo (Nadaraya-Watson)</td><td>É o LOESS de grau 0; mais simples e com mais viés nas bordas.</td></tr><tr><td>Regressão quantílica local</td><td>Quando o interesse é um quantil e não a média.</td></tr><tr><td>Médias móveis</td><td>Séries temporais, quando a regularidade importa mais que o viés.</td></tr><tr><td>Filtro de Savitzky-Golay</td><td>Espectros e sinais: é regressão local em janela FIXA.</td></tr><tr><td>Regressão robusta global</td><td>Quando há aberrantes mas a forma é conhecida.</td></tr><tr><td>Decomposição STL</td><td>Séries temporais: é LOESS aplicado em camadas.</td></tr></tbody></table></div><p>Vale notar a última linha. A decomposição STL — <em>seasonal and trend decomposition using loess</em> — de Cleveland e colaboradores (1990) é o uso mais influente do método: a série é decomposta em tendência, sazonalidade e resto, cada componente estimado por LOESS com um span próprio. Está no R como <code>stl()</code> e é o padrão de fato para decompor séries com sazonalidade que muda ao longo do tempo.</p><ol class="steps"><li>Use o LOESS primeiro para OLHAR, antes de qualquer modelo.</li><li>Desenhe sempre a curva sobre os pontos.</li><li>Varie o span e veja se a conclusão substantiva muda.</li><li>Escolha o span por validação cruzada se o ajuste for o resultado.</li><li>Use grau 2 com span largo e grau 1 com span estreito.</li><li>Com dados de campo, ligue <code>family = "symmetric"</code>.</li><li>Não extrapole; o NA do R é um recurso.</li><li>Reporte o span e o grau, sempre.</li><li>Se precisar de incerteza, use bootstrap.</li><li>Não reporte valores-p se o span foi escolhido olhando os dados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>CLEVELAND, William S. Robust locally weighted regression and smoothing scatterplots. <em>Journal of the American Statistical Association</em>, v. 74, n. 368, p. 829-836, 1979.</li><li>CLEVELAND, William S.; DEVLIN, Susan J. Locally weighted regression: an approach to regression analysis by local fitting. <em>Journal of the American Statistical Association</em>, v. 83, n. 403, p. 596-610, 1988.</li><li>CLEVELAND, William S.; GROSSE, Eric. Computational methods for local regression. <em>Statistics and Computing</em>, v. 1, n. 1, p. 47-62, 1991.</li><li>CLEVELAND, Robert B.; CLEVELAND, William S.; McRAE, Jean E.; TERPENNING, Irma. STL: a seasonal-trend decomposition procedure based on loess. <em>Journal of Official Statistics</em>, v. 6, n. 1, p. 3-73, 1990.</li><li>FAN, Jianqing; GIJBELS, Irène. <em>Local polynomial modelling and its applications.</em> London: Chapman &amp; Hall, 1996.</li><li>FAN, Jianqing. Design-adaptive nonparametric regression. <em>Journal of the American Statistical Association</em>, v. 87, n. 420, p. 998-1004, 1992.</li><li>HASTIE, Trevor; LOADER, Clive. Local regression: automatic kernel carpentry. <em>Statistical Science</em>, v. 8, n. 2, p. 120-129, 1993.</li><li>LOADER, Clive. <em>Local regression and likelihood.</em> New York: Springer, 1999.</li><li>NADARAYA, E. A. On estimating regression. <em>Theory of Probability and Its Applications</em>, v. 9, n. 1, p. 141-142, 1964.</li><li>WATSON, Geoffrey S. Smooth regression analysis. <em>Sankhyā: Series A</em>, v. 26, n. 4, p. 359-372, 1964.</li><li>SAVITZKY, Abraham; GOLAY, Marcel J. E. Smoothing and differentiation of data by simplified least squares procedures. <em>Analytical Chemistry</em>, v. 36, n. 8, p. 1627-1639, 1964.</li><li>HASTIE, Trevor J.; TIBSHIRANI, Robert J. <em>Generalized additive models.</em> London: Chapman &amp; Hall, 1990.</li><li>RUPPERT, David; WAND, M. P.; CARROLL, Raymond J. <em>Semiparametric regression.</em> Cambridge: Cambridge University Press, 2003.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>FARAWAY, Julian J. <em>Extending the linear model with R.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2016.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Pacote <code>splines</code>, funções <code>bs</code> e <code>ns</code>; pacote <code>stats</code>, funções <code>poly</code>, <code>smooth.spline</code> e <code>loess</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Relação suave em escala local, dados suficientes em toda a faixa, variância constante, erros independentes, span escolhido e reportado, e nenhuma extrapolação.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>nenhum: loess e lowess são do R base</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="smoothing-spline.html"><span>← ANTERIOR</span>Smoothing splines</a><a href="gam.html"><span>PRÓXIMO →</span>Modelos aditivos generalizados (GAM)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

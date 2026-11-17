@@ -4,324 +4,417 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste generalizado de Wilcoxon–Gehan: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste generalizado de Wilcoxon–Gehan | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste generalizado de Wilcoxon–Gehan: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste generalizado de Wilcoxon–Gehan | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste generalizado de Wilcoxon–Gehan
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 10 · SOBREVIVÊNCIA
-    </span>
-<h1>
-     Teste generalizado de Wilcoxon–Gehan
-    </h1>
-<p class="detail-lead">
-     Compara curvas de sobrevivência, atribuindo maior peso às diferenças em tempos iniciais.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/gehan.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara curvas de sobrevivência, atribuindo maior peso às diferenças em tempos iniciais.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes, censura não informativa, tempos e status corretos.</li><li>Ponderação previamente escolhida.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ S_1(t)=S_2(t)\quad\forall t\\ H_1&amp;:\ \exists\,t:S_1(t)\neq S_2(t)\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[U=\sum_jn(t_j)[O_1(t_j)-E_1(t_j)],\qquad X^2=\frac{U^2}{\operatorname{Var}(U)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(t\)
-        </dt>
-<dd>
-         tempo de acompanhamento
-        </dd>
-</div>
-<div>
-<dt>
-         \(S(t)\)
-        </dt>
-<dd>
-         função de sobrevivência
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_j\)
-        </dt>
-<dd>
-         número de unidades sob risco no instante j
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de diferença ponderada nas curvas; comparação com log-rank depende do padrão temporal de efeitos.
-      </p>
-<p>
-       Considere a censura, a quantidade de unidades sob risco e a precisão das estimativas ao longo do tempo. Em regressão de Cox, interprete razões de taxas instantâneas, não razões de probabilidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Os dados survival::lung registram tempos de evento e censura.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar distribuições de tempos entre grupos dando peso relativamente maior a eventos mais precoces.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-gehan" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-gehan"><code># Teste generalizado de Wilcoxon–Gehan ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste generalizado de Wilcoxon–Gehan</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANÁLISE DE SOBREVIVÊNCIA</span><h1>Teste generalizado de Wilcoxon–Gehan</h1><p class="detail-lead">Compara curvas de sobrevivência ponderando cada tempo de evento pelo número de unidades em risco, o que dá ênfase ao início do acompanhamento.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/gehan.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/gehan.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O teste de Wilcoxon–Gehan compara curvas de sobrevivência como o <a href="logrank.html">log-rank</a>, mas ponderando cada tempo de evento pelo número de unidades ainda em risco. Como esse número decresce, o teste dá mais peso ao início do acompanhamento — que é onde há mais informação e onde, em muitos problemas, a diferença entre os tratamentos se concentra.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Wilcoxon–Gehan" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Wilcoxon generalizado</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">para dados censurados</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O peso</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">w(t) = n em risco</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">decresce com o tempo</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Duas formas</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Soma ponderada de O − E</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Contagem de pares</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando prefere</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Diferença no INÍCIO</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">riscos não proporcionais</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando evitar</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Diferença tardia</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">padrão de censura desigual</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">coin::logrank_test()</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">survdiff(rho = 1)</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Wilcoxon–Gehan</text></svg><figcaption>Visão geral do teste de Wilcoxon–Gehan. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O problema que ele resolve</strong><p>No exemplo fictício desta ficha, duas cultivares têm curvas que se cruzam: uma delas tem 43,8 pontos percentuais de vantagem aos 6 meses e perde essa vantagem até o fim. O <a href="logrank.html">log-rank</a> devolve \(p=0{,}70\) — as contribuições positivas e negativas se cancelam. O teste de Gehan devolve \(p=0{,}016\).</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Gehan (1965) formulou o teste como uma contagem de pares, generalizando o <a href="mann-whitney.html">teste de Mann-Whitney</a>. Para cada par formado por uma unidade de cada grupo, pergunta-se qual das duas durou mais. Quando a censura impede a resposta, o par simplesmente não contribui. A forma moderna, equivalente, escreve a mesma estatística como uma soma ponderada das diferenças entre observado e esperado.</p><figure class="fig"><img src="../assets/resultados/gehan-didatica.png" alt="Como um par é comparado, os pesos dos quatro testes e as contribuições relativas" loading="lazy"/><figcaption><strong>Da contagem de pares ao peso.</strong> À esquerda, como cada par é pontuado: +1 quando a unidade do grupo A comprovadamente durou mais, −1 quando a do grupo B durou mais, e 0 quando a censura torna a comparação impossível. No centro, o peso que cada teste atribui a cada tempo: o do log-rank é constante e os demais decaem. À direita, a contribuição relativa de cada tempo de evento nos dados de Freireich, no log-rank e no Gehan — neste último, as primeiras semanas respondem por quase toda a estatística. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Sem censura, é o Mann-Whitney</strong><p>Se nenhuma observação for censurada, todos os pares são decidíveis e a contagem \(U\) é exatamente a estatística de <a href="mann-whitney.html">Mann-Whitney</a>. A censura é a única razão de existir da generalização: ela torna alguns pares indecidíveis, e o teste simplesmente os descarta. Nos dados de Freireich, 42 dos 441 pares (9,5%) são indecidíveis, e \(U=271\).</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Censura não informativa</td><td>Igual ao <a href="kaplan.html">Kaplan–Meier</a> e ao <a href="logrank.html">log-rank</a>.</td><td>Não há teste; examine os motivos de saída.</td></tr><tr><td>Observações independentes</td><td>A variância pressupõe isso.</td><td>Delineamento.</td></tr><tr><td><strong>Padrão de censura semelhante nos grupos</strong></td><td>O peso é o número em risco, que depende da censura: padrões muito diferentes distorcem a comparação.</td><td>Compare as distribuições dos tempos de censura; se diferirem muito, prefira Peto–Peto.</td></tr><tr><td>Grupos definidos antes do acompanhamento</td><td>Evita viés de tempo imortal.</td><td>Protocolo.</td></tr><tr><td>Escolha do teste feita antes de ver os dados</td><td>Escolher o peso pelo gráfico invalida o valor-p.</td><td>Protocolo.</td></tr><tr><td>Eventos em número suficiente</td><td>O poder depende dos eventos.</td><td>Conte os eventos, não as unidades.</td></tr></tbody></table></div><div class="callout warn"><strong>A fragilidade específica do peso de Gehan</strong><p>O peso \(w(t)=n_j\) depende do número em risco, que por sua vez depende de quantas unidades foram censuradas antes de \(t\). Se um grupo perde pacientes muito mais depressa que o outro, o peso reflete esse padrão de censura e não a estrutura de risco. O teste de Peto–Peto, que usa \(w(t)=\hat S(t^-)\) estimado sobre os dois grupos juntos, é a correção clássica desse problema, e é por isso que o R o oferece em <code>survdiff(rho = 1)</code>. Quando não há censura antes do último evento, os dois coincidem exatamente.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ S_1(t)=S_2(t)\quad\text{para todo }t\\ H_1&:\ S_1(t)\neq S_2(t)\ \text{para algum }t\end{aligned}\right.\]</div><h3>Forma ponderada</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[Q_{w}=\frac{\left(\sum_{j} w_j\left[d_{1j}-E_{1j}\right]\right)^{2}}{\sum_{j} w_j^{2}\,V_{1j}}\ \dot\sim\ \chi^{2}_{1},\]\[w_j=n_j\ \text{(Gehan)}\]</div><div class="table-wrap"><table class="method-table"><caption>A família de pesos</caption><thead><tr><th>Teste</th><th>w(t)</th><th>Ênfase</th></tr></thead><tbody><tr><td><a href="logrank.html">Log-rank</a></td><td>1</td><td>Uniforme em todo o acompanhamento.</td></tr><tr><td><strong>Wilcoxon–Gehan</strong></td><td><strong>nⱼ (número em risco)</strong></td><td><strong>Tempos iniciais.</strong></td></tr><tr><td>Tarone–Ware</td><td>√nⱼ</td><td>Meio-termo.</td></tr><tr><td>Peto–Peto</td><td>Ŝ(tⱼ⁻)</td><td>Tempos iniciais, menos sensível à censura.</td></tr><tr><td>G-ρ de Harrington–Fleming</td><td>Ŝ(tⱼ⁻)^ρ</td><td>ρ escolhido pelo analista.</td></tr></tbody></table></div><h3>Forma de contagem de pares</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[U=\sum_{i\in G_1}\sum_{j\in G_2}\phi(i,j),\]\[\phi(i,j)=\begin{cases}+1&\text{se }i\text{ comprovadamente}\\ &\text{durou mais}\\-1&\text{se }j\text{ comprovadamente}\\ &\text{durou mais}\\0&\text{se a censura impede}\\ &\text{decidir}\end{cases}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n_j\)</dt><dd>unidades em risco imediatamente antes de \(t_j\)</dd></div><div><dt>\(d_{1j},\ E_{1j}\)</dt><dd>eventos observados e esperados no grupo 1 em \(t_j\)</dd></div><div><dt>\(V_{1j}\)</dt><dd>variância hipergeométrica</dd></div><div><dt>\(w_j\)</dt><dd>peso atribuído ao tempo \(t_j\)</dd></div><div><dt>\(U\)</dt><dd>soma dos escores de todos os pares</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Quando um par é decidível (A e B são unidades de grupos diferentes)</caption><thead><tr><th>Unidade de A</th><th>Unidade de B</th><th>Situação</th><th>Escore</th></tr></thead><tbody><tr><td>4 (evento)</td><td>7 (evento)</td><td>B falhou depois de A</td><td>−1</td></tr><tr><td>12 (evento)</td><td>7 (evento)</td><td>A falhou depois de B</td><td>+1</td></tr><tr><td>9+ (censura)</td><td>7 (evento)</td><td>A durou ao menos 9, mais que 7</td><td>+1</td></tr><tr><td>4 (evento)</td><td>10+ (censura)</td><td>B durou ao menos 10, mais que 4</td><td>−1</td></tr><tr><td>7+ (censura)</td><td>10+ (censura)</td><td>nada se sabe</td><td><strong>0</strong></td></tr><tr><td>10 (evento)</td><td>7+ (censura)</td><td>B pode ter durado mais</td><td><strong>0</strong></td></tr></tbody></table></div><div class="worked"><strong>Nos dados de Freireich</strong><p>São \(21\times21=441\) pares. Destes, 42 (9,5%) são indecidíveis por causa da censura, e sobram 399 comparáveis. A soma dos escores é</p><div class="math-display" role="group" aria-label="Expressão matemática">\[U=271.\]</div><p>Pela forma ponderada, a soma \(\sum_j w_j(d_{1j}-E_{1j})\) vale \(-271\) — o mesmo número, com o sinal correspondendo à orientação oposta da contagem. A variância é \(\sum_j w_j^2 V_{1j}=5\,457{,}11\), e</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{(-271)^{2}}{5\,457{,}11} \\ &= \frac{73\,441}{5\,457{,}11} \\ &= 13{,}458,\end{aligned}\]\[p=2{,}44\times10^{-4}.\]</div><p>Para comparar, o <a href="logrank.html">log-rank</a> sobre os mesmos dados dá 16,79. Os dois rejeitam com folga; a diferença entre eles só passa a importar quando a vantagem de um grupo não é uniforme no tempo.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Sem censura, reduz-se exatamente ao <a href="mann-whitney.html">teste de Mann-Whitney</a>.</li><li>Pertence à mesma família ponderada do <a href="logrank.html">log-rank</a>, da qual é o caso \(w_j=n_j\).</li><li>Tem poder máximo quando o quociente de riscos diminui com o tempo, isto é, quando a diferença se concentra no início.</li><li>Perde muito poder quando a diferença surge tardiamente: na simulação desta ficha, 7,0% contra 18,2% do log-rank.</li><li>Quando não há censura antes do último evento, \(n_j\) é proporcional a \(\hat S(t_j^-)\) e o teste coincide exatamente com o de Peto–Peto, porque a estatística é invariante a multiplicar todos os pesos por uma constante.</li><li>É mais sensível que o Peto–Peto a diferenças no padrão de censura entre os grupos.</li><li>Como todos os testes da família, é válido sob \(H_0\) qualquer que seja a forma das curvas.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Estatística e valor-p</td><td>Evidência contra curvas iguais.</td><td>Com ênfase nos tempos iniciais.</td></tr><tr><td>Comparação com o log-rank</td><td>Onde está a diferença no tempo.</td><td>Divergência grande sugere riscos não proporcionais.</td></tr><tr><td>Pares indecidíveis</td><td>Quanta informação a censura consumiu.</td><td>Proporção alta pede cautela.</td></tr><tr><td>Curvas de Kaplan–Meier</td><td>O padrão temporal da diferença.</td><td>É o que dá sentido ao resultado.</td></tr><tr><td>Diferença de RMST</td><td>Tamanho do efeito, por horizonte.</td><td>Declare o τ.</td></tr><tr><td>Diferença de S(t) em tempos fixos</td><td>Efeito em pontos de interesse clínico.</td><td>Fixe os tempos no protocolo.</td></tr></tbody></table></div><div class="callout warn"><strong>Divergir do log-rank é informação, não contradição</strong><p>Quando Gehan e <a href="logrank.html">log-rank</a> levam a conclusões diferentes, isso não significa que um deles esteja errado: significa que a diferença entre os grupos <em>não é uniforme no tempo</em>. É um achado sobre os dados, e deve ser relatado como tal — junto com a curva, que mostra onde a diferença está. O que não se pode fazer é rodar os dois e reportar o que der o menor valor-p.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O R base não oferece o peso de Gehan diretamente: <code>survdiff()</code> implementa a família \(G^\rho\), em que <code>rho = 0</code> é o log-rank e <code>rho = 1</code> é o Peto–Peto. Para o peso original de Gehan, use <code>coin::logrank_test()</code> com <code>type = "Gehan-Breslow"</code>, que também oferece <code>"Tarone-Ware"</code> e <code>"Peto-Peto"</code>. Para o tempo médio restrito, <code>print(fit, rmean = tau)</code> ou o pacote <code>survRM2</code>, que dá a diferença com intervalo de confiança.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-gehan-min" type="button">Copiar código</button></div><pre id="code-gehan-min"><code>library(coin)
+logrank_test(Surv(tempo, evento) ~ grupo, data = dados, type = "Gehan-Breslow")
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 1)   # Peto-Peto
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A ficha tem dois exemplos. O primeiro são os dados de Freireich das fichas de <a href="kaplan.html">Kaplan–Meier</a> e <a href="logrank.html">log-rank</a>, em que os testes concordam. O segundo é fictício e foi construído para o caso oposto: 64 plantas de duas cultivares, acompanhadas por 36 meses quanto ao tempo até a primeira infecção por um patógeno de solo, com a cultivar B apresentando resistência inicial que se perde com o tempo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-gehan" type="button">Copiar código</button></div><pre id="code-gehan"><code># Teste generalizado de Wilcoxon-Gehan: exemplo completo ----
+# Pacotes: survival (base/recomendado), survminer (gráficos)
 
-# Ajuste e resultados ----
-if (!requireNamespace("survival", quietly = TRUE)) install.packages("survival")
 library(survival)
-d &lt;- subset(lung, !is.na(time) &amp; !is.na(status) &amp; !is.na(sex))
-d$evento &lt;- as.integer(d$status == 2)
-d$grupo &lt;- as.integer(d$sex == 2)
-U &lt;- 0; V &lt;- 0
-for (t in sort(unique(d$time[d$evento == 1]))) {
-  risco &lt;- d$time &gt;= t
-  evento &lt;- d$time == t &amp; d$evento == 1
-  n &lt;- sum(risco); n1 &lt;- sum(risco &amp; d$grupo == 1)
-  n0 &lt;- n - n1; dt &lt;- sum(evento)
-  o1 &lt;- sum(evento &amp; d$grupo == 1)
-  if (n &gt; 1) {
-    U &lt;- U + n * (o1 - dt * n1 / n)
-    V &lt;- V + n^2 * (n1 * n0 * dt * (n - dt)) / (n^2 * (n - 1))
-  }
+
+# PARTE 1 - os dados de Freireich, os mesmos das duas fichas anteriores
+tempo  &lt;- c(6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35,
+            1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23)
+evento &lt;- c(0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+            rep(1, 21))
+grupo  &lt;- factor(rep(c("6-MP", "placebo"), each = 21))
+dados  &lt;- data.frame(tempo, evento, grupo)
+
+# O teste de Gehan, com peso igual ao número em risco.
+# No R, a forma direta é pelo pacote coin; com survdiff, o mais próximo
+# disponível é o Peto-Peto (rho = 1), que usa S(t-) como peso.
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 0)     # log-rank
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 1)     # Peto-Peto
+
+# install.packages("coin")
+library(coin)
+logrank_test(Surv(tempo, evento) ~ grupo, data = dados, type = "Gehan-Breslow")
+logrank_test(Surv(tempo, evento) ~ grupo, data = dados, type = "Tarone-Ware")
+logrank_test(Surv(tempo, evento) ~ grupo, data = dados, type = "Peto-Peto")
+logrank_test(Surv(tempo, evento) ~ grupo, data = dados, type = "logrank")
+
+# A estatística de Gehan na forma ORIGINAL: contagem de pares
+U &lt;- 0; indecisos &lt;- 0
+for (i in which(grupo == "6-MP")) for (j in which(grupo == "placebo")) {
+  ti &lt;- tempo[i]; ei &lt;- evento[i]; tj &lt;- tempo[j]; ej &lt;- evento[j]
+  if      (ti &gt; tj &amp;&amp; ej == 1)                 U &lt;- U + 1
+  else if (tj &gt; ti &amp;&amp; ei == 1)                 U &lt;- U - 1
+  else if (ti == tj &amp;&amp; ei == 0 &amp;&amp; ej == 1)     U &lt;- U + 1
+  else if (ti == tj &amp;&amp; ei == 1 &amp;&amp; ej == 0)     U &lt;- U - 1
+  else indecisos &lt;- indecisos + 1
 }
-qui &lt;- U^2 / V
-print(c(qui_quadrado = qui, gl = 1,
-        p_valor = pchisq(qui, df = 1, lower.tail = FALSE)))
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+c(U = U, indecisos = indecisos, total = 21*21)
+# Sem censura, essa contagem é exatamente a estatística de Mann-Whitney.
 
+# PARTE 2 - o caso em que a escolha do peso muda a conclusão (dados fictícios)
+A_t &lt;- c(1,1,1,1,2,2,3,3,3,3,4,4,5,6,6,7,8,9,9,11,19,19,20,22,24,24,25,31,36,36,36,36)
+A_e &lt;- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
+B_t &lt;- c(6,7,9,11,11,12,12,13,13,14,14,14,14,15,16,16,16,18,19,20,20,20,20,21,21,22,24,25,25,28,31,33)
+B_e &lt;- rep(1, 32)
+cult &lt;- data.frame(tempo = c(A_t, B_t), evento = c(A_e, B_e),
+                   cultivar = factor(rep(c("A", "B"), each = 32)))
+fit2 &lt;- survfit(Surv(tempo, evento) ~ cultivar, data = cult)
+summary(fit2, times = c(3, 6, 12, 18, 24, 30, 36))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Implementação didática direta para dois grupos com censura à direita; não utilizar survdiff(rho=1) como sinônimo exato de Gehan–Breslow.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="logrank.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste log-rank
-    </a>
-<a href="kappa.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Kappa de Cohen
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+survdiff(Surv(tempo, evento) ~ cultivar, data = cult, rho = 0)   # NÃO rejeita
+survdiff(Surv(tempo, evento) ~ cultivar, data = cult, rho = 1)   # rejeita
+library(coin)
+logrank_test(Surv(tempo, evento) ~ cultivar, data = cult, type = "Gehan-Breslow")
+logrank_test(Surv(tempo, evento) ~ cultivar, data = cult, type = "Tarone-Ware")
+
+# Quando as curvas se cruzam, relate o tempo médio restrito
+print(fit2, rmean = 12)
+print(fit2, rmean = 24)
+print(fit2, rmean = 36)
+# install.packages("survRM2")
+library(survRM2)
+rmst2(cult$tempo, cult$evento, as.integer(cult$cultivar) - 1, tau = 12)
+rmst2(cult$tempo, cult$evento, as.integer(cult$cultivar) - 1, tau = 36)
+
+# Gráficos
+library(survminer)
+ggsurvplot(fit2, data = cult, conf.int = FALSE, risk.table = TRUE,
+           xlab = "Meses", legend.title = "Cultivar")
+plot(fit2, fun = "cloglog", col = c("darkgreen", "firebrick"), lwd = 2)
+# Linhas que se cruzam: riscos NÃO proporcionais.
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-gehan" type="button">Copiar código</button></div><pre id="code-py-gehan"><code># Bibliotecas: numpy, scipy e matplotlib (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Funções comuns às fichas de sobrevivência
+# ===================================================================
+def tabela_tempos(t, e, gr):
+    T = np.unique(t[e == 1]); L = []
+    for x in T:
+        L.append((x, np.sum(t &gt;= x), np.sum((t == x) &amp; (e == 1)),
+                  np.sum((t &gt;= x) &amp; (gr == 0)), np.sum((t == x) &amp; (e == 1) &amp; (gr == 0))))
+    return np.array(L, float)
+
+def ponderado(t, e, gr, peso="logrank"):
+    """Família de testes ponderados; o peso é o que distingue um do outro."""
+    L = tabela_tempos(t, e, gr); x, n_, d_, n1, d1 = L.T
+    E1 = d_*n1/n_
+    V1 = d_*(n1/n_)*(1-n1/n_)*(n_-d_)/np.maximum(n_-1, 1)
+    Sc = np.r_[1.0, np.cumprod(1 - d_/n_)[:-1]]        # S(t-) combinado
+    w = {"logrank": np.ones_like(x), "gehan": n_, "peto": Sc,
+         "tarone": np.sqrt(n_), "fleming05": np.sqrt(Sc)}[peso]
+    O_E = np.sum(w*(d1-E1)); V = np.sum(w**2*V1); Q = O_E**2/V
+    return x, n_, d_, n1, d1, E1, V1, w, O_E, V, Q, stats.chi2.sf(Q, 1)
+
+def km(t, e):
+    T = np.unique(t[e == 1])
+    nr = np.array([np.sum(t &gt;= x) for x in T])
+    d = np.array([np.sum((t == x) &amp; (e == 1)) for x in T])
+    return T, np.cumprod(1 - d/nr)
+
+def mann_whitney_censurado(t, e, gr):
+    """A estatística de Gehan na forma ORIGINAL: contagem de pares.
+       Para cada par (i do grupo 0, j do grupo 1) atribui-se +1 se i
+       sobreviveu COMPROVADAMENTE mais, -1 se menos, 0 se indecidível."""
+    i0 = np.where(gr == 0)[0]; i1 = np.where(gr == 1)[0]
+    U = 0; indec = 0
+    for i in i0:
+        for j in i1:
+            ti, ei, tj, ej = t[i], e[i], t[j], e[j]
+            if   ti &gt; tj and ej == 1: U += 1          # j falhou antes
+            elif tj &gt; ti and ei == 1: U -= 1          # i falhou antes
+            elif ti == tj and ei == 0 and ej == 1: U += 1
+            elif ti == tj and ei == 1 and ej == 0: U -= 1
+            else: indec += 1
+    return U, indec, len(i0)*len(i1)
+
+# ===================================================================
+# PARTE 1 - os dados de Freireich, os mesmos das duas fichas anteriores
+# ===================================================================
+t6  = np.array([6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35])
+e6  = np.array([0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0])
+tpl = np.array([1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23])
+epl = np.ones(21, int)
+t = np.r_[t6, tpl]; e = np.r_[e6, epl]
+gr = np.r_[np.zeros(21), np.ones(21)].astype(int)
+
+print("Freireich et al. (1963): 6-mercaptopurina contra placebo")
+x, n_, d_, n1, d1, E1, V1, w, O_E, V, Q, p = ponderado(t, e, gr, "gehan")
+print("\nTabela do teste de Gehan: o peso de cada tempo é o número em risco")
+print(f"{'tempo':&gt;7}{'n em risco = w':&gt;16}{'d 6-MP':&gt;9}{'E(d 6-MP)':&gt;12}"
+      f"{'w (d - E)':&gt;13}{'w² Var':&gt;12}")
+for j in range(len(x)):
+    print(f"{x[j]:&gt;7.0f}{n_[j]:&gt;16.0f}{d1[j]:&gt;9.0f}{E1[j]:&gt;12.4f}"
+          f"{w[j]*(d1[j]-E1[j]):&gt;13.2f}{w[j]**2*V1[j]:&gt;12.2f}")
+print(f"{'soma':&gt;7}{'':&gt;16}{'':&gt;9}{'':&gt;12}{O_E:&gt;13.2f}{V:&gt;12.2f}")
+print(f"\nQ = ({O_E:.2f})² / {V:.2f} = {Q:.4f} | gl = 1 | valor-p = {p:.4e}")
+
+U, indec, total = mann_whitney_censurado(t, e, gr)
+print(f"\nA mesma estatística pela contagem de pares (forma original de Gehan)")
+print(f"  pares comparáveis: {total-indec} de {total}  "
+      f"({100*(total-indec)/total:.1f}%)")
+print(f"  pares indecidíveis por causa da censura: {indec}")
+print(f"  U = (pares em que o 6-MP durou mais) - (pares em que durou menos) = {U}")
+print(f"  A soma ponderada da tabela acima é {O_E:.0f}, e U = {U}: são a mesma")
+print("  quantidade, escrita de duas maneiras. A forma de pares explica o nome")
+print("  'Wilcoxon generalizado': sem censura, ela é exatamente a estatística de")
+print("  Mann-Whitney.")
+
+print("\nOs quatro testes nos mesmos dados")
+print(f"{'teste':&lt;24}{'peso w(t)':&lt;20}{'Q':&gt;10}{'valor-p':&gt;14}")
+for nome, pk, desc in [("log-rank", "logrank", "1"),
+                       ("Wilcoxon-Gehan", "gehan", "n em risco"),
+                       ("Tarone-Ware", "tarone", "raiz de n em risco"),
+                       ("Peto-Peto", "peto", "S(t-)")]:
+    *_, Qk, pk_ = ponderado(t, e, gr, pk)
+    print(f"{nome:&lt;24}{desc:&lt;20}{Qk:&gt;10.4f}{pk_:&gt;14.4e}")
+print("Todos rejeitam com folga: aqui a escolha do peso não muda nada.")
+
+# ===================================================================
+# PARTE 2 - o caso em que a escolha do peso MUDA a conclusão
+# ===================================================================
+print("\n" + "=" * 70)
+print("Dados fictícios: 64 plantas de duas cultivares, acompanhadas por 36")
+print("meses quanto ao tempo até a primeira infecção por um patógeno de solo.")
+print("A cultivar B tem resistência inicial que se perde com o tempo.")
+A_t = np.array([1,1,1,1,2,2,3,3,3,3,4,4,5,6,6,7,8,9,9,11,19,19,20,22,24,24,25,31,36,36,36,36])
+A_e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0])
+B_t = np.array([6,7,9,11,11,12,12,13,13,14,14,14,14,15,16,16,16,18,19,20,20,20,20,21,21,22,24,25,25,28,31,33])
+B_e = np.ones(32, int)
+t2 = np.r_[A_t, B_t]; e2 = np.r_[A_e, B_e]
+g2 = np.r_[np.zeros(32), np.ones(32)].astype(int)
+print(f"\n  cultivar A: n = 32, infecções = {A_e.sum()}, censuras = {32-A_e.sum()}")
+print(f"  cultivar B: n = 32, infecções = {B_e.sum()}, censuras = {32-B_e.sum()}")
+TA, SA = km(A_t, A_e); TB, SB = km(B_t, B_e)
+print("\nProporção sem infecção, pelo Kaplan-Meier")
+print(f"{'mês':&gt;6}{'cultivar A':&gt;14}{'cultivar B':&gt;14}{'diferença':&gt;14}")
+for mes in [3, 6, 12, 18, 24, 30, 36]:
+    sa = SA[TA &lt;= mes][-1] if np.any(TA &lt;= mes) else 1.0
+    sb = SB[TB &lt;= mes][-1] if np.any(TB &lt;= mes) else 1.0
+    print(f"{mes:&gt;6}{100*sa:&gt;13.1f}%{100*sb:&gt;13.1f}%{100*(sb-sa):&gt;12.1f} p.p.")
+print("A vantagem de B é de 43,8 pontos percentuais aos 6 meses, some entre os")
+print("meses 18 e 24, e INVERTE-SE ao fim: é o padrão clássico de riscos não")
+print("proporcionais, com curvas que se cruzam.")
+
+print(f"\n{'teste':&lt;24}{'peso w(t)':&lt;20}{'Q':&gt;10}{'valor-p':&gt;12}{'decisão':&gt;14}")
+for nome, pk, desc in [("log-rank", "logrank", "1"),
+                       ("Wilcoxon-Gehan", "gehan", "n em risco"),
+                       ("Tarone-Ware", "tarone", "raiz de n em risco"),
+                       ("Peto-Peto", "peto", "S(t-)"),
+                       ("G-rho com rho = 0,5", "fleming05", "raiz de S(t-)")]:
+    *_, Qk, pk_ = ponderado(t2, e2, g2, pk)
+    print(f"{nome:&lt;24}{desc:&lt;20}{Qk:&gt;10.4f}{pk_:&gt;12.4f}"
+          f"{('rejeita' if pk_ &lt; 0.05 else 'não rejeita'):&gt;14}")
+print("\nO log-rank devolve Q = 0,15 e p = 0,70: nenhuma evidência. O teste de")
+print("Gehan devolve p = 0,016 e rejeita. A diferença é real, mas está")
+print("concentrada nos primeiros meses, e o log-rank a dilui entre os tempos")
+print("tardios, em que a vantagem já se inverteu - as contribuições de sinais")
+print("opostos se cancelam. Não há aqui um teste 'certo' e um 'errado': há duas")
+print("perguntas diferentes, e escolher o teste depois de ver o gráfico é que")
+print("seria errado.")
+print("\nRepare que Gehan e Peto-Peto deram EXATAMENTE o mesmo Q, e Tarone-Ware e")
+print("o G-rho de 0,5 também. Não é coincidência: como aqui não há censura antes")
+print("do último evento, o número em risco é proporcional a S(t-), e a estatística")
+print("não muda se todos os pesos forem multiplicados por uma constante. Nos")
+print("dados de Freireich, que têm censura no meio do acompanhamento, os dois se")
+print("separam: 13,46 contra 14,46.")
+
+# ===================================================================
+# PARTE 3 - o que relatar quando a razão de riscos não faz sentido
+# ===================================================================
+print("\n" + "=" * 70)
+print("Com curvas que se cruzam, a razão de riscos deixa de fazer sentido: ela")
+print("é maior que 1 no início e menor que 1 no fim. Convém relatar quantidades")
+print("que não pressuponham proporcionalidade.")
+def rmst(t, e, tau):
+    T, S = km(t, e)
+    xx = np.r_[0.0, T[T &lt;= tau], tau]; yy = np.r_[1.0, S[T &lt;= tau]]
+    return float(np.sum(np.diff(xx)*yy))
+print(f"\n{'tau (meses)':&gt;12}{'RMST A':&gt;10}{'RMST B':&gt;10}{'diferença':&gt;12}")
+for tau in [6, 12, 24, 36]:
+    ra, rb = rmst(A_t, A_e, tau), rmst(B_t, B_e, tau)
+    print(f"{tau:&gt;12}{ra:&gt;10.2f}{rb:&gt;10.2f}{rb-ra:&gt;12.2f}")
+print("O ganho médio de B depende inteiramente do horizonte escolhido, e declarar")
+print("esse horizonte é parte da análise, não um detalhe técnico. A diferença de")
+print("proporções em tempos fixos conta a mesma história de outra maneira.")
+
+# PARTE 4 - as três estatísticas sob riscos proporcionais e não proporcionais
+# ===================================================================
+print("\n" + "=" * 70)
+print("Poder dos testes em quatro cenários, 2.000 experimentos cada,")
+print("n = 50 por grupo, censura administrativa aos 30 e perdas de seguimento")
+print("aleatórias ao longo do estudo (para que Gehan e Peto-Peto não coincidam).")
+def pwexp(rng, n, a, b, c):
+    E = rng.exponential(1, n)
+    return np.where(E &lt;= a*c, E/a, c + (E - a*c)/b)
+def simula(cen, rep=2000, n=50, semente=9):
+    rng = np.random.default_rng(semente); cont = np.zeros(4)
+    for _ in range(rep):
+        T1 = rng.exponential(12, n)
+        if   cen == "nulo":  T2 = rng.exponential(12, n)
+        elif cen == "prop":  T2 = rng.exponential(12/1.7, n)
+        elif cen == "cedo":  T2 = pwexp(rng, n, 0.18, 0.0833, 5.0)
+        else:                T2 = pwexp(rng, n, 0.0833, 0.18, 10.0)
+        TT = np.r_[T1, T2]
+        C = np.minimum(rng.exponential(45, 2*n), 30.0)   # perda + fim do estudo
+        X = np.minimum(TT, C); E = (TT &lt;= C).astype(int)
+        G = np.r_[np.zeros(n), np.ones(n)].astype(int)
+        for k, pk in enumerate(["logrank", "gehan", "tarone", "peto"]):
+            cont[k] += ponderado(X, E, G, pk)[11] &lt; 0.05
+    return 100*cont/rep
+print(f"\n{'cenário':&lt;40}{'log-rank':&gt;10}{'Gehan':&gt;9}{'Tarone':&gt;9}{'Peto':&gt;9}")
+for cen, nome in [("nulo", "H0 verdadeira"),
+                  ("prop", "riscos proporcionais (RR = 1,7)"),
+                  ("cedo", "diferença só nos 5 primeiros meses"),
+                  ("tardio", "diferença só depois do mês 10")]:
+    v = simula(cen)
+    print(f"{nome:&lt;40}" + "".join(f"{q:&gt;8.2f}%" for q in v))
+print("\nA leitura é a mesma do exemplo das cultivares, agora em termos de poder.")
+print("Tarone-Ware, com peso igual à raiz do número em risco, é o meio-termo:")
+print("fica próximo do melhor em todos os cenários sem ser o melhor em nenhum.")
+print("É por isso que vários autores o recomendam quando não se sabe de antemão")
+print("onde a diferença estará. Se houver hipótese prévia sobre ONDE a diferença")
+print("deve aparecer, o teste correspondente é mais poderoso - mas essa hipótese")
+print("precisa estar no protocolo, não ser inventada depois do gráfico.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Freireich et al. (1963): 6-mercaptopurina contra placebo
+
+Tabela do teste de Gehan: o peso de cada tempo é o número em risco
+  tempo  n em risco = w   d 6-MP   E(d 6-MP)    w (d - E)      w² Var
+      1              42        0      1.0000       -42.00      860.49
+      2              40        0      1.0500       -42.00      777.54
+      3              38        0      0.5526       -21.00      357.00
+      4              37        0      1.1351       -42.00      653.33
+      5              35        0      1.2000       -42.00      570.71
+      6              33        3      1.9091        36.00      708.75
+      7              29        1      0.5862        12.00      204.00
+      8              28        0      2.2857       -64.00      682.67
+     10              23        1      0.6522         8.00      120.00
+     11              21        0      1.2381       -26.00      197.60
+     12              18        0      1.3333       -24.00      135.53
+     13              16        1      0.7500         4.00       48.00
+     15              15        0      0.7333       -11.00       44.00
+     16              14        1      0.7857         3.00       33.00
+     17              13        0      0.7692       -10.00       30.00
+     22               9        1      1.5556        -5.00       24.50
+     23               7        1      1.7143        -5.00       10.00
+   soma                                           -271.00     5457.11
+
+Q = (-271.00)² / 5457.11 = 13.4579 | gl = 1 | valor-p = 2.4398e-04
+
+A mesma estatística pela contagem de pares (forma original de Gehan)
+  pares comparáveis: 399 de 441  (90.5%)
+  pares indecidíveis por causa da censura: 42
+  U = (pares em que o 6-MP durou mais) - (pares em que durou menos) = 271
+  A soma ponderada da tabela acima é -271, e U = 271: são a mesma
+  quantidade, escrita de duas maneiras. A forma de pares explica o nome
+  'Wilcoxon generalizado': sem censura, ela é exatamente a estatística de
+  Mann-Whitney.
+
+Os quatro testes nos mesmos dados
+teste                   peso w(t)                    Q       valor-p
+log-rank                1                      16.7929    4.1688e-05
+Wilcoxon-Gehan          n em risco             13.4579    2.4398e-04
+Tarone-Ware             raiz de n em risco     15.1236    1.0070e-04
+Peto-Peto               S(t-)                  14.4572    1.4338e-04
+Todos rejeitam com folga: aqui a escolha do peso não muda nada.
+
+======================================================================
+Dados fictícios: 64 plantas de duas cultivares, acompanhadas por 36
+meses quanto ao tempo até a primeira infecção por um patógeno de solo.
+A cultivar B tem resistência inicial que se perde com o tempo.
+
+  cultivar A: n = 32, infecções = 28, censuras = 4
+  cultivar B: n = 32, infecções = 32, censuras = 0
+
+Proporção sem infecção, pelo Kaplan-Meier
+   mês    cultivar A    cultivar B     diferença
+     3         68.8%        100.0%        31.2 p.p.
+     6         53.1%         96.9%        43.8 p.p.
+    12         37.5%         78.1%        40.6 p.p.
+    18         37.5%         43.8%         6.2 p.p.
+    24         18.8%         15.6%        -3.1 p.p.
+    30         15.6%          6.2%        -9.4 p.p.
+    36         12.5%          0.0%       -12.5 p.p.
+A vantagem de B é de 43,8 pontos percentuais aos 6 meses, some entre os
+meses 18 e 24, e INVERTE-SE ao fim: é o padrão clássico de riscos não
+proporcionais, com curvas que se cruzam.
+
+teste                   peso w(t)                    Q     valor-p       decisão
+log-rank                1                       0.1536      0.6951   não rejeita
+Wilcoxon-Gehan          n em risco              5.8138      0.0159       rejeita
+Tarone-Ware             raiz de n em risco      2.4663      0.1163   não rejeita
+Peto-Peto               S(t-)                   5.8138      0.0159       rejeita
+G-rho com rho = 0,5     raiz de S(t-)           2.4663      0.1163   não rejeita
+
+O log-rank devolve Q = 0,15 e p = 0,70: nenhuma evidência. O teste de
+Gehan devolve p = 0,016 e rejeita. A diferença é real, mas está
+concentrada nos primeiros meses, e o log-rank a dilui entre os tempos
+tardios, em que a vantagem já se inverteu - as contribuições de sinais
+opostos se cancelam. Não há aqui um teste 'certo' e um 'errado': há duas
+perguntas diferentes, e escolher o teste depois de ver o gráfico é que
+seria errado.
+
+Repare que Gehan e Peto-Peto deram EXATAMENTE o mesmo Q, e Tarone-Ware e
+o G-rho de 0,5 também. Não é coincidência: como aqui não há censura antes
+do último evento, o número em risco é proporcional a S(t-), e a estatística
+não muda se todos os pesos forem multiplicados por uma constante. Nos
+dados de Freireich, que têm censura no meio do acompanhamento, os dois se
+separam: 13,46 contra 14,46.
+
+======================================================================
+Com curvas que se cruzam, a razão de riscos deixa de fazer sentido: ela
+é maior que 1 no início e menor que 1 no fim. Convém relatar quantidades
+que não pressuponham proporcionalidade.
+
+ tau (meses)    RMST A    RMST B   diferença
+           6      4.59      6.00        1.41
+          12      7.28     11.50        4.22
+          24     11.28     16.81        5.53
+          36     13.03     17.50        4.47
+O ganho médio de B depende inteiramente do horizonte escolhido, e declarar
+esse horizonte é parte da análise, não um detalhe técnico. A diferença de
+proporções em tempos fixos conta a mesma história de outra maneira.
+
+======================================================================
+Poder dos testes em quatro cenários, 2.000 experimentos cada,
+n = 50 por grupo, censura administrativa aos 30 e perdas de seguimento
+aleatórias ao longo do estudo (para que Gehan e Peto-Peto não coincidam).
+
+cenário                                   log-rank    Gehan   Tarone     Peto
+H0 verdadeira                               5.20%    5.00%    4.90%    4.85%
+riscos proporcionais (RR = 1,7)            64.00%   52.20%   59.65%   54.85%
+diferença só nos 5 primeiros meses         47.40%   63.90%   59.05%   62.90%
+diferença só depois do mês 10              18.20%    7.00%   10.05%    7.95%
+
+A leitura é a mesma do exemplo das cultivares, agora em termos de poder.
+Tarone-Ware, com peso igual à raiz do número em risco, é o meio-termo:
+fica próximo do melhor em todos os cenários sem ser o melhor em nenhum.
+É por isso que vários autores o recomendam quando não se sabe de antemão
+onde a diferença estará. Se houver hipótese prévia sobre ONDE a diferença
+deve aparecer, o teste correspondente é mais poderoso - mas essa hipótese
+precisa estar no protocolo, não ser inventada depois do gráfico.</pre></div><figure class="fig"><img src="../assets/resultados/gehan.png" alt="As curvas que se cruzam, os valores-p dos cinco testes e o poder em quatro cenários" loading="lazy"/><figcaption><strong>O caso em que o peso decide.</strong> À esquerda, as curvas das duas cultivares: B tem 43,8 pontos percentuais de vantagem aos 6 meses, perde essa vantagem entre os meses 18 e 24, e termina abaixo de A. No centro, os valores-p dos cinco testes sobre esses mesmos dados: só os que ponderam os tempos iniciais rejeitam. À direita, o poder dos três testes em quatro cenários de simulação, com Tarone–Ware ocupando a posição intermediária em todos. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Primeiro exemplo (Freireich): os testes concordam</caption><thead><tr><th>Teste</th><th>Peso</th><th>Q</th><th>Valor-p</th></tr></thead><tbody><tr><td><a href="logrank.html">Log-rank</a></td><td>1</td><td>16,7929</td><td>4,17 × 10⁻⁵</td></tr><tr><td>Tarone–Ware</td><td>√(n em risco)</td><td>15,1236</td><td>1,01 × 10⁻⁴</td></tr><tr><td>Peto–Peto</td><td>Ŝ(t⁻)</td><td>14,4572</td><td>1,43 × 10⁻⁴</td></tr><tr><td><strong>Wilcoxon–Gehan</strong></td><td>n em risco</td><td><strong>13,4579</strong></td><td>2,44 × 10⁻⁴</td></tr><tr><td>Pares comparáveis</td><td>399 de 441 (90,5%)</td><td>U = 271</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Segundo exemplo: proporção sem infecção (64 plantas fictícias)</caption><thead><tr><th>Mês</th><th>Cultivar A</th><th>Cultivar B</th><th>Diferença</th></tr></thead><tbody><tr><td>3</td><td>68,8%</td><td>100,0%</td><td>+31,2 p.p.</td></tr><tr><td><strong>6</strong></td><td>53,1%</td><td>96,9%</td><td><strong>+43,8 p.p.</strong></td></tr><tr><td>12</td><td>37,5%</td><td>78,1%</td><td>+40,6 p.p.</td></tr><tr><td>18</td><td>37,5%</td><td>43,8%</td><td>+6,2 p.p.</td></tr><tr><td>24</td><td>18,8%</td><td>15,6%</td><td>−3,1 p.p.</td></tr><tr><td>36</td><td>12,5%</td><td>0,0%</td><td>−12,5 p.p.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Segundo exemplo: a escolha do peso muda a conclusão</caption><thead><tr><th>Teste</th><th>Peso</th><th>Q</th><th>Valor-p</th><th>Decisão</th></tr></thead><tbody><tr><td><a href="logrank.html">Log-rank</a></td><td>1</td><td>0,1536</td><td>0,6951</td><td>não rejeita</td></tr><tr><td>Tarone–Ware</td><td>√(n em risco)</td><td>2,4663</td><td>0,1163</td><td>não rejeita</td></tr><tr><td>G-ρ com ρ = 0,5</td><td>√Ŝ(t⁻)</td><td>2,4663</td><td>0,1163</td><td>não rejeita</td></tr><tr><td>Peto–Peto</td><td>Ŝ(t⁻)</td><td>5,8138</td><td><strong>0,0159</strong></td><td><strong>rejeita</strong></td></tr><tr><td><strong>Wilcoxon–Gehan</strong></td><td>n em risco</td><td><strong>5,8138</strong></td><td><strong>0,0159</strong></td><td><strong>rejeita</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Tempo médio restrito, por horizonte</caption><thead><tr><th>τ (meses)</th><th>RMST A</th><th>RMST B</th><th>Diferença</th></tr></thead><tbody><tr><td>6</td><td>4,59</td><td>6,00</td><td>+1,41</td></tr><tr><td>12</td><td>7,28</td><td>11,50</td><td>+4,22</td></tr><tr><td>24</td><td>11,28</td><td>16,81</td><td>+5,53</td></tr><tr><td>36</td><td>13,03</td><td>17,50</td><td>+4,47</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Poder por cenário (2 000 experimentos, n = 50 por grupo)</caption><thead><tr><th>Cenário</th><th>Log-rank</th><th>Tarone–Ware</th><th>Gehan</th></tr></thead><tbody><tr><td>H₀ verdadeira</td><td>5,20%</td><td>4,90%</td><td>5,00%</td></tr><tr><td>Riscos proporcionais (RR = 1,7)</td><td><strong>64,00%</strong></td><td>59,65%</td><td>52,20%</td></tr><tr><td>Diferença só nos 5 primeiros meses</td><td>47,40%</td><td>59,05%</td><td><strong>63,90%</strong></td></tr><tr><td>Diferença só depois do mês 10</td><td><strong>18,20%</strong></td><td>10,05%</td><td>7,00%</td></tr></tbody></table></div><p><strong>Leitura do primeiro exemplo:</strong> todos os testes rejeitam com folga, e a ordem das estatísticas segue o padrão esperado quando a vantagem de um grupo persiste no tempo — o log-rank acumula mais evidência, o Gehan menos. A conclusão é a mesma qualquer que seja o peso, e a escolha é irrelevante na prática.</p><p><strong>Leitura do segundo:</strong> aqui a escolha decide tudo. A cultivar B começa com uma vantagem grande — aos 6 meses, 96,9% das plantas ainda sem infecção, contra 53,1% em A — que se dissipa até desaparecer por volta do mês 20 e se inverter no fim. O log-rank, que pesa igualmente todos os tempos, soma contribuições positivas no início e negativas no fim, elas se cancelam, e o resultado é \(Q=0{,}15\) com \(p=0{,}70\): nenhuma evidência. O teste de Gehan dá peso maior ao início, onde a vantagem está, e devolve \(p=0{,}016\).</p><p>Vale notar um detalhe técnico que a tabela expõe: Gehan e Peto–Peto deram <em>exatamente</em> o mesmo \(Q\), e o mesmo aconteceu com Tarone–Ware e o \(G^\rho\) de 0,5. Não é coincidência. Nesses dados não há censura antes do último evento, de modo que o número em risco é proporcional a \(\hat S(t^-)\) — e a estatística não muda se todos os pesos forem multiplicados por uma constante. Nos dados de Freireich, que têm 12 censuras espalhadas pelo acompanhamento, os dois se separam: 13,46 contra 14,46.</p><p><strong>O que reportar quando as curvas se cruzam:</strong> a razão de riscos deixa de fazer sentido, porque ela é maior que 1 no início e menor que 1 no fim — um número único não resume isso. O tempo médio restrito é a alternativa, mas depende do horizonte: a vantagem de B é de 1,41 mês se o interesse for o primeiro semestre, 5,53 meses em dois anos, e 4,47 meses em três. Declarar o horizonte deixa de ser detalhe técnico e passa a ser parte da conclusão.</p><p><strong>Sobre o poder:</strong> a simulação confirma o padrão em termos de taxa de detecção. Sob riscos proporcionais, o log-rank vence; com diferença inicial, o Gehan vence; com diferença tardia, o Gehan fica em 7,0% — pouco acima do nível nominal, isto é, quase cego. Tarone–Ware ocupa a posição intermediária nos quatro cenários, sem ser o melhor em nenhum, e é por isso que vários autores o recomendam quando não há hipótese prévia sobre onde a diferença estará. Havendo essa hipótese, o teste correspondente é mais poderoso — mas ela precisa estar no protocolo, e não ser inventada depois de ver o gráfico.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Rodar vários testes e reportar o de menor valor-p</td><td>Escolha um no protocolo.</td></tr><tr><td>Tratar a divergência com o <a href="logrank.html">log-rank</a> como erro</td><td>É informação sobre o padrão temporal da diferença.</td></tr><tr><td>Usar Gehan quando a diferença é tardia</td><td>O poder cai para perto do nível nominal.</td></tr><tr><td>Usar Gehan com padrões de censura muito diferentes</td><td>O peso reflete a censura; prefira Peto–Peto.</td></tr><tr><td>Reportar razão de riscos com curvas que se cruzam</td><td>Use a diferença de RMST, com τ declarado.</td></tr><tr><td>Esquecer de informar quantos pares foram indecidíveis</td><td>É a medida de quanta informação a censura consumiu.</td></tr><tr><td>Supor que <code>survdiff(rho = 1)</code> é o Gehan</td><td>É o Peto–Peto; eles só coincidem sem censura intermediária.</td></tr><tr><td>Aplicar a dados sem censura e chamar de Gehan</td><td>Sem censura, é o <a href="mann-whitney.html">Mann-Whitney</a>.</td></tr><tr><td>Interpretar o valor-p como tamanho de efeito</td><td>Apresente a curva e uma medida de efeito.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="logrank.html">Log-rank</a></td><td>Riscos proporcionais, ou diferença concentrada no fim.</td></tr><tr><td>Peto–Peto</td><td>Mesma ênfase do Gehan, mais robusto a censura desigual.</td></tr><tr><td>Tarone–Ware</td><td>Meio-termo, sem hipótese prévia sobre onde está a diferença.</td></tr><tr><td>G-ρ de Harrington–Fleming</td><td>Peso ajustado a uma hipótese prévia explícita.</td></tr><tr><td>Diferença de RMST</td><td>Curvas que se cruzam; medida de efeito interpretável.</td></tr><tr><td>Teste de Renyi</td><td>Quando se espera cruzamento das curvas: usa o máximo acumulado.</td></tr><tr><td>Testes de máximo combinado</td><td>Robustez simultânea a vários padrões.</td></tr><tr><td><a href="cox.html">Regressão de Cox</a> com interação tempo-tratamento</td><td>Modelar explicitamente a mudança do efeito no tempo.</td></tr><tr><td>Modelos de tempo de falha acelerado</td><td>Quando a suposição natural é de escala do tempo, não de risco.</td></tr></tbody></table></div><ol class="steps"><li>Fixe no protocolo o teste, o horizonte e os tempos de interesse.</li><li>Estime e apresente as curvas de <a href="kaplan.html">Kaplan–Meier</a> com a tabela de risco.</li><li>Examine a proporcionalidade antes de interpretar razões de risco.</li><li>Aplique o teste escolhido e relate a estatística e o valor-p.</li><li>Informe quantos pares foram indecidíveis pela censura.</li><li>Reporte a diferença de RMST, com τ declarado, ou diferenças de S(t) em tempos fixos.</li><li>Se tiver rodado mais de um teste, relate todos, não só o favorável.</li><li>Descreva o padrão temporal da diferença, que é o achado substantivo.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>GEHAN, Edmund A. A generalized Wilcoxon test for comparing arbitrarily singly-censored samples. <em>Biometrika</em>, v. 52, n. 1-2, p. 203-223, 1965.</li><li>GEHAN, Edmund A. A generalized two-sample Wilcoxon test for doubly censored data. <em>Biometrika</em>, v. 52, n. 3-4, p. 650-653, 1965.</li><li>BRESLOW, Norman. A generalized Kruskal-Wallis test for comparing K samples subject to unequal patterns of censorship. <em>Biometrika</em>, v. 57, n. 3, p. 579-594, 1970.</li><li>PETO, Richard; PETO, Julian. Asymptotically efficient rank invariant test procedures. <em>Journal of the Royal Statistical Society: Series A</em>, v. 135, n. 2, p. 185-207, 1972.</li><li>TARONE, Robert E.; WARE, James. On distribution-free tests for equality of survival distributions. <em>Biometrika</em>, v. 64, n. 1, p. 156-160, 1977.</li><li>HARRINGTON, David P.; FLEMING, Thomas R. A class of rank test procedures for censored survival data. <em>Biometrika</em>, v. 69, n. 3, p. 553-566, 1982.</li><li>MANTEL, Nathan. Evaluation of survival data and two new rank order statistics arising in its consideration. <em>Cancer Chemotherapy Reports</em>, v. 50, n. 3, p. 163-170, 1966.</li><li>PRENTICE, Ross L. Linear rank tests with right censored data. <em>Biometrika</em>, v. 65, n. 1, p. 167-179, 1978.</li><li>PRENTICE, Ross L.; MAREK, Paul. A qualitative discrepancy between censored data rank tests. <em>Biometrics</em>, v. 35, n. 4, p. 861-867, 1979.</li><li>FLEMING, Thomas R.; HARRINGTON, David P.; O’SULLIVAN, Michael. Supremum versions of the log-rank and generalized Wilcoxon statistics. <em>Journal of the American Statistical Association</em>, v. 82, n. 397, p. 312-320, 1987.</li><li>WILCOXON, Frank. Individual comparisons by ranking methods. <em>Biometrics Bulletin</em>, v. 1, n. 6, p. 80-83, 1945.</li><li>ROYSTON, Patrick; PARMAR, Mahesh K. B. Restricted mean survival time: an alternative to the hazard ratio for the design and analysis of randomized trials with a time-to-event outcome. <em>BMC Medical Research Methodology</em>, v. 13, art. 152, 2013.</li><li>FREIREICH, Emil J. et al. The effect of 6-mercaptopurine on the duration of steroid-induced remissions in acute leukemia: a model for evaluation of other potentially useful therapy. <em>Blood</em>, v. 21, n. 6, p. 699-716, 1963.</li><li>KLEIN, John P.; MOESCHBERGER, Melvin L. <em>Survival analysis: techniques for censored and truncated data.</em> 2. ed. New York: Springer, 2003.</li><li>COLLETT, David. <em>Modelling survival data in medical research.</em> 3. ed. Boca Raton: CRC Press, 2015.</li><li>HOLLANDER, Myles; WOLFE, Douglas A.; CHICKEN, Eric. <em>Nonparametric statistical methods.</em> 3. ed. Hoboken: Wiley, 2014.</li><li>COLOSIMO, Enrico A.; GIOLO, Suely R. <em>Análise de sobrevivência aplicada.</em> São Paulo: Blucher, 2006.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>THERNEAU, Terry M.; GRAMBSCH, Patricia M. <em>Modeling survival data: extending the Cox model.</em> New York: Springer, 2000. (Pacote <code>survival</code>.)</li><li>HOTHORN, Torsten; HORNIK, Kurt; VAN DE WIEL, Mark A.; ZEILEIS, Achim. Implementing a class of permutation tests: the coin package. <em>Journal of Statistical Software</em>, v. 28, n. 8, p. 1-23, 2008.</li><li>UNO, Hajime et al. <em>survRM2: comparing restricted mean survival time.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=survRM2" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=survRM2</a>.</li><li>KASSAMBARA, Alboukadel; KOSINSKI, Marcin; BIECEK, Przemyslaw. <em>survminer: drawing survival curves using ggplot2.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=survminer" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=survminer</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Censura não informativa, observações independentes, padrão de censura semelhante entre os grupos e escolha do teste feita antes de ver os dados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>survival, coin, survRM2, survminer</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="logrank.html"><span>← ANTERIOR</span>Teste log-rank</a><a href="mann-whitney.html"><span>PRÓXIMO →</span>Mann–Whitney / Wilcoxon rank-sum</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,362 +4,179 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste t de Welch (dois grupos): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste t de Welch (dois grupos) | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste t de Welch (dois grupos): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste t de Welch (dois grupos) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste t de Welch (dois grupos)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 04 · COMPARAÇÃO DE MÉDIAS
-    </span>
-<h1>
-     Teste t de Welch (dois grupos)
-    </h1>
-<p class="detail-lead">
-     Verifica se as médias de dois grupos independentes diferem, mesmo com variâncias desiguais.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/twelch.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se as médias de dois grupos independentes diferem, mesmo com variâncias desiguais.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Grupos independentes.</li><li>Dados quantitativos.</li><li>Normalidade aproximada relevante em amostras pequenas.</li><li>Não requer homocedasticidade.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_1-\mu_2=0\\ H_1&amp;:\ \mu_1-\mu_2\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Alternativas bilateral e unilaterais
-      </h3>
-<div class="tail-cases">
-<p>
-<strong>
-         Bilateral:
-        </strong>
-        \(\mu_1\neq \mu_2\). Detecta desvios em qualquer direção.
-       </p>
-<p>
-<strong>
-         Unilateral à direita:
-        </strong>
-        \(\mu_1&gt;\mu_2\). Investiga aumento ou associação positiva.
-       </p>
-<p>
-<strong>
-         Unilateral à esquerda:
-        </strong>
-        \(\mu_1&lt;\mu_2\). Investiga redução ou associação negativa.
-       </p>
-<p>
-        A direção deve ser escolhida antes de observar os resultados. Para o teste t e os testes de associação, use
-        <code>
-         alternative = "two.sided"
-        </code>
-        ,
-        <code>
-         "greater"
-        </code>
-        ou
-        <code>
-         "less"
-        </code>
-        . Em testes com grupos ou pares, a interpretação da direção depende da ordem dos grupos ou da subtração.
-       </p>
-</div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[t=\frac{\bar Y_1-\bar Y_2}{\sqrt{S_1^2/n_1+S_2^2/n_2}}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\mu_1-\mu_2)=(\bar Y_1-\bar Y_2)\pm t_{0{,}975;\nu}\sqrt{\frac{S_1^2}{n_1}+\frac{S_2^2}{n_2}}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\bar Y_1,\bar Y_2\)
-        </dt>
-<dd>
-         médias amostrais
-        </dd>
-</div>
-<div>
-<dt>
-         \(S_1^2,S_2^2\)
-        </dt>
-<dd>
-         variâncias amostrais
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_1,n_2\)
-        </dt>
-<dd>
-         tamanhos amostrais
-        </dd>
-</div>
-<div>
-<dt>
-         \(gl\)
-        </dt>
-<dd>
-         graus de liberdade aproximados pela fórmula de Welch–Satterthwaite
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : rejeite igualdade das médias; \(IC_{95\%}\) para \(\mu_1-\mu_2\) exclui zero.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-<p>
-       Em um teste unilateral, a rejeição só sustenta a direção previamente definida. Um resultado de sinal contrário não autoriza inverter a hipótese após examinar os dados.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks registra o número de quebras de fios sob condições distintas de tensão.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar médias entre dois grupos independentes sem impor igualdade de variâncias.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-twelch" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-twelch"><code># Teste t de Welch (dois grupos) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste t de Welch (dois grupos)</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÃO DE MÉDIAS</span><h1>Teste t de Welch (dois grupos)</h1><p class="detail-lead">Compara as médias de dois grupos independentes sem supor que tenham a mesma variância.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/twelch.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/twelch.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="t2.html">teste t de Student</a> supõe que os dois grupos têm a mesma variância, e combina as duas estimativas em uma só. Quando essa suposição falha — e ela falha com frequência —, o teste pode errar bastante, principalmente se os grupos tiverem tamanhos diferentes. O teste de Welch resolve o problema de forma simples: cada grupo entra na conta com a sua própria variância.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste t de Welch" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara médias sem supor</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">variâncias iguais</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Diferença</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Erro-padrão separado</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">g.l. fracionários</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Normalidade (ou n grande)</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">NÃO exige variâncias iguais</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">IC da diferença</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">como no teste de Student</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">t.test(y ~ grupo)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">é o padrão</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Student</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Mann–Whitney</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Yuen</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste t de Welch</text></svg><figcaption>Visão geral do teste t de Welch. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Por que é o padrão do R</strong><p>Quando as variâncias são realmente iguais, Welch perde muito pouco poder em relação a Student. Quando não são, Student pode rejeitar muito mais (ou muito menos) do que os 5% prometidos. Diante dessa assimetria de riscos, vários autores recomendam Welch por padrão (DELACRE; LAKENS; LEYS, 2017; RUXTON, 2006) — e é o que o R faz.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>A diferença em relação ao teste de Student está em dois pontos. Primeiro, o erro-padrão da diferença não combina as variâncias: cada grupo contribui com \(s_i^2/n_i\). Segundo, os graus de liberdade não são \(n_1+n_2-2\), mas um valor <strong>fracionário</strong> calculado pela fórmula de Welch–Satterthwaite, que fica entre o menor \(n_i-1\) e \(n_1+n_2-2\).</p><figure class="fig"><img src="../assets/resultados/twelch-didatica.png" alt="Dois arranjos de tamanhos e variâncias, com as taxas de rejeição simuladas" loading="lazy"/><figcaption><strong>O erro que o teste de Student comete.</strong> Nos dois painéis as médias populacionais são iguais, de modo que a taxa de rejeição deveria ser 5%. À esquerda, o grupo maior tem a menor variância: o Student rejeita 17,9% das vezes, mais que o triplo do prometido. À direita, o arranjo oposto: o Student fica conservador demais, com 0,8%. Welch fica próximo de 5% nos dois casos. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Quando os dois coincidem</strong><p>Com grupos de mesmo tamanho (\(n_1=n_2\)), a estatística \(t\) é idêntica nos dois testes; só os graus de liberdade mudam, e pouco. O problema aparece quando os tamanhos são diferentes.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Grupos independentes</td><td>Pressuposto mais grave quando violado.</td><td>Delineamento; medidas repetidas pedem o <a href="tpareado.html">teste pareado</a>.</td></tr><tr><td>Normalidade em cada grupo (ou n grande)</td><td>Define a distribuição de referência.</td><td><a href="sw.html">Shapiro–Wilk</a> e Q–Q por grupo; com n acima de 30 o teste é robusto.</td></tr><tr><td>Variâncias iguais</td><td><strong>Não é exigida</strong>: é exatamente a vantagem do método.</td><td>—</td></tr><tr><td>Variável quantitativa</td><td>O teste compara médias.</td><td>Natureza da variável.</td></tr><tr><td>Ausência de valores extremos influentes</td><td>A média e a variância são sensíveis.</td><td>Boxplot; considere o <a href="yuen.html">teste de Yuen</a>.</td></tr></tbody></table></div><div class="callout warn"><strong>Não teste variâncias para escolher o teste</strong><p>Decidir entre Student e Welch a partir de um teste de variâncias é uma escolha em duas etapas que infla a taxa de erro tipo I, exatamente como o uso do <a href="sw.html">Shapiro–Wilk</a> como porteiro. Escolha Welch antes de ver os dados.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \mu_1=\mu_2\\ H_1&:\ \mu_1\neq\mu_2\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[t=\frac{\bar x_1-\bar x_2}{\sqrt{\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}}},\]\[\nu=\frac{\left(\dfrac{s_1^2}{n_1}+\dfrac{s_2^2}{n_2}\right)^2}{\dfrac{\left(s_1^2/n_1\right)^2}{n_1-1}+\dfrac{\left(s_2^2/n_2\right)^2}{n_2-1}}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\bar x_i,\ s_i^2,\ n_i\)</dt><dd>média, variância amostral e tamanho do grupo i</dd></div><div><dt>\(\nu\)</dt><dd>graus de liberdade de Welch–Satterthwaite, em geral não inteiros</dd></div><div><dt>\(t\)</dt><dd>estatística de teste, comparada a uma distribuição \(t\) com \(\nu\) graus de liberdade</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Dados do exemplo: automáticos com \(n_1=19\), \(\bar x_1=17{,}147\) e \(s_1^2=14{,}699\); manuais com \(n_2=13\), \(\bar x_2=24{,}392\) e \(s_2^2=38{,}026\).</p><div class="table-wrap"><table class="method-table"><caption>Da amostra à decisão</caption><thead><tr><th>Passo</th><th>Cálculo</th><th>Resultado</th></tr></thead><tbody><tr><td>Contribuição de cada grupo</td><td>14,699/19 e 38,026/13</td><td>0,7736 e 2,9251</td></tr><tr><td>Erro-padrão</td><td>√(0,7736 + 2,9251)</td><td>1,9232</td></tr><tr><td>Estatística de teste</td><td>(17,147 − 24,392) / 1,9232</td><td>t = −3,7671</td></tr><tr><td>Graus de liberdade</td><td>(3,6987)² / [0,7736²/18 + 2,9251²/12]</td><td>ν = 18,332</td></tr><tr><td>Valor-p</td><td>2 × P(t₍₁₈,₃₃₎ ≤ −3,7671)</td><td>0,00137</td></tr><tr><td>Intervalo de confiança</td><td>−7,245 ± 2,100 × 1,9232</td><td>[−11,280; −3,210]</td></tr></tbody></table></div><div class="worked"><strong>Comparando com o teste de Student</strong><p>Variância combinada: \(s_p^2=\dfrac{18\times14{,}699+12\times38{,}026}{30}=24{,}030\); erro-padrão \(=1{,}7644\).</p><p>\(t=-7{,}245/1{,}7644=-4{,}1061\), com 30 graus de liberdade ⇒ \(p=0{,}000285\).</p><p>O erro-padrão de Student é <em>menor</em> (1,764 contra 1,923) porque o grupo mais numeroso, com a menor variância, domina a variância combinada. Como ele também tem mais peso no cálculo do erro-padrão, o resultado fica otimista: o valor-p de Student é quase cinco vezes menor que o de Welch.</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(\nu\) fica sempre entre \(\min(n_1,n_2)-1\) e \(n_1+n_2-2\).</li><li>Quando \(s_1^2=s_2^2\) e \(n_1=n_2\), Welch e Student coincidem.</li><li>A estatística \(t\) é a mesma dos dois testes quando os grupos têm o mesmo tamanho, qualquer que seja a variância.</li><li>Quando as variâncias são iguais, o poder de Welch é quase idêntico ao de Student: a perda é da ordem de 1% a 2%.</li><li>O intervalo de confiança da diferença usa o mesmo erro-padrão e os mesmos graus de liberdade.</li><li>Não existe versão exata para variâncias desiguais (é o chamado problema de Behrens–Fisher): a fórmula de Welch é uma aproximação muito boa.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Diferença das médias</td><td>A resposta na unidade original.</td><td>É o número a reportar.</td></tr><tr><td>IC da diferença</td><td>Magnitude plausível.</td><td>Mais informativo que o valor-p.</td></tr><tr><td>Graus de liberdade fracionários</td><td>Sinal de que as variâncias diferem.</td><td>Quanto mais ν se afasta de n₁+n₂−2, maior a diferença entre as variâncias.</td></tr><tr><td>Valor-p</td><td>Evidência contra a igualdade das médias.</td><td>Compare com o de Student para ver o impacto da correção.</td></tr><tr><td>d de Cohen</td><td>Diferença padronizada.</td><td>Com variâncias muito diferentes, considere também o delta de Glass.</td></tr></tbody></table></div><p>Reporte: médias, desvios-padrão e n de cada grupo, a diferença com intervalo de confiança, t, os graus de liberdade (com casas decimais) e o valor-p.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>t.test()</code> pertence ao pacote <code>stats</code>, já instalado com o R, e executa o teste de Welch <strong>por padrão</strong>. Para obter a versão de Student é preciso escrever <code>var.equal = TRUE</code>. Os graus de liberdade fracionários aparecem na saída.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-twelch-min" type="button">Copiar código</button></div><pre id="code-twelch-min"><code>t.test(mpg ~ factor(am), data = mtcars)                    # Welch (padrão)
+t.test(mpg ~ factor(am), data = mtcars, var.equal = TRUE)   # Student
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>No conjunto <code>mtcars</code>, comparamos o consumo (<code>mpg</code>) de carros com câmbio automático e manual. É um caso em que os dois pressupostos problemáticos aparecem juntos: os grupos têm tamanhos diferentes (19 e 13) e variâncias bem distintas (14,7 e 38,0).</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-twelch" type="button">Copiar código</button></div><pre id="code-twelch"><code># Teste t de Welch: exemplo completo ----
+# Pacote: apenas o stats (já vem com o R). Dados: mtcars.
 
-# Ajuste e resultados ----
-d &lt;- subset(warpbreaks, tension %in% c("L", "H"))
-aggregate(breaks ~ tension, d, function(x) c(n = length(x), media = mean(x), dp = sd(x)))
-resultado &lt;- t.test(breaks ~ tension, data = d,
-                    var.equal = FALSE, conf.level = 0.95)
-print(resultado)
+# 1. Dados: consumo (mpg) por tipo de câmbio (am: 0 = automático, 1 = manual)
+dados &lt;- mtcars
+dados$cambio &lt;- factor(dados$am, levels = c(0, 1), labels = c("automatico", "manual"))
+aggregate(mpg ~ cambio, data = dados, FUN = function(v) c(n = length(v), media = mean(v), dp = sd(v), variancia = var(v)))
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, warpbreaks, ylab = "Quebras", xlab = "Tensão")
+# 2. O teste de Welch é o PADRÃO do R: não é preciso argumento nenhum
+t.test(mpg ~ cambio, data = dados)
 
+# 3. Cálculo manual do erro-padrão e dos graus de liberdade
+g  &lt;- split(dados$mpg, dados$cambio)
+n1 &lt;- length(g$automatico); n2 &lt;- length(g$manual)
+a  &lt;- var(g$automatico) / n1; b &lt;- var(g$manual) / n2
+ep &lt;- sqrt(a + b)
+gl &lt;- (a + b)^2 / (a^2 / (n1 - 1) + b^2 / (n2 - 1))
+c(erro_padrao = ep, gl_Welch = gl,
+  t = (mean(g$automatico) - mean(g$manual)) / ep,
+  gl_minimo = min(n1, n2) - 1, gl_Student = n1 + n2 - 2)
 
-# Análises unilaterais: use somente a direção definida antes da análise ----
-# Em d, os grupos estão ordenados: tensão H e depois tensão L
-# H1: media_H &gt; media_L
-print(t.test(breaks ~ tension, data = d, var.equal = FALSE, alternative = "greater"))
-# H1: media_H &lt; media_L
-print(t.test(breaks ~ tension, data = d, var.equal = FALSE, alternative = "less"))
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="tpareado.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Teste t pareado
-    </a>
-<a href="yuen.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste de Yuen (grupos independentes)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. Comparação com o teste de Student
+t.test(mpg ~ cambio, data = dados, var.equal = TRUE)
+
+# 5. Pressupostos
+tapply(dados$mpg, dados$cambio, function(v) shapiro.test(v)$p.value)
+# install.packages("car"); car::leveneTest(mpg ~ cambio, data = dados)
+
+# 6. Tamanho do efeito
+s2p &lt;- ((n1 - 1) * var(g$automatico) + (n2 - 1) * var(g$manual)) / (n1 + n2 - 2)
+c(d_de_Cohen = (mean(g$automatico) - mean(g$manual)) / sqrt(s2p),
+  delta_de_Glass = (mean(g$automatico) - mean(g$manual)) / sd(g$automatico))
+
+# 7. Simulação: taxa de erro tipo I com médias IGUAIS e variâncias diferentes
+set.seed(2026)
+sim &lt;- replicate(5000, {
+  g1 &lt;- rnorm(20, 0, 1); g2 &lt;- rnorm(8, 0, 3)
+  c(student = t.test(g1, g2, var.equal = TRUE)$p.value &lt; 0.05,
+    welch   = t.test(g1, g2)$p.value &lt; 0.05) })
+rowMeans(sim)      # o nominal é 0,05
+
+# 8. Gráfico
+boxplot(mpg ~ cambio, data = dados, col = "gray85", ylab = "Consumo (mpg)")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-twelch" type="button">Copiar código</button></div><pre id="code-py-twelch"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Dados do conjunto mtcars: consumo (mpg) por tipo de câmbio
+# am: 0 = automático, 1 = manual
+mpg = np.array([21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2,
+                10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4,
+                15.8, 19.7, 15, 21.4])
+am  = np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1])
+x, y = mpg[am == 0], mpg[am == 1]
+n1, n2 = len(x), len(y); m1, m2 = x.mean(), y.mean(); s1, s2 = x.std(ddof=1), y.std(ddof=1)
+print(f"automático: n = {n1} | média = {m1:.4f} | DP = {s1:.4f} | variância = {s1**2:.4f}")
+print(f"manual:     n = {n2} | média = {m2:.4f} | DP = {s2:.4f} | variância = {s2**2:.4f}")
+print(f"Razão entre as variâncias = {s2**2/s1**2:.4f} | razão entre os tamanhos = {n1/n2:.4f}")
+
+# 1. Erro-padrão de Welch: cada grupo entra com a SUA variância
+ep = np.sqrt(s1**2 / n1 + s2**2 / n2)
+t = (m1 - m2) / ep
+print(f"\nErro-padrão de Welch = raiz({s1**2:.4f}/{n1} + {s2**2:.4f}/{n2}) = {ep:.4f}")
+print(f"t = ({m1:.4f} - {m2:.4f}) / {ep:.4f} = {t:.4f}")
+
+# 2. Graus de liberdade de Welch-Satterthwaite
+a_, b_ = s1**2 / n1, s2**2 / n2
+gl = (a_ + b_)**2 / (a_**2 / (n1 - 1) + b_**2 / (n2 - 1))
+print(f"\nGraus de liberdade = ({a_:.4f} + {b_:.4f})² / [{a_:.4f}²/{n1-1} + {b_:.4f}²/{n2-1}] = {gl:.4f}")
+print(f"(entre {min(n1, n2) - 1} e {n1 + n2 - 2}, os limites possíveis)")
+print(f"Valor-p = {2 * stats.t.sf(abs(t), gl):.6f}")
+print("scipy (Welch):", stats.ttest_ind(x, y, equal_var=False))
+
+# 3. Intervalo de confiança de 95% para a diferença
+tc = stats.t.ppf(0.975, gl); ic = (m1 - m2) + np.array([-1, 1]) * tc * ep
+print(f"IC 95% da diferença = [{ic[0]:.4f}; {ic[1]:.4f}] mpg")
+
+# 4. Comparação com o teste de Student (supõe variâncias iguais)
+s2p = ((n1 - 1) * s1**2 + (n2 - 1) * s2**2) / (n1 + n2 - 2)
+ep_s = np.sqrt(s2p * (1 / n1 + 1 / n2)); t_s = (m1 - m2) / ep_s
+print(f"\nStudent: variância combinada = {s2p:.4f} | erro-padrão = {ep_s:.4f} | t = {t_s:.4f}"
+      f" | gl = {n1+n2-2} | p = {2*stats.t.sf(abs(t_s), n1+n2-2):.6f}")
+print("scipy (Student):", stats.ttest_ind(x, y, equal_var=True))
+print(f"Diferença entre os erros-padrão: {ep:.4f} (Welch) contra {ep_s:.4f} (Student)")
+
+# 5. Por que Student erra aqui: grupo MENOR tem variância MAIOR
+print(f"\nO grupo com mais observações ({n1}) tem a MENOR variância ({s1**2:.2f}).")
+print("Nesse arranjo, o teste de Student subestima o erro-padrão e o valor-p fica otimista.")
+
+# 6. Pressupostos
+for nome, g in [("automático", x), ("manual", y)]:
+    W, pw = stats.shapiro(g); print(f"Shapiro-Wilk ({nome}): W = {W:.4f}, p-valor = {pw:.4f}")
+lev = stats.levene(x, y, center="median")
+print(f"Brown-Forsythe: W = {lev.statistic:.4f}, p-valor = {lev.pvalue:.4f}")
+
+# 7. Tamanho do efeito (com desvio-padrão combinado e com o d robusto de Glass)
+print(f"\nd de Cohen = {(m1-m2)/np.sqrt(s2p):.4f} | delta de Glass (DP do controle) = {(m1-m2)/s1:.4f}")
+
+# 8. Simulação: o que acontece com cada teste quando as variâncias diferem
+rng = np.random.default_rng(2026)
+rej_s = rej_w = 0
+for _ in range(20000):
+    g1 = rng.normal(0, 1, 20); g2 = rng.normal(0, 3, 8)       # médias iguais, variâncias diferentes
+    rej_s += stats.ttest_ind(g1, g2, equal_var=True).pvalue &lt; 0.05
+    rej_w += stats.ttest_ind(g1, g2, equal_var=False).pvalue &lt; 0.05
+print(f"\nSimulação com médias IGUAIS (n = 20 e 8; DP = 1 e 3; 20000 repetições):")
+print(f"  taxa de rejeição do Student = {rej_s/20000:.4f} | de Welch = {rej_w/20000:.4f} | nominal = 0,05")
+
+# 9. Gráficos
+fig, ax = plt.subplots(1, 2, figsize=(10, 4))
+ax[0].boxplot([x, y]); ax[0].set_xticks([1, 2]); ax[0].set_xticklabels(["automático", "manual"])
+for j, g in enumerate([x, y], 1): ax[0].scatter(np.full(len(g), j), g, alpha=0.6)
+ax[0].set_ylabel("Consumo (mpg)")
+ax[1].errorbar([0, 1], [m1, m2], yerr=[tc*s1/np.sqrt(n1), tc*s2/np.sqrt(n2)], fmt="o", capsize=8)
+ax[1].set_xlim(-0.5, 1.5); ax[1].set_xticks([0, 1]); ax[1].set_xticklabels(["automático", "manual"])
+ax[1].set_ylabel("Média com IC de 95%")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">automático: n = 19 | média = 17.1474 | DP = 3.8340 | variância = 14.6993
+manual:     n = 13 | média = 24.3923 | DP = 6.1665 | variância = 38.0258
+Razão entre as variâncias = 2.5869 | razão entre os tamanhos = 1.4615
+
+Erro-padrão de Welch = raiz(14.6993/19 + 38.0258/13) = 1.9232
+t = (17.1474 - 24.3923) / 1.9232 = -3.7671
+
+Graus de liberdade = (0.7736 + 2.9251)² / [0.7736²/18 + 2.9251²/12] = 18.3323
+(entre 12 e 30, os limites possíveis)
+Valor-p = 0.001374
+scipy (Welch): TtestResult(statistic=np.float64(-3.767123145144923), pvalue=np.float64(0.0013736383330710362), df=np.float64(18.332251638400464))
+IC 95% da diferença = [-11.2802; -3.2097] mpg
+
+Student: variância combinada = 24.0299 | erro-padrão = 1.7644 | t = -4.1061 | gl = 30 | p = 0.000285
+scipy (Student): TtestResult(statistic=np.float64(-4.106126983100689), pvalue=np.float64(0.0002850207439350685), df=np.float64(30.0))
+Diferença entre os erros-padrão: 1.9232 (Welch) contra 1.7644 (Student)
+
+O grupo com mais observações (19) tem a MENOR variância (14.70).
+Nesse arranjo, o teste de Student subestima o erro-padrão e o valor-p fica otimista.
+Shapiro-Wilk (automático): W = 0.9768, p-valor = 0.8987
+Shapiro-Wilk (manual): W = 0.9458, p-valor = 0.5363
+Brown-Forsythe: W = 4.1876, p-valor = 0.0496
+
+d de Cohen = -1.4779 | delta de Glass (DP do controle) = -1.8897
+
+Simulação com médias IGUAIS (n = 20 e 8; DP = 1 e 3; 20000 repetições):
+  taxa de rejeição do Student = 0.1910 | de Welch = 0.0539 | nominal = 0,05</pre></div><figure class="fig"><img src="../assets/resultados/twelch.png" alt="Consumo por tipo de câmbio e comparação dos erros-padrão" loading="lazy"/><figcaption><strong>Por que Welch é a escolha segura aqui.</strong> À esquerda, os dois grupos: os manuais têm consumo maior e dispersão bem maior (DP de 6,17 contra 3,83). À direita, os erros-padrão da diferença: o de Student é menor porque combina as variâncias, dando mais peso ao grupo numeroso, que é o de menor variância. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descritivas</caption><thead><tr><th>Grupo</th><th>n</th><th>Média</th><th>Desvio-padrão</th><th>Variância</th></tr></thead><tbody><tr><td>Automático</td><td>19</td><td>17,147 mpg</td><td>3,834</td><td>14,699</td></tr><tr><td>Manual</td><td>13</td><td>24,392 mpg</td><td>6,167</td><td>38,026</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Welch</th><th>Student</th></tr></thead><tbody><tr><td>Erro-padrão da diferença</td><td>1,9232</td><td>1,7644</td></tr><tr><td>t</td><td>−3,7671</td><td>−4,1061</td></tr><tr><td>Graus de liberdade</td><td>18,332</td><td>30</td></tr><tr><td>Valor-p</td><td>0,00137</td><td>0,000285</td></tr><tr><td>IC 95% da diferença</td><td>[−11,280; −3,210]</td><td>[−10,849; −3,642]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Diagnóstico e magnitude</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Razão entre as variâncias</td><td>2,59</td><td>Variâncias bem diferentes.</td></tr><tr><td>Shapiro–Wilk por grupo</td><td>p = 0,899 e p = 0,536</td><td>Normalidade plausível.</td></tr><tr><td>Brown–Forsythe</td><td>W = 4,188; p = 0,0496</td><td>No limite da rejeição.</td></tr><tr><td>d de Cohen</td><td>−1,478</td><td>Efeito grande.</td></tr><tr><td>Delta de Glass</td><td>−1,890</td><td>Usa só o DP do grupo de referência.</td></tr><tr><td>Simulação (médias iguais, n = 20 e 8, DP = 1 e 3)</td><td>Student rejeita 19,1%; Welch, 5,4%</td><td>O nominal é 5%.</td></tr></tbody></table></div><p><strong>Leitura:</strong> carros com câmbio manual percorrem, em média, 7,2 milhas por galão a mais. A conclusão é a mesma nos dois testes, mas a precisão declarada não é: o Student produz um valor-p quase cinco vezes menor. Aqui o arranjo é desfavorável a ele — o grupo mais numeroso (19 automáticos) é também o de menor variância, e a variância combinada fica puxada para baixo.</p><p>A simulação ao final do código mostra o tamanho do problema de forma direta. Com dois grupos de médias <strong>iguais</strong>, tamanhos 20 e 8 e desvios-padrão 1 e 3, o teste de Student rejeita a hipótese nula em 19,1% das amostras, quando deveria rejeitar em 5%. O de Welch fica em 5,4%. Uma ressalva de contexto: esses dados são observacionais, e carros manuais do <code>mtcars</code> também são mais leves — a diferença não pode ser atribuída apenas ao câmbio.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Testar variâncias para escolher o teste</td><td>A escolha em duas etapas infla o erro tipo I; adote Welch por padrão.</td></tr><tr><td>Supor que o R faz o teste de Student</td><td>O padrão do R é Welch; informe qual foi usado.</td></tr><tr><td>Estranhar graus de liberdade fracionários</td><td>São esperados: a fórmula de Welch–Satterthwaite raramente dá um inteiro.</td></tr><tr><td>Usar Welch em dados pareados</td><td>O problema é outro; use o <a href="tpareado.html">teste pareado</a>.</td></tr><tr><td>Achar que Welch resolve não normalidade</td><td>Ele corrige variâncias desiguais, não assimetria; para isso, veja <a href="yuen.html">Yuen</a> e <a href="mann-whitney.html">Mann–Whitney</a>.</td></tr><tr><td>Comparar três ou mais grupos com vários testes</td><td>Use a <a href="aovwelch.html">ANOVA de Welch</a>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="t2.html">Teste t de Student</a></td><td>Variâncias comprovadamente iguais e grupos de mesmo tamanho; a diferença é mínima.</td></tr><tr><td><a href="yuen.html">Teste de Yuen</a></td><td>Caudas pesadas ou valores extremos.</td></tr><tr><td><a href="mann-whitney.html">Mann–Whitney</a></td><td>Assimetria forte ou dados ordinais.</td></tr><tr><td><a href="bootstrap.html">Bootstrap da diferença</a></td><td>Distribuição desconhecida.</td></tr><tr><td><a href="aovwelch.html">ANOVA de Welch</a></td><td>Três ou mais grupos com variâncias desiguais.</td></tr><tr><td>Testes de equivalência (TOST)</td><td>O objetivo é demonstrar ausência de diferença relevante.</td></tr></tbody></table></div><ol class="steps"><li>Decida por Welch antes de olhar os dados.</li><li>Examine boxplots e Q–Q por grupo.</li><li>Aplique o teste e reporte os graus de liberdade com casas decimais.</li><li>Reporte a diferença com intervalo de confiança e o tamanho do efeito.</li><li>Se houver valores extremos, compare com Yuen ou Mann–Whitney.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>WELCH, Bernard L. The significance of the difference between two means when the population variances are unequal. <em>Biometrika</em>, v. 29, n. 3-4, p. 350-362, 1938.</li><li>WELCH, Bernard L. The generalization of “Student’s” problem when several different population variances are involved. <em>Biometrika</em>, v. 34, n. 1-2, p. 28-35, 1947.</li><li>SATTERTHWAITE, Franklin E. An approximate distribution of estimates of variance components. <em>Biometrics Bulletin</em>, v. 2, n. 6, p. 110-114, 1946.</li><li>RUXTON, Graeme D. The unequal variance t-test is an underused alternative to Student’s t-test and the Mann-Whitney U test. <em>Behavioral Ecology</em>, v. 17, n. 4, p. 688-690, 2006.</li><li>DELACRE, Marie; LAKENS, Daniël; LEYS, Christophe. Why psychologists should by default use Welch’s t-test instead of Student’s t-test. <em>International Review of Social Psychology</em>, v. 30, n. 1, p. 92-101, 2017.</li><li>ZIMMERMAN, Donald W. A note on preliminary tests of equality of variances. <em>British Journal of Mathematical and Statistical Psychology</em>, v. 57, n. 1, p. 173-181, 2004.</li><li>STUDENT [GOSSET, William Sealy]. The probable error of a mean. <em>Biometrika</em>, v. 6, n. 1, p. 1-25, 1908.</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Conjunto de dados <code>mtcars</code>, pacote <code>datasets</code> do R.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>t.test</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Dois grupos independentes de uma variável quantitativa, com distribuição aproximadamente normal; não exige variâncias iguais.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>Somente o pacote <code>stats</code>, já instalado com o R.</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="tpareado.html"><span>← ANTERIOR</span>Teste t pareado</a><a href="yuen.html"><span>PRÓXIMO →</span>Teste de Yuen (grupos independentes)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

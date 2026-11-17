@@ -4,319 +4,445 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Coeficiente de correlação intraclasse (ICC): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Coeficiente de correlação intraclasse (ICC) | Estatística e Ciência de Dados
-  </title>
+<meta content="Coeficiente de correlação intraclasse (ICC): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Coeficiente de correlação intraclasse (ICC) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Coeficiente de correlação intraclasse (ICC)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 12 · CONCORDÂNCIA
-    </span>
-<h1>
-     Coeficiente de correlação intraclasse (ICC)
-    </h1>
-<p class="detail-lead">
-     Avalia a concordância ou consistência de medições quantitativas feitas por diferentes avaliadores.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/icc.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia a concordância ou consistência de medições quantitativas feitas por diferentes avaliadores.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes, medições comparáveis e replicadas.</li><li>Escolha prévia de modelo (um/dois fatores), acordo absoluto/consistência e medida única/média.</li><li>Avaliar outliers.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ ICC=0\\H_1&amp;:\ ICC&gt;0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{ICC}=\frac{\sigma_b^2}{\sigma_b^2+\sigma_w^2}\quad\text{(modelo aleatório simples)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(P_o\)
-        </dt>
-<dd>
-         concordância observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(P_e\)
-        </dt>
-<dd>
-         concordância esperada pela regra de referência do coeficiente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\kappa\)
-        </dt>
-<dd>
-         coeficiente de concordância corrigido para acaso
-        </dd>
-</div>
-</dl>
-<p>
-       Razões de componentes de variância da ANOVA específica ao desenho; estatística F depende do modelo ICC adotado.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Interprete \(IC_{95\%}\) e limite inferior em relação ao requisito técnico. \(p&lt;0{,}05\) contra zero não prova repetibilidade aceitável.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Medições simuladas de potência de motores, centradas nos valores reais de hp da base mtcars.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-icc" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-icc"><code># Coeficiente de correlação intraclasse (ICC) ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("irr", quietly = TRUE)) install.packages("irr")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Coeficiente de correlação intraclasse (ICC)</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · CONCORDÂNCIA</span><h1>Coeficiente de correlação intraclasse (ICC)</h1><p class="detail-lead">Mede a fração da variação observada atribuível às unidades, e não ao erro de medida, em seis formas que respondem a perguntas distintas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/icc.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/icc.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o ICC</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando a resposta é contínua, a pergunta sobre concordância muda de forma: não se trata mais de contar coincidências, mas de saber que fração da variação observada vem das <em>unidades</em> e que fração vem do <em>erro de medida</em>. O coeficiente de correlação intraclasse responde exatamente a isso — e vem em seis formas, porque a pergunta tem seis variantes.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Correlação intraclasse" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Fração da variação</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">atribuível às unidades</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Base</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA de duas vias</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">ou modelo misto</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Três modelos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">(1) uma via</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">(2) duas vias aleatório</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">(3) duas vias misto</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Duas unidades</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">(·,1) um avaliador</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">(·,k) média de k</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Duas perguntas</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Concordância absoluta</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">Consistência</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">psych::ICC()</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">irr::icc()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Correlação intraclasse</text></svg><figcaption>Visão geral do coeficiente de correlação intraclasse. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>Por que seis formas, e não uma</strong><p>Três decisões independentes geram as seis: os avaliadores são os mesmos em todas as unidades? São uma amostra de uma população maior? A medida que se vai usar na prática é de um avaliador ou a média de vários? Reportar "ICC = 0,83" sem dizer qual forma é como reportar "a média é 17" sem dizer de quê. Nos dados desta ficha, as seis formas vão de <strong>0,704</strong> a <strong>0,952</strong>.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o ICC</h2><p>Todas as formas partem da mesma decomposição da variação, feita por uma <a href="aovfatorial.html">ANOVA de duas vias</a> sem repetição: a variação total se reparte entre unidades, entre avaliadores e resíduo. O que muda de uma forma para outra é <em>o que vai ao denominador</em>.</p><figure class="fig"><img src="../assets/resultados/icc-didatica.png" alt="A decomposição da variação, a diferença entre consistência e concordância absoluta, e a árvore de decisão" loading="lazy"/><figcaption><strong>Os três quadros que explicam as seis formas.</strong> À esquerda, a variação total repartida: 77,3% vem das diferenças entre folhas — o sinal —, 11,1% das diferenças sistemáticas entre avaliadores, e 11,6% do resíduo. À direita, o que separa consistência de concordância absoluta: os pontos acompanham bem a reta ajustada, de modo que o avaliador C ordena as folhas como o B, mas estão quase todos acima da reta de identidade, porque o C mede em média 12,9 pontos a mais. No quadro final, as quatro perguntas que determinam a forma a usar. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Consistência ou concordância absoluta?</strong><p>É a distinção mais importante, e a mais esquecida. <strong>Consistência</strong> pergunta se os avaliadores ordenam as unidades do mesmo jeito; ela perdoa um avaliador que soma dez pontos a tudo. <strong>Concordância absoluta</strong> pergunta se eles dão o mesmo número; ela não perdoa. Nos dados desta ficha, ICC(3,1) = 0,833 e ICC(2,1) = 0,714, e a diferença de 0,119 é exatamente o preço do viés do avaliador C. Somar 10 a todas as medidas dele <em>não altera</em> o ICC(3,1) e derruba o ICC(2,1) em 0,185.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Resposta contínua, ou ordinal tratável como intervalar</td><td>O ICC usa variâncias.</td><td>Natureza da variável; com escala nominal, use o <a href="fleiss.html">kappa de Fleiss</a>.</td></tr><tr><td>Efeitos aditivos (sem interação unidade × avaliador)</td><td>O modelo de duas vias sem repetição supõe aditividade.</td><td>Gráfico de perfis; teste de não aditividade de Tukey.</td></tr><tr><td>Resíduos aproximadamente normais e homocedásticos</td><td>Os intervalos de confiança dependem disso.</td><td>Gráficos de resíduos; <a href="levene.html">teste de Levene</a> por avaliador.</td></tr><tr><td>Unidades independentes</td><td>A ANOVA pressupõe isso.</td><td>Delineamento.</td></tr><tr><td><strong>Amostra representativa da população-alvo</strong></td><td>O ICC depende da heterogeneidade das unidades.</td><td>Compare a dispersão da amostra com a da população pretendida.</td></tr><tr><td>Forma declarada antes</td><td>As seis formas dão respostas diferentes.</td><td>Protocolo.</td></tr><tr><td>Mesmos avaliadores em todas as unidades, para as formas (2) e (3)</td><td>É o que define o modelo de duas vias.</td><td>Estrutura dos dados.</td></tr></tbody></table></div><div class="callout warn"><strong>O ICC não é uma propriedade do instrumento</strong><p>Ele depende também de quão diferentes são as unidades medidas. Restringindo os dados desta ficha a folhas cada vez mais parecidas entre si, o ICC(2,1) cai de 0,714 para 0,129 — enquanto o erro-padrão da medida fica praticamente constante, entre 5,09 e 5,57 pontos percentuais. O instrumento é o mesmo; o que mudou foi o denominador. É o mesmo fenômeno da correlação restrita a uma faixa estreita, e é por isso que um ICC obtido em uma população heterogênea não se transfere para uma homogênea.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><h3>A decomposição</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{MS}_R=\frac{k\sum_i(\bar y_{i\cdot}-\bar y)^2}{n-1},\]\[\text{MS}_C=\frac{n\sum_j(\bar y_{\cdot j}-\bar y)^2}{k-1},\]\[\text{MS}_E=\frac{\sum_{i,j}(y_{ij}-\bar y_{i\cdot}-\bar y_{\cdot j}+\bar y)^2}{(n-1)(k-1)}\]</div><h3>As seis formas</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{ICC}(1,1)=\frac{\text{MS}_R-\text{MS}_W}{\text{MS}_R+(k-1)\text{MS}_W}\]\[\text{ICC}(1,k)=\frac{\text{MS}_R-\text{MS}_W}{\text{MS}_R}\]\[\text{ICC}(2,1)=\frac{\text{MS}_R-\text{MS}_E}{\begin{gathered}\text{MS}_R+(k-1)\text{MS}_E\\+\frac{k}{n}\left(\text{MS}_C-\text{MS}_E\right)\end{gathered}}\]\[\text{ICC}(2,k)=\frac{\text{MS}_R-\text{MS}_E}{\text{MS}_R+\frac{1}{n}\left(\text{MS}_C-\text{MS}_E\right)}\]\[\text{ICC}(3,1)=\frac{\text{MS}_R-\text{MS}_E}{\text{MS}_R+(k-1)\text{MS}_E}\]\[\text{ICC}(3,k)=\frac{\text{MS}_R-\text{MS}_E}{\text{MS}_R}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(n,\ k\)</dt><dd>número de unidades e de avaliadores</dd></div><div><dt>\(\text{MS}_R\)</dt><dd>quadrado médio entre unidades</dd></div><div><dt>\(\text{MS}_C\)</dt><dd>quadrado médio entre avaliadores</dd></div><div><dt>\(\text{MS}_E\)</dt><dd>quadrado médio do resíduo</dd></div><div><dt>\(\text{MS}_W\)</dt><dd>quadrado médio dentro das unidades, que junta \(\text{MS}_C\) e \(\text{MS}_E\)</dd></div></dl><h3>Na linguagem do modelo misto</h3><p>A formulação moderna escreve \(y_{ij}=\mu+a_i+b_j+\varepsilon_{ij}\), com \(a_i\sim N(0,\sigma_a^2)\) para as unidades, \(b_j\sim N(0,\sigma_b^2)\) para os avaliadores e \(\varepsilon_{ij}\sim N(0,\sigma^2)\). Então</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{ICC}(2,1)=\frac{\sigma_a^{2}}{\sigma_a^{2}+\sigma_b^{2}+\sigma^{2}},\]\[\text{ICC}(3,1)=\frac{\sigma_a^{2}}{\sigma_a^{2}+\sigma^{2}}\]</div><p>A diferença fica evidente: a concordância absoluta inclui a variância entre avaliadores no denominador; a consistência, não.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>ANOVA de duas vias (40 folhas × 4 avaliadores)</caption><thead><tr><th>Fonte</th><th>gl</th><th>Soma de quadrados</th><th>Quadrado médio</th><th>% do total</th></tr></thead><tbody><tr><td>Entre folhas</td><td>39</td><td>24 522,81</td><td>628,7900</td><td>77,3%</td></tr><tr><td>Entre avaliadores</td><td>3</td><td>3 668,23</td><td>1 222,7421</td><td>11,6%</td></tr><tr><td>Resíduo</td><td>117</td><td>3 520,77</td><td>30,0921</td><td>11,1%</td></tr><tr><td><strong>Total</strong></td><td><strong>159</strong></td><td><strong>31 711,81</strong></td><td>—</td><td>100%</td></tr></tbody></table></div><div class="worked"><strong>De onde vêm os números</strong><p>O efeito de avaliador é inequívoco: \(F=\text{MS}_C/\text{MS}_E=1\,222{,}74/30{,}09=40{,}63\) com 3 e 117 graus de liberdade, \(p=4{,}6\times10^{-18}\). As médias dos quatro avaliadores são 17,13%, 13,91%, 26,85% e 20,46% — o C quase dobra o B.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\text{ICC}(3,1) &= \frac{628{,}79-30{,}09}{628{,}79+3\times30{,}09} \\ &= \frac{598{,}70}{719{,}07} = 0{,}8326\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\text{ICC}(2,1) \\ &= \frac{598{,}70}{719{,}07+\frac{4}{40}(1\,222{,}74-30{,}09)} \\ &= \frac{598{,}70}{838{,}33} \\ &= 0{,}7142\end{aligned}\]</div><p>O intervalo de confiança exato de ICC(3,1), baseado na razão \(F=\text{MS}_R/\text{MS}_E\), é [0,7480; 0,8982].</p></div><h3>Duas quantidades na unidade original</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{EPM}=\sqrt{\text{MS}_E}=5{,}486\ \text{p.p.},\]\[\text{DMD}=1{,}96\sqrt{2}\,\text{EPM}=15{,}205\ \text{p.p.}\]</div><p>O erro-padrão da medida e a diferença mínima detectável dizem, na escala do problema, o que o ICC só diz em termos relativos. Duas leituras da mesma folha por avaliadores diferentes podem diferir em até 15 pontos percentuais apenas por erro de medida.</p><h3>Propriedades</h3><ul class="checklist"><li>\(\text{ICC}(3,1)\geq\text{ICC}(2,1)\) sempre, com igualdade apenas quando não há efeito de avaliador.</li><li>Um deslocamento constante aplicado a um avaliador não altera o ICC(3,·) e reduz o ICC(2,·).</li><li>A relação entre as formas \((\cdot,1)\) e \((\cdot,k)\) é a fórmula de Spearman–Brown: \(\text{ICC}(\cdot,k)=\dfrac{k\,\text{ICC}(\cdot,1)}{1+(k-1)\text{ICC}(\cdot,1)}\).</li><li>É numericamente equivalente ao <a href="kappa-ponderado.html">kappa com pesos quadráticos</a> aplicado aos códigos de uma escala ordinal (Fleiss e Cohen, 1973).</li><li>Com \(k=2\), o ICC(3,1) aproxima-se da <a href="pearson.html">correlação de Pearson</a> entre os dois avaliadores, mas não coincide.</li><li>Cresce com a heterogeneidade das unidades, mesmo com o erro de medida constante.</li><li>Pode ser negativo quando o erro de medida supera a variação entre unidades.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>A forma usada</td><td>Qual pergunta está sendo respondida.</td><td>Declare sempre: modelo, tipo e unidade.</td></tr><tr><td>Valor do ICC</td><td>Fração da variação atribuível às unidades.</td><td>Depende da heterogeneidade da amostra.</td></tr><tr><td>IC 95%</td><td>A precisão.</td><td>Com n pequeno é muito largo.</td></tr><tr><td>MS_C e o teste F</td><td>Se há viés sistemático entre avaliadores.</td><td>É o que separa ICC(2) de ICC(3).</td></tr><tr><td>EPM</td><td>Erro de medida na unidade original.</td><td>Não depende da heterogeneidade.</td></tr><tr><td>DMD</td><td>Diferença mínima que o método detecta.</td><td>Compare com a diferença de interesse prático.</td></tr><tr><td>Bland–Altman</td><td>Viés e limites de concordância por par.</td><td>Mostra o que o ICC esconde.</td></tr></tbody></table></div><h3>As faixas de Koo e Li, com a mesma ressalva de sempre</h3><div class="table-wrap"><table class="method-table"><caption>Convenção corrente na literatura de confiabilidade</caption><thead><tr><th>ICC</th><th>Rótulo</th></tr></thead><tbody><tr><td>&lt; 0,50</td><td>pobre</td></tr><tr><td>0,50 a 0,75</td><td>moderada</td></tr><tr><td>0,75 a 0,90</td><td>boa</td></tr><tr><td>&gt; 0,90</td><td>excelente</td></tr></tbody></table></div><div class="callout warn"><strong>O ICC alto não garante que o método sirva</strong><p>Nos dados desta ficha, o ICC(2,k) é 0,909 — "excelente" pela convenção. E, no entanto, a diferença mínima detectável é de 15,2 pontos percentuais de área lesionada. Um ensaio que precise distinguir tratamentos separados por 10 pontos percentuais não pode usar esse método de avaliação, por mais alto que seja o ICC. O coeficiente é adimensional e mede uma razão; a decisão prática depende da escala do problema, e é o EPM que a informa.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Duas funções cobrem tudo. <code>psych::ICC()</code> devolve as seis formas de uma vez, com intervalos e teste F — é a mais prática. <code>irr::icc()</code> exige declarar <code>model</code> (<code>"oneway"</code> ou <code>"twoway"</code>), <code>type</code> (<code>"consistency"</code> ou <code>"agreement"</code>) e <code>unit</code> (<code>"single"</code> ou <code>"average"</code>), o que tem a vantagem pedagógica de obrigar a escolha explícita. A formulação por modelo misto, com <code>lme4::lmer(y ~ (1|unidade) + (1|avaliador))</code>, generaliza para delineamentos desbalanceados e com covariáveis.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-icc-min" type="button">Copiar código</button></div><pre id="code-icc-min"><code>library(psych)
+ICC(area)           # as seis formas, com IC
 library(irr)
-set.seed(2026)
-medicoes &lt;- data.frame(
-  instrumento_1 = mtcars$hp + rnorm(nrow(mtcars), sd = 3),
-  instrumento_2 = mtcars$hp + rnorm(nrow(mtcars), sd = 3))
-print(icc(medicoes, model = "twoway", type = "agreement",
-          unit = "single", conf.level = 0.95))
+icc(area, model = "twoway", type = "agreement",   unit = "single")  # ICC(2,1)
+icc(area, model = "twoway", type = "consistency", unit = "single")  # ICC(3,1)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: as mesmas 40 folhas de cafeeiro das demais fichas de concordância, agora com a severidade medida em escala contínua — porcentagem de área foliar lesionada — por quatro avaliadores. Como nas outras fichas, um dos avaliadores foi construído com viés sistemático: o C superestima em cerca de 10 pontos percentuais.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-icc" type="button">Copiar código</button></div><pre id="code-icc"><code># Coeficiente de correlação intraclasse: exemplo completo ----
+# Pacotes: irr (icc), psych (ICC), lme4 (via modelo misto), blandr
+# install.packages(c("irr", "psych", "lme4"))
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# Dados fictícios: as mesmas 40 folhas das demais fichas de concordância,
+# agora com a severidade medida em ESCALA CONTÍNUA (% de área lesionada),
+# estimada por quatro avaliadores.
+area &lt;- matrix(c(
+  1.8, 8.3,26.3,11.1, 32.4,20.9,32.8,26.8, 37.8,34.4,39.3,36.4,
+ 34.1,34.5,40.7,38.5, 31.6,32.0,41.3,31.0,  2.2, 0.1,11.7, 0.2,
+ 20.8,10.2,32.3,28.5,  0.3, 8.2,23.8, 6.2, 13.1, 8.0,28.8,33.8,
+ 24.0,22.3,29.6,17.4, 49.6,38.6,56.5,52.8, 20.3,20.0,27.4,25.8,
+  3.3, 0.1, 5.0, 0.1, 20.3,15.7,28.8,19.8, 10.0, 9.1,13.5, 0.1,
+ 33.0,25.5,39.9,29.9, 27.9,22.2,49.3,42.6, 28.1,21.6,35.1,22.1,
+ 13.3, 7.8,19.7,15.9, 31.9,10.0,37.0,29.6,  6.2,11.0,22.9,10.6,
+  3.6, 0.1,26.4,24.1, 22.3, 9.8,26.1,18.6,  4.7, 4.3,22.0, 7.3,
+  0.1, 0.1,17.1, 4.7,  2.5, 8.5,14.5, 0.5,  9.2,18.4,12.8,23.6,
+ 12.6, 1.5,13.4,16.8, 37.4,30.3,57.1,38.9,  3.5, 0.1,10.0, 4.2,
+ 21.5,23.1,39.7,32.5, 10.8,10.1,19.4, 2.1,  9.5, 0.1,10.4, 8.2,
+  0.1, 6.7, 5.5, 0.1, 14.7,11.3,28.4,18.9, 19.2,10.2,25.1, 8.6,
+ 19.7,10.0,15.5,27.9,  1.3, 0.1,11.3,12.7, 36.4,38.8,57.4,58.7,
+ 13.9,12.6,20.1,30.7),
+ ncol = 4, byrow = TRUE, dimnames = list(NULL, c("A","B","C","D")))
+colMeans(area); apply(area, 2, sd)
 
+# A ANOVA de duas vias que está por trás
+longo &lt;- data.frame(y = as.vector(area),
+                    folha = factor(rep(1:40, times = 4)),
+                    aval  = factor(rep(colnames(area), each = 40)))
+anova(aov(y ~ folha + aval, data = longo))
+# MSR = QM de folha, MSC = QM de avaliador, MSE = QM do resíduo
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       As duas leituras por veículo são simuladas a partir da variável hp e ruído adicional; não são medições instrumentais observadas.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="fleiss.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Kappa de Fleiss
-    </a>
-<a href="kendall-w.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Coeficiente de concordância de Kendall (W)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# As seis formas de Shrout e Fleiss
+library(psych)
+ICC(area)            # devolve as seis de uma vez, com IC e teste F
+
+library(irr)
+icc(area, model = "oneway",                      type = "consistency", unit = "single")
+icc(area, model = "twoway", type = "agreement",   unit = "single")     # ICC(2,1)
+icc(area, model = "twoway", type = "consistency", unit = "single")     # ICC(3,1)
+icc(area, model = "twoway", type = "agreement",   unit = "average")    # ICC(2,k)
+
+# A conta à mão
+n &lt;- nrow(area); k &lt;- ncol(area); gm &lt;- mean(area)
+MSR &lt;- k*sum((rowMeans(area) - gm)^2)/(n - 1)
+MSC &lt;- n*sum((colMeans(area) - gm)^2)/(k - 1)
+MSE &lt;- sum((area - rowMeans(area) - rep(colMeans(area), each = n) + gm)^2)/((n-1)*(k-1))
+MSW &lt;- sum((area - rowMeans(area))^2)/(n*(k-1))
+c(ICC11 = (MSR - MSW)/(MSR + (k-1)*MSW),
+  ICC21 = (MSR - MSE)/(MSR + (k-1)*MSE + k*(MSC - MSE)/n),
+  ICC31 = (MSR - MSE)/(MSR + (k-1)*MSE))
+
+# Pelo modelo misto, que é a formulação moderna
+library(lme4)
+m &lt;- lmer(y ~ (1 | folha) + (1 | aval), data = longo)
+vc &lt;- as.data.frame(VarCorr(m)); vc
+s2f &lt;- vc$vcov[vc$grp == "folha"]; s2a &lt;- vc$vcov[vc$grp == "aval"]
+s2e &lt;- vc$vcov[vc$grp == "Residual"]
+s2f/(s2f + s2a + s2e)      # ICC(2,1): concordância absoluta
+s2f/(s2f + s2e)            # ICC(3,1): consistência
+
+# Erro-padrão da medida e diferença mínima detectável
+EPM &lt;- sqrt(MSE); EPM
+1.96*sqrt(2)*EPM
+
+# Bland-Altman para cada par
+pares &lt;- combn(colnames(area), 2)
+t(apply(pares, 2, function(p) {
+  d &lt;- area[, p[1]] - area[, p[2]]
+  c(vies = mean(d), dp = sd(d),
+    inf = mean(d) - 1.96*sd(d), sup = mean(d) + 1.96*sd(d))
+}))
+# install.packages("blandr"); blandr::blandr.draw(area[,"B"], area[,"C"])
+
+# Spearman-Brown: quanto se ganha com mais avaliadores
+r1 &lt;- icc(area, model = "twoway", type = "agreement", unit = "single")$value
+sapply(1:10, function(kk) kk*r1/(1 + (kk-1)*r1))
+
+# O ICC depende da heterogeneidade da amostra
+sub &lt;- area[rowMeans(area) &lt; 25, ]
+icc(sub, model = "twoway", type = "agreement", unit = "single")$value
+sqrt(sum((sub - rowMeans(sub) - rep(colMeans(sub), each = nrow(sub))
+          + mean(sub))^2)/((nrow(sub)-1)*(k-1)))   # o EPM mal muda
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-icc" type="button">Copiar código</button></div><pre id="code-py-icc"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor. As mesmas 40 folhas de cafeeiro
+# das demais fichas de concordância, agora com a severidade medida em
+# ESCALA CONTÍNUA: porcentagem de área foliar lesionada, estimada por
+# quatro avaliadores.
+# ===================================================================
+AREA = np.array([
+ [ 1.8, 8.3,26.3,11.1],[32.4,20.9,32.8,26.8],[37.8,34.4,39.3,36.4],
+ [34.1,34.5,40.7,38.5],[31.6,32.0,41.3,31.0],[ 2.2, 0.1,11.7, 0.2],
+ [20.8,10.2,32.3,28.5],[ 0.3, 8.2,23.8, 6.2],[13.1, 8.0,28.8,33.8],
+ [24.0,22.3,29.6,17.4],[49.6,38.6,56.5,52.8],[20.3,20.0,27.4,25.8],
+ [ 3.3, 0.1, 5.0, 0.1],[20.3,15.7,28.8,19.8],[10.0, 9.1,13.5, 0.1],
+ [33.0,25.5,39.9,29.9],[27.9,22.2,49.3,42.6],[28.1,21.6,35.1,22.1],
+ [13.3, 7.8,19.7,15.9],[31.9,10.0,37.0,29.6],[ 6.2,11.0,22.9,10.6],
+ [ 3.6, 0.1,26.4,24.1],[22.3, 9.8,26.1,18.6],[ 4.7, 4.3,22.0, 7.3],
+ [ 0.1, 0.1,17.1, 4.7],[ 2.5, 8.5,14.5, 0.5],[ 9.2,18.4,12.8,23.6],
+ [12.6, 1.5,13.4,16.8],[37.4,30.3,57.1,38.9],[ 3.5, 0.1,10.0, 4.2],
+ [21.5,23.1,39.7,32.5],[10.8,10.1,19.4, 2.1],[ 9.5, 0.1,10.4, 8.2],
+ [ 0.1, 6.7, 5.5, 0.1],[14.7,11.3,28.4,18.9],[19.2,10.2,25.1, 8.6],
+ [19.7,10.0,15.5,27.9],[ 1.3, 0.1,11.3,12.7],[36.4,38.8,57.4,58.7],
+ [13.9,12.6,20.1,30.7]])
+AV = ["A", "B", "C", "D"]
+
+def quadrados_medios(Y):
+    """Decomposição da ANOVA de duas vias sem repetição."""
+    Y = np.asarray(Y, float); n, k = Y.shape; gm = Y.mean()
+    MSR = k*((Y.mean(1)-gm)**2).sum()/(n-1)                       # entre unidades
+    MSC = n*((Y.mean(0)-gm)**2).sum()/(k-1)                       # entre avaliadores
+    MSE = ((Y - Y.mean(1)[:,None] - Y.mean(0)[None,:] + gm)**2).sum()/((n-1)*(k-1))
+    MSW = ((Y - Y.mean(1)[:,None])**2).sum()/(n*(k-1))            # dentro (uma via)
+    return n, k, MSR, MSC, MSE, MSW
+
+def todos_icc(Y):
+    n, k, MSR, MSC, MSE, MSW = quadrados_medios(Y)
+    return {
+      "ICC(1,1)": (MSR-MSW)/(MSR+(k-1)*MSW),
+      "ICC(2,1)": (MSR-MSE)/(MSR+(k-1)*MSE+k*(MSC-MSE)/n),
+      "ICC(3,1)": (MSR-MSE)/(MSR+(k-1)*MSE),
+      "ICC(1,k)": (MSR-MSW)/MSR,
+      "ICC(2,k)": (MSR-MSE)/(MSR+(MSC-MSE)/n),
+      "ICC(3,k)": (MSR-MSE)/MSR}
+
+def ic_icc31(Y, alfa=0.05):
+    """IC exato de ICC(3,1), baseado na razão F = MSR/MSE."""
+    n, k, MSR, MSC, MSE, MSW = quadrados_medios(Y)
+    F = MSR/MSE
+    fl = F/stats.f.ppf(1-alfa/2, n-1, (n-1)*(k-1))
+    fu = F*stats.f.ppf(1-alfa/2, (n-1)*(k-1), n-1)
+    return (fl-1)/(fl+k-1), (fu-1)/(fu+k-1)
+
+n, k, MSR, MSC, MSE, MSW = quadrados_medios(AREA)
+print(f"{n} folhas, {k} avaliadores, resposta contínua (% de área lesionada)")
+print(f"\nMédia por avaliador: " + ", ".join(
+      f"{AV[j]} {AREA[:,j].mean():.2f}%" for j in range(k)))
+print(f"Desvio-padrão:       " + ", ".join(
+      f"{AV[j]} {AREA[:,j].std(ddof=1):.2f}" for j in range(k)))
+print(f"Média geral = {AREA.mean():.3f}%")
+print("O avaliador C superestima sistematicamente: a média dele é quase o")
+print("dobro da do B. Essa diferença é exatamente o que separa as formas de")
+print("ICC umas das outras.")
+
+# ===================================================================
+# PARTE 1 - a tabela de ANOVA que está por trás
+# ===================================================================
+print("\n" + "=" * 70)
+print("ANOVA de duas vias sem repetição: folhas (linhas) x avaliadores (colunas)")
+SQR = MSR*(n-1); SQC = MSC*(k-1); SQE = MSE*(n-1)*(k-1)
+print(f"\n{'fonte':&lt;22}{'gl':&gt;6}{'soma de quadrados':&gt;20}{'quadrado médio':&gt;18}")
+print(f"{'entre folhas':&lt;22}{n-1:&gt;6}{SQR:&gt;20.2f}{MSR:&gt;18.4f}")
+print(f"{'entre avaliadores':&lt;22}{k-1:&gt;6}{SQC:&gt;20.2f}{MSC:&gt;18.4f}")
+print(f"{'resíduo':&lt;22}{(n-1)*(k-1):&gt;6}{SQE:&gt;20.2f}{MSE:&gt;18.4f}")
+print(f"{'total':&lt;22}{n*k-1:&gt;6}{SQR+SQC+SQE:&gt;20.2f}")
+print(f"\nDentro das folhas, sem separar avaliadores: MSW = {MSW:.4f}")
+print(f"  (MSW junta o efeito de avaliador e o resíduo: "
+      f"{(SQC+SQE)/(n*(k-1)):.4f})")
+F = MSC/MSE
+print(f"\nTeste do efeito de avaliador: F = MSC/MSE = {MSC:.2f}/{MSE:.2f} = "
+      f"{F:.3f}")
+print(f"  gl = {k-1} e {(n-1)*(k-1)} | p = {stats.f.sf(F, k-1, (n-1)*(k-1)):.3e}")
+print("  Há diferença sistemática entre avaliadores, e é isso que faz")
+print("  ICC(2,1) e ICC(3,1) divergirem.")
+
+# ===================================================================
+# PARTE 2 - as seis formas
+# ===================================================================
+print("\n" + "=" * 70)
+print("As seis formas de ICC de Shrout e Fleiss (1979)")
+icc = todos_icc(AREA)
+print(f"\n{'forma':&lt;11}{'modelo':&lt;24}{'o que mede':&lt;36}{'valor':&gt;8}")
+desc = [("ICC(1,1)","uma via, aleatório","avaliadores diferentes por unidade"),
+        ("ICC(2,1)","duas vias, aleatório","concordância ABSOLUTA, 1 avaliador"),
+        ("ICC(3,1)","duas vias, misto","CONSISTÊNCIA, 1 avaliador"),
+        ("ICC(1,k)","uma via, aleatório","média de k avaliadores diferentes"),
+        ("ICC(2,k)","duas vias, aleatório","concordância absoluta, média de k"),
+        ("ICC(3,k)","duas vias, misto","consistência, média de k")]
+for nome, mod, oq in desc:
+    print(f"{nome:&lt;11}{mod:&lt;24}{oq:&lt;36}{icc[nome]:&gt;8.4f}")
+lo, hi = ic_icc31(AREA)
+print(f"\nIC 95% exato de ICC(3,1): [{lo:.4f}; {hi:.4f}]")
+print(f"\nDiferença entre ICC(3,1) e ICC(2,1) = "
+      f"{icc['ICC(3,1)']-icc['ICC(2,1)']:.4f}")
+print("Essa diferença é o preço do viés dos avaliadores. ICC(3,1) pergunta se")
+print("eles ORDENAM as folhas do mesmo jeito; ICC(2,1) pergunta se dão o MESMO")
+print("NÚMERO. Como o avaliador C soma cerca de 10 pontos percentuais a tudo,")
+print("ele ordena bem mas não acerta o valor, e só o ICC(2,1) o penaliza.")
+
+print("\nDemonstração: somando 10 a TODAS as medidas do avaliador C")
+Y2 = AREA.copy(); Y2[:,2] = AREA[:,2] + 10
+i2 = todos_icc(Y2)
+print(f"{'forma':&lt;12}{'original':&gt;12}{'com +10 em C':&gt;16}{'variação':&gt;12}")
+for nome in ["ICC(1,1)","ICC(2,1)","ICC(3,1)"]:
+    print(f"{nome:&lt;12}{icc[nome]:&gt;12.4f}{i2[nome]:&gt;16.4f}{i2[nome]-icc[nome]:&gt;+12.4f}")
+print("ICC(3,1) não se move uma casa decimal: um deslocamento constante não")
+print("altera a ordenação. ICC(2,1) e ICC(1,1) caem, e devem cair mesmo.")
+
+# ===================================================================
+# PARTE 3 - a escolha da forma, em três perguntas
+# ===================================================================
+print("\n" + "=" * 70)
+print("A escolha da forma responde a três perguntas, nesta ordem:")
+print("\n  1. Todas as unidades foram avaliadas pelos MESMOS avaliadores?")
+print("     Não -&gt; modelo de uma via, ICC(1,*).")
+print("     Sim -&gt; pergunta 2.")
+print("  2. Os avaliadores são uma amostra de uma população maior, à qual")
+print("     se quer generalizar?")
+print("     Sim -&gt; modelo de duas vias ALEATÓRIO, ICC(2,*).")
+print("     Não, são estes e só estes -&gt; modelo MISTO, ICC(3,*).")
+print("  3. A medida que se vai usar na prática é de UM avaliador ou a MÉDIA")
+print("     de k avaliadores?")
+print("     Um -&gt; ICC(*,1).   Média de k -&gt; ICC(*,k).")
+print("\nE uma quarta, transversal: interessa a concordância ABSOLUTA ou")
+print("apenas a CONSISTÊNCIA? Absoluta -&gt; ICC(2,*). Consistência -&gt; ICC(3,*).")
+
+print("\nPor que a média de k avaliadores é sempre mais confiável:")
+print(f"{'k':&gt;4}{'ICC(2,k) previsto por Spearman-Brown':&gt;42}")
+r1 = icc["ICC(2,1)"]
+for kk in [1, 2, 3, 4, 6, 10]:
+    print(f"{kk:&gt;4}{kk*r1/(1+(kk-1)*r1):&gt;42.4f}")
+print(f"O valor observado com k = 4 é {icc['ICC(2,k)']:.4f} e a previsão da fórmula")
+print(f"de Spearman-Brown é {4*r1/(1+3*r1):.4f}: são a mesma conta, escrita de dois modos.")
+print("Médias de avaliadores são mais confiáveis que avaliadores isolados, e a")
+print("fórmula diz exatamente quanto se ganha com cada avaliador a mais.")
+
+# ===================================================================
+# PARTE 4 - erro-padrão da medida e diferença mínima detectável
+# ===================================================================
+print("\n" + "=" * 70)
+print("O ICC é adimensional, e por isso não basta. Duas quantidades na")
+print("unidade original completam o quadro.")
+EPM = np.sqrt(MSE)
+DMD = 1.96*np.sqrt(2)*EPM
+print(f"\n  Erro-padrão da medida: EPM = raiz(MSE) = {EPM:.3f} pontos percentuais")
+print(f"  Diferença mínima detectável: DMD = 1,96 x raiz(2) x EPM = "
+      f"{DMD:.3f} p.p.")
+print(f"  Amplitude observada das médias por folha: "
+      f"{AREA.mean(1).min():.1f}% a {AREA.mean(1).max():.1f}%")
+print("Duas leituras da mesma folha por avaliadores diferentes podem diferir")
+print(f"em até {DMD:.1f} pontos percentuais só por erro de medida. Em um ensaio que")
+print("compare tratamentos separados por menos que isso, o método de avaliação")
+print("não serve - por mais alto que seja o ICC.")
+
+print("\nLimites de concordância de Bland-Altman, para os pares de avaliadores")
+print(f"{'par':&gt;6}{'viés médio':&gt;13}{'DP das diferenças':&gt;20}{'limites de 95%':&gt;26}")
+for i in range(k):
+    for j in range(i+1, k):
+        d = AREA[:,i] - AREA[:,j]
+        print(f"{AV[i]+'-'+AV[j]:&gt;6}{d.mean():&gt;13.3f}{d.std(ddof=1):&gt;20.3f}"
+              f"   [{d.mean()-1.96*d.std(ddof=1):7.3f}; "
+              f"{d.mean()+1.96*d.std(ddof=1):7.3f}]")
+print("O par B-C tem viés de −12,9 pontos: o C mede sistematicamente mais.")
+print("O ICC sozinho esconde isso; o gráfico de Bland-Altman o expõe.")
+
+# ===================================================================
+# PARTE 5 - o ICC depende da HETEROGENEIDADE das unidades
+# ===================================================================
+print("\n" + "=" * 70)
+print("O ICC não é uma propriedade só do instrumento: depende também de quão")
+print("diferentes são as unidades medidas. Restringindo a amostra a folhas")
+print("cada vez mais parecidas entre si, com o MESMO erro de medida:")
+med = AREA.mean(1)
+print(f"\n{'subconjunto':&lt;34}{'n':&gt;4}{'DP das médias':&gt;16}{'ICC(2,1)':&gt;11}{'EPM':&gt;9}")
+for rot, mask in [("todas as 40 folhas", np.ones(n, bool)),
+                  ("severidade média abaixo de 35%", med &lt; 35),
+                  ("severidade média abaixo de 25%", med &lt; 25),
+                  ("severidade média abaixo de 15%", med &lt; 15),
+                  ("severidade média entre 5% e 20%", (med &gt;= 5) &amp; (med &lt; 20))]:
+    Ys = AREA[mask]
+    if len(Ys) &lt; 8: continue
+    r = todos_icc(Ys); _, _, _, _, mse_, _ = quadrados_medios(Ys)
+    print(f"{rot:&lt;34}{len(Ys):&gt;4}{Ys.mean(1).std(ddof=1):&gt;16.3f}"
+          f"{r['ICC(2,1)']:&gt;11.4f}{np.sqrt(mse_):&gt;9.3f}")
+print("\nO erro-padrão da medida mal se move - o instrumento é o mesmo - mas o")
+print("ICC despenca de 0,71 para 0,13. É o mesmo fenômeno da")
+print("correlação restrita a uma faixa estreita: o numerador encolhe e o")
+print("denominador não. Por isso um ICC obtido em uma população heterogênea")
+print("não se transfere para uma população homogênea, e por isso o EPM, que")
+print("não depende da heterogeneidade, deve ser reportado junto.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">40 folhas, 4 avaliadores, resposta contínua (% de área lesionada)
+
+Média por avaliador: A 17.12%, B 13.91%, C 26.85%, D 20.46%
+Desvio-padrão:       A 13.14, B 11.46, C 13.84, D 14.94
+Média geral = 19.586%
+O avaliador C superestima sistematicamente: a média dele é quase o
+dobro da do B. Essa diferença é exatamente o que separa as formas de
+ICC umas das outras.
+
+======================================================================
+ANOVA de duas vias sem repetição: folhas (linhas) x avaliadores (colunas)
+
+fonte                     gl   soma de quadrados    quadrado médio
+entre folhas              39            24522.81          628.7900
+entre avaliadores          3             3668.23         1222.7421
+resíduo                  117             3520.77           30.0921
+total                    159            31711.81
+
+Dentro das folhas, sem separar avaliadores: MSW = 59.9083
+  (MSW junta o efeito de avaliador e o resíduo: 59.9083)
+
+Teste do efeito de avaliador: F = MSC/MSE = 1222.74/30.09 = 40.633
+  gl = 3 e 117 | p = 4.564e-18
+  Há diferença sistemática entre avaliadores, e é isso que faz
+  ICC(2,1) e ICC(3,1) divergirem.
+
+======================================================================
+As seis formas de ICC de Shrout e Fleiss (1979)
+
+forma      modelo                  o que mede                             valor
+ICC(1,1)   uma via, aleatório      avaliadores diferentes por unidade    0.7036
+ICC(2,1)   duas vias, aleatório    concordância ABSOLUTA, 1 avaliador    0.7142
+ICC(3,1)   duas vias, misto        CONSISTÊNCIA, 1 avaliador             0.8326
+ICC(1,k)   uma via, aleatório      média de k avaliadores diferentes     0.9047
+ICC(2,k)   duas vias, aleatório    concordância absoluta, média de k     0.9090
+ICC(3,k)   duas vias, misto        consistência, média de k              0.9521
+
+IC 95% exato de ICC(3,1): [0.7480; 0.8982]
+
+Diferença entre ICC(3,1) e ICC(2,1) = 0.1185
+Essa diferença é o preço do viés dos avaliadores. ICC(3,1) pergunta se
+eles ORDENAM as folhas do mesmo jeito; ICC(2,1) pergunta se dão o MESMO
+NÚMERO. Como o avaliador C soma cerca de 10 pontos percentuais a tudo,
+ele ordena bem mas não acerta o valor, e só o ICC(2,1) o penaliza.
+
+Demonstração: somando 10 a TODAS as medidas do avaliador C
+forma           original    com +10 em C    variação
+ICC(1,1)          0.7036          0.4816     -0.2220
+ICC(2,1)          0.7142          0.5289     -0.1853
+ICC(3,1)          0.8326          0.8326     +0.0000
+ICC(3,1) não se move uma casa decimal: um deslocamento constante não
+altera a ordenação. ICC(2,1) e ICC(1,1) caem, e devem cair mesmo.
+
+======================================================================
+A escolha da forma responde a três perguntas, nesta ordem:
+
+  1. Todas as unidades foram avaliadas pelos MESMOS avaliadores?
+     Não -&gt; modelo de uma via, ICC(1,*).
+     Sim -&gt; pergunta 2.
+  2. Os avaliadores são uma amostra de uma população maior, à qual
+     se quer generalizar?
+     Sim -&gt; modelo de duas vias ALEATÓRIO, ICC(2,*).
+     Não, são estes e só estes -&gt; modelo MISTO, ICC(3,*).
+  3. A medida que se vai usar na prática é de UM avaliador ou a MÉDIA
+     de k avaliadores?
+     Um -&gt; ICC(*,1).   Média de k -&gt; ICC(*,k).
+
+E uma quarta, transversal: interessa a concordância ABSOLUTA ou
+apenas a CONSISTÊNCIA? Absoluta -&gt; ICC(2,*). Consistência -&gt; ICC(3,*).
+
+Por que a média de k avaliadores é sempre mais confiável:
+   k      ICC(2,k) previsto por Spearman-Brown
+   1                                    0.7142
+   2                                    0.8332
+   3                                    0.8823
+   4                                    0.9090
+   6                                    0.9375
+  10                                    0.9615
+O valor observado com k = 4 é 0.9090 e a previsão da fórmula
+de Spearman-Brown é 0.9090: são a mesma conta, escrita de dois modos.
+Médias de avaliadores são mais confiáveis que avaliadores isolados, e a
+fórmula diz exatamente quanto se ganha com cada avaliador a mais.
+
+======================================================================
+O ICC é adimensional, e por isso não basta. Duas quantidades na
+unidade original completam o quadro.
+
+  Erro-padrão da medida: EPM = raiz(MSE) = 5.486 pontos percentuais
+  Diferença mínima detectável: DMD = 1,96 x raiz(2) x EPM = 15.205 p.p.
+  Amplitude observada das médias por folha: 2.1% a 49.4%
+Duas leituras da mesma folha por avaliadores diferentes podem diferir
+em até 15.2 pontos percentuais só por erro de medida. Em um ensaio que
+compare tratamentos separados por menos que isso, o método de avaliação
+não serve - por mais alto que seja o ICC.
+
+Limites de concordância de Bland-Altman, para os pares de avaliadores
+   par   viés médio   DP das diferenças            limites de 95%
+   A-B        3.210               6.414   [ -9.362;  15.782]
+   A-C       -9.723               7.273   [-23.977;   4.532]
+   A-D       -3.332               8.330   [-19.660;  12.995]
+   B-C      -12.932               7.390   [-27.417;   1.552]
+   B-D       -6.542               9.091   [-24.360;  11.275]
+   C-D        6.390               7.773   [ -8.845;  21.625]
+O par B-C tem viés de −12,9 pontos: o C mede sistematicamente mais.
+O ICC sozinho esconde isso; o gráfico de Bland-Altman o expõe.
+
+======================================================================
+O ICC não é uma propriedade só do instrumento: depende também de quão
+diferentes são as unidades medidas. Restringindo a amostra a folhas
+cada vez mais parecidas entre si, com o MESMO erro de medida:
+
+subconjunto                          n   DP das médias   ICC(2,1)      EPM
+todas as 40 folhas                  40          12.538     0.7142    5.486
+severidade média abaixo de 35%      34           8.938     0.5657    5.427
+severidade média abaixo de 25%      28           6.690     0.4010    5.566
+severidade média abaixo de 15%      17           3.786     0.1290    5.087
+severidade média entre 5% e 20%     19           4.588     0.1664    5.935
+
+O erro-padrão da medida mal se move - o instrumento é o mesmo - mas o
+ICC despenca de 0,71 para 0,13. É o mesmo fenômeno da
+correlação restrita a uma faixa estreita: o numerador encolhe e o
+denominador não. Por isso um ICC obtido em uma população heterogênea
+não se transfere para uma população homogênea, e por isso o EPM, que
+não depende da heterogeneidade, deve ser reportado junto.</pre></div><figure class="fig"><img src="../assets/resultados/icc.png" alt="As seis formas, os gráficos de Bland–Altman e o efeito da heterogeneidade" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, as seis formas sobre os mesmos dados, de 0,704 a 0,952; a cor distingue o modelo e as três de baixo referem-se à média dos quatro avaliadores. No centro, dois gráficos de Bland–Altman sobrepostos: o par B–C tem viés de −12,9 pontos percentuais, com toda a nuvem deslocada para baixo, enquanto o par A–D tem viés de −3,3 e se distribui em torno do zero. À direita, o efeito de restringir a amostra a folhas cada vez mais parecidas: as barras são o ICC(2,1), que despenca, e os losangos vermelhos o erro-padrão da medida, que não se move. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Médias e dispersões por avaliador</caption><thead><tr><th>Avaliador</th><th>Média (%)</th><th>Desvio-padrão</th></tr></thead><tbody><tr><td>A</td><td>17,13</td><td>13,14</td></tr><tr><td>B</td><td>13,91</td><td>11,46</td></tr><tr><td><strong>C</strong></td><td><strong>26,85</strong></td><td>13,84</td></tr><tr><td>D</td><td>20,46</td><td>14,94</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As seis formas de Shrout e Fleiss</caption><thead><tr><th>Forma</th><th>Modelo</th><th>O que mede</th><th>Valor</th></tr></thead><tbody><tr><td>ICC(1,1)</td><td>uma via, aleatório</td><td>avaliadores diferentes por unidade</td><td>0,7036</td></tr><tr><td><strong>ICC(2,1)</strong></td><td>duas vias, aleatório</td><td><strong>concordância absoluta, um avaliador</strong></td><td><strong>0,7142</strong></td></tr><tr><td><strong>ICC(3,1)</strong></td><td>duas vias, misto</td><td><strong>consistência, um avaliador</strong></td><td><strong>0,8326</strong></td></tr><tr><td>ICC(1,k)</td><td>uma via, aleatório</td><td>média de k avaliadores diferentes</td><td>0,9047</td></tr><tr><td>ICC(2,k)</td><td>duas vias, aleatório</td><td>concordância absoluta, média de k</td><td>0,9090</td></tr><tr><td>ICC(3,k)</td><td>duas vias, misto</td><td>consistência, média de k</td><td>0,9521</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O que acontece ao somar 10 pontos a todas as medidas do avaliador C</caption><thead><tr><th>Forma</th><th>Original</th><th>Com +10 em C</th><th>Variação</th></tr></thead><tbody><tr><td>ICC(1,1)</td><td>0,7036</td><td>0,4816</td><td>−0,2220</td></tr><tr><td>ICC(2,1)</td><td>0,7142</td><td>0,5289</td><td>−0,1853</td></tr><tr><td><strong>ICC(3,1)</strong></td><td>0,8326</td><td>0,8326</td><td><strong>0,0000</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Spearman–Brown: o ganho com mais avaliadores</caption><thead><tr><th>k</th><th>ICC(2,k) previsto</th></tr></thead><tbody><tr><td>1</td><td>0,7142</td></tr><tr><td>2</td><td>0,8332</td></tr><tr><td>3</td><td>0,8823</td></tr><tr><td>4</td><td>0,9090 (observado: 0,9090)</td></tr><tr><td>6</td><td>0,9375</td></tr><tr><td>10</td><td>0,9615</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Bland–Altman, todos os pares</caption><thead><tr><th>Par</th><th>Viés médio</th><th>DP das diferenças</th><th>Limites de 95%</th></tr></thead><tbody><tr><td>A–B</td><td>+3,210</td><td>6,414</td><td>[−9,362; +15,782]</td></tr><tr><td>A–C</td><td>−9,723</td><td>7,273</td><td>[−23,977; +4,532]</td></tr><tr><td>A–D</td><td>−3,332</td><td>8,330</td><td>[−19,660; +12,995]</td></tr><tr><td><strong>B–C</strong></td><td><strong>−12,932</strong></td><td>7,390</td><td>[−27,417; +1,552]</td></tr><tr><td>B–D</td><td>−6,542</td><td>9,091</td><td>[−24,360; +11,275]</td></tr><tr><td>C–D</td><td>+6,390</td><td>7,773</td><td>[−8,845; +21,625]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O ICC depende da heterogeneidade; o EPM não</caption><thead><tr><th>Subconjunto</th><th>n</th><th>DP das médias</th><th>ICC(2,1)</th><th>EPM</th></tr></thead><tbody><tr><td>Todas as folhas</td><td>40</td><td>12,538</td><td>0,7142</td><td>5,486</td></tr><tr><td>Severidade média abaixo de 35%</td><td>34</td><td>8,938</td><td>0,5657</td><td>5,427</td></tr><tr><td>Severidade média abaixo de 25%</td><td>28</td><td>6,690</td><td>0,4010</td><td>5,566</td></tr><tr><td>Severidade média abaixo de 15%</td><td>17</td><td>3,786</td><td><strong>0,1290</strong></td><td><strong>5,087</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> a variação entre folhas responde por 77,3% da soma de quadrados total — há sinal de sobra para medir. Mas 11,6% vem de diferenças sistemáticas entre avaliadores, e é essa parcela que separa as formas. O ICC(3,1), que pergunta apenas se os avaliadores ordenam as folhas do mesmo jeito, devolve 0,833; o ICC(2,1), que exige que eles deem o mesmo número, devolve 0,714. A diferença de 0,119 é o preço do viés do avaliador C.</p><p>A demonstração mais limpa dessa distinção está na tabela do deslocamento. Somando 10 pontos percentuais a <em>todas</em> as medidas do avaliador C, o ICC(3,1) não muda uma casa decimal sequer — porque a ordenação é idêntica — enquanto o ICC(2,1) cai de 0,714 para 0,529. Os dois coeficientes estão certos: eles respondem a perguntas diferentes, e qual delas importa depende de como a medida será usada. Se o interesse é classificar folhas da menos para a mais atacada, a consistência basta. Se é registrar a severidade em um laudo, a concordância absoluta é o que vale.</p><p><strong>Sobre as formas (·,k):</strong> elas são sistematicamente maiores, e a fórmula de Spearman–Brown diz exatamente quanto se ganha com cada avaliador a mais. A previsão para k = 4 é 0,9090, e o valor observado é 0,9090 — são a mesma conta escrita de dois modos. A tabela mostra também o rendimento decrescente: passar de um para dois avaliadores sobe 0,12; passar de seis para dez sobe 0,024.</p><p><strong>Sobre o Bland–Altman:</strong> é o diagnóstico que o ICC não fornece. O par B–C tem viés de −12,9 pontos percentuais com limites de concordância de [−27,4; +1,6] — a nuvem inteira está deslocada, e não há um único par de leituras em que o B tenha medido mais de 1,6 ponto acima do C. O par A–D, por contraste, tem viés de −3,3 e limites simétricos em torno do zero. Um ICC global não distingue esses dois casos, e um relatório de confiabilidade que omita os gráficos de Bland–Altman esconde exatamente a informação acionável.</p><p><strong>Sobre a heterogeneidade:</strong> a última tabela é a ressalva mais importante da ficha. Restringindo a amostra a folhas cada vez mais parecidas entre si, o ICC(2,1) cai de 0,714 para 0,129 — de "moderado" a "pobre" — enquanto o erro-padrão da medida varia entre 5,09 e 5,57 pontos percentuais, isto é, praticamente não se move. O instrumento é o mesmo; o que mudou foi o denominador. A consequência prática: um ICC publicado para um método de avaliação não se transfere a outro estudo com unidades mais homogêneas, e por isso o EPM, que é uma propriedade do método e não da amostra, deve ser reportado junto.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Reportar "ICC" sem dizer qual das seis formas</td><td>Declare modelo, tipo e unidade.</td></tr><tr><td>Usar consistência quando o interesse é o valor absoluto</td><td>ICC(3,·) perdoa viés sistemático.</td></tr><tr><td>Reportar só o ICC, sem o EPM</td><td>O ICC é adimensional; a decisão prática precisa da escala.</td></tr><tr><td>Transferir um ICC para uma população mais homogênea</td><td>Ele cai, sem que o método tenha piorado.</td></tr><tr><td>Usar ICC(·,k) quando a prática usa um avaliador</td><td>A forma tem de corresponder ao uso.</td></tr><tr><td>Confundir ICC com <a href="pearson.html">correlação de Pearson</a></td><td>Pearson ignora o viés; ICC(2,·) não.</td></tr><tr><td>Ignorar o teste do efeito de avaliador</td><td>É ele que indica se vale usar a forma (3).</td></tr><tr><td>Aplicar a escala nominal</td><td>Use o <a href="fleiss.html">kappa de Fleiss</a>.</td></tr><tr><td>Esquecer o gráfico de Bland–Altman</td><td>Ele revela o viés que o ICC esconde.</td></tr><tr><td>Interpretar pelas faixas sem olhar o IC</td><td>Com n pequeno o intervalo atravessa várias faixas.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kappa-ponderado.html">Kappa com pesos quadráticos</a></td><td>Escala ordinal: é numericamente equivalente ao ICC(2,1).</td></tr><tr><td><a href="fleiss.html">Kappa de Fleiss</a></td><td>Escala nominal.</td></tr><tr><td>Bland–Altman</td><td>Sempre, como complemento: mostra viés e limites na escala original.</td></tr><tr><td>Modelo misto (<a href="aovmista.html">lmer</a>)</td><td>Delineamento desbalanceado, dados faltantes, covariáveis.</td></tr><tr><td>Coeficiente de correlação de concordância de Lin</td><td>Dois métodos, resposta contínua: combina precisão e exatidão.</td></tr><tr><td>Erro-padrão da medida e DMD</td><td>Quando a decisão prática depende da escala original.</td></tr><tr><td>Alfa de Cronbach</td><td>Consistência interna de itens de um mesmo instrumento; é o ICC(3,k).</td></tr><tr><td>Teoria da generalizabilidade</td><td>Quando há várias fontes de erro a decompor simultaneamente.</td></tr><tr><td><a href="pearson.html">Correlação de Pearson</a></td><td>Nunca, para concordância: ela ignora o viés sistemático.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a resposta é contínua e que o delineamento é cruzado.</li><li>Responda às quatro perguntas e escolha a forma ANTES de calcular.</li><li>Ajuste a ANOVA de duas vias e examine o efeito de avaliador.</li><li>Calcule a forma escolhida com intervalo de confiança.</li><li>Calcule também o EPM e a diferença mínima detectável.</li><li>Faça os gráficos de Bland–Altman de cada par.</li><li>Verifique se a heterogeneidade da amostra corresponde à da população-alvo.</li><li>Reporte a forma, o valor, o intervalo, o EPM e os vieses por par.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>SHROUT, Patrick E.; FLEISS, Joseph L. Intraclass correlations: uses in assessing rater reliability. <em>Psychological Bulletin</em>, v. 86, n. 2, p. 420-428, 1979.</li><li>McGRAW, Kenneth O.; WONG, S. P. Forming inferences about some intraclass correlation coefficients. <em>Psychological Methods</em>, v. 1, n. 1, p. 30-46, 1996.</li><li>FISHER, Ronald A. <em>Statistical methods for research workers.</em> Edinburgh: Oliver and Boyd, 1925.</li><li>BARTKO, John J. The intraclass correlation coefficient as a measure of reliability. <em>Psychological Reports</em>, v. 19, n. 1, p. 3-11, 1966.</li><li>FLEISS, Joseph L.; COHEN, Jacob. The equivalence of weighted kappa and the intraclass correlation coefficient as measures of reliability. <em>Educational and Psychological Measurement</em>, v. 33, n. 3, p. 613-619, 1973.</li><li>BLAND, J. Martin; ALTMAN, Douglas G. Statistical methods for assessing agreement between two methods of clinical measurement. <em>The Lancet</em>, v. 327, n. 8476, p. 307-310, 1986.</li><li>KOO, Terry K.; LI, Mae Y. A guideline of selecting and reporting intraclass correlation coefficients for reliability research. <em>Journal of Chiropractic Medicine</em>, v. 15, n. 2, p. 155-163, 2016.</li><li>WEIR, Joseph P. Quantifying test-retest reliability using the intraclass correlation coefficient and the SEM. <em>Journal of Strength and Conditioning Research</em>, v. 19, n. 1, p. 231-240, 2005.</li><li>LIN, Lawrence I-Kuei. A concordance correlation coefficient to evaluate reproducibility. <em>Biometrics</em>, v. 45, n. 1, p. 255-268, 1989.</li><li>de VET, Henrica C. W. et al. When to use agreement versus reliability measures. <em>Journal of Clinical Epidemiology</em>, v. 59, n. 10, p. 1033-1039, 2006.</li><li>BRENNAN, Robert L. <em>Generalizability theory.</em> New York: Springer, 2001.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>GWET, Kilem L. <em>Handbook of inter-rater reliability.</em> 4. ed. Gaithersburg: Advanced Analytics, 2014.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>GAMER, Matthias; LEMON, Jim; FELLOWS, Ian; SINGH, Puspendra. <em>irr: various coefficients of interrater reliability and agreement.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=irr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=irr</a>.</li><li>REVELLE, William. <em>psych: procedures for psychological, psychometric, and personality research.</em> R package. Evanston: Northwestern University. Disponível em: <a href="https://CRAN.R-project.org/package=psych" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=psych</a>.</li><li>BATES, Douglas; MÄCHLER, Martin; BOLKER, Ben; WALKER, Steve. Fitting linear mixed-effects models using lme4. <em>Journal of Statistical Software</em>, v. 67, n. 1, p. 1-48, 2015.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Resposta contínua, efeitos aditivos, resíduos aproximadamente normais, unidades independentes e amostra representativa da heterogeneidade da população-alvo.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>irr, psych, lme4</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="fleiss.html"><span>← ANTERIOR</span>Kappa de Fleiss</a><a href="kendall-w.html"><span>PRÓXIMO →</span>Coeficiente de concordância de Kendall (W)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

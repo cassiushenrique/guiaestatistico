@@ -4,310 +4,706 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Splines de regressão: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Splines de regressão | Estatística e Ciência de Dados
-  </title>
+<meta content="Splines de regressão: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Splines de regressão | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Splines de regressão
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 15 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Splines de regressão
-    </h1>
-<p class="detail-lead">
-     Modela relações não lineares que podem mudar de comportamento ao longo da variável explicativa.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/splines.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Modela relações não lineares que podem mudar de comportamento ao longo da variável explicativa.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes, escolha controlada de nós/graus de liberdade e checagem de extrapolação.</li><li>Diagnóstico de resíduos.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \text{opcional: componentes adicionais de flexibilidade = 0}\\ H_1&amp;:\ \text{há contribuição não linear}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[f(x)=\sum_{j=1}^m\beta_jB_j(x)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(x\)
-        </dt>
-<dd>
-         preditor
-        </dd>
-</div>
-<div>
-<dt>
-         \(f(x)\)
-        </dt>
-<dd>
-         função desconhecida aproximada por bases ou ajustes locais
-        </dd>
-</div>
-<div>
-<dt>
-         \(\beta\)
-        </dt>
-<dd>
-         coeficiente estimado
-        </dd>
-</div>
-</dl>
-<p>
-       Teste F entre modelos lineares aninhados quando as bases e condições o permitem; desempenho CV é alternativa.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) em comparação aninhada sugere flexibilidade adicional; IC de curva podem ser construídos pelo modelo, mas dependem da base especificada.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Ajustar distância de frenagem a velocidade com B-splines (cars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-splines" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-splines"><code># Splines de regressão ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Splines de regressão</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · RELAÇÕES NÃO LINEARES</span><h1>Splines de regressão</h1><p class="detail-lead">Emenda polinômios cúbicos de grau baixo em pedaços do domínio — a base local que resolve a oscilação, a explosão nas bordas e a extrapolação do polinômio global.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/splines.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/splines.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma spline</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A ficha anterior terminou com um diagnóstico: o polinômio é uma função <strong>global</strong>, de modo que precisa de muitos termos para acompanhar uma curva que muda de regime — e com muitos termos oscila, explode nas bordas e propaga perturbações locais. A spline resolve isso pela raiz: em vez de uma função para todo o domínio, usa <strong>polinômios de grau baixo emendados</strong>, cada um responsável por um pedaço.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Splines de regressão" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Cúbicas por partes,</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">emendadas com suavidade</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Os nós</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Onde as peças se</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">encontram</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Graus de liberdade</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">K + g + 1,</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">contando o intercepto</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A base</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">B-splines: locais e</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">bem condicionadas</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Natural</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Linear fora das</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">fronteiras</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Ainda é linear</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Cabe no lm:</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">inferência usual</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Splines de regressão</text></svg><figcaption>Visão geral das splines de regressão. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O que muda, e o que não muda</strong><p>O que muda é a <strong>base</strong>: em vez de \(1,x,x^2,\dots\), usam-se funções que valem zero fora de um pedaço do domínio. O que <em>não</em> muda é tudo o mais: a spline de regressão continua sendo um modelo linear nos parâmetros, ajustado por mínimos quadrados, com <code>lm</code>, <code>summary</code>, <code>anova</code> e <code>predict</code> funcionando como sempre. Só a matriz \(X\) é outra.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma spline</h2><p>Uma spline de grau \(g\) com nós \(\kappa_1&lt;\dots&lt;\kappa_K\) é uma função que, em cada intervalo entre nós, é um polinômio de grau \(g\), e que nos nós é contínua junto com as \(g-1\) primeiras derivadas. Para \(g=3\) — a escolha padrão — isso significa que a função, a inclinação e a curvatura são contínuas em cada emenda: o olho não vê a junção.</p><figure class="fig"><img src="../assets/resultados/splines-didatica.png" alt="As funções da base B-spline, o efeito do número de nós e a escolha por validação cruzada" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, as oito funções de uma base B-spline cúbica com quatro nós: cada uma é não nula em apenas quatro intervalos consecutivos, e as oito somam exatamente 1 em todo ponto. No centro, o ajuste com 0, 1, 6 e 16 nós. À direita, o erro de resubstituição e o validado em função do número de nós. <span class="source-line">Fonte: o autor.</span></figcaption></figure><h3>A contabilidade dos graus de liberdade</h3><p>Sem nenhuma restrição, \(K+1\) pedaços de grau \(g\) teriam \((K+1)(g+1)\) parâmetros. As \(g\) restrições de continuidade em cada um dos \(K\) nós retiram \(gK\). Sobram:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[(K+1)(g+1)-gK=K+g+1\]</div><div class="table-wrap"><table class="method-table"><caption>A conta, verificada pelo posto da matriz de base</caption><thead><tr><th>Grau</th><th>K</th><th>Sem restrição</th><th>Restrições</th><th>Sobram</th><th>Posto de B</th></tr></thead><tbody><tr><td>1</td><td>4</td><td>10</td><td>4</td><td>6</td><td>6</td></tr><tr><td>2</td><td>4</td><td>15</td><td>8</td><td>7</td><td>7</td></tr><tr><td>3</td><td>4</td><td>20</td><td>12</td><td>8</td><td>8</td></tr><tr><td>3</td><td>8</td><td>36</td><td>24</td><td>12</td><td>12</td></tr><tr><td>3</td><td>12</td><td>52</td><td>36</td><td>16</td><td>16</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Os do modelo linear</td><td>A spline de regressão É um modelo linear.</td><td>Resíduos: <a href="sw.html">normalidade</a>, <a href="levene.html">homocedasticidade</a>, independência.</td></tr><tr><td><strong>Base B-spline no ajuste</strong></td><td>A de potências truncadas é mal condicionada.</td><td><code>bs()</code> ou <code>ns()</code>, nunca <code>(x-k)_+^3</code> à mão.</td></tr><tr><td><strong>Nós e K escolhidos por validação</strong></td><td>Resubstituição sempre pede mais nós.</td><td>Validação cruzada; veja a tabela desta ficha.</td></tr><tr><td>Nós dentro do domínio, com dados em volta</td><td>Um nó em região vazia deixa o ajuste indeterminado.</td><td>Nós nos quantis, não igualmente espaçados.</td></tr><tr><td>Nós fixados antes, ou a escolha validada</td><td>Escolher nós olhando y é seleção.</td><td>Validação cruzada ANINHADA; veja <a href="stepwise.html">stepwise</a>.</td></tr><tr><td><strong>Nenhuma extrapolação</strong></td><td>Fora dos nós de fronteira não há informação.</td><td>Com <code>ns()</code> o erro é controlado; com <code>bs()</code>, não.</td></tr><tr><td>Bordas examinadas</td><td>É onde a variância se concentra.</td><td>Banda de confiança ao longo de todo o domínio.</td></tr><tr><td>Nós guardados para prever</td><td><code>bs()</code> recalcula quantis em novos dados.</td><td>Passe <code>knots</code> e <code>Boundary.knots</code> explicitamente.</td></tr></tbody></table></div><div class="callout warn"><strong>A armadilha de prever com bs() sem guardar os nós</strong><p>Se a fórmula for <code>A ~ bs(par, df = 8)</code>, o R calcula os nós a partir dos quantis <em>dos dados fornecidos</em>. Ao chamar <code>predict</code> com um <code>newdata</code> menor ou de distribuição diferente, os nós podem ser recalculados e a predição sai errada sem nenhum aviso. O <code>lm</code> guarda os nós no objeto e normalmente protege contra isso, mas qualquer manipulação manual da matriz de base perde essa proteção. A forma segura é construir os nós uma vez e passá-los explicitamente, como no código desta ficha.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>O modelo é \(y_i=\sum_{j=1}^{K+g+1}\beta_jB_j(x_i)+\varepsilon_i\), em que \(B_j\) são as funções da base. Duas bases geram o mesmo espaço:</p><h3>Potências truncadas</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&1,\;x,\;x^{2},\;x^{3},\;(x-\kappa_1)_+^{3},\;\dots,\;(x \\ &\quad -\kappa_K)_+^{3},\end{aligned}\]\[(u)_+=\max(u,0)\]</div><p>É a base mais fácil de entender — cada termo novo acrescenta curvatura a partir de um nó — e a pior de usar: cada função é não nula em <em>todo</em> o domínio à direita do nó.</p><h3>B-splines</h3><p>Definidas pela recorrência de Cox-de Boor, com \(B_{i,0}(x)=\mathbb{1}\{t_i\le x&lt;t_{i+1}\}\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}B_{i,d}(x) &= \frac{x-t_i}{t_{i+d}-t_i}B_{i,d-1}(x) \\ &\quad +\frac{t_{i+d+1}-x}{t_{i+d+1}-t_{i+1}}B_{i+1,d-1}(x)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(t_i\)</dt><dd>sequência de nós estendida, com \(g+1\) repetições nas fronteiras</dd></div><div><dt>\(d\)</dt><dd>grau corrente da recorrência</dd></div><div><dt>\(B_{i,d}\)</dt><dd>a \(i\)-ésima B-spline de grau \(d\)</dd></div></dl><p>Duas propriedades decorrem: cada \(B_{i,g}\) é não nula em apenas \(g+2\) intervalos consecutivos (localidade), e \(\sum_iB_{i,g}(x)=1\) para todo \(x\) (partição da unidade).</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>O condicionamento das duas bases, 260 medições</caption><thead><tr><th>K</th><th>cond(X) potências truncadas</th><th>cond(X) B-spline</th><th>Maior |diferença| no ajuste</th></tr></thead><tbody><tr><td>2</td><td>2,58 × 10¹⁰</td><td>7,04</td><td>1,47 × 10⁻⁷</td></tr><tr><td>4</td><td>4,70 × 10¹⁰</td><td>6,79</td><td>1,46 × 10⁻⁷</td></tr><tr><td>6</td><td>6,80 × 10¹⁰</td><td>6,25</td><td>2,74 × 10⁻⁷</td></tr><tr><td>10</td><td>1,30 × 10¹¹</td><td>6,18</td><td>1,08 × 10⁻⁷</td></tr><tr><td>16</td><td>2,49 × 10¹¹</td><td>5,79</td><td>1,43 × 10⁻⁷</td></tr><tr><td>24</td><td>6,25 × 10¹¹</td><td>6,68</td><td>1,38 × 10⁻⁶</td></tr></tbody></table></div><div class="worked"><strong>O contraste com a ficha anterior merece ser notado</strong><p>Aqui as duas bases <strong>concordam</strong>: a maior diferença é da ordem de \(10^{-7}\) μmol, desprezível. Na ficha <a href="polinomial.html">polinomial</a>, a base crua deixou de funcionar a partir do grau 4, com discrepâncias de 5 a 16 μmol. A diferença entre os dois casos é instrutiva.</p><p>A base de potências truncadas tem condicionamento de \(10^{11}\), ruim mas ainda dentro dos 16 dígitos da precisão dupla — sobram uns cinco. A base de potências <em>puras</em> do polinômio chegava a \(10^{27}\), muito além. Dito de outro modo: a objeção à base truncada não é que ela quebre com estes dados, é a <strong>margem</strong>. Com \(K\) maior, com \(x\) de escala maior, ou com dados mais desbalanceados, a margem acaba.</p><p>A razão <em>positiva</em> para preferir B-splines é a localidade. Com \(K=6\) nós e grau 3, as dez funções da base cobrem faixas estreitas:</p></div><div class="table-wrap"><table class="method-table"><caption>O suporte de cada B-spline (K = 6, grau 3)</caption><thead><tr><th>Função</th><th>De</th><th>Até</th></tr></thead><tbody><tr><td>B1</td><td>57</td><td>312</td></tr><tr><td>B2</td><td>70</td><td>483</td></tr><tr><td>B3</td><td>70</td><td>669</td></tr><tr><td>B4</td><td>70</td><td>833</td></tr><tr><td>B5</td><td>345</td><td>1 103</td></tr><tr><td>B6</td><td>507</td><td>1 360</td></tr><tr><td>B7</td><td>673</td><td>1 964</td></tr><tr><td>B8</td><td>851</td><td>1 964</td></tr><tr><td>B9</td><td>1 112</td><td>1 964</td></tr><tr><td>B10</td><td>1 365</td><td>1 998</td></tr></tbody></table></div><h3>Propriedades</h3><ul class="checklist"><li>É um modelo LINEAR nos parâmetros: toda a teoria de mínimos quadrados se aplica.</li><li>Uma spline de grau \(g\) com \(K\) nós tem \(K+g+1\) graus de liberdade.</li><li>Com \(K=0\) é um polinômio de grau \(g\).</li><li>As B-splines são locais (suporte em \(g+2\) intervalos) e somam 1 em todo ponto.</li><li>A spline natural impõe linearidade fora das fronteiras, retirando 4 g.l.</li><li>A variância do ajuste é maior nas bordas, mas muito menos que a do polinômio.</li><li>A escolha de \(K\) e dos nós é uma escolha de modelo: precisa ser validada.</li><li>Em várias dimensões, o número de funções da base cresce exponencialmente.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficientes \(\hat\beta_j\)</td><td>Altura da curva perto do nó \(j\).</td><td>Não são efeitos; não os reporte isoladamente.</td></tr><tr><td><code>summary(m)</code></td><td>Ajuste global, R², F.</td><td>Os p dos coeficientes não têm uso prático.</td></tr><tr><td><code>anova(m1, m2)</code></td><td>Compara modelos aninhados.</td><td>Válido se os nós foram fixados antes.</td></tr><tr><td>Erro validado por K</td><td>A curva de escolha.</td><td>Costuma ser muito RASA; veja abaixo.</td></tr><tr><td>Gráfico com banda</td><td>A forma e a incerteza.</td><td>É o que se publica.</td></tr><tr><td>Posição dos nós</td><td>Onde a curva pode dobrar.</td><td>Marque-os no gráfico.</td></tr><tr><td><code>ns()</code> contra <code>bs()</code></td><td>Se há restrição de fronteira.</td><td><code>ns</code> para prever perto das bordas.</td></tr></tbody></table></div><h3>A curva de escolha é rasa, e isso é informação</h3><p>Nestes dados o erro validado vai de 5,8564 com \(K=0\) a 5,7030 com \(K=1\) e 5,7793 com \(K=4\) — uma variação de menos de 3% em toda essa faixa. Os dados simplesmente <strong>não distinguem</strong> entre um polinômio cúbico e uma spline com quatro nós. Reportar "escolhemos 1 nó, por validação cruzada" sugere uma precisão que não existe; o honesto é dizer que qualquer flexibilidade entre 4 e 8 graus de liberdade serve, e mostrar que a conclusão substantiva não muda dentro dessa faixa.</p><div class="callout try"><strong>Um atalho útil: o argumento df</strong><p>Em vez de escolher \(K\) e as posições, o <code>bs()</code> e o <code>ns()</code> aceitam <code>df</code>: dá-se o número de graus de liberdade e eles colocam os nós nos quantis correspondentes. <code>ns(x, df = 5)</code> põe 4 nós internos nos quintis. É a forma usual de usar a função e evita a aritmética de \(K+g+1\).</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O pacote <code>splines</code> acompanha o R e traz as duas funções necessárias. <code>bs(x, knots = …, degree = 3)</code> constrói a base B-spline; <code>bs(x, df = k)</code> coloca os nós nos quantis automaticamente. <code>ns(x, …)</code> faz o mesmo para a spline <strong>natural</strong>, com a restrição de linearidade nas fronteiras. As duas entram direto na fórmula do <code>lm</code> ou do <code>glm</code>, e todo o restante funciona como sempre.</p><p>Dois argumentos merecem atenção. <code>Boundary.knots</code> define o intervalo das fronteiras e, por padrão, é o intervalo dos dados — convém fixá-lo explicitamente quando se vai prever. E, ao comparar modelos, guarde os nós em uma variável e passe-os às duas fórmulas, em vez de usar <code>df</code> nas duas: assim se tem certeza de que os nós são os mesmos.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-splines-min" type="button">Copiar código</button></div><pre id="code-splines-min"><code>library(splines)
+nos &lt;- quantile(fot$par, probs = c(.2, .4, .6, .8))
+m   &lt;- lm(A ~ bs(par, knots = nos), data = fot)
+mn  &lt;- lm(A ~ ns(par, knots = nos), data = fot)   # natural
+summary(m)$r.squared
+# ou, mais simples, pelos graus de liberdade:
+lm(A ~ ns(par, df = 5), data = fot)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 260 medições de trocas gasosas em folhas de cafeeiro. A resposta é a <strong>fotossíntese líquida</strong> \(A\) (μmol CO₂ m⁻² s⁻¹) e as três preditoras são a <strong>radiação</strong> PAR (μmol m⁻² s⁻¹, de 57 a 1.998), a <strong>temperatura foliar</strong> (°C, de 11,3 a 38,3) e o <strong>déficit de pressão de vapor</strong> VPD (kPa, de 0,30 a 2,45). O processo gerador é conhecido: \(A=\alpha+f_1(\text{PAR})+f_2(\text{temp})+f_3(\text{VPD})+\varepsilon\), com erro de desvio-padrão 1,30. A curva de luz \(f_1\) sobe depressa, satura e cai um pouco por fotoinibição acima de 1.000 μmol; \(f_2\) tem ótimo em 27 °C; \(f_3\) é um declínio convexo. Saber as funções verdadeiras permite medir o viés de cada método — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as cinco fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-splines" type="button">Copiar código</button></div><pre id="code-splines"><code># Splines de regressão: exemplo completo ----
+# Pacotes: splines (bs e ns, que acompanham o R)
+# Dados fictícios: 260 medições de trocas gasosas em folhas de cafeeiro.
+# O arquivo fotossintese.csv acompanha o site, na pasta scripts/.
+fot &lt;- read.csv("fotossintese.csv")
+str(fot)            # A (umol CO2 m-2 s-1), par, temp, vpd
+summary(fot)
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680",
+     xlab = "PAR (umol m-2 s-1)", ylab = "A (umol CO2 m-2 s-1)")
 
-# Ajuste e resultados ----
-library(splines) # pacote recomendado, acompanha R
-linear &lt;- lm(dist ~ speed, data = cars)
-flex &lt;- lm(dist ~ bs(speed, df = 4), data = cars)
-print(anova(linear, flex))
-x &lt;- data.frame(speed = seq(min(cars$speed), max(cars$speed), len = 100))
-plot(dist ~ speed, data = cars)
-lines(x$speed, predict(flex, x), col = "red", lwd = 2)
+# O ponto de partida: quanto o modelo LINEAR deixa na mesa
+summary(lm(A ~ par + temp + vpd, data = fot))$r.squared   # 0,6747
+# O processo gerador verdadeiro daria R² = 0,9514. É esse buraco que o
+# grupo inteiro de fichas tenta preencher.
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+library(splines)
 
+# ---- 1. A CONTABILIDADE DOS GRAUS DE LIBERDADE
+# Uma spline de grau g com K nós internos tem K + g + 1 funções de base
+# (contando o intercepto). Confira pelo posto da matriz:
+for (g in c(1, 2, 3)) for (K in c(4, 8)) {
+  nos &lt;- quantile(fot$par, probs = seq(0, 1, length.out = K + 2)[-c(1, K + 2)])
+  B &lt;- cbind(1, bs(fot$par, knots = nos, degree = g))
+  cat(sprintf("grau %d, K = %2d nos: K+g+1 = %2d | posto de B = %2d\n",
+              g, K, K + g + 1, qr(B)$rank))
+}
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="polinomial.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão polinomial
-    </a>
-<a href="smoothing-spline.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Smoothing splines
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 2. As funções da base, e a LOCALIDADE delas
+nos &lt;- quantile(fot$par, probs = c(.2, .4, .6, .8))
+B &lt;- bs(fot$par, knots = nos, degree = 3)
+matplot(sort(fot$par), B[order(fot$par), ], type = "l", lty = 1, lwd = 2,
+        xlab = "PAR", ylab = "funcao de base")
+# Cada funcao e nao nula em apenas g+2 = 5 intervalos consecutivos.
+apply(B, 2, function(z) range(fot$par[z &gt; 1e-12]))
+
+# ---- 3. QUANTOS NÓS? Validação cruzada
+library(boot)
+set.seed(1)
+for (K in 0:20) {
+  f &lt;- if (K == 0) A ~ bs(par, degree = 3) else {
+    nos &lt;- quantile(fot$par, probs = seq(0, 1, length.out = K + 2)[-c(1, K + 2)])
+    as.formula(sprintf("A ~ bs(par, knots = c(%s), degree = 3)",
+                       paste(round(nos, 4), collapse = ", "))) }
+  m &lt;- glm(f, data = fot)
+  cat(sprintf("K = %2d (p = %2d): EQM 10-fold %.4f\n",
+              K, K + 4, cv.glm(fot, m, K = 10)$delta[1]))
+}
+
+# ---- 4. ONDE PÔR OS NÓS: quantis contra espaçamento igual
+for (K in c(2, 4, 6, 8, 12)) {
+  nq &lt;- quantile(fot$par, probs = seq(0, 1, length.out = K + 2)[-c(1, K + 2)])
+  ne &lt;- seq(min(fot$par), max(fot$par), length.out = K + 2)[-c(1, K + 2)]
+  fq &lt;- as.formula(sprintf("A ~ bs(par, knots = c(%s))", paste(round(nq, 4), collapse = ", ")))
+  fe &lt;- as.formula(sprintf("A ~ bs(par, knots = c(%s))", paste(round(ne, 4), collapse = ", ")))
+  cat(sprintf("K = %2d: quantis %.4f | igualmente espacados %.4f\n", K,
+      cv.glm(fot, glm(fq, data = fot), K = 10)$delta[1],
+      cv.glm(fot, glm(fe, data = fot), K = 10)$delta[1]))
+}
+
+# ---- 5. A SPLINE NATURAL: a restrição que conserta as bordas
+# ns() e linear fora dos nos de fronteira; bs() nao e.
+nos6 &lt;- quantile(fot$par, probs = seq(0, 1, length.out = 8)[-c(1, 8)])
+mb &lt;- lm(A ~ bs(par, knots = nos6), data = fot)
+mn &lt;- lm(A ~ ns(par, knots = nos6), data = fot)
+mp &lt;- lm(A ~ poly(par, 9), data = fot)
+c(bs = length(coef(mb)), ns = length(coef(mn)), poly = length(coef(mp)))
+
+# A variancia do ajuste por regiao, por bootstrap
+set.seed(11)
+gx &lt;- sort(fot$par)
+vari &lt;- function(form) {
+  P &lt;- replicate(500, {
+    i &lt;- sample(nrow(fot), replace = TRUE)
+    predict(lm(form, data = fot[i, ]), newdata = data.frame(par = gx)) })
+  tapply(apply(P, 1, var), cut(gx, c(0, 200, 500, 1400, 1800, 2100)), mean) }
+rbind(bs = vari(A ~ bs(par, knots = nos6)),
+      ns = vari(A ~ ns(par, knots = nos6)),
+      poly = vari(A ~ poly(par, 9)))
+
+# ---- 6. EXTRAPOLAR
+nd &lt;- data.frame(par = c(2100, 2300, 2600, 3000))
+# bs() avisa e extrapola com o polinomio cubico da ultima peca;
+# ns() extrapola em LINHA RETA, por construcao.
+rbind(bs = predict(mb, newdata = nd), ns = predict(mn, newdata = nd),
+      poly = predict(mp, newdata = nd))
+
+# ---- 7. SPLINE CONTRA POLINÔMIO, com a MESMA flexibilidade
+for (p in c(5, 6, 8, 10, 12, 15, 20)) {
+  g &lt;- p - 1; K &lt;- p - 4
+  nos &lt;- quantile(fot$par, probs = seq(0, 1, length.out = K + 2)[-c(1, K + 2)])
+  fs &lt;- as.formula(sprintf("A ~ bs(par, knots = c(%s))", paste(round(nos, 4), collapse = ", ")))
+  cat(sprintf("p = %2d: polinomio %.4f | spline %.4f\n", p,
+      cv.glm(fot, glm(A ~ poly(par, g), data = fot), K = 10)$delta[1],
+      cv.glm(fot, glm(fs, data = fot), K = 10)$delta[1]))
+}
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-splines" type="button">Copiar código</button></div><pre id="code-py-splines"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab15)
+# ------------------------------------------------------------------
+import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados15)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 260 medições de trocas gasosas (arquivo fotossintese.csv)
+fot = le_csv('fotossintese.csv')
+PAR=fot['par'].to_numpy(float); TEMP=fot['temp'].to_numpy(float)
+VPD=fot['vpd'].to_numpy(float); A=fot['A'].to_numpy(float)
+NG=len(A)
+SIG=1.30
+INT=14.0
+
+def f_par(x):
+    x=np.asarray(x,float)
+    return 26.0*(1-np.exp(-0.0024*x))-1.9e-6*np.maximum(x-1000,0)**2
+def f_temp(t): t=np.asarray(t,float); return -0.042*(t-27.0)**2
+def f_vpd(v):  v=np.asarray(v,float); return -2.9*v+0.33*v**2
+C1=19.9605909253; C2=-1.4311050277; C3=-2.0245067433
+def verdade(x,t,v): return INT+(f_par(x)-C1)+(f_temp(t)-C2)+(f_vpd(v)-C3)
+# ------------------------------------------------------------------ fim do bloco comum
+
+# ------------------------------------------------------------------ utilidades
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def sqr(o, p): return float(np.sum((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - sqr(o, p)/float(np.sum((np.asarray(o) - np.mean(o))**2))
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_uni(ajusta, x, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada para um suavizador univariado.
+    ajusta(xtr, ytr, xte) -&gt; predições em xte."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 991*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            e[te] = y[te] - ajusta(x[tr], y[tr], x[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+# ------------------------------------------------------------------ polinômios
+def poli(x, g, xr=None):
+    """Base polinomial ORTOGONAL (Legendre reescalada ao intervalo de xr)."""
+    x = np.asarray(x, float); xr = x if xr is None else np.asarray(xr, float)
+    a, b = xr.min(), xr.max()
+    z = 2*(x - a)/(b - a) - 1
+    return np.polynomial.legendre.legvander(z, g)
+
+def poli_cru(x, g):
+    x = np.asarray(x, float)
+    return np.column_stack([x**j for j in range(g+1)])
+
+# ------------------------------------------------------------------ B-splines
+def bspline(x, nos, grau=3):
+    """Base B-spline por Cox-de Boor. 'nos' = vetor de nós INTERNOS."""
+    x = np.asarray(x, float); nos = np.asarray(nos, float)
+    a, b = bspline.lim
+    t = np.concatenate([[a]*(grau+1), nos, [b]*(grau+1)])
+    m = len(t) - grau - 1
+    B = np.zeros((len(x), m))
+    for i in range(m):
+        B[:, i] = (x &gt;= t[i]) &amp; (x &lt; t[i+1])
+    B[np.isclose(x, b), m-1] = 1.0
+    for d in range(1, grau+1):
+        Bn = np.zeros((len(x), len(t) - d - 1))
+        for i in range(Bn.shape[1]):
+            den1 = t[i+d] - t[i]; den2 = t[i+d+1] - t[i+1]
+            a1 = (x - t[i])/den1*B[:, i] if den1 &gt; 0 else 0.0
+            a2 = (t[i+d+1] - x)/den2*B[:, i+1] if den2 &gt; 0 else 0.0
+            Bn[:, i] = a1 + a2
+        B = Bn
+    return B
+
+def base_bs(x, nos, grau=3, lim=None):
+    bspline.lim = lim if lim is not None else (float(np.min(x)), float(np.max(x)))
+    return bspline(x, nos, grau)
+
+def trunc_pot(x, nos, grau=3):
+    """Base de potências truncadas: 1, x, ..., x^g, (x-k)_+^g."""
+    x = np.asarray(x, float)
+    cols = [x**j for j in range(grau+1)]
+    for k in np.asarray(nos, float):
+        cols.append(np.maximum(x - k, 0.0)**grau)
+    return np.column_stack(cols)
+
+def natural_cs(x, nos, lim):
+    """Base de spline cúbica NATURAL (linear fora dos nós de fronteira)."""
+    x = np.asarray(x, float); K = np.concatenate([[lim[0]], np.asarray(nos, float), [lim[1]]])
+    k = len(K)
+    def d(j):
+        return (np.maximum(x - K[j], 0)**3 - np.maximum(x - K[k-1], 0)**3)/(K[k-1] - K[j])
+    cols = [np.ones_like(x), x] + [d(j) - d(k-2) for j in range(k-2)]
+    return np.column_stack(cols)
+
+def ajusta_base(B, y):
+    return np.linalg.lstsq(B, y, rcond=None)[0]
+
+# --------------------------------------------------- spline de suavização
+def suav_spline(x, y, lam, escala=True):
+    """Spline cúbica de suavização EXATA, pelo algoritmo de Reinsch
+    (Green e Silverman, 1994, cap. 2). Resolve o sistema BANDADO
+        (R + lam Q' W^-1 Q) gama = Q' ybar ,   ajustado = ybar - lam W^-1 Q gama
+    que é numericamente muito mais estável que inverter (W + lam K).
+    Com escala=True, x é levado a [0, 1] antes de penalizar, de modo que lambda
+    tenha o mesmo significado para variáveis de unidades diferentes — é o que o
+    smooth.spline faz por trás do argumento spar.
+    Devolve (ajustados, x únicos na escala original, contagens, médias, g.l. efetivos)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    a0, b0 = (x.min(), x.max()) if escala else (0.0, 1.0)
+    xs = (x - a0)/(b0 - a0) if escala else x
+    xo_s, inv = np.unique(np.round(xs, 12), return_inverse=True)
+    m = len(xo_s)
+    xo = xo_s*(b0 - a0) + a0 if escala else xo_s
+    cont = np.bincount(inv, minlength=m).astype(float)
+    ybar = np.bincount(inv, weights=y, minlength=m)/cont
+    h = np.diff(xo_s)
+    Q = np.zeros((m, m-2)); R = np.zeros((m-2, m-2))
+    for j in range(1, m-1):
+        Q[j-1, j-1] = 1/h[j-1]; Q[j, j-1] = -1/h[j-1] - 1/h[j]; Q[j+1, j-1] = 1/h[j]
+        R[j-1, j-1] = (h[j-1] + h[j])/3
+        if j &lt; m-2:
+            R[j-1, j] = h[j]/6; R[j, j-1] = h[j]/6
+    Winv = 1.0/cont
+    M = R + lam*(Q.T*Winv) @ Q
+    gama = np.linalg.solve(M, Q.T @ ybar)
+    aj = ybar - lam*Winv*(Q @ gama)
+    # g.l. efetivos = tr(S) = m - lam * tr( W^-1 Q M^-1 Q' )
+    tr = m - lam*float(np.sum(Winv*np.einsum('ij,ji-&gt;i', Q, np.linalg.solve(M, Q.T))))
+    return aj, xo, cont, ybar, tr
+
+def ss_edf(x, lam):
+    return suav_spline(x, np.zeros(len(x)), lam)[4]
+
+def ss_gcv(x, y, lam):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    n = len(y)
+    res = np.asarray(y, float) - np.interp(x, xo, aj)
+    return float(np.sum(res**2)/n)/((1 - tr/n)**2), tr
+
+def ss_prev(x, y, lam, xnovo):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    # extrapolação LINEAR fora do domínio, como manda a spline natural
+    d0 = (aj[1]-aj[0])/(xo[1]-xo[0]); d1 = (aj[-1]-aj[-2])/(xo[-1]-xo[-2])
+    xn = np.asarray(xnovo, float); out = np.interp(xn, xo, aj)
+    out = np.where(xn &lt; xo[0],  aj[0]  + d0*(xn - xo[0]),  out)
+    out = np.where(xn &gt; xo[-1], aj[-1] + d1*(xn - xo[-1]), out)
+    return out
+
+# ------------------------------------------------------------------ LOESS
+def tricubo(u): return (1 - np.abs(u)**3)**3
+
+def loess(x, y, xnovo, span=0.35, grau=1, iteracoes=0):
+    """Regressão local ponderada (Cleveland, 1979).
+    iteracoes &gt; 0 ativa a reponderação robusta bisquare: os pesos de robustez
+    são sempre calculados a partir dos resíduos NOS PONTOS DE AJUSTE x, e não
+    nos pontos onde se quer prever."""
+    x = np.asarray(x, float); y = np.asarray(y, float); xn = np.asarray(xnovo, float)
+    n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+
+    def ajusta_em(alvos, rob):
+        out = np.empty(len(alvos))
+        for i, x0 in enumerate(alvos):
+            dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+            dmax = dd[viz[-1]]
+            w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+            w = w*rob[viz]
+            Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+            WZ = Z*w[:, None]
+            try: b = np.linalg.solve(Z.T @ WZ, WZ.T @ y[viz])
+            except np.linalg.LinAlgError: b = np.linalg.lstsq(Z.T @ WZ, WZ.T @ y[viz], rcond=None)[0]
+            out[i] = b[0]
+        return out
+
+    rob = np.ones(n)
+    for _ in range(iteracoes):
+        aj = ajusta_em(x, rob)            # SEMPRE nos x de ajuste
+        res = y - aj
+        s = np.median(np.abs(res))
+        rob = np.clip(1 - (res/(6*s))**2, 0, None)**2 if s &gt; 0 else np.ones(n)
+    return ajusta_em(xn, rob)
+
+def loess_edf(x, span=0.35, grau=1):
+    """Graus de liberdade efetivos: traço da matriz suavizadora."""
+    x = np.asarray(x, float); n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+    tr = 0.0
+    for i, x0 in enumerate(x):
+        dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+        dmax = dd[viz[-1]]
+        w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+        Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+        WZ = Z*w[:, None]
+        try: li = np.linalg.solve(Z.T @ WZ, WZ.T)
+        except np.linalg.LinAlgError: li = np.linalg.lstsq(Z.T @ WZ, WZ.T, rcond=None)[0]
+        k = np.where(viz == i)[0]
+        if len(k): tr += li[0, k[0]]
+    return tr
+
+# ------------------------------------------------------------------ GAM
+def gam_backfit(Xs, y, suav, it=60, tol=1e-9):
+    """Retroajuste (backfitting) de Hastie e Tibshirani.
+    Xs: lista de vetores; suav[j](x, r) -&gt; parcela ajustada, centrada."""
+    y = np.asarray(y, float); p = len(Xs)
+    f = [np.zeros(len(y)) for _ in range(p)]; a0 = y.mean()
+    for _ in range(it):
+        maxd = 0.0
+        for j in range(p):
+            r = y - a0 - sum(f[k] for k in range(p) if k != j)
+            nv = suav[j](Xs[j], r); nv = nv - nv.mean()
+            maxd = max(maxd, float(np.max(np.abs(nv - f[j])))); f[j] = nv
+        if maxd &lt; tol: break
+    return a0, f
+# ------------------------------------------------------------------ fim do bloco comum
+
+x=PAR.copy(); y=A.copy(); LIM=(float(x.min()),float(x.max()))
+print('Os mesmos 260 pontos de trocas gasosas da ficha polinomial: a resposta')
+print('da fotossíntese A à radiação PAR. A curva sobe depressa, satura e cai um')
+print('pouco por fotoinibição — curvaturas MUITO diferentes em regiões diferentes.')
+print()
+print('  n = %d | PAR de %s a %s | r(PAR, A) = %s'%(NG,c(x.min(),0),c(x.max(),0),c(float(np.corrcoef(x,y)[0,1]))))
+
+print('\n'+'='*70)
+print('A CONTABILIDADE DOS GRAUS DE LIBERDADE')
+print('Uma spline de grau g com K nós internos, SEM restrições, teria')
+print('(K+1)(g+1) parâmetros. As restrições de continuidade da função e das')
+print('g-1 primeiras derivadas em cada nó tiram g*K deles.')
+print()
+print('%8s %6s %16s %16s %10s %12s'%('grau','K','sem restrição','restrições','sobram','posto de B'))
+for g,K in [(1,4),(2,4),(3,4),(3,8),(3,12)]:
+    nos=np.percentile(x,np.linspace(0,100,K+2)[1:-1])
+    B=base_bs(x,nos,g,LIM)
+    print('%8d %6d %16d %16d %10d %12d'%(g,K,(K+1)*(g+1),g*K,(K+1)*(g+1)-g*K,
+          int(np.linalg.matrix_rank(B))))
+print()
+print('A conta fecha: (K+1)(g+1) - gK = K + g + 1, que é exatamente o número de')
+print('funções da base B-spline, e o posto confirma.')
+
+print('\n'+'='*70)
+print('DUAS BASES PARA O MESMO ESPAÇO: potências truncadas e B-splines')
+print()
+print('%6s %22s %22s %22s'%('K','cond(X) pot. truncadas','cond(X) B-spline','maior |dif| no ajuste'))
+for K in [2,4,6,10,16,24]:
+    nos=np.percentile(x,np.linspace(0,100,K+2)[1:-1])
+    Bt=trunc_pot(x,nos,3); Bb=base_bs(x,nos,3,LIM)
+    at=Bt@ajusta_base(Bt,y); ab=Bb@ajusta_base(Bb,y)
+    print('%6d %22s %22s %22s'%(K,'%.2e'%np.linalg.cond(Bt),'%.2e'%np.linalg.cond(Bb),
+          '%.2e'%float(np.abs(at-ab).max())))
+print()
+print('As duas bases geram o MESMO espaço de funções, e aqui os ajustes de fato')
+print('COINCIDEM: a maior diferença é da ordem de 10^-7 umol, desprezível. Vale')
+print('dizer isso com clareza, porque o contraste com a ficha polinomial é')
+print('instrutivo — lá a base crua DEIXOU DE FUNCIONAR a partir do grau 6.')
+print()
+print('A objeção à base de potências truncadas não é que ela quebre com estes')
+print('dados, e sim a margem: o número de condição dela é cerca de 10^9 vezes')
+print('maior (10^11 contra cerca de 6), e com 16 dígitos de precisão isso')
+print('consome mais da metade deles. Com K maior, x de escala maior ou dados')
+print('mais desbalanceados, a margem acaba.')
+print()
+print('A razão positiva para preferir B-splines é a LOCALIDADE: cada função da')
+print('base é não nula em apenas g+2 intervalos consecutivos, ao passo que cada')
+print('potência truncada é não nula em TODO o domínio à direita do nó.')
+nos=np.percentile(x,np.linspace(0,100,8)[1:-1]); Bb=base_bs(x,nos,3,LIM)
+print()
+print('  largura do suporte de cada B-spline (K = 6, grau 3):')
+for j in range(Bb.shape[1]):
+    nz=x[Bb[:,j]&gt;1e-12]
+    print('    função %2d: de %s a %s'%(j+1,c(float(nz.min()),0),c(float(nz.max()),0)))
+
+print('\n'+'='*70)
+print('QUANTOS NÓS? A escolha por validação cruzada')
+print()
+print('%6s %8s %14s %16s'%('K','p','EQM resub','EQM 10-fold'))
+res=[]
+for K in range(0,21):
+    nos=np.percentile(x,np.linspace(0,100,K+2)[1:-1]) if K else np.array([])
+    def aj(xt,yt,xe,nos=nos):
+        return base_bs(xe,nos,3,LIM)@ajusta_base(base_bs(xt,nos,3,LIM),yt)
+    B=base_bs(x,nos,3,LIM); rs=eqm(y,B@ajusta_base(B,y))
+    cvm,_=cv_uni(aj,x,y,10,1,10)
+    res.append((K,K+4,rs,cvm))
+    if K&lt;=12 or K%4==0: print('%6d %8d %14s %16s'%(K,K+4,c(rs),c(cvm)))
+res=np.array(res); Kb=int(res[np.argmin(res[:,3]),0])
+print()
+print('  menor EQM validado: K = %d nós (p = %d), EQM = %s'%(Kb,Kb+4,c(res[:,3].min())))
+print('  para comparar, o polinômio de grau 5 (p = 6) deu EQM validado 5,6789')
+print('  e a função VERDADEIRA daria %s'%c(eqm(y,f_par(x)-f_par(x).mean()+y.mean())))
+
+print('\n'+'='*70)
+print('ONDE PÔR OS NÓS: quantis contra espaçamento igual')
+print()
+print('%6s %22s %22s'%('K','nós nos QUANTIS','nós IGUALMENTE espaçados'))
+for K in [2,4,6,8,12]:
+    nq=np.percentile(x,np.linspace(0,100,K+2)[1:-1])
+    ne=np.linspace(LIM[0],LIM[1],K+2)[1:-1]
+    def ajq(xt,yt,xe,nos=nq): return base_bs(xe,nos,3,LIM)@ajusta_base(base_bs(xt,nos,3,LIM),yt)
+    def aje(xt,yt,xe,nos=ne): return base_bs(xe,nos,3,LIM)@ajusta_base(base_bs(xt,nos,3,LIM),yt)
+    print('%6d %22s %22s'%(K,c(cv_uni(ajq,x,y,10,1,10)[0]),c(cv_uni(aje,x,y,10,1,10)[0])))
+print()
+print('A leitura exige cuidado, porque a tabela não diz o que se espera. Até')
+print('K = 6 as duas estratégias EMPATAM — as diferenças ficam abaixo de 0,5%,')
+print('e o espaçamento igual é até ligeiramente melhor. A vantagem dos quantis')
+print('só aparece quando há muitos nós: em K = 8 a diferença é de 3%, e em')
+print('K = 12 é de 16% (6,2923 contra 7,4619).')
+print()
+print('O motivo é direto: com poucos nós, qualquer colocação razoável funciona.')
+print('Com muitos nós e espaçamento igual, alguns caem em regiões com poucos')
+print('dados — aqui, acima de 1.700 umol, onde há só 8% das observações — e o')
+print('ajuste fica localmente indeterminado. Os quantis põem mais nós onde há')
+print('mais dados, por construção, e por isso degradam melhor.')
+print()
+print('  distribuição do PAR: quartis em %s, %s e %s'%(c(float(np.percentile(x,25)),0),
+      c(float(np.percentile(x,50)),0),c(float(np.percentile(x,75)),0)))
+K=6
+print('  nós nos quantis (K = 6):  %s'%', '.join(c(float(v),0) for v in np.percentile(x,np.linspace(0,100,K+2)[1:-1])))
+print('  nós igualmente espaçados: %s'%', '.join(c(float(v),0) for v in np.linspace(LIM[0],LIM[1],K+2)[1:-1]))
+
+print('\n'+'='*70)
+print('A SPLINE NATURAL: a restrição que conserta as bordas')
+print('Uma spline cúbica natural é LINEAR fora dos dois nós de fronteira. A')
+print('restrição impõe segunda e terceira derivadas nulas nas duas pontas, o')
+print('que retira 4 graus de liberdade do espaço cúbico com o mesmo conjunto')
+print('de nós, e compra estabilidade exatamente onde ela falta.')
+print()
+xs=np.sort(x)
+rg=np.random.default_rng(11)
+def variancia(fab,reps=500):
+    P=np.zeros((reps,len(xs)))
+    for r in range(reps):
+        i=rg.integers(0,NG,NG); P[r]=fab(x[i],y[i],xs)
+    return P.var(0,ddof=1)
+nos6=np.percentile(x,np.linspace(0,100,8)[1:-1])
+f_bs=lambda xt,yt,xe: base_bs(xe,nos6,3,LIM)@ajusta_base(base_bs(xt,nos6,3,LIM),yt)
+f_ns=lambda xt,yt,xe: natural_cs(xe,nos6,LIM)@ajusta_base(natural_cs(xt,nos6,LIM),yt)
+f_po=lambda xt,yt,xe: poli(xe,9,x)@ajusta_base(poli(xt,9,x),yt)
+v_bs=variancia(f_bs); v_ns=variancia(f_ns); v_po=variancia(f_po)
+print('Parâmetros: B-spline com 6 nós = %d | natural com 6 nós = %d | polinômio grau 9 = %d'%(
+      base_bs(x,nos6,3,LIM).shape[1],natural_cs(x,nos6,LIM).shape[1],10))
+print()
+print('%22s %14s %14s %14s'%('faixa de PAR','B-spline','natural','polinômio g9'))
+cortes=[(0,200),(200,500),(500,1400),(1400,1800),(1800,2100)]
+for lo,hi in cortes:
+    mk=(xs&gt;=lo)&amp;(xs&lt;hi)
+    print('%22s %14s %14s %14s'%('%d a %d'%(lo,hi),c(float(v_bs[mk].mean())),
+          c(float(v_ns[mk].mean())),c(float(v_po[mk].mean()))))
+mio=(xs&gt;=500)&amp;(xs&lt;1400)
+print()
+print('  razão borda/miolo — B-spline: %s | natural: %s | polinômio: %s'%(
+      c(float(v_bs[xs&gt;=1800].mean())/float(v_bs[mio].mean()),1),
+      c(float(v_ns[xs&gt;=1800].mean())/float(v_ns[mio].mean()),1),
+      c(float(v_po[xs&gt;=1800].mean())/float(v_po[mio].mean()),1)))
+print()
+print('  EQM validado — B-spline: %s | natural: %s | polinômio g9: %s'%(
+      c(cv_uni(f_bs,x,y,10,1,10)[0]),c(cv_uni(f_ns,x,y,10,1,10)[0]),c(cv_uni(f_po,x,y,10,1,10)[0])))
+
+print('\n'+'='*70)
+print('E PARA EXTRAPOLAR?')
+print('A spline natural é linear fora dos nós de fronteira, de modo que')
+print('extrapola em linha reta — errado, mas de forma controlada.')
+print()
+xf=np.array([2100.,2300.,2600.,3000.])
+print('%10s %12s %12s %12s %12s'%('PAR','B-spline','natural','polinômio g9','VERDADE'))
+for xv in xf:
+    xa=np.array([xv])
+    bb=float((base_bs(xa,nos6,3,(LIM[0],3000.))@ajusta_base(base_bs(x,nos6,3,(LIM[0],3000.)),y))[0])
+    nn=float((natural_cs(xa,nos6,LIM)@ajusta_base(natural_cs(x,nos6,LIM),y))[0])
+    pp=float((poli(xa,9,x)@ajusta_base(poli(x,9,x),y))[0])
+    vv=float((f_par(xa)-f_par(x).mean()+y.mean())[0])
+    print('%10s %12s %12s %12s %12s'%(c(xv,0),c(bb,2),c(nn,2),c(pp,2),c(vv,2)))
+print()
+print('Nenhum dos três acerta, e nenhum poderia: não há informação fora do')
+print('domínio. A diferença é o TAMANHO do erro. A %s, a spline natural erra'%c(3000.,0))
+xa=np.array([3000.])
+nn=float((natural_cs(xa,nos6,LIM)@ajusta_base(natural_cs(x,nos6,LIM),y))[0])
+pp=float((poli(xa,9,x)@ajusta_base(poli(x,9,x),y))[0])
+vv=float((f_par(xa)-f_par(x).mean()+y.mean())[0])
+print('%s umol e o polinômio de grau 9 erra %s.'%(c(abs(nn-vv),1),c(abs(pp-vv),1)))
+
+print('\n'+'='*70)
+print('SPLINE CONTRA POLINÔMIO, com a MESMA flexibilidade')
+print()
+print('%6s %10s %16s %16s %12s'%('p','grau/K','EQM val. polinômio','EQM val. spline','vantagem'))
+for p_ in [5,6,8,10,12,15,20]:
+    g=p_-1; K=p_-4
+    fp=lambda xt,yt,xe,g=g: poli(xe,g,x)@ajusta_base(poli(xt,g,x),yt)
+    if K&gt;=0:
+        nk=np.percentile(x,np.linspace(0,100,K+2)[1:-1]) if K else np.array([])
+        fs=lambda xt,yt,xe,nk=nk: base_bs(xe,nk,3,LIM)@ajusta_base(base_bs(xt,nk,3,LIM),yt)
+        a=cv_uni(fp,x,y,10,1,10)[0]; b=cv_uni(fs,x,y,10,1,10)[0]
+        print('%6d %10s %16s %16s %12s'%(p_,'g=%d / K=%d'%(g,K),c(a),c(b),c(100*(a-b)/a,1)+'%'))
+print()
+print('Com poucos parâmetros os dois empatam. A partir de p = 10 a spline passa')
+print('à frente, e a distância cresce: em p = 20 o polinômio já está arruinado')
+print('pela oscilação e a spline continua estável. É a mesma conclusão da ficha')
+print('polinomial, vista agora pelo erro de predição.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Os mesmos 260 pontos de trocas gasosas da ficha polinomial: a resposta
+da fotossíntese A à radiação PAR. A curva sobe depressa, satura e cai um
+pouco por fotoinibição — curvaturas MUITO diferentes em regiões diferentes.
+
+  n = 260 | PAR de 57 a 1998 | r(PAR, A) = 0,7802
+
+======================================================================
+A CONTABILIDADE DOS GRAUS DE LIBERDADE
+Uma spline de grau g com K nós internos, SEM restrições, teria
+(K+1)(g+1) parâmetros. As restrições de continuidade da função e das
+g-1 primeiras derivadas em cada nó tiram g*K deles.
+
+    grau      K    sem restrição       restrições     sobram   posto de B
+       1      4               10                4          6            6
+       2      4               15                8          7            7
+       3      4               20               12          8            8
+       3      8               36               24         12           12
+       3     12               52               36         16           16
+
+A conta fecha: (K+1)(g+1) - gK = K + g + 1, que é exatamente o número de
+funções da base B-spline, e o posto confirma.
+
+======================================================================
+DUAS BASES PARA O MESMO ESPAÇO: potências truncadas e B-splines
+
+     K cond(X) pot. truncadas       cond(X) B-spline  maior |dif| no ajuste
+     2               2.58e+10               7.04e+00               1.47e-07
+     4               4.70e+10               6.79e+00               1.46e-07
+     6               6.80e+10               6.25e+00               2.74e-07
+    10               1.30e+11               6.18e+00               1.08e-07
+    16               2.49e+11               5.79e+00               1.43e-07
+    24               6.25e+11               6.68e+00               1.38e-06
+
+As duas bases geram o MESMO espaço de funções, e aqui os ajustes de fato
+COINCIDEM: a maior diferença é da ordem de 10^-7 umol, desprezível. Vale
+dizer isso com clareza, porque o contraste com a ficha polinomial é
+instrutivo — lá a base crua DEIXOU DE FUNCIONAR a partir do grau 6.
+
+A objeção à base de potências truncadas não é que ela quebre com estes
+dados, e sim a margem: o número de condição dela é cerca de 10^9 vezes
+maior (10^11 contra cerca de 6), e com 16 dígitos de precisão isso
+consome mais da metade deles. Com K maior, x de escala maior ou dados
+mais desbalanceados, a margem acaba.
+
+A razão positiva para preferir B-splines é a LOCALIDADE: cada função da
+base é não nula em apenas g+2 intervalos consecutivos, ao passo que cada
+potência truncada é não nula em TODO o domínio à direita do nó.
+
+  largura do suporte de cada B-spline (K = 6, grau 3):
+    função  1: de 57 a 312
+    função  2: de 70 a 483
+    função  3: de 70 a 669
+    função  4: de 70 a 833
+    função  5: de 345 a 1103
+    função  6: de 507 a 1360
+    função  7: de 673 a 1964
+    função  8: de 851 a 1964
+    função  9: de 1112 a 1964
+    função 10: de 1365 a 1998
+
+======================================================================
+QUANTOS NÓS? A escolha por validação cruzada
+
+     K        p      EQM resub      EQM 10-fold
+     0        4         5,6322           5,8564
+     1        5         5,4170           5,7030
+     2        6         5,3917           5,7330
+     3        7         5,3764           5,7689
+     4        8         5,3298           5,7793
+     5        9         5,3172           5,8363
+     6       10         5,3110           5,8818
+     7       11         5,3187           5,9603
+     8       12         5,3205           6,0091
+     9       13         5,3123           6,0548
+    10       14         5,2423           6,1589
+    11       15         5,2471           6,2403
+    12       16         5,2324           6,2923
+    16       20         5,0341           6,4380
+    20       24         4,9374           6,6481
+
+  menor EQM validado: K = 1 nós (p = 5), EQM = 5,7030
+  para comparar, o polinômio de grau 5 (p = 6) deu EQM validado 5,6789
+  e a função VERDADEIRA daria 5,5255
+
+======================================================================
+ONDE PÔR OS NÓS: quantis contra espaçamento igual
+
+     K        nós nos QUANTIS nós IGUALMENTE espaçados
+     2                 5,7330                 5,7105
+     4                 5,7793                 5,7752
+     6                 5,8818                 5,8761
+     8                 6,0091                 6,1886
+    12                 6,2923                 7,4619
+
+A leitura exige cuidado, porque a tabela não diz o que se espera. Até
+K = 6 as duas estratégias EMPATAM — as diferenças ficam abaixo de 0,5%,
+e o espaçamento igual é até ligeiramente melhor. A vantagem dos quantis
+só aparece quando há muitos nós: em K = 8 a diferença é de 3%, e em
+K = 12 é de 16% (6,2923 contra 7,4619).
+
+O motivo é direto: com poucos nós, qualquer colocação razoável funciona.
+Com muitos nós e espaçamento igual, alguns caem em regiões com poucos
+dados — aqui, acima de 1.700 umol, onde há só 8% das observações — e o
+ajuste fica localmente indeterminado. Os quantis põem mais nós onde há
+mais dados, por construção, e por isso degradam melhor.
+
+  distribuição do PAR: quartis em 452, 754 e 1153
+  nós nos quantis (K = 6):  322, 485, 672, 849, 1106, 1363
+  nós igualmente espaçados: 334, 611, 889, 1166, 1443, 1721
+
+======================================================================
+A SPLINE NATURAL: a restrição que conserta as bordas
+Uma spline cúbica natural é LINEAR fora dos dois nós de fronteira. A
+restrição impõe segunda e terceira derivadas nulas nas duas pontas, o
+que retira 4 graus de liberdade do espaço cúbico com o mesmo conjunto
+de nós, e compra estabilidade exatamente onde ela falta.
+
+Parâmetros: B-spline com 6 nós = 10 | natural com 6 nós = 8 | polinômio grau 9 = 10
+
+          faixa de PAR       B-spline        natural   polinômio g9
+               0 a 200         1,2406         0,5482         1,4075
+             200 a 500         0,1764         0,1732         0,1685
+            500 a 1400         0,1318         0,1203         0,1133
+           1400 a 1800         0,2060         0,1549         0,2606
+           1800 a 2100         0,9940         0,5444         5,5659
+
+  razão borda/miolo — B-spline: 7,5 | natural: 4,5 | polinômio: 49,1
+
+  EQM validado — B-spline: 5,8818 | natural: 5,8592 | polinômio g9: 5,9762
+
+======================================================================
+E PARA EXTRAPOLAR?
+A spline natural é linear fora dos nós de fronteira, de modo que
+extrapola em linha reta — errado, mas de forma controlada.
+
+       PAR     B-spline      natural polinômio g9      VERDADE
+      2100        20,68        18,44        39,09        17,70
+      2300        25,31        18,00       244,02        16,85
+      2600        40,26        17,35      2568,69        15,25
+      3000        81,32        16,47     26498,38        12,54
+
+Nenhum dos três acerta, e nenhum poderia: não há informação fora do
+domínio. A diferença é o TAMANHO do erro. A 3000, a spline natural erra
+3,9 umol e o polinômio de grau 9 erra 26485,8.
+
+======================================================================
+SPLINE CONTRA POLINÔMIO, com a MESMA flexibilidade
+
+     p     grau/K EQM val. polinômio  EQM val. spline     vantagem
+     5  g=4 / K=1           5,7655           5,7030         1,1%
+     6  g=5 / K=2           5,6789           5,7330        -1,0%
+     8  g=7 / K=4           5,7504           5,7793        -0,5%
+    10  g=9 / K=6           5,9762           5,8818         1,6%
+    12 g=11 / K=8           6,8174           6,0091        11,9%
+    15 g=14 / K=11           8,5557           6,2403        27,1%
+    20 g=19 / K=16         104,3181           6,4380        93,8%
+
+Com poucos parâmetros os dois empatam. A partir de p = 10 a spline passa
+à frente, e a distância cresce: em p = 20 o polinômio já está arruinado
+pela oscilação e a spline continua estável. É a mesma conclusão da ficha
+polinomial, vista agora pelo erro de predição.</pre></div><figure class="fig"><img src="../assets/resultados/splines.png" alt="A variância por região das três bases, a extrapolação e a comparação com o polinômio" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a variância do ajuste ao longo do domínio, em escala logarítmica, para o polinômio de grau 9, a B-spline com 6 nós e a spline natural com os mesmos nós — as linhas pontilhadas marcam os nós. No centro, o que cada uma faz fora do domínio observado, sombreado em verde. À direita, o erro validado em função do número de parâmetros, para o polinômio e para a spline com a mesma flexibilidade. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A escolha do número de nós (validação cruzada de 10 dobras, 10 repetições)</caption><thead><tr><th>K</th><th>p</th><th>EQM resubstituição</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>0 (cúbico simples)</td><td>4</td><td>5,6322</td><td>5,8564</td></tr><tr><td><strong>1</strong></td><td>5</td><td>5,4170</td><td><strong>5,7030</strong></td></tr><tr><td>2</td><td>6</td><td>5,3917</td><td>5,7330</td></tr><tr><td>3</td><td>7</td><td>5,3764</td><td>5,7689</td></tr><tr><td>4</td><td>8</td><td>5,3298</td><td>5,7793</td></tr><tr><td>6</td><td>10</td><td>5,3110</td><td>5,8818</td></tr><tr><td>8</td><td>12</td><td>5,3205</td><td>6,0091</td></tr><tr><td>12</td><td>16</td><td>5,2324</td><td>6,2923</td></tr><tr><td>16</td><td>20</td><td>5,0341</td><td>6,4380</td></tr><tr><td>20</td><td>24</td><td>4,9374</td><td>6,6481</td></tr></tbody></table></div><p>Para comparação: o polinômio de grau 5 deu 5,6789, e a função <em>verdadeira</em> dá 5,5255.</p><div class="table-wrap"><table class="method-table"><caption>Onde pôr os nós: quantis contra espaçamento igual</caption><thead><tr><th>K</th><th>Nós nos QUANTIS</th><th>Nós IGUALMENTE espaçados</th><th>Diferença</th></tr></thead><tbody><tr><td>2</td><td>5,7330</td><td>5,7105</td><td>−0,4%</td></tr><tr><td>4</td><td>5,7793</td><td>5,7752</td><td>−0,1%</td></tr><tr><td>6</td><td>5,8818</td><td>5,8761</td><td>−0,1%</td></tr><tr><td>8</td><td>6,0091</td><td>6,1886</td><td>+3,0%</td></tr><tr><td><strong>12</strong></td><td><strong>6,2923</strong></td><td>7,4619</td><td><strong>+18,6%</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A spline natural: variância do ajuste por região (500 reamostras)</caption><thead><tr><th>Faixa de PAR</th><th>B-spline (p = 10)</th><th>Natural (p = 8)</th><th>Polinômio g9 (p = 10)</th></tr></thead><tbody><tr><td>57 a 200</td><td>1,2406</td><td><strong>0,5482</strong></td><td>1,4075</td></tr><tr><td>200 a 500</td><td>0,1764</td><td>0,1732</td><td>0,1685</td></tr><tr><td>500 a 1 400</td><td>0,1318</td><td>0,1203</td><td>0,1133</td></tr><tr><td>1 400 a 1 800</td><td>0,2060</td><td>0,1549</td><td>0,2606</td></tr><tr><td>1 800 a 1 998</td><td>0,9940</td><td><strong>0,5444</strong></td><td><strong>5,5659</strong></td></tr><tr><td><strong>razão borda/miolo</strong></td><td><strong>7,5</strong></td><td><strong>4,5</strong></td><td><strong>49,1</strong></td></tr></tbody></table></div><p>E o erro validado das três: B-spline 5,8818, natural 5,8592, polinômio de grau 9 5,9762.</p><div class="table-wrap"><table class="method-table"><caption>Extrapolar: predições fora do domínio (máximo observado: 1.998)</caption><thead><tr><th>PAR</th><th>B-spline</th><th>Natural</th><th>Polinômio g9</th><th>VERDADE</th></tr></thead><tbody><tr><td>2 100</td><td>20,68</td><td>18,44</td><td>39,09</td><td>17,70</td></tr><tr><td>2 300</td><td>25,31</td><td>18,00</td><td>244,02</td><td>16,85</td></tr><tr><td>2 600</td><td>40,26</td><td>17,35</td><td>2 568,69</td><td>15,25</td></tr><tr><td>3 000</td><td>81,32</td><td><strong>16,47</strong></td><td><strong>26 498,38</strong></td><td>12,54</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Spline contra polinômio, com a MESMA flexibilidade</caption><thead><tr><th>p</th><th>Grau / K</th><th>EQM val. polinômio</th><th>EQM val. spline</th><th>Vantagem da spline</th></tr></thead><tbody><tr><td>5</td><td>g=4 / K=1</td><td>5,7655</td><td>5,7030</td><td>1,1%</td></tr><tr><td>6</td><td>g=5 / K=2</td><td>5,6789</td><td>5,7330</td><td>−1,0%</td></tr><tr><td>8</td><td>g=7 / K=4</td><td>5,7504</td><td>5,7793</td><td>−0,5%</td></tr><tr><td>10</td><td>g=9 / K=6</td><td>5,9762</td><td>5,8818</td><td>1,6%</td></tr><tr><td>12</td><td>g=11 / K=8</td><td>6,8174</td><td>6,0091</td><td>11,9%</td></tr><tr><td>15</td><td>g=14 / K=11</td><td>8,5557</td><td>6,2403</td><td>27,1%</td></tr><tr><td><strong>20</strong></td><td>g=19 / K=16</td><td><strong>104,3181</strong></td><td><strong>6,4380</strong></td><td><strong>93,8%</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela do número de nós dá um resultado modesto e honesto: o mínimo está em \(K=1\), isto é, <em>um</em> nó. E a curva é tão rasa que de \(K=0\) a \(K=4\) o erro varia 1,3%. Com \(n=260\) e uma curva suave, a spline de regressão não precisa de muita flexibilidade — e é bom que o analista saiba disso antes de reportar uma escolha como se fosse uma descoberta.</p><p><strong>Sobre a posição dos nós:</strong> esta tabela também não diz o que se espera. Até \(K=6\) as duas estratégias <strong>empatam</strong>, com diferenças abaixo de 0,5%, e o espaçamento igual é até ligeiramente melhor. A vantagem dos quantis só aparece com muitos nós: 3% em \(K=8\) e 18,6% em \(K=12\). O motivo é direto — com poucos nós, qualquer colocação razoável funciona; com muitos e espaçamento igual, alguns caem onde há poucos dados (acima de 1.700 μmol estão 8% das observações) e o ajuste fica localmente indeterminado. Os quantis degradam melhor, por construção.</p><p><strong>Sobre a spline natural:</strong> aqui o resultado é inequívoco e vale o custo de 2 graus de liberdade. Na faixa de 1.800 a 1.998 μmol, a variância do ajuste é 0,5444 contra 0,9940 da B-spline — metade — e contra 5,5659 do polinômio de grau 9, que é <em>dez vezes</em> maior. A razão borda/miolo resume: 4,5 para a natural, 7,5 para a B-spline, 49,1 para o polinômio. E o erro validado da natural é o menor dos três, apesar de ela ter menos parâmetros.</p><p>A explicação é a restrição: ao impor que a função seja linear fora dos nós de fronteira, a spline natural elimina exatamente os graus de liberdade que, sem dados dos dois lados para ancorá-los, só produziriam oscilação. É regularização por restrição, e o mecanismo é o mesmo da ficha <a href="ridge.html">ridge</a> — abre-se mão de flexibilidade onde ela não compensa.</p><p><strong>Sobre a extrapolação:</strong> a tabela é dramática e simples de ler. A 3.000 μmol, a spline natural erra 3,9 μmol, a B-spline erra 68,8, e o polinômio de grau 9 erra <strong>26 486</strong>. Nenhuma das três acerta, e nenhuma poderia — não há informação fora do domínio. A diferença é o <em>tamanho</em> do erro, e ele decorre diretamente de como cada uma se comporta fora das fronteiras: a natural continua em linha reta por construção, a B-spline continua com a cúbica da última peça, e o polinômio continua com \(x^9\). Se for absolutamente necessário prever um pouco além do domínio, <code>ns()</code> é a única escolha defensável das três.</p><p><strong>Sobre a comparação final:</strong> até \(p=8\) os dois empatam, e nas duas linhas do meio o polinômio chega a ganhar por meio por cento. A partir de \(p=10\) a spline passa à frente e a distância cresce depressa: 11,9% em \(p=12\), 27,1% em \(p=15\), e em \(p=20\) o polinômio dá erro de 104,3 contra 6,4 da spline — está arruinado pela oscilação, enquanto a spline mal se moveu. É a conclusão da ficha anterior, agora medida pelo erro de predição: a escolha da base é indiferente com pouca flexibilidade e decisiva com muita.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Construir a base de potências truncadas à mão</td><td>Use <code>bs()</code>; o condicionamento é 10⁹ vezes melhor.</td></tr><tr><td>Escolher K pela resubstituição</td><td>Ela sempre pede mais nós; valide.</td></tr><tr><td>Reportar a escolha de K como precisa</td><td>A curva validada é rasa; diga isso.</td></tr><tr><td>Pôr nós igualmente espaçados com K grande</td><td>Alguns caem em regiões vazias; use quantis.</td></tr><tr><td>Usar <code>bs()</code> e prever perto ou fora das bordas</td><td>Use <code>ns()</code>: ela controla o erro ali.</td></tr><tr><td>Não guardar os nós ao prever</td><td>Passe <code>knots</code> e <code>Boundary.knots</code> explicitamente.</td></tr><tr><td>Interpretar os coeficientes da base</td><td>Não são efeitos; reporte a curva.</td></tr><tr><td>Reportar valores-p após escolher K olhando os dados</td><td>É inferência pós-seleção.</td></tr><tr><td>Pôr nós onde "parece que a curva dobra"</td><td>Isso é escolher olhando y; valide.</td></tr><tr><td>Esquecer de marcar os nós no gráfico</td><td>O leitor precisa saber onde eles estão.</td></tr><tr><td>Usar grau 1 ou 2 sem motivo</td><td>O cúbico é o padrão porque a curvatura fica contínua.</td></tr><tr><td>Estender a ideia a 3 ou 4 preditoras por produto de bases</td><td>O número de termos explode; veja <a href="gam.html">GAM</a>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="polinomial.html">Polinomial</a></td><td>Até cerca de 6 g.l., e quando os coeficientes importam (dose ótima).</td></tr><tr><td><a href="smoothing-spline.html">Splines de suavização</a></td><td>Quando não se quer escolher nós: um nó por ponto, com penalidade.</td></tr><tr><td>Splines penalizadas (P-splines)</td><td>Muitos nós + penalidade: o melhor dos dois mundos.</td></tr><tr><td><a href="loess.html">LOESS</a></td><td>Exploração; quando não se precisa de fórmula.</td></tr><tr><td><a href="gam.html">GAM</a></td><td>Várias preditoras, cada uma com sua spline.</td></tr><tr><td>Splines monótonas ou com forma imposta</td><td>Quando a teoria exige monotonicidade ou concavidade.</td></tr><tr><td>Regressão segmentada</td><td>Quando o ponto de quebra é o parâmetro de interesse.</td></tr><tr><td>Modelo mecanístico</td><td>Quando a teoria dá a forma e os parâmetros têm significado.</td></tr><tr><td><a href="ridge.html">Ridge</a> sobre a base B-spline</td><td>É precisamente a P-spline de Eilers e Marx.</td></tr><tr><td>Splines de alisamento em duas dimensões</td><td>Superfícies: produtos tensoriais ou thin-plate.</td></tr></tbody></table></div><ol class="steps"><li>Desenhe o gráfico antes de qualquer coisa.</li><li>Use <code>bs()</code> ou <code>ns()</code>; nunca monte a base à mão.</li><li>Prefira <code>ns()</code> se for prever perto das bordas.</li><li>Comece por <code>df = 4</code> ou 5 e varra uma faixa ampla.</li><li>Escolha por validação cruzada, e verifique se a curva é rasa.</li><li>Se for rasa, diga que qualquer valor da faixa serve.</li><li>Ponha os nós nos quantis, especialmente com K grande.</li><li>Guarde os nós explicitamente para prever.</li><li>Desenhe o ajuste com banda, marcando os nós.</li><li>Se escolher K olhando os dados, não reporte valores-p do modelo final.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>DE BOOR, Carl. <em>A practical guide to splines.</em> New York: Springer, 1978.</li><li>SCHOENBERG, I. J. Contributions to the problem of approximation of equidistant data by analytic functions. <em>Quarterly of Applied Mathematics</em>, v. 4, p. 45-99 e 112-141, 1946.</li><li>COX, M. G. The numerical evaluation of B-splines. <em>IMA Journal of Applied Mathematics</em>, v. 10, n. 2, p. 134-149, 1972.</li><li>SMITH, Patricia L. Splines as a useful and convenient statistical tool. <em>The American Statistician</em>, v. 33, n. 2, p. 57-62, 1979.</li><li>HARRELL, Frank E.; LEE, Kerry L.; POLLOCK, Barbara G. Regression models in clinical studies: determining relationships between predictors and response. <em>Journal of the National Cancer Institute</em>, v. 80, n. 15, p. 1198-1202, 1988.</li><li>DURRLEMAN, Sylvain; SIMON, Richard. Flexible regression models with cubic splines. <em>Statistics in Medicine</em>, v. 8, n. 5, p. 551-561, 1989.</li><li>WEGMAN, Edward J.; WRIGHT, Ian W. Splines in statistics. <em>Journal of the American Statistical Association</em>, v. 78, n. 382, p. 351-365, 1983.</li><li>PERPEROGLOU, Aris; SAUERBREI, Willi; ABRAHAMOWICZ, Michal; SCHMID, Matthias. A review of spline function procedures in R. <em>BMC Medical Research Methodology</em>, v. 19, art. 46, 2019.</li><li>EILERS, Paul H. C.; MARX, Brian D. Flexible smoothing with B-splines and penalties. <em>Statistical Science</em>, v. 11, n. 2, p. 89-121, 1996.</li><li>RUPPERT, David; WAND, M. P.; CARROLL, Raymond J. <em>Semiparametric regression.</em> Cambridge: Cambridge University Press, 2003.</li><li>GREEN, Peter J.; SILVERMAN, Bernard W. <em>Nonparametric regression and generalized linear models: a roughness penalty approach.</em> London: Chapman &amp; Hall, 1994.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>FARAWAY, Julian J. <em>Extending the linear model with R.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2016.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Pacote <code>splines</code>, funções <code>bs</code> e <code>ns</code>; pacote <code>stats</code>, funções <code>poly</code>, <code>smooth.spline</code> e <code>loess</code>.)</li><li>CANTY, Angelo; RIPLEY, Brian D. <em>boot: bootstrap R (S-Plus) functions.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=boot" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=boot</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os do modelo linear, base B-spline no ajuste, número e posição dos nós escolhidos por validação, nós com dados em volta e nenhuma extrapolação (ou spline natural, se for inevitável).</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>splines (acompanha o R)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="polinomial.html"><span>← ANTERIOR</span>Regressão polinomial</a><a href="smoothing-spline.html"><span>PRÓXIMO →</span>Smoothing splines</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

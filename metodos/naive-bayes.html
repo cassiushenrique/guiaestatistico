@@ -4,308 +4,345 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Naive Bayes: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Naive Bayes | Estatística e Ciência de Dados
-  </title>
+<meta content="Naive Bayes: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Naive Bayes | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Naive Bayes
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 17 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Naive Bayes
-    </h1>
-<p class="detail-lead">
-     Estima a classe mais provável de uma observação a partir de suas características.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/naive-bayes.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima a classe mais provável de uma observação a partir de suas características.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Classes representativas, distribuições condicionais especificadas, ausência de níveis novos não tratados.</li><li>Examine correlação de preditores e calibração.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\Pr(Y=k\mid\mathbf x)\propto\Pr(Y=k)\prod_{j=1}^p p(x_j\mid Y=k)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos da nova unidade
-        </dd>
-</div>
-<div>
-<dt>
-         \(Y\)
-        </dt>
-<dd>
-         classe de resposta
-        </dd>
-</div>
-<div>
-<dt>
-         \(K\)
-        </dt>
-<dd>
-         número de vizinhos ou classes, conforme a definição do método
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Interprete probabilidades como condicionais ao modelo; \(p&lt;0{,}05\) não é critério interno do algoritmo.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Classificação do número de cilindros segundo massa e potência de veículos (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-naive-bayes" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-naive-bayes"><code># Naive Bayes ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Naive Bayes</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · CLASSIFICADORES</span><h1>Naive Bayes</h1><p class="detail-lead">Teorema de Bayes com variáveis supostas independentes dentro de cada classe — rápido e bom para decidir, confiante demais nas probabilidades.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/naive-bayes.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/naive-bayes.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o naive Bayes</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O naive Bayes aplica o teorema de Bayes com uma simplificação drástica: supõe que, <strong>dentro de cada classe</strong>, as variáveis são independentes. Com isso, a densidade conjunta de seis variáveis vira o produto de seis densidades de uma variável, cada uma estimada separadamente. O modelo tem poucos parâmetros, ajusta instantaneamente e funciona com muitas variáveis e poucos dados.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Naive Bayes" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A regra</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Bayes: priori</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">× verossimilhança</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A simplificação</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">condicional</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ajuste</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Uma densidade por</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">variável e classe</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ponto forte</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Rápido; muitas</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">variáveis</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O ponto fraco</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Probabilidades</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">extremas</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">As variantes</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Gaussiana, núcleo,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">multinomial</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Naive Bayes</text></svg><figcaption>Visão geral do naive Bayes. Fonte: o autor.</figcaption></figure><div class="callout "><strong>"Ingênuo", mas não tolo</strong><p>A hipótese de independência quase nunca é verdadeira, e mesmo assim o naive Bayes classifica bem com frequência. Domingos e Pazzani (1997) explicaram por quê: para <em>classificar</em>, basta que a classe certa tenha a maior probabilidade, mesmo que o valor esteja errado. O preço aparece nas probabilidades: com variáveis redundantes, a evidência é contada duas vezes, e o modelo fica confiante demais. Esta ficha mede esse preço.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o naive Bayes</h2><p>Pelo teorema de Bayes, \(P(C=c\mid x)\propto \pi_c\,p(x\mid C=c)\). O naive Bayes troca a densidade conjunta \(p(x\mid c)\) pelo produto das marginais. Na versão gaussiana, cada marginal é uma normal com média e desvio-padrão próprios da classe; na versão com núcleo, uma densidade suave estimada dos dados; para contagens de palavras, uma multinomial.</p><figure class="fig"><img src="../assets/resultados/naive-bayes-didatica.png" alt="Densidades de altitude e temperatura por classe com as normais ajustadas" loading="lazy"/><figcaption><strong>As densidades que o modelo usa.</strong> À esquerda, a altitude: as normais ajustadas (curvas) descrevem mal os histogramas, porque a altitude é uniforme e os finos se concentram acima de 1.050 m, com corte abrupto. À direita, a temperatura: as normais descrevem razoavelmente. O modelo multiplica essas densidades como se fossem evidências independentes. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Naive Bayes frente à análise discriminante</caption><thead><tr><th>Aspecto</th><th>Naive Bayes gaussiano</th><th>LDA</th><th>QDA</th></tr></thead><tbody><tr><td>Covariâncias</td><td>Diagonais, por classe</td><td>Uma comum, completa</td><td>Uma por classe, completas</td></tr><tr><td>Correlação entre variáveis</td><td>Ignorada</td><td>Modelada</td><td>Modelada</td></tr><tr><td>Parâmetros (p = 6, 2 classes)</td><td>24 + 1</td><td>12 + 21 + 1</td><td>12 + 42 + 1</td></tr><tr><td>Fronteira</td><td>Quadrática (com eixos alinhados)</td><td>Linear</td><td>Quadrática</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Independência condicional à classe</strong></td><td>Variáveis correlacionadas contam a mesma evidência duas vezes.</td><td>Correlações dentro de cada classe.</td></tr><tr><td>Forma de cada densidade</td><td>A gaussiana supõe normalidade por classe.</td><td>Histogramas por classe; versão com núcleo.</td></tr><tr><td>Nenhuma densidade nula</td><td>Uma categoria ausente numa classe zera o produto.</td><td>Correção de Laplace (<code>laplace = 1</code>).</td></tr><tr><td>Prioris adequadas</td><td>Afetam as probabilidades a posteriori.</td><td>Use a prevalência da população-alvo.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&P\left(C=c\mid x\right) \\ &= \frac{\pi_c\prod_{j=1}^{p}f_{jc}\left(x_j\right)}{\sum_{c^\prime}\pi_{c^\prime}\prod_{j=1}^{p}f_{jc^\prime}\left(x_j\right)},\end{aligned}\]\[\begin{aligned}f_{jc}(x_j) &= \frac{1}{\sqrt{2\pi}\,s_{jc}}\exp\!\left[-\frac{\left(x_j-\bar x_{jc}\right)^2}{2s_{jc}^2}\right]\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\pi_c\)</dt><dd>probabilidade a priori da classe \(c\): a proporção no treino</dd></div><div><dt>\(f_{jc}\)</dt><dd>densidade da variável \(j\) na classe \(c\)</dd></div><div><dt>\(\bar x_{jc},\ s_{jc}\)</dt><dd>média e desvio-padrão da variável \(j\) na classe \(c\)</dd></div></dl><p>Na prática calcula-se em logaritmos — uma soma em vez de um produto, o que evita números pequenos demais:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\log\frac{P(\text{fino}\mid x)}{P(\text{não}\mid x)} \\ &= \log\frac{\pi_1}{\pi_0}+\sum_{j=1}^{p}\log\frac{f_{j1}(x_j)}{f_{j0}(x_j)}\end{aligned}\]</div><p>Cada variável contribui com um termo <strong>aditivo</strong> no logito: é a forma explícita da independência.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Médias e desvios-padrão por classe</caption><thead><tr><th>Variável</th><th>Média (fino)</th><th>DP (fino)</th><th>Média (não)</th><th>DP (não)</th></tr></thead><tbody><tr><td>Altitude</td><td>1272,08</td><td>179,19</td><td>946,75</td><td>229,32</td></tr><tr><td>Temperatura</td><td>18,67</td><td>1,66</td><td>20,57</td><td>1,82</td></tr><tr><td>Chuva</td><td>1484,35</td><td>241,15</td><td>1522,74</td><td>269,96</td></tr><tr><td>Sombreamento</td><td>27,93</td><td>19,55</td><td>28,32</td><td>19,46</td></tr><tr><td>N foliar</td><td>2,87</td><td>0,39</td><td>2,82</td><td>0,41</td></tr><tr><td>pH</td><td>5,44</td><td>0,36</td><td>5,40</td><td>0,50</td></tr></tbody></table></div><p>Para o lote com altitude 1.080 m, 20,0 °C, 1.500 mm, 30% de sombra, N 2,9 e pH 5,4, com prioris 0,34 e 0,66:</p><div class="table-wrap"><table class="method-table"><caption>A contribuição de cada variável</caption><thead><tr><th>Variável</th><th>Densidade | fino</th><th>Densidade | não</th><th>Log da razão</th></tr></thead><tbody><tr><td>Altitude</td><td>1,2534 × 10⁻³</td><td>1,4694 × 10⁻³</td><td>−0,1590</td></tr><tr><td>Temperatura</td><td>0,1746</td><td>0,2091</td><td>−0,1800</td></tr><tr><td>Chuva</td><td>1,6509 × 10⁻³</td><td>1,4725 × 10⁻³</td><td>0,1143</td></tr><tr><td>Sombreamento</td><td>0,0203</td><td>0,0204</td><td>−0,0063</td></tr><tr><td>N foliar</td><td>1,0121</td><td>0,9583</td><td>0,0545</td></tr><tr><td>pH</td><td>1,0957</td><td>0,8016</td><td>0,3125</td></tr></tbody></table></div><div class="worked"><strong>O resultado e o que ele revela</strong><p>Somando os logaritmos com os das prioris, obtém-se −19,7064 para "fino" e −19,1792 para "não"; logo \(P(\text{fino}\mid x)=1/(1+e^{0{,}5272})=0{,}3712\), idêntico ao do <code>GaussianNB</code>. A probabilidade verdadeira é 0,6221.</p><p>O erro tem duas origens visíveis na tabela. A altitude de 1.080 m, logo acima do degrau, recebe razão <em>negativa</em> (−0,1590): a normal dos finos, centrada em 1.272 m, acha 1.080 m "baixo", sem saber que tudo acima de 1.050 m é favorável. E a temperatura de 20,0 °C acrescenta −0,1800 — mas boa parte dessa informação já estava na altitude, com a qual a temperatura tem correlação −0,723 dentro dos finos. A mesma evidência foi contada duas vezes.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Número de parâmetros linear em p: funciona com p grande e n pequeno.</li><li>Ajuste em uma passada pelos dados, sem otimização.</li><li>Com variáveis redundantes, as probabilidades ficam extremas demais.</li><li>A classificação pode ser boa mesmo com probabilidades ruins.</li><li>O logito é aditivo nas variáveis: não há interações.</li><li>A versão gaussiana tem fronteira quadrática; a multinomial, linear.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Tabelas de média e desvio</td><td>Como cada variável difere entre as classes.</td><td>Uma a uma, sem ajuste pelas outras.</td></tr><tr><td>Log da razão de cada variável</td><td>Quanto ela empurra a decisão.</td><td>Variáveis redundantes somam a mesma coisa.</td></tr><tr><td>Probabilidade a posteriori</td><td>Confiança na classe.</td><td>Costuma ser extrema demais; calibre.</td></tr><tr><td>Erro de classificação</td><td>Desempenho para decidir.</td><td>Pode ser bom com probabilidades ruins.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>naiveBayes()</code>, do pacote <code>e1071</code>: para variáveis numéricas, ajusta uma normal por classe; para fatores, tabelas de frequência, com correção de Laplace em <code>laplace</code>. <code>predict(…, type = "raw")</code> dá as probabilidades. O pacote <code>naivebayes</code> acrescenta densidades por núcleo (<code>usekernel = TRUE</code>), Poisson e gráficos das densidades. Em Python, <code>sklearn.naive_bayes.GaussianNB</code>, <code>MultinomialNB</code> e <code>BernoulliNB</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-naive-bayes-min" type="button">Copiar código</button></div><pre id="code-naive-bayes-min"><code>library(e1071)
+nb &lt;- naiveBayes(fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe)
+nb
+predict(nb, cafe[1:5, ], type = "raw")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-naive-bayes" type="button">Copiar código</button></div><pre id="code-naive-bayes"><code># Naive Bayes: exemplo completo ----
+# Pacotes: e1071 (naiveBayes) e naivebayes (opcional, com núcleo)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("e1071", quietly = TRUE)) install.packages("e1071")
 library(e1071)
-set.seed(2026)
-d &lt;- transform(mtcars, classe = factor(cyl))
-i &lt;- unlist(lapply(split(seq_len(nrow(d)), d$classe),
-                  function(z) sample(z, max(3, length(z) - 2))))
-ajuste &lt;- naiveBayes(classe ~ wt + hp, data = d[i, ])
-pred &lt;- predict(ajuste, d[-i, ])
-print(table(real = d$classe[-i], previsto = pred))
+f &lt;- fino_f ~ alt + temp + chuva + somb + nfol + ph
 
-# Visualização e diagnóstico ----
-plot(mtcars$wt, mtcars$hp, col = factor(mtcars$cyl), pch = 19, xlab = "Massa (mil libras)", ylab = "Potência", main = "Características e classes de veículos")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. O ajuste: uma média e um desvio-padrão por variável e por classe
+nb &lt;- naiveBayes(f, data = cafe)
+nb                       # prioris e as tabelas de média e desvio por classe
 
+# ---- 2. O cálculo para um lote novo
+novo &lt;- data.frame(alt = 1080, temp = 20.0, chuva = 1500, somb = 30, nfol = 2.9, ph = 5.4)
+predict(nb, novo, type = "raw")
+# À mão: produto das densidades normais vezes a priori
+dens &lt;- function(cl) prod(mapply(function(v, m, s) dnorm(novo[[v]], m, s),
+  names(novo), sapply(names(novo), function(v) nb$tables[[v]][cl, 1]),
+  sapply(names(novo), function(v) nb$tables[[v]][cl, 2]))) * nb$apriori[cl] / sum(nb$apriori)
+dens("fino") / (dens("fino") + dens("nao"))
+# (o e1071 usa o desvio-padrão com n-1; o scikit-learn, com n: diferença pequena)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="knn.html">
-<span>
-      ← ANTERIOR
-     </span>
-     K-nearest neighbors (KNN)
-    </a>
-<a href="svm-linear.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Máquinas de vetores de suporte lineares
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. A hipótese "ingênua": correlação DENTRO de cada classe
+by(cafe[, c("alt", "temp")], cafe$fino_f, cor)
+
+# ---- 4. Calibração por validação cruzada
+set.seed(1)
+d &lt;- sample(rep(1:10, length.out = nrow(cafe)))
+p &lt;- numeric(nrow(cafe))
+for (j in 1:10) p[d == j] &lt;- predict(naiveBayes(f, data = cafe[d != j, ]),
+                                     cafe[d == j, ], type = "raw")[, "fino"]
+faixa &lt;- cut(p, c(0, .05, .2, .4, .6, .8, .95, 1), include.lowest = TRUE)
+cbind(previsto = tapply(p, faixa, mean), observado = tapply(cafe$fino, faixa, mean),
+      n = table(faixa))
+
+# ---- 5. Sem a temperatura (redundante com a altitude)
+nb2 &lt;- naiveBayes(fino_f ~ alt + chuva + somb + nfol + ph, data = cafe)
+
+# ---- 6. Densidades por núcleo em vez de normais
+# install.packages("naivebayes")
+library(naivebayes)
+nbk &lt;- naive_bayes(f, data = cafe, usekernel = TRUE)
+plot(nbk, which = "alt")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-naive-bayes" type="button">Copiar código</button></div><pre id="code-py-naive-bayes"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from scipy.stats import norm as N
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+
+y=FINO
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: fino (1) ou não (0). Erro de Bayes = %s.'%c(ERRO_BAYES))
+
+print('\n'+'='*70)
+print('O QUE O MODELO ESTIMA: uma média e um desvio-padrão por variável e classe')
+print()
+print('%-14s %12s %10s %12s %10s'%('variável','média fino','dp fino','média não','dp não'))
+par={}
+for j,k in enumerate(NOMES):
+    a,b=X[y==1,j],X[y==0,j]; par[k]=(a.mean(),a.std(),b.mean(),b.std())
+    print('%-14s %12s %10s %12s %10s'%(ROT[k],c(a.mean(),2),c(a.std(),2),c(b.mean(),2),c(b.std(),2)))
+pi1=y.mean()
+print('  prioris: P(fino) = %s, P(não) = %s'%(c(pi1),c(1-pi1)))
+
+print('\n'+'='*70)
+print('O CÁLCULO PARA UM LOTE NOVO, passo a passo')
+x0=np.array([1080.,20.0,1500.,30.,2.9,5.4])
+print('Lote: altitude 1080 m, 20,0 C, 1500 mm, 30% de sombra, N 2,9, pH 5,4')
+print()
+print('%-14s %16s %16s %14s'%('variável','dens. | fino','dens. | não','log da razão'))
+L1=np.log(pi1); L0=np.log(1-pi1)
+for j,k in enumerate(NOMES):
+    m1,s1,m0,s0=par[k]; d1=N.pdf(x0[j],m1,s1); d0=N.pdf(x0[j],m0,s0)
+    L1+=np.log(d1); L0+=np.log(d0)
+    print('%-14s %16s %16s %14s'%(ROT[k],'%.4e'%d1,'%.4e'%d0,c(np.log(d1/d0),4)))
+print()
+print('  log P(fino) + soma = %s ;  log P(não) + soma = %s'%(c(L1),c(L0)))
+p=1/(1+np.exp(L0-L1))
+print('  P(fino | x) = 1 / (1 + exp(%s)) = %s'%(c(L0-L1),c(p)))
+gnb=GaussianNB(var_smoothing=0).fit(X,y)
+print('  conferência com GaussianNB: %s'%c(gnb.predict_proba(x0[None,:])[0,1]))
+print('  P(fino | x) VERDADEIRA = %s'%c(float(1-norm.cdf((80-verdade(x0[None,:])[0])/SIGN))))
+
+print('\n'+'='*70)
+print('A HIPÓTESE "INGÊNUA" E O QUE ELA CUSTA')
+print('Correlação entre altitude e temperatura, DENTRO de cada classe:')
+for cl,nm in [(1,'finos'),(0,'não finos')]:
+    print('  %-10s r = %s'%(nm,c(np.corrcoef(X[y==cl,0],X[y==cl,1])[0,1],3)))
+print('O modelo trata as duas como evidências independentes: conta duas vezes')
+print('a mesma informação. A consequência aparece nas probabilidades.')
+d=dobras(NC,10,0)
+def oof(f):
+    p=np.empty(NC)
+    for j in range(10):
+        tr,te=d!=j,d==j; p[te]=f().fit(X[tr],y[tr]).predict_proba(X[te])[:,1]
+    return p
+pn=oof(lambda: GaussianNB()); pl=oof(lambda: make_pipeline(StandardScaler(),LogisticRegression(C=1e4,max_iter=3000)))
+Xs=np.delete(X,1,1)
+pns=np.empty(NC)
+for j in range(10):
+    tr,te=d!=j,d==j; pns[te]=GaussianNB().fit(Xs[tr],y[tr]).predict_proba(Xs[te])[:,1]
+print()
+print('Calibração: média da probabilidade prevista contra a frequência real,')
+print('por faixa de probabilidade (validação cruzada de 10 dobras):')
+print()
+print('%-12s %22s %22s'%('faixa','naive Bayes (6 var.)','naive Bayes sem temp.'))
+print('%-12s %7s %7s %6s %7s %7s %6s'%('','prev.','real','n','prev.','real','n'))
+for a,b in [(0,.05),(.05,.2),(.2,.4),(.4,.6),(.6,.8),(.8,.95),(.95,1.01)]:
+    s1=(pn&gt;=a)&amp;(pn&lt;b); s2=(pns&gt;=a)&amp;(pns&lt;b)
+    f=lambda s,pp: (c(pp[s].mean(),3) if s.sum() else '-', c(y[s].mean(),3) if s.sum() else '-', s.sum())
+    r1=f(s1,pn); r2=f(s2,pns)
+    print('%-12s %7s %7s %6d %7s %7s %6d'%('%s-%s'%(c(a,2),c(min(b,1),2)),*r1,*r2))
+print()
+print('  fração de probabilidades extremas (&lt; 0,05 ou &gt; 0,95): %s com 6 var., %s sem temp.'%(
+      c(np.mean((pn&lt;.05)|(pn&gt;.95)),3),c(np.mean((pns&lt;.05)|(pns&gt;.95)),3)))
+
+print('\n'+'='*70)
+print('COMPARAÇÃO (10 dobras x 5 repetições)')
+print()
+print('%-36s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for nm,f,A in [('naive Bayes gaussiano, 6 variáveis',lambda: GaussianNB(),X),
+               ('naive Bayes sem a temperatura',lambda: GaussianNB(),Xs),
+               ('LDA (covariância comum)',lambda: LinearDiscriminantAnalysis(),X),
+               ('QDA (covariância por classe)',lambda: QuadraticDiscriminantAnalysis(),X),
+               ('regressão logística',lambda: make_pipeline(StandardScaler(),LogisticRegression(C=1e4,max_iter=3000)),X)]:
+    er,ll,br=cv_clf(f,A,y,10,0,5,prob=True)
+    print('%-36s %10s %10s %10s'%(nm,c(er),c(ll),c(br)))
+print('%-36s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+
+print('\n'+'='*70)
+print('NAIVE BAYES COM DENSIDADES POR NÚCLEO (sem supor normalidade)')
+from scipy.stats import gaussian_kde
+class NBkde:
+    def fit(s,A,b):
+        s.pi=b.mean(); s.k=[[gaussian_kde(A[b==cl,j]) for j in range(A.shape[1])] for cl in (0,1)]; return s
+    def predict_proba(s,A):
+        l=[np.log(1-s.pi)+sum(np.log(s.k[0][j](A[:,j])+1e-300) for j in range(A.shape[1])),
+           np.log(s.pi)+sum(np.log(s.k[1][j](A[:,j])+1e-300) for j in range(A.shape[1]))]
+        p1=1/(1+np.exp(np.clip(l[0]-l[1],-700,700))); return np.column_stack([1-p1,p1])
+    def predict(s,A): return (s.predict_proba(A)[:,1]&gt;=.5).astype(int)
+er,ll,br=cv_clf(lambda: NBkde(),X,y,10,0,5,prob=True)
+print('  erro %s | log-loss %s | Brier %s'%(c(er),c(ll),c(br)))
+print('A altitude tem distribuição uniforme, e a nota tem um degrau: dentro')
+print('de cada classe a altitude NÃO é normal. O núcleo acomoda isso.')
+print('  assimetria da altitude nos finos: %s'%c(float(((X[y==1,0]-X[y==1,0].mean())**3).mean()/X[y==1,0].std()**3),3))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: fino (1) ou não (0). Erro de Bayes = 0,1596.
+
+======================================================================
+O QUE O MODELO ESTIMA: uma média e um desvio-padrão por variável e classe
+
+variável         média fino    dp fino    média não     dp não
+Altitude            1272,08     179,19       946,75     229,32
+Temperatura           18,67       1,66        20,57       1,82
+Chuva               1484,35     241,15      1522,74     269,96
+Sombreamento          27,93      19,55        28,32      19,46
+N foliar               2,87       0,39         2,82       0,41
+pH                     5,44       0,36         5,40       0,50
+  prioris: P(fino) = 0,3400, P(não) = 0,6600
+
+======================================================================
+O CÁLCULO PARA UM LOTE NOVO, passo a passo
+Lote: altitude 1080 m, 20,0 C, 1500 mm, 30% de sombra, N 2,9, pH 5,4
+
+variável           dens. | fino      dens. | não   log da razão
+Altitude             1.2534e-03       1.4694e-03        -0,1590
+Temperatura          1.7464e-01       2.0907e-01        -0,1800
+Chuva                1.6509e-03       1.4725e-03         0,1143
+Sombreamento         2.0291e-02       2.0420e-02        -0,0063
+N foliar             1.0121e+00       9.5834e-01         0,0545
+pH                   1.0957e+00       8.0159e-01         0,3125
+
+  log P(fino) + soma = -19,7064 ;  log P(não) + soma = -19,1792
+  P(fino | x) = 1 / (1 + exp(0,5272)) = 0,3712
+  conferência com GaussianNB: 0,3712
+  P(fino | x) VERDADEIRA = 0,6221
+
+======================================================================
+A HIPÓTESE "INGÊNUA" E O QUE ELA CUSTA
+Correlação entre altitude e temperatura, DENTRO de cada classe:
+  finos      r = -0,723
+  não finos  r = -0,789
+O modelo trata as duas como evidências independentes: conta duas vezes
+a mesma informação. A consequência aparece nas probabilidades.
+
+Calibração: média da probabilidade prevista contra a frequência real,
+por faixa de probabilidade (validação cruzada de 10 dobras):
+
+faixa          naive Bayes (6 var.)  naive Bayes sem temp.
+               prev.    real      n   prev.    real      n
+0,00-0,05      0,010   0,048    228   0,016   0,043    185
+0,05-0,20      0,117   0,169     71   0,113   0,056    107
+0,20-0,40      0,297   0,318     44   0,303   0,370     73
+0,40-0,60      0,485   0,460     50   0,509   0,593     59
+0,60-0,80      0,721   0,556     63   0,709   0,691    110
+0,80-0,95      0,887   0,788    104   0,851   0,788     66
+0,95-1,00      0,966   0,675     40       -       -      0
+
+  fração de probabilidades extremas (&lt; 0,05 ou &gt; 0,95): 0,447 com 6 var., 0,308 sem temp.
+
+======================================================================
+COMPARAÇÃO (10 dobras x 5 repetições)
+
+modelo                                     erro   log-loss      Brier
+naive Bayes gaussiano, 6 variáveis       0,2033     0,5127     0,1487
+naive Bayes sem a temperatura            0,1983     0,4248     0,1334
+LDA (covariância comum)                  0,2310     0,4514     0,1480
+QDA (covariância por classe)             0,1997     0,4084     0,1325
+regressão logística                      0,2307     0,4489     0,1477
+erro de Bayes                            0,1596
+
+======================================================================
+NAIVE BAYES COM DENSIDADES POR NÚCLEO (sem supor normalidade)
+  erro 0,2027 | log-loss 0,4657 | Brier 0,1450
+A altitude tem distribuição uniforme, e a nota tem um degrau: dentro
+de cada classe a altitude NÃO é normal. O núcleo acomoda isso.
+  assimetria da altitude nos finos: -1,016</pre></div><figure class="fig"><img src="../assets/resultados/naive-bayes.png" alt="Curva de calibração do naive Bayes e da logística e log-loss de cinco classificadores" loading="lazy"/><figcaption><strong>A aplicação em duas vistas.</strong> À esquerda, a frequência observada de finos contra a probabilidade prevista, por faixa: o naive Bayes (vermelho) fica abaixo da diagonal nas probabilidades altas — quando diz 0,97, acerta 0,68. À direita, o log-loss validado: retirar a temperatura, redundante com a altitude, melhora o naive Bayes mais do que qualquer outra mudança. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Calibração por faixa de probabilidade (validação cruzada)</caption><thead><tr><th>Faixa</th><th>NB 6 var.: previsto</th><th>Observado</th><th>n</th><th>NB sem temp.: previsto</th><th>Observado</th><th>n</th></tr></thead><tbody><tr><td>0,00-0,05</td><td>0,010</td><td>0,048</td><td>228</td><td>0,016</td><td>0,043</td><td>185</td></tr><tr><td>0,05-0,20</td><td>0,117</td><td>0,169</td><td>71</td><td>0,113</td><td>0,056</td><td>107</td></tr><tr><td>0,20-0,40</td><td>0,297</td><td>0,318</td><td>44</td><td>0,303</td><td>0,370</td><td>73</td></tr><tr><td>0,40-0,60</td><td>0,485</td><td>0,460</td><td>50</td><td>0,509</td><td>0,593</td><td>59</td></tr><tr><td>0,60-0,80</td><td>0,721</td><td>0,556</td><td>63</td><td>0,709</td><td>0,691</td><td>110</td></tr><tr><td>0,80-0,95</td><td>0,887</td><td>0,788</td><td>104</td><td>0,851</td><td>0,788</td><td>66</td></tr><tr><td><strong>0,95-1,00</strong></td><td><strong>0,966</strong></td><td><strong>0,675</strong></td><td><strong>40</strong></td><td>—</td><td>—</td><td>0</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Comparação (10 dobras × 5)</caption><thead><tr><th>Modelo</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>Naive Bayes gaussiano, 6 variáveis</td><td>0,2033</td><td>0,5127</td><td>0,1487</td></tr><tr><td><strong>Naive Bayes sem a temperatura</strong></td><td><strong>0,1983</strong></td><td><strong>0,4248</strong></td><td><strong>0,1334</strong></td></tr><tr><td>LDA</td><td>0,2310</td><td>0,4514</td><td>0,1480</td></tr><tr><td>QDA</td><td>0,1997</td><td>0,4084</td><td>0,1325</td></tr><tr><td>Regressão logística</td><td>0,2307</td><td>0,4489</td><td>0,1477</td></tr><tr><td>Naive Bayes com núcleo</td><td>0,2027</td><td>0,4657</td><td>0,1450</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><p><strong>Leitura:</strong> como classificador, o naive Bayes vai bem — erro de 20,33%, melhor que a logística e a LDA, que têm fronteira linear e não representam o degrau. Como estimador de probabilidades, vai mal: log-loss de 0,5127, o pior da tabela.</p><p><strong>A calibração mostra onde está o problema.</strong> Com as seis variáveis, 44,7% dos lotes recebem probabilidade abaixo de 0,05 ou acima de 0,95. Na faixa mais alta, o modelo diz 0,966 em média e só 67,5% dos lotes são finos. É a evidência contada duas vezes: a altitude e a temperatura dizem quase a mesma coisa (correlação −0,723 entre os finos e −0,789 entre os não finos), e o produto das densidades multiplica essa informação por si mesma.</p><p><strong>Retirar a temperatura</strong> reduz a fração de probabilidades extremas para 30,8%, elimina a faixa acima de 0,95 e leva o log-loss de 0,5127 a 0,4248 — e ainda melhora o erro (0,1983). É o resultado mais importante da ficha: no naive Bayes, <em>menos</em> variáveis pode ser melhor, quando as que saem são redundantes. A QDA, que modela as correlações em vez de ignorá-las, chega ao mesmo lugar (0,4084) sem precisar retirar nada.</p><p><strong>As densidades por núcleo não ajudaram</strong> (log-loss 0,4657 contra 0,5127): resolvem o problema da forma das marginais, mas não o da dependência, que é o principal aqui.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar as probabilidades sem verificar a calibração</td><td>Curva de calibração; recalibração (Platt, isotônica).</td></tr><tr><td>Incluir variáveis redundantes</td><td>Elas contam a mesma evidência duas vezes.</td></tr><tr><td>Esquecer a correção de Laplace com categorias</td><td>Uma frequência zero anula a classe.</td></tr><tr><td>Supor normalidade sem olhar</td><td>Histograma por classe; use núcleo.</td></tr><tr><td>Concluir que a independência vale porque o erro é baixo</td><td>A classificação tolera a violação; as probabilidades não.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="qda.html">QDA</a></td><td>Variáveis correlacionadas e n suficiente.</td></tr><tr><td><a href="lda.html">LDA</a></td><td>Covariância comum plausível; fronteira linear.</td></tr><tr><td><a href="logistica.html">Regressão logística</a></td><td>Quando se quer inferência sobre os efeitos.</td></tr><tr><td>Naive Bayes multinomial</td><td>Contagens de palavras, textos.</td></tr><tr><td>Redes bayesianas</td><td>Quando se conhece a estrutura de dependência.</td></tr><tr><td><a href="randomforest.html">Random forest</a></td><td>Interações e probabilidades melhores.</td></tr></tbody></table></div><ol class="steps"><li>Examine as correlações dentro de cada classe.</li><li>Retire ou combine variáveis redundantes.</li><li>Verifique a forma das densidades; use núcleo se necessário.</li><li>Avalie erro e calibração por validação cruzada.</li><li>Se as probabilidades importam, recalibre ou passe à QDA ou à logística.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>DOMINGOS, Pedro; PAZZANI, Michael. On the optimality of the simple Bayesian classifier under zero-one loss. <em>Machine Learning</em>, v. 29, n. 2-3, p. 103-130, 1997.</li><li>HAND, David J.; YU, Keming. Idiot's Bayes: not so stupid after all? <em>International Statistical Review</em>, v. 69, n. 3, p. 385-398, 2001.</li><li>ZHANG, Harry. The optimality of naive Bayes. In: INTERNATIONAL FLORIDA ARTIFICIAL INTELLIGENCE RESEARCH SOCIETY CONFERENCE, 17., 2004, Miami Beach. <em>Proceedings</em> [...]. Menlo Park: AAAI Press, 2004. p. 562-567.</li><li>NICULESCU-MIZIL, Alexandru; CARUANA, Rich. Predicting good probabilities with supervised learning. In: INTERNATIONAL CONFERENCE ON MACHINE LEARNING, 22., 2005, Bonn. <em>Proceedings</em> [...]. New York: ACM, 2005. p. 625-632.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>MEYER, David et al. <em>e1071: misc functions of the Department of Statistics, Probability Theory Group, TU Wien.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=e1071" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=e1071</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Independência condicional à classe (verificar as correlações dentro de cada classe), forma das densidades adequada e nenhuma frequência nula.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>e1071; naivebayes (opcional)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="knn.html"><span>← ANTERIOR</span>K-nearest neighbors (KNN)</a><a href="svm-linear.html"><span>PRÓXIMO →</span>Máquinas de vetores de suporte lineares</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

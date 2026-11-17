@@ -4,307 +4,357 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANCOVA: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANCOVA | Estatística e Ciência de Dados
-  </title>
+<meta content="ANCOVA: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANCOVA | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANCOVA
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANCOVA
-    </h1>
-<p class="detail-lead">
-     Compara médias entre grupos após ajustar diferenças em características quantitativas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/ancova.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara médias entre grupos após ajustar diferenças em características quantitativas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência.</li><li>resíduos adequados.</li><li>homocedasticidade.</li><li>relação linear da covariável e homogeneidade de inclinações quando modelo sem interação é adotado.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \alpha_1=\cdots=\alpha_k\\ H_1&amp;:\ \exists\,i\neq j:\alpha_i\neq\alpha_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[Y_i=\beta_0+\alpha_{g(i)}+\beta_1x_i+\varepsilon_i\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu\)
-        </dt>
-<dd>
-         média ou efeito médio
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         estatística de razão de variâncias baseada nos quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       F parcial para termo do fator após ajuste pelas covariáveis; graus de liberdade conforme o modelo.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) para o fator sugere médias ajustadas distintas. Reporte \(IC_{95\%}\) para médias/contrastes ajustados.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto iris registra medidas de sépalas e pétalas de três espécies; os dados permitem ilustrar procedimentos com múltiplas características dimensionais.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comprimento de sépalas por espécie, ajustando a largura da sépala (iris; aplicação metodológica em medidas dimensionais).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-ancova" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-ancova"><code># ANCOVA ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANCOVA</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANCOVA</h1><p class="detail-lead">Compara médias de grupos descontando o efeito de uma covariável contínua medida antes do tratamento, ganhando precisão e corrigindo desequilíbrios.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/ancova.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/ancova.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a ANCOVA</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Experimentos de campo raramente são homogêneos. Parcelas diferem em fertilidade, pacientes diferem em gravidade inicial, alunos diferem em conhecimento prévio. Quando existe uma variável contínua medida <em>antes</em> do tratamento e relacionada à resposta, ignorá-la custa caro: ela engorda o erro experimental e, se por azar estiver desequilibrada entre os grupos, distorce a comparação. A ANCOVA faz as duas correções de uma vez.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: ANCOVA" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">ANOVA com uma</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">covariável contínua</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Dois ganhos</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Reduz o erro</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">Corrige desequilíbrios</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto crítico</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Retas paralelas</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">(sem interação)</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Resultado</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Médias ajustadas</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">na média da covariável</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">lm(y ~ cov + grupo)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">emmeans()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Se falhar</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Interprete a interação,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">não a média ajustada</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">ANCOVA</text></svg><figcaption>Visão geral da análise de covariância. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O resultado deste exemplo em uma frase</strong><p>Sem a covariável, as três cultivares têm médias de 4984, 4933 e 4895 kg/ha e a ANOVA devolve p = 0,904: nada. Com a covariável, as médias ajustadas passam a 4678, 4915 e 5219 kg/ha, a ordem se <strong>inverte</strong> e o teste devolve p = 6,6 × 10⁻⁷. A mesma colheita, duas conclusões opostas.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a ANCOVA</h2><p>O modelo acrescenta à ANOVA um termo linear na covariável \(x\). Isso equivale a comparar os grupos não pelas médias observadas, mas pelas médias que eles teriam <em>se todos tivessem partido do mesmo valor da covariável</em> — por convenção, a média geral dela. Geometricamente: ajustam-se retas paralelas, uma por grupo, e o que se compara são as distâncias verticais entre elas.</p><figure class="fig"><img src="../assets/resultados/ancova-didatica.png" alt="As mesmas parcelas sem e com a covariável no eixo" loading="lazy"/><figcaption><strong>O que a covariável revela.</strong> À esquerda, a produtividade por cultivar: as três médias praticamente coincidem e a ANOVA não encontra nada (F = 0,10; p = 0,904). À direita, os mesmos 36 pontos com a matéria orgânica do solo no eixo horizontal. Agora as três cultivares aparecem em três faixas nítidas e paralelas: para um mesmo teor de matéria orgânica, a C produz mais que a B, e a B mais que a A. Os losangos marcam as médias ajustadas, lidas sobre a linha pontilhada da média da covariável. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que as médias brutas enganavam</strong><p>As parcelas sortearam solos diferentes: a cultivar A caiu em solo com 3,37% de matéria orgânica em média, e a C em solo com 2,43%. Como cada ponto percentual vale cerca de 671 kg/ha, a cultivar A recebeu uma vantagem de solo de aproximadamente 630 kg/ha — suficiente para mascarar sua inferioridade genética. A ANCOVA devolve a cada cultivar o solo médio e, com isso, as separa.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Paralelismo das retas</strong> (homogeneidade das inclinações)</td><td>Sem ele, não existe uma única “diferença ajustada”.</td><td>Ajuste o modelo com interação e teste o termo <code>covariável:grupo</code>.</td></tr><tr><td>Relação linear entre covariável e resposta</td><td>O ajuste é feito por uma reta.</td><td>Diagrama de dispersão por grupo; resíduos contra a covariável.</td></tr><tr><td>A covariável é medida <strong>antes</strong> do tratamento, ou não é afetada por ele</td><td>Ajustar por algo que o tratamento alterou remove parte do próprio efeito.</td><td>Protocolo do estudo. Este é um erro conceitual, não detectável nos dados.</td></tr><tr><td>Observações independentes</td><td>Indispensável.</td><td>Delineamento.</td></tr><tr><td>Resíduos normais, com variância constante</td><td>Como em qualquer modelo linear.</td><td>Q-Q e resíduos contra valores ajustados.</td></tr><tr><td>Covariável medida sem erro apreciável</td><td>Erro de medida atenua o coeficiente e deixa o ajuste incompleto.</td><td>Confiabilidade do instrumento.</td></tr><tr><td>Sobreposição das faixas da covariável entre os grupos</td><td>Fora da sobreposição, a comparação é extrapolação.</td><td><code>tapply(x, grupo, range)</code>.</td></tr></tbody></table></div><div class="callout "><strong>O pressuposto que mais se deixa de testar</strong><p>O paralelismo é testável em uma linha de código e é frequentemente esquecido. Se as inclinações diferem, a diferença entre os grupos <em>depende</em> do valor da covariável, e relatar um único número ajustado esconde o fenômeno em vez de descrevê-lo. A seção do exemplo mostra um caso real em que isso ocorre.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>Primeiro testa-se o pressuposto; só então a hipótese de interesse:</p><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{\text{paralelismo}}&:\\ &\quad\beta_1=\beta_2=\cdots=\beta_k\\ &\quad\text{(inclinações iguais)}\\ H_0^{\text{grupos}}&:\\ &\quad\tau_1=\tau_2=\cdots=\tau_k=0\\ &\quad\text{(médias ajustadas iguais)}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[y_{ij}=\mu+\tau_i+\beta\left(x_{ij}-\bar{x}\right)+\varepsilon_{ij},\]\[\varepsilon_{ij}\sim N\!\left(0,\sigma^{2}\right)\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\bar{y}_{i(\text{aj})}=\bar{y}_i-\hat{\beta}\left(\bar{x}_i-\bar{x}\right),\]\[\begin{aligned}F &= \frac{\bigl(SQ_{\text{res}}^{\,\text{reduzido}}-SQ_{\text{res}}^{\,\text{completo}}\bigr)/(k-1)}{SQ_{\text{res}}^{\,\text{completo}}/(N-k-1)}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(y_{ij}\)</dt><dd>resposta da unidade j no grupo i</dd></div><div><dt>\(x_{ij}\)</dt><dd>valor da covariável nessa unidade</dd></div><div><dt>\(\bar{x}\)</dt><dd>média geral da covariável</dd></div><div><dt>\(\tau_i\)</dt><dd>efeito do grupo i, já ajustado</dd></div><div><dt>\(\beta\)</dt><dd>inclinação comum a todos os grupos</dd></div><div><dt>\(\bar{y}_{i(\text{aj})}\)</dt><dd>média ajustada do grupo i</dd></div><div><dt>\(N-k-1\)</dt><dd>graus de liberdade do resíduo: um a menos que na ANOVA, por causa de β</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="worked"><strong>Primeiro: o paralelismo</strong><p>O modelo com interação deixa resíduo \(SQ=895\,399{,}29\) em 30 gl; o de retas paralelas, \(SQ=915\,258{,}20\) em 32 gl.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}F &= \frac{(915\,258{,}20-895\,399{,}29)/2}{895\,399{,}29/30} \\ &= \frac{9\,929{,}46}{29\,846{,}64} = 0{,}333\end{aligned}\]\[(p=0{,}720).\]</div><p>As inclinações estimadas são 614,78, 690,96 e 696,29 kg/ha por ponto percentual: próximas o bastante. O modelo de retas paralelas está autorizado.</p></div><div class="worked"><strong>Depois: o efeito das cultivares</strong><p>Com só a covariável no modelo, o resíduo é \(SQ=2\,227\,888{,}67\); acrescentando a cultivar, cai para \(915\,258{,}20\). A diferença, \(1\,312\,630{,}47\), é a soma de quadrados do efeito ajustado, com 2 gl, e \(QM_{\text{res}}=915\,258{,}20/32=28\,601{,}82\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F=\frac{1\,312\,630{,}47/2}{28\,601{,}82}=22{,}947,\]\[p=6{,}6\times10^{-7}.\]</div><p>A inclinação comum é \(\hat{\beta}=671{,}26\) kg/ha por ponto percentual de matéria orgânica, com IC de 95% de [583,37; 759,15].</p><p>Média ajustada da cultivar A: \[\begin{aligned}&4\,984{,}08 \\ &\quad -671{,}26\times(3{,}3683-2{,}9122) \\ &= 4\,984{,}08-306{,}17 \\ &= 4\,677{,}92\end{aligned}\] kg/ha. O desconto de 306 kg/ha é exatamente a vantagem de solo que ela tinha.</p></div><h3>Propriedades</h3><ul class="checklist"><li>A redução do erro é proporcional a \(1-\rho^2\), em que \(\rho\) é a correlação entre covariável e resposta. Aqui \(r=0{,}847\), e o quadrado médio do resíduo cai 88%.</li><li>Custa um grau de liberdade do resíduo. Com amostras muito pequenas e correlação fraca, o ajuste pode não compensar.</li><li>Em experimentos <strong>casualizados</strong>, a covariável está equilibrada em média e a ANCOVA serve sobretudo para ganhar precisão. Em estudos <strong>observacionais</strong>, ela também corrige o desequilíbrio — mas apenas o das variáveis efetivamente medidas.</li><li>Com mais de uma covariável, o procedimento se estende diretamente; com covariável categórica, o modelo é uma <a href="aovfatorial.html">ANOVA fatorial</a>.</li><li>As médias ajustadas podem ser avaliadas em qualquer valor de \(x\), não apenas em \(\bar{x}\).</li><li>É um caso particular de <a href="linear-multipla.html">regressão linear múltipla</a> com variáveis indicadoras.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><ol class="steps"><li><strong>Teste o paralelismo primeiro.</strong> Se o termo de interação for significativo, pare: a resposta não é uma diferença ajustada única.</li><li>Confirme que a covariável é anterior ao tratamento. Esse ponto não aparece em nenhuma saída do R.</li><li>Leia o efeito do grupo <em>ajustado</em> pela covariável (soma de quadrados do tipo II ou III, ou comparação de modelos).</li><li>Reporte as médias ajustadas com erros-padrão, ao lado das médias observadas.</li><li>Compare o quadrado médio do resíduo com e sem a covariável: é a medida do ganho.</li><li>Verifique a sobreposição das faixas da covariável entre os grupos.</li></ol><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>F do termo covariável:grupo</td><td>Se as retas são paralelas.</td><td>A primeira coisa a olhar.</td></tr><tr><td>Coeficiente da covariável</td><td>Quanto a resposta muda por unidade de x.</td><td>Deve ter sentido físico ou biológico.</td></tr><tr><td>F do grupo, ajustado</td><td>Efeito do tratamento, descontada a covariável.</td><td>Use tipo II ou III, não sequencial.</td></tr><tr><td>Médias ajustadas</td><td>O resultado a reportar.</td><td>Dizer sempre em que valor de x foram avaliadas.</td></tr><tr><td>QM do resíduo</td><td>Ruído experimental.</td><td>Compare com o da ANOVA sem covariável.</td></tr><tr><td>Faixas da covariável</td><td>Até onde a comparação é interpolação.</td><td>Fora da sobreposição, é extrapolação.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A ANCOVA é um modelo linear comum: <code>lm(y ~ covariavel + grupo)</code>, com <code>stats</code>. O teste de paralelismo é a comparação com <code>lm(y ~ covariavel * grupo)</code>. Para o efeito do grupo ajustado, use <code>car::Anova(modelo, type = "II")</code> — <code>anova()</code> devolve somas sequenciais, que dependem da ordem dos termos. As médias ajustadas e suas comparações vêm de <code>emmeans</code>, que por padrão avalia na média da covariável e aceita outros valores pelo argumento <code>at</code>. Coloque a covariável <strong>antes</strong> do fator na fórmula: é a convenção que torna a saída sequencial legível.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-ancova-min" type="button">Copiar código</button></div><pre id="code-ancova-min"><code>modelo &lt;- lm(produtividade ~ mo + cultivar, data = dados)
+car::Anova(modelo, type = "II")
+emmeans::emmeans(modelo, ~cultivar) |&gt; pairs(adjust = "tukey")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. Três cultivares de milho foram semeadas em 36 parcelas, doze por cultivar, num delineamento inteiramente casualizado. Antes da semeadura mediu-se o teor de matéria orgânica do solo de cada parcela — uma variável que afeta fortemente a produtividade e que o sorteio distribuiu de forma desigual entre as cultivares. Ao final, a ficha traz ainda um contraexemplo com dados reais em que o pressuposto de paralelismo falha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-ancova" type="button">Copiar código</button></div><pre id="code-ancova"><code># ANCOVA: exemplo completo ----
+# Pacotes: stats (base), car (tipo II/III), emmeans (médias ajustadas)
+# install.packages(c("car", "emmeans"))
 
-# Ajuste e resultados ----
-modelo_interacao &lt;- lm(Sepal.Length ~ Species * Sepal.Width, data = iris)
-print(anova(modelo_interacao))
-modelo &lt;- lm(Sepal.Length ~ Species + Sepal.Width, data = iris)
-print(anova(modelo))
-print(confint(modelo))
+# 1. Dados fictícios: produtividade (kg/ha) de três cultivares de milho em 36 parcelas
+#    e o teor de matéria orgânica do solo (%) medido ANTES da semeadura.
+mo &lt;- c(3.82,2.17,3.92,3.88,2.48,3.17,4.13,3.79,3.75,3.39,3.23,2.69,
+        3.29,1.37,3.83,3.21,3.28,3.35,2.98,2.49,2.84,2.39,3.49,2.75,
+        2.49,3.90,1.74,2.29,1.76,3.19,1.38,2.34,2.43,3.44,1.70,2.49)
+prod &lt;- c(5309,4323,5577,5282,4288,4849,5513,5078,5120,4772,4946,4752,
+          5146,3691,5311,5377,5342,4838,5047,4578,5242,4517,5305,4803,
+          5092,5845,4461,4713,4182,5490,4199,4609,5057,5600,4502,4987)
+dados &lt;- data.frame(cultivar = factor(rep(c("A", "B", "C"), each = 12)),
+                    mo = mo, produtividade = prod)
+aggregate(cbind(produtividade, mo) ~ cultivar, data = dados, FUN = mean)
+cor(dados$mo, dados$produtividade)
 
-# Visualização e diagnóstico ----
-plot(iris$Sepal.Length, iris$Petal.Length, col = iris$Species, pch = 19, xlab = "Comprimento da sépala", ylab = "Comprimento da pétala")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. O que a ANOVA sem covariável responderia
+summary(aov(produtividade ~ cultivar, data = dados))
+# e o alerta: a covariável NÃO está equilibrada entre as cultivares
+summary(aov(mo ~ cultivar, data = dados))
 
+# 3. Pressuposto central: as retas são paralelas?
+modelo_int &lt;- lm(produtividade ~ mo * cultivar, data = dados)
+anova(modelo_int)                       # olhe a linha mo:cultivar
+# equivalente: anova(lm(produtividade ~ mo + cultivar, data = dados), modelo_int)
+coef(modelo_int)                        # inclinação de cada cultivar
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="aovmista.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANOVA mista
-    </a>
-<a href="manova.html">
-<span>
-      PRÓXIMO →
-     </span>
-     MANOVA
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. O modelo de ANCOVA: retas paralelas
+modelo &lt;- lm(produtividade ~ mo + cultivar, data = dados)
+summary(modelo)
+library(car)
+Anova(modelo, type = "II")              # efeito do cultivar AJUSTADO pela covariável
+anova(modelo)                           # sequencial: covariável primeiro
+
+# 5. Médias ajustadas (médias marginais estimadas)
+library(emmeans)
+ma &lt;- emmeans(modelo, ~cultivar)        # avaliadas na média da covariável
+ma
+pairs(ma, adjust = "tukey")
+confint(pairs(ma, adjust = "tukey"))
+# comparação com as médias observadas:
+aggregate(produtividade ~ cultivar, data = dados, FUN = mean)
+
+# 6. Pressupostos restantes
+par(mfrow = c(2, 2)); plot(modelo); par(mfrow = c(1, 1))
+shapiro.test(residuals(modelo))
+leveneTest(residuals(modelo) ~ dados$cultivar, center = median)
+# sobreposição das faixas da covariável entre os grupos:
+tapply(dados$mo, dados$cultivar, range)
+
+# 7. Gráficos
+library(ggplot2)
+ggplot(dados, aes(mo, produtividade, colour = cultivar)) +
+  geom_point(size = 2.5) +
+  geom_line(aes(y = fitted(modelo)), linewidth = 1) +
+  geom_vline(xintercept = mean(dados$mo), linetype = "dotted") +
+  labs(x = "Matéria orgânica do solo (%)", y = "Produtividade (kg/ha)") +
+  theme_minimal()
+
+# 8. Quando o paralelismo FALHA: o caso de mtcars
+data(mtcars)
+mt &lt;- transform(mtcars, am = factor(am, labels = c("automatica", "manual")))
+t.test(mpg ~ am, data = mt)                       # diferença bruta: 7,24 mpg
+anova(lm(mpg ~ wt * am, data = mt))               # a interação wt:am É significativa
+# nesse caso NÃO se reporta uma diferença ajustada única; descreva-a em função do peso:
+library(emmeans)
+mi &lt;- lm(mpg ~ wt * am, data = mt)
+emmeans(mi, ~am | wt, at = list(wt = c(1.6, 2.0, 2.4, 2.8, 3.2, 3.6))) |&gt; pairs()
+# ou procure a faixa em que a diferença é significativa (Johnson-Neyman):
+# emmeans::emtrends(mi, ~am, var = "wt")
+# interactions::johnson_neyman(mi, pred = am, modx = wt)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-ancova" type="button">Copiar código</button></div><pre id="code-py-ancova"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados fictícios: produtividade (kg/ha) de três cultivares de milho em 36 parcelas,
+# 12 por cultivar, e o teor de matéria orgânica do solo (%) medido em cada parcela
+# ANTES da semeadura. A matéria orgânica é a covariável: afeta a produtividade e
+# variou entre as parcelas por razões alheias ao experimento.
+mo = np.array([3.82, 2.17, 3.92, 3.88, 2.48, 3.17, 4.13, 3.79, 3.75, 3.39, 3.23, 2.69,
+               3.29, 1.37, 3.83, 3.21, 3.28, 3.35, 2.98, 2.49, 2.84, 2.39, 3.49, 2.75,
+               2.49, 3.90, 1.74, 2.29, 1.76, 3.19, 1.38, 2.34, 2.43, 3.44, 1.70, 2.49])
+prod = np.array([5309, 4323, 5577, 5282, 4288, 4849, 5513, 5078, 5120, 4772, 4946, 4752,
+                 5146, 3691, 5311, 5377, 5342, 4838, 5047, 4578, 5242, 4517, 5305, 4803,
+                 5092, 5845, 4461, 4713, 4182, 5490, 4199, 4609, 5057, 5600, 4502, 4987],
+                dtype=float)
+cult = np.repeat([0, 1, 2], 12)
+rot = ["A", "B", "C"]
+k, N = 3, len(prod)
+
+def ols(X, y):
+    """Mínimos quadrados: devolve coeficientes, SQ do resíduo e graus de liberdade."""
+    b, *_ = np.linalg.lstsq(X, y, rcond=None)
+    r = y - X @ b
+    return b, float(r @ r), len(y) - np.linalg.matrix_rank(X)
+
+print("cultivar   n   produtividade média   matéria orgânica média")
+for i in range(k):
+    m = cult == i
+    print(f"    {rot[i]}     {m.sum():2d}        {prod[m].mean():8.2f}              {mo[m].mean():.4f}")
+print(f"  geral     {N}        {prod.mean():8.2f}              {mo.mean():.4f}")
+print(f"\nCorrelação entre matéria orgânica e produtividade: r = {np.corrcoef(mo, prod)[0,1]:.4f}")
+
+# 1. O que a ANOVA de um fator responde, ignorando a covariável
+F0, p0 = stats.f_oneway(*[prod[cult == i] for i in range(k)])
+um = np.ones(N)
+D = np.column_stack([(cult == 1).astype(float), (cult == 2).astype(float)])
+b_nul, SQ_nul, gl_nul = ols(um[:, None], prod)
+b_fat, SQ_fat, gl_fat = ols(np.column_stack([um, D]), prod)
+print(f"\nANOVA de um fator (sem covariável): F({k-1}; {N-k}) = {F0:.4f}, p-valor = {p0:.4f}")
+print(f"  QM do resíduo = {SQ_fat/gl_fat:.2f} | DP = {np.sqrt(SQ_fat/gl_fat):.2f} kg/ha")
+print("  conclusão: não há evidência de diferença entre cultivares.")
+print("  mas as parcelas da cultivar A caíram em solo mais rico e as da C, em solo mais pobre:")
+Fmo, pmo = stats.f_oneway(*[mo[cult == i] for i in range(k)])
+print(f"  a covariável difere entre cultivares: F = {Fmo:.4f}, p-valor = {pmo:.5f}")
+
+# 2. Pressuposto central: paralelismo das retas
+X_int = np.column_stack([um, mo, D, D * mo[:, None]])
+X_par = np.column_stack([um, mo, D])
+b_int, SQ_int, gl_int = ols(X_int, prod)
+b_par, SQ_par, gl_par = ols(X_par, prod)
+F_hom = ((SQ_par - SQ_int) / (k - 1)) / (SQ_int / gl_int)
+p_hom = stats.f.sf(F_hom, k - 1, gl_int)
+print("\nHomogeneidade das inclinações (interação cultivar x matéria orgânica)")
+print(f"  modelo com interação:        SQ do resíduo = {SQ_int:9.2f} em {gl_int} gl")
+print(f"  modelo com retas paralelas:  SQ do resíduo = {SQ_par:9.2f} em {gl_par} gl")
+print(f"  F({k-1}; {gl_int}) = {F_hom:.4f} | p-valor = {p_hom:.4f}")
+incl = [b_int[1], b_int[1] + b_int[4], b_int[1] + b_int[5]]
+print("  inclinação estimada em cada cultivar (kg/ha por ponto percentual de MO):")
+for i in range(k):
+    print(f"    cultivar {rot[i]}: {incl[i]:8.2f}")
+print("  as inclinações não diferem: o modelo de retas paralelas pode ser usado.")
+
+# 3. A ANCOVA
+QM_res = SQ_par / gl_par
+b_cov, SQ_cov, gl_cov = ols(np.column_stack([um, mo]), prod)
+SQ_mo_seq = SQ_nul - SQ_cov          # tipo I: covariável primeiro
+SQ_cult_aj = SQ_cov - SQ_par         # efeito do cultivar DEPOIS do ajuste
+print("\nANCOVA: produtividade = b0 + b1*MO + efeito do cultivar")
+print("Fonte                    GL          SQ           QM        F      p-valor")
+for nome, gl, sq in [("Matéria orgânica", 1, SQ_mo_seq), ("Cultivar", k-1, SQ_cult_aj)]:
+    Fv = (sq / gl) / QM_res
+    print(f"{nome:&lt;22} {gl:3d}  {sq:11.2f}  {sq/gl:11.2f}  {Fv:7.4f}  {stats.f.sf(Fv, gl, gl_par):.3e}")
+print(f"{'Resíduo':&lt;22} {gl_par:3d}  {SQ_par:11.2f}  {QM_res:11.2f}")
+print(f"{'Total':&lt;22} {N-1:3d}  {SQ_nul:11.2f}")
+print(f"\nDP do resíduo = {np.sqrt(QM_res):.2f} kg/ha, contra {np.sqrt(SQ_fat/gl_fat):.2f} kg/ha sem a covariável")
+print(f"ou seja, o QM do resíduo caiu {100*(1 - QM_res/(SQ_fat/gl_fat)):.1f}%.")
+XtXi = np.linalg.inv(X_par.T @ X_par)
+ep = np.sqrt(np.diag(XtXi) * QM_res)
+nomes_b = ["intercepto (cultivar A)", "matéria orgânica", "B - A", "C - A"]
+print("\nCoeficientes")
+for j, nm in enumerate(nomes_b):
+    t = b_par[j] / ep[j]
+    print(f"  {nm:&lt;24} {b_par[j]:10.3f} | EP = {ep[j]:7.3f} | t({gl_par}) = {t:+8.4f} | "
+          f"p-valor = {2*stats.t.sf(abs(t), gl_par):.3e}")
+print(f"\nInclinação comum = {b_par[1]:.2f} kg/ha por ponto percentual de matéria orgânica")
+print(f"IC 95% da inclinação = [{b_par[1]-stats.t.ppf(0.975,gl_par)*ep[1]:.2f}; "
+      f"{b_par[1]+stats.t.ppf(0.975,gl_par)*ep[1]:.2f}]")
+
+# 4. Médias ajustadas
+mbar = mo.mean()
+print(f"\nMédias ajustadas, avaliadas na média geral da covariável ({mbar:.4f}%)")
+print("cultivar   média observada   MO média   média ajustada     EP      correção")
+aj, ep_aj = [], []
+for i in range(k):
+    x0 = np.array([1.0, mbar, float(i == 1), float(i == 2)])
+    v = float(x0 @ b_par)
+    e = float(np.sqrt(x0 @ XtXi @ x0 * QM_res))
+    aj.append(v); ep_aj.append(e)
+    obs = prod[cult == i].mean()
+    print(f"    {rot[i]}         {obs:8.2f}      {mo[cult==i].mean():.4f}      {v:8.2f}     {e:6.2f}   {v-obs:+8.2f}")
+aj = np.array(aj)
+print("A ordem das médias se INVERTE: a cultivar C, a pior em bruto, é a melhor ajustada.")
+
+# 5. Comparações múltiplas entre médias ajustadas (Tukey)
+print("\nComparações entre médias ajustadas (ajuste de Tukey)")
+q95 = stats.studentized_range.ppf(0.95, k, gl_par)
+for i, j in itertools.combinations(range(k), 2):
+    ci = np.array([1.0, mbar, float(i == 1), float(i == 2)])
+    cj = np.array([1.0, mbar, float(j == 1), float(j == 2)])
+    c = cj - ci
+    dif = float(c @ b_par)
+    ep_d = float(np.sqrt(c @ XtXi @ c * QM_res))
+    q = abs(dif) / (ep_d / np.sqrt(2))
+    pa = stats.studentized_range.sf(q, k, gl_par)
+    marg = q95 * ep_d / np.sqrt(2)
+    print(f"  {rot[j]} - {rot[i]}: {dif:+8.2f} kg/ha | EP = {ep_d:6.2f} | "
+          f"IC 95% = [{dif-marg:+8.2f}; {dif+marg:+8.2f}] | p ajustado = {pa:.5f}"
+          + ("  *" if pa &lt; 0.05 else ""))
+
+# 6. Pressupostos restantes
+res = prod - X_par @ b_par
+print(f"\nShapiro-Wilk dos resíduos: W = {stats.shapiro(res)[0]:.4f}, p-valor = {stats.shapiro(res)[1]:.4f}")
+print(f"Levene dos resíduos entre cultivares: p-valor = "
+      f"{stats.levene(*[res[cult==i] for i in range(k)], center='median')[1]:.4f}")
+ajust = X_par @ b_par
+print(f"Correlação entre |resíduo| e valor ajustado: r = {np.corrcoef(np.abs(res), ajust)[0,1]:.4f}")
+R2 = 1 - SQ_par / SQ_nul
+print(f"R² do modelo = {R2:.4f} | R² ajustado = {1-(SQ_par/gl_par)/(SQ_nul/(N-1)):.4f}")
+print("Faixa de matéria orgânica em cada cultivar (a sobreposição é o que torna o ajuste legítimo):")
+for i in range(k):
+    print(f"  cultivar {rot[i]}: [{mo[cult==i].min():.2f}; {mo[cult==i].max():.2f}]")
+
+# 7. Quando o paralelismo FALHA: o caso de mtcars
+print("\n" + "="*70)
+print("Exemplo em que o pressuposto de paralelismo FALHA: mtcars")
+print("Consumo (mpg) por transmissão (am), ajustado pelo peso (wt).")
+mpg = np.array([21.0,21.0,22.8,21.4,18.7,18.1,14.3,24.4,22.8,19.2,17.8,16.4,17.3,15.2,
+                10.4,10.4,14.7,32.4,30.4,33.9,21.5,15.5,15.2,13.3,19.2,27.3,26.0,30.4,
+                15.8,19.7,15.0,21.4])
+wt = np.array([2.620,2.875,2.320,3.215,3.440,3.460,3.570,3.190,3.150,3.440,3.440,4.070,
+               3.730,3.780,5.250,5.424,5.345,2.200,1.615,1.835,2.465,3.520,3.435,3.840,
+               3.845,1.935,2.140,1.513,3.170,2.770,3.570,2.780])
+am = np.array([1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1], dtype=float)
+u2 = np.ones(len(mpg))
+bi2, SQi2, gli2 = ols(np.column_stack([u2, wt, am, wt*am]), mpg)
+bp2, SQp2, glp2 = ols(np.column_stack([u2, wt, am]), mpg)
+Fh2 = ((SQp2 - SQi2) / 1) / (SQi2 / gli2)
+print(f"\nDiferença bruta (manual - automática) = {mpg[am==1].mean()-mpg[am==0].mean():+.4f} mpg")
+print(f"  (é o resultado da ficha do teste t de Welch: p = "
+      f"{stats.ttest_ind(mpg[am==1], mpg[am==0], equal_var=False)[1]:.6f})")
+print(f"Teste de paralelismo: F(1; {gli2}) = {Fh2:.4f}, p-valor = {stats.f.sf(Fh2, 1, gli2):.4f}")
+print(f"  inclinação na automática = {bi2[1]:+.4f} | na manual = {bi2[1]+bi2[3]:+.4f} mpg por mil libras")
+print("  as retas NÃO são paralelas: uma única 'diferença ajustada' não descreve os dados.")
+print(f"\nSe a ANCOVA fosse aplicada de todo modo, a diferença ajustada seria {bp2[2]:+.4f} mpg,")
+print("um número que esconde o que realmente acontece. O correto é descrever a diferença")
+print("como função do peso, a partir do modelo com interação:")
+for w0 in (1.6, 2.0, 2.4, 2.8, 3.2, 3.6):
+    c = np.array([0.0, 0.0, 1.0, w0])
+    d = float(c @ bi2)
+    Xi2 = np.column_stack([u2, wt, am, wt*am])
+    epd = float(np.sqrt(c @ np.linalg.inv(Xi2.T @ Xi2) @ c * SQi2/gli2))
+    t = d/epd
+    print(f"  peso = {w0:.1f}: diferença manual - automática = {d:+7.3f} mpg | "
+          f"EP = {epd:5.3f} | t = {t:+7.3f} | p-valor = {2*stats.t.sf(abs(t), gli2):.4f}")
+print("A vantagem do câmbio manual existe nos carros leves e desaparece nos pesados.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">cultivar   n   produtividade média   matéria orgânica média
+    A     12         4984.08              3.3683
+    B     12         4933.08              2.9392
+    C     12         4894.75              2.4292
+  geral     36         4937.31              2.9122
+
+Correlação entre matéria orgânica e produtividade: r = 0.8470
+
+ANOVA de um fator (sem covariável): F(2; 33) = 0.1015, p-valor = 0.9038
+  QM do resíduo = 237506.12 | DP = 487.35 kg/ha
+  conclusão: não há evidência de diferença entre cultivares.
+  mas as parcelas da cultivar A caíram em solo mais rico e as da C, em solo mais pobre:
+  a covariável difere entre cultivares: F = 5.6979, p-valor = 0.00749
+
+Homogeneidade das inclinações (interação cultivar x matéria orgânica)
+  modelo com interação:        SQ do resíduo = 895399.29 em 30 gl
+  modelo com retas paralelas:  SQ do resíduo = 915258.20 em 32 gl
+  F(2; 30) = 0.3327 | p-valor = 0.7196
+  inclinação estimada em cada cultivar (kg/ha por ponto percentual de MO):
+    cultivar A:   614.78
+    cultivar B:   690.96
+    cultivar C:   696.29
+  as inclinações não diferem: o modelo de retas paralelas pode ser usado.
+
+ANCOVA: produtividade = b0 + b1*MO + efeito do cultivar
+Fonte                    GL          SQ           QM        F      p-valor
+Matéria orgânica         1   5658016.97   5658016.97  197.8202  2.997e-15
+Cultivar                 2   1312630.47    656315.24  22.9466  6.583e-07
+Resíduo                 32    915258.20     28601.82
+Total                   35   7885905.64
+
+DP do resíduo = 169.12 kg/ha, contra 487.35 kg/ha sem a covariável
+ou seja, o QM do resíduo caiu 88.0%.
+
+Coeficientes
+  intercepto (cultivar A)    2723.062 | EP = 153.316 | t(32) = +17.7611 | p-valor = 3.924e-18
+  matéria orgânica            671.258 | EP =  43.148 | t(32) = +15.5573 | p-valor = 1.774e-16
+  B - A                       237.082 | EP =  71.483 | t(32) =  +3.3166 | p-valor = 2.277e-03
+  C - A                       541.090 | EP =  80.057 | t(32) =  +6.7588 | p-valor = 1.230e-07
+
+Inclinação comum = 671.26 kg/ha por ponto percentual de matéria orgânica
+IC 95% da inclinação = [583.37; 759.15]
+
+Médias ajustadas, avaliadas na média geral da covariável (2.9122%)
+cultivar   média observada   MO média   média ajustada     EP      correção
+    A          4984.08      3.3683       4677.92      52.64    -306.17
+    B          4933.08      2.9392       4915.00      48.83     -18.09
+    C          4894.75      2.4292       5219.00      53.08    +324.25
+A ordem das médias se INVERTE: a cultivar C, a pior em bruto, é a melhor ajustada.
+
+Comparações entre médias ajustadas (ajuste de Tukey)
+  B - A:  +237.08 kg/ha | EP =  71.48 | IC 95% = [  +61.42;  +412.74] | p ajustado = 0.00627  *
+  C - A:  +541.09 kg/ha | EP =  80.06 | IC 95% = [ +344.36;  +737.82] | p ajustado = 0.00000  *
+  C - B:  +304.01 kg/ha | EP =  72.47 | IC 95% = [ +125.93;  +482.08] | p ajustado = 0.00058  *
+
+Shapiro-Wilk dos resíduos: W = 0.9877, p-valor = 0.9537
+Levene dos resíduos entre cultivares: p-valor = 0.4688
+Correlação entre |resíduo| e valor ajustado: r = -0.0640
+R² do modelo = 0.8839 | R² ajustado = 0.8731
+Faixa de matéria orgânica em cada cultivar (a sobreposição é o que torna o ajuste legítimo):
+  cultivar A: [2.17; 4.13]
+  cultivar B: [1.37; 3.83]
+  cultivar C: [1.38; 3.90]
+
+======================================================================
+Exemplo em que o pressuposto de paralelismo FALHA: mtcars
+Consumo (mpg) por transmissão (am), ajustado pelo peso (wt).
+
+Diferença bruta (manual - automática) = +7.2449 mpg
+  (é o resultado da ficha do teste t de Welch: p = 0.001374)
+Teste de paralelismo: F(1; 28) = 13.4502, p-valor = 0.0010
+  inclinação na automática = -3.7859 | na manual = -9.0843 mpg por mil libras
+  as retas NÃO são paralelas: uma única 'diferença ajustada' não descreve os dados.
+
+Se a ANCOVA fosse aplicada de todo modo, a diferença ajustada seria -0.0236 mpg,
+um número que esconde o que realmente acontece. O correto é descrever a diferença
+como função do peso, a partir do modelo com interação:
+  peso = 1.6: diferença manual - automática =  +6.401 mpg | EP = 2.177 | t =  +2.940 | p-valor = 0.0065
+  peso = 2.0: diferença manual - automática =  +4.282 mpg | EP = 1.746 | t =  +2.452 | p-valor = 0.0207
+  peso = 2.4: diferença manual - automática =  +2.162 mpg | EP = 1.424 | t =  +1.519 | p-valor = 0.1400
+  peso = 2.8: diferença manual - automática =  +0.043 mpg | EP = 1.293 | t =  +0.033 | p-valor = 0.9737
+  peso = 3.2: diferença manual - automática =  -2.076 mpg | EP = 1.409 | t =  -1.474 | p-valor = 0.1517
+  peso = 3.6: diferença manual - automática =  -4.196 mpg | EP = 1.722 | t =  -2.436 | p-valor = 0.0214
+A vantagem do câmbio manual existe nos carros leves e desaparece nos pesados.</pre></div><figure class="fig"><img src="../assets/resultados/ancova.png" alt="Médias observadas contra ajustadas e um caso de retas não paralelas" loading="lazy"/><figcaption><strong>O efeito do ajuste e o seu limite.</strong> À esquerda, a correção aplicada a cada cultivar: a A perde 306 kg/ha, a B quase não muda e a C ganha 324 kg/ha, de modo que a ordem se inverte por completo. À direita, o contraexemplo de <code>mtcars</code>: as retas de consumo contra peso têm inclinações de −3,79 (automática) e −9,08 (manual) e se cruzam perto de 2,8 mil libras. Nesse caso não existe uma diferença ajustada única a relatar. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descrição</caption><thead><tr><th>Cultivar</th><th>n</th><th>Produtividade média</th><th>Matéria orgânica média</th><th>Média ajustada</th><th>Correção</th></tr></thead><tbody><tr><td>A</td><td>12</td><td>4 984,08</td><td>3,3683%</td><td>4 677,92</td><td>−306,17</td></tr><tr><td>B</td><td>12</td><td>4 933,08</td><td>2,9392%</td><td>4 915,00</td><td>−18,09</td></tr><tr><td>C</td><td>12</td><td>4 894,75</td><td>2,4292%</td><td>5 219,00</td><td>+324,25</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>ANOVA sem covariável</td><td>F(2; 33) = 0,102; p = 0,904</td><td>Nenhuma diferença aparente.</td></tr><tr><td>Covariável entre cultivares</td><td>F = 5,698; p = 0,0075</td><td>O sorteio deixou a covariável desequilibrada.</td></tr><tr><td>Correlação covariável–resposta</td><td>r = 0,847</td><td>Forte: o ajuste vale a pena.</td></tr><tr><td>Teste de paralelismo</td><td>F(2; 30) = 0,333; p = 0,7196</td><td>Inclinações compatíveis; ANCOVA autorizada.</td></tr><tr><td>Inclinações por cultivar</td><td>614,8 / 691,0 / 696,3</td><td>Próximas entre si.</td></tr><tr><td>Inclinação comum</td><td>671,26 kg/ha por ponto percentual; IC [583,4; 759,2]</td><td>Efeito do solo.</td></tr><tr><td>Efeito da cultivar, ajustado</td><td>F(2; 32) = 22,947; p = 6,6 × 10⁻⁷</td><td>Diferença nítida.</td></tr><tr><td>QM do resíduo sem / com covariável</td><td>237 506 / 28 602</td><td>Queda de 88%.</td></tr><tr><td>DP residual sem / com covariável</td><td>487,35 / 169,12 kg/ha</td><td>A precisão quase triplica.</td></tr><tr><td>R² do modelo</td><td>0,884</td><td>Covariável e cultivar explicam quase tudo.</td></tr><tr><td>Tukey C − A</td><td>+541,1 kg/ha; IC [+344,4; +737,8]; p &lt; 0,00001</td><td>A maior diferença.</td></tr><tr><td>Tukey C − B</td><td>+304,0 kg/ha; IC [+125,9; +482,1]; p = 0,00058</td><td>Significativa.</td></tr><tr><td>Tukey B − A</td><td>+237,1 kg/ha; IC [+61,4; +412,7]; p = 0,00627</td><td>Significativa.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,988; p = 0,954</td><td>Normalidade atendida.</td></tr><tr><td>Levene dos resíduos</td><td>p = 0,469</td><td>Homogeneidade atendida.</td></tr><tr><td>Faixas da covariável</td><td>A: [2,17; 4,13]; B: [1,37; 3,83]; C: [1,38; 3,90]</td><td>Boa sobreposição.</td></tr></tbody></table></div><p><strong>Leitura:</strong> as três cultivares diferem, e a ordem correta é C &gt; B &gt; A — exatamente a inversa da que as médias brutas sugeriam. A cultivar C produz 541 kg/ha a mais que a A quando ambas são avaliadas no mesmo teor de matéria orgânica, com intervalo de 344 a 738 kg/ha.</p><p>O ganho de precisão é o segundo resultado. O desvio-padrão residual cai de 487 para 169 kg/ha: as diferenças de 237 e 304 kg/ha entre cultivares, que ficavam submersas no ruído do solo, tornam-se perfeitamente mensuráveis. Em experimentação de campo, medir uma covariável de solo antes da semeadura é barato e costuma render mais que aumentar o número de parcelas.</p><h3>Quando o paralelismo falha: o caso de mtcars</h3><p>Na ficha do <a href="twelch.html">teste t de Welch</a> comparamos o consumo de carros com câmbio manual e automático: os manuais fazem 7,24 mpg a mais, com p = 0,0014. Mas carros manuais também são bem mais leves (2,38 contra 3,77 mil libras), e o peso é o principal determinante do consumo. Parece o caso perfeito para uma ANCOVA — até que se teste o paralelismo.</p><div class="table-wrap"><table class="method-table"><caption>O teste de paralelismo rejeita</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Diferença bruta</td><td>+7,24 mpg; p = 0,0014</td><td>O ponto de partida.</td></tr><tr><td>Teste de paralelismo</td><td>F(1; 28) = 13,450; p = 0,0010</td><td>As retas <strong>não</strong> são paralelas.</td></tr><tr><td>Inclinação, automática</td><td>−3,79 mpg por mil libras</td><td>Mais suave.</td></tr><tr><td>Inclinação, manual</td><td>−9,08 mpg por mil libras</td><td>Muito mais íngreme.</td></tr><tr><td>“Diferença ajustada” do modelo paralelo</td><td>−0,02 mpg</td><td>Um número que não descreve nada.</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A diferença depende do peso</caption><thead><tr><th>Peso (mil libras)</th><th>1,6</th><th>2,0</th><th>2,4</th><th>2,8</th><th>3,2</th><th>3,6</th></tr></thead><tbody><tr><td>Manual − automática (mpg)</td><td>+6,40</td><td>+4,28</td><td>+2,16</td><td>+0,04</td><td>−2,08</td><td>−4,20</td></tr><tr><td>Valor-p</td><td>0,0065</td><td>0,0207</td><td>0,1400</td><td>0,9737</td><td>0,1517</td><td>0,0214</td></tr></tbody></table></div><p><strong>Leitura:</strong> a vantagem do câmbio manual é real nos carros leves — cerca de 6,4 mpg a 1,6 mil libras —, desaparece em torno de 2,8 mil libras e se <em>inverte</em> nos carros pesados. Forçar o modelo de retas paralelas devolveria uma diferença ajustada de −0,02 mpg, numericamente irretocável e substantivamente vazia: ela é a média de uma vantagem e de uma desvantagem que se cancelam.</p><p>A conduta correta quando o paralelismo falha não é abandonar a análise, e sim mudar o que se relata: descrever a diferença como função da covariável, informando valores de interesse ou a faixa em que ela é significativa (procedimento de Johnson–Neyman). O modelo com interação continua perfeitamente válido — o que não existe é o resumo em um número só.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Não testar o paralelismo</td><td>É o pressuposto central e custa uma linha de código.</td></tr><tr><td>Ajustar por uma variável medida <em>depois</em> do tratamento</td><td>Ela pode ser consequência do tratamento; o ajuste remove parte do próprio efeito.</td></tr><tr><td>Usar <code>anova()</code> em vez de <code>Anova(type = "II")</code></td><td>As somas sequenciais dependem da ordem dos termos.</td></tr><tr><td>Reportar médias observadas como se fossem ajustadas</td><td>São coisas diferentes; apresente as duas.</td></tr><tr><td>Extrapolar fora da faixa comum da covariável</td><td>Comparar grupos num valor de x que um deles nunca atingiu é extrapolação.</td></tr><tr><td>Achar que a ANCOVA transforma observacional em experimental</td><td>Ela ajusta apenas pelas variáveis medidas; o resto da confusão permanece.</td></tr><tr><td>Ajustar pelo basal e ainda usar a diferença como resposta</td><td>Escolha: ou a medida final ajustada pelo basal, ou o ganho — não os dois.</td></tr><tr><td>Insistir em uma diferença ajustada quando há interação</td><td>Descreva o efeito em função da covariável.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="aov1.html">ANOVA de um fator</a></td><td>Não há covariável relevante.</td></tr><tr><td><a href="linear-multipla.html">Regressão linear múltipla</a></td><td>É o mesmo modelo; prefira essa linguagem quando houver várias covariáveis ou interesse em previsão.</td></tr><tr><td>Modelo com interação (moderação)</td><td>O paralelismo falha; o efeito depende da covariável.</td></tr><tr><td>Blocagem</td><td>A covariável pode ser usada no delineamento, formando blocos antes do experimento.</td></tr><tr><td><a href="aovmista.html">ANOVA mista</a> ou modelo misto</td><td>Medidas repetidas ao longo do tempo.</td></tr><tr><td><a href="mancova.html">MANCOVA</a></td><td>Várias respostas, com covariáveis.</td></tr><tr><td>Escore de propensão</td><td>Estudo observacional com muitas covariáveis e grupos pouco sobrepostos.</td></tr><tr><td><a href="quantilica.html">Regressão quantílica</a></td><td>Interesse em outras partes da distribuição além da média.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a covariável foi medida antes do tratamento e que é relevante.</li><li>Faça o diagrama de dispersão com uma reta por grupo: é o diagnóstico mais informativo.</li><li>Teste o paralelismo e só prossiga se ele for aceitável.</li><li>Ajuste o modelo e examine os resíduos.</li><li>Leia o efeito do grupo ajustado, com soma de quadrados do tipo II.</li><li>Reporte as médias ajustadas, com erros-padrão e comparações com ajuste.</li><li>Informe a redução do quadrado médio do resíduo e a faixa comum da covariável.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>FISHER, Ronald A. <em>Statistical methods for research workers.</em> Edinburgh: Oliver and Boyd, 1925.</li><li>COCHRAN, William G. Analysis of covariance: its nature and uses. <em>Biometrics</em>, v. 13, n. 3, p. 261-281, 1957.</li><li>HUITEMA, Bradley E. <em>The analysis of covariance and alternatives.</em> 2. ed. Hoboken: Wiley, 2011.</li><li>JOHNSON, Palmer O.; NEYMAN, Jerzy. Tests of certain linear hypotheses and their application to some educational problems. <em>Statistical Research Memoirs</em>, v. 1, p. 57-93, 1936.</li><li>VICKERS, Andrew J.; ALTMAN, Douglas G. Analysing controlled trials with baseline and follow up measurements. <em>BMJ</em>, v. 323, p. 1123-1124, 2001.</li><li>MILLER, Gregory A.; CHAPMAN, Jean P. Misunderstanding analysis of covariance. <em>Journal of Abnormal Psychology</em>, v. 110, n. 1, p. 40-48, 2001.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>KUTNER, Michael H. et al. <em>Applied linear statistical models.</em> 5. ed. Boston: McGraw-Hill Irwin, 2005.</li><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>HENDERSON, Harold V.; VELLEMAN, Paul F. Building multiple regression models interactively. <em>Biometrics</em>, v. 37, n. 2, p. 391-411, 1981. (Fonte dos dados <code>mtcars</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>lm</code> e <code>anova</code>, pacote <code>stats</code>.)</li><li>FOX, John; WEISBERG, Sanford. <em>An R companion to applied regression.</em> 3. ed. Thousand Oaks: Sage, 2019. (Pacote <code>car</code>, função <code>Anova</code>.)</li><li>LENTH, Russell V. <em>emmeans: estimated marginal means, aka least-squares means.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=emmeans" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=emmeans</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Paralelismo das retas, relação linear com a covariável, covariável anterior ao tratamento, observações independentes e resíduos normais com variância constante.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>car, emmeans</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="aovmista.html"><span>← ANTERIOR</span>ANOVA mista</a><a href="manova.html"><span>PRÓXIMO →</span>MANOVA</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

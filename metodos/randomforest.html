@@ -4,311 +4,403 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Random forests: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Random forests | Estatística e Ciência de Dados
-  </title>
+<meta content="Random forests: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Random forests | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Random forests
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 16 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Random forests
-    </h1>
-<p class="detail-lead">
-     Prevê valores ou classes combinando várias árvores com diversidade de variáveis.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/randomforest.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Prevê valores ou classes combinando várias árvores com diversidade de variáveis.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades adequadas a bootstrap.</li><li>hiperparâmetros validados.</li><li>importância de variáveis interpretada com cautela sob correlação e confundimento.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat f_{\mathrm{RF}}(\mathbf x)=\frac1B\sum_{b=1}^B T_b(\mathbf x)\quad\text{(regressão)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(B\)
-        </dt>
-<dd>
-         número de árvores, quando pertinente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf x\)
-        </dt>
-<dd>
-         vetor de atributos usado para predição
-        </dd>
-</div>
-<div>
-<dt>
-         \(T_b(\mathbf x)\)
-        </dt>
-<dd>
-         predição da árvore b
-        </dd>
-</div>
-</dl>
-<p>
-       Média/voto de árvores com mtry &lt; p; erro OOB, RMSE ou acurácia, conforme resposta.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Critério preditivo é desempenho fora da amostra; valores de importância não são efeitos causais nem p-valores.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Prever mpg a partir de massa, potência, cilindrada e aceleração (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-randomforest" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-randomforest"><code># Random forests ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Random forests</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · ÁRVORES E COMITÊS</span><h1>Random forests</h1><p class="detail-lead">Bagging de árvores com um sorteio de variáveis em cada corte — árvores piores, mas menos parecidas, cuja média erra menos.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/randomforest.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/randomforest.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é uma random forest</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O <a href="bagging.html">bagging</a> tira a média de árvores ajustadas em reamostras, e o seu ganho tem um limite: a <strong>correlação</strong> entre as árvores. Elas se parecem porque, em cada reamostra, a mesma variável forte é escolhida no topo. Breiman (2001) acrescentou um ingrediente: em <strong>cada corte</strong>, só um sorteio de <code>mtry</code> variáveis pode ser usado. Algumas árvores são obrigadas a começar sem a variável dominante, e ficam diferentes das outras. A média de árvores menos parecidas varia menos.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Random forest" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A receita</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Bagging + sorteio</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">de variáveis por corte</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O parâmetro</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">mtry: quantas</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">variáveis por corte</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O compromisso</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Árvores piores,</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">menos correlacionadas</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O bônus</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Erro OOB e</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">importância</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A interpretação</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Dependência parcial</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">e importância</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O cuidado</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Importância por</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">impureza é viciada</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Random forest</text></svg><figcaption>Visão geral da random forest. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Por que é o padrão</strong><p>A random forest raramente é o melhor método para um problema, mas quase nunca é ruim, tem praticamente um único parâmetro a ajustar e traz uma estimativa honesta do erro sem validação cruzada. Por isso é o ponto de partida recomendado para predição com dados tabulares — a referência que outros métodos precisam bater.</p></div></section><section class="detail-panel" id="oque"><h2>O que é uma random forest</h2><p>Para \(b=1,\dots,B\): sorteia-se uma reamostra bootstrap; cresce-se uma árvore profunda nela, mas em cada nó escolhem-se ao acaso \(m\) das \(p\) preditoras e procura-se o melhor corte só entre elas. A predição é a média das \(B\) árvores. Com \(m=p\), recupera-se o bagging. Os valores usuais são \(m=p/3\) na regressão e \(m=\sqrt p\) na classificação.</p><figure class="fig"><img src="../assets/resultados/randomforest-didatica.png" alt="Variância de uma árvore e correlação entre árvores em função de mtry, e erro OOB em função de mtry" loading="lazy"/><figcaption><strong>O compromisso que mtry controla.</strong> À esquerda, medidos com a verdade conhecida: diminuir mtry aumenta a variância de cada árvore (laranja), porque ela é obrigada a usar variáveis piores, e diminui a correlação entre árvores (azul). À direita, o erro fora da sacola da floresta, que resulta do equilíbrio entre os dois: mínimo em mtry = 3. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Bagging e random forest</caption><thead><tr><th>Aspecto</th><th>Bagging</th><th>Random forest</th></tr></thead><tbody><tr><td>Variáveis candidatas por corte</td><td>Todas (p)</td><td>Sorteio de m < p</td></tr><tr><td>Correlação entre árvores</td><td>Maior</td><td>Menor</td></tr><tr><td>Variância de cada árvore</td><td>Menor</td><td>Maior</td></tr><tr><td>Erro do comitê</td><td>Limitado por ρσ²</td><td>Em geral menor</td></tr><tr><td>Variável dominante</td><td>Sempre no topo</td><td>Às vezes ausente</td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto ou cuidado</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>OOB e bootstrap supõem isso.</td><td>Com grupos, use validação por grupo.</td></tr><tr><td>mtry razoável</td><td>É o único ajuste relevante.</td><td><code>tuneRF</code> ou curva do erro OOB.</td></tr><tr><td>B suficiente</td><td>A curva do erro deve estabilizar.</td><td><code>plot(rf)</code>.</td></tr><tr><td>Importância lida com cuidado</td><td>A de impureza favorece variáveis com muitos cortes; correlações dividem importância.</td><td>Use permutação no teste; inclua uma coluna de ruído como referência.</td></tr><tr><td>Sem extrapolação</td><td>Fora da faixa, a predição é constante.</td><td>Faixa das preditoras.</td></tr><tr><td>Classes muito desequilibradas</td><td>O voto favorece a maioria.</td><td>Probabilidades e limiar; amostragem estratificada.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat f_{\text{rf}}(x)=\frac{1}{B}\sum_{b=1}^{B}T_b\left(x;\Theta_b\right)\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(T_b\)</dt><dd>a \(b\)-ésima árvore</dd></div><div><dt>\(\Theta_b\)</dt><dd>o acaso que a define: a reamostra bootstrap e os sorteios de variáveis em cada nó</dd></div></dl><p>A mesma decomposição do bagging vale, agora com \(\rho(m)\) e \(\sigma^2(m)\) dependendo de \(m\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\operatorname{Var}\left[\hat f_{\text{rf}}(x)\right] &= \rho(m)\,\sigma^2(m) \\ &\quad +\frac{1-\rho(m)}{B}\,\sigma^2(m)\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\rho(m)\)</dt><dd>correlação entre duas árvores: cresce com \(m\)</dd></div><div><dt>\(\sigma^2(m)\)</dt><dd>variância de uma árvore: diminui com \(m\)</dd></div></dl><h3>Exemplo numérico, com a verdade conhecida</h3><div class="table-wrap"><table class="method-table"><caption>O compromisso, medido em 20 conjuntos de treino simulados</caption><thead><tr><th>mtry</th><th>σ² (uma árvore)</th><th>ρ</th><th>ρσ²</th><th>EQM OOB (500 árvores)</th></tr></thead><tbody><tr><td>1</td><td>5,4636</td><td>0,0239</td><td>0,1306</td><td>3,5523</td></tr><tr><td>2</td><td>4,1377</td><td>0,0464</td><td>0,1920</td><td>3,1446</td></tr><tr><td><strong>3</strong></td><td><strong>3,5695</strong></td><td><strong>0,0727</strong></td><td><strong>0,2596</strong></td><td><strong>3,0341</strong></td></tr><tr><td>4</td><td>3,4748</td><td>0,0946</td><td>0,3286</td><td>3,0542</td></tr><tr><td>6 (bagging)</td><td>3,2476</td><td>0,1280</td><td>0,4156</td><td>3,0785</td></tr></tbody></table></div><div class="worked"><strong>A leitura da tabela</strong><p>De mtry = 6 para mtry = 1, a correlação entre árvores cai de 0,1280 para 0,0239 — mais de cinco vezes —, e o piso \(\rho\sigma^2\) cai de 0,4156 para 0,1306. Mas cada árvore fica muito pior: \(\sigma^2\) sobe de 3,2476 para 5,4636, e uma árvore que escolhe o corte numa variável sorteada erra também em <em>viés</em>, que a média não remove. O ótimo está no meio, em mtry = 3 = \(p/2\). A diferença entre o melhor (3,0341) e o bagging (3,0785) é pequena aqui porque, nestes dados simulados, as árvores do bagging já eram pouco correlacionadas.</p></div><h3>Importância das variáveis</h3><p><strong>Por impureza</strong>: soma, em todas as árvores, da redução da soma de quadrados (ou do Gini) produzida pelos cortes em cada variável. <strong>Por permutação</strong>: quanto o erro aumenta quando os valores de uma variável são embaralhados, quebrando sua relação com a resposta — calculada nas observações fora da sacola ou num conjunto de teste.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\text{Imp}_j=\frac{1}{B}\sum_{b=1}^{B}\Bigl[&\text{EQM}_b\bigl(\text{com } x_j\\ &\quad\text{permutada}\bigr)-\text{EQM}_b\Bigr]\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\text{EQM}_b\)</dt><dd>erro da árvore \(b\) nas observações que não usou</dd></div><div><dt>\(\text{Imp}_j\)</dt><dd>aumento médio do erro ao destruir a informação de \(x_j\)</dd></div></dl><h3>Propriedades</h3><ul class="checklist"><li>Mais árvores nunca causam sobreajuste: o erro OOB estabiliza.</li><li>Pouco sensível a mtry numa faixa larga; quase nada a outros parâmetros.</li><li>A importância por impureza é viciada a favor de variáveis contínuas e com muitos valores distintos (Strobl et al., 2007).</li><li>Preditoras correlacionadas dividem a importância entre si.</li><li>A dependência parcial mostra a forma média do efeito, supondo as demais fixas.</li><li>Herda das árvores: interações automáticas, nenhuma extrapolação.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>EQM OOB, % Var explained</td><td>Erro esperado em dados novos.</td><td>É OOB; não precisa de validação cruzada.</td></tr><tr><td><code>%IncMSE</code></td><td>Importância por permutação (OOB).</td><td>Dividida entre variáveis correlacionadas.</td></tr><tr><td><code>IncNodePurity</code></td><td>Importância por impureza.</td><td>Viciada; não use sozinha.</td></tr><tr><td>Dependência parcial</td><td>Forma média do efeito.</td><td>Com preditoras correlacionadas, extrapola para combinações irreais.</td></tr><tr><td>Matriz de confusão OOB</td><td>Desempenho por classe.</td><td>Limiar 0,5 por padrão.</td></tr></tbody></table></div><div class="callout warn"><strong>Importância não é efeito</strong><p>A importância por permutação mede quanto o <em>modelo</em> depende de uma variável, não quanto a variável <em>causa</em> a resposta. Nos dados, a altitude e a temperatura têm correlação −0,822; a floresta usa as duas de forma intercambiável, e a permutação de uma delas é parcialmente compensada pela outra. Por isso as importâncias absolutas da altitude (1,413) e da temperatura (0,123) no teste ficam bem abaixo das verdadeiras (17,578 e 3,656), embora a ordem esteja certa.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>randomForest()</code>, do pacote de mesmo nome (Liaw e Wiener, 2002), é a implementação de referência: <code>ntree</code>, <code>mtry</code>, <code>nodesize</code> (tamanho mínimo da folha) e <code>importance = TRUE</code> para a importância por permutação. <code>importance()</code>, <code>varImpPlot()</code> e <code>partialPlot()</code> extraem os resultados. O pacote <code>ranger</code> faz o mesmo de forma muito mais rápida e com paralelização. Em Python, <code>sklearn.ensemble.RandomForestRegressor</code> e <code>RandomForestClassifier</code> (<code>max_features</code> é o mtry), com <code>sklearn.inspection.permutation_importance</code> e <code>partial_dependence</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-randomforest-min" type="button">Copiar código</button></div><pre id="code-randomforest-min"><code>library(randomForest)
+set.seed(1)
+rf &lt;- randomForest(nota ~ alt + temp + chuva + somb + nfol + ph,
+                   data = cafe, ntree = 500, mtry = 3, importance = TRUE)
+rf; plot(rf)
+importance(rf); varImpPlot(rf)
+partialPlot(rf, pred.data = cafe, x.var = "alt")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: <strong>600 lotes de café</strong>, cada um com a <strong>nota sensorial</strong> (escala SCA, de 70,0 a 86,1) e seis variáveis da lavoura — altitude (600 a 1.500 m), temperatura média (14 a 26 °C), chuva anual (mm), sombreamento (%), nitrogênio foliar (dag/kg) e pH do solo. Um lote é <strong>fino</strong> quando a nota é 80 ou mais (204 lotes, 34,0%). O processo gerador é conhecido e foi desenhado para ter as duas estruturas que os modelos aditivos não representam: um <strong>degrau</strong> de +4,6 pontos acima de 1.050 m de altitude e uma <strong>interação</strong> — o sombreamento melhora a nota quando a temperatura passa de 20,5 °C e a piora abaixo disso —, além de partes suaves em chuva, nitrogênio e pH e um erro de desvio-padrão 1,55. Altitude e temperatura têm correlação de −0,822, como na realidade. Como a verdade é conhecida, sabem-se os dois <strong>pisos</strong>: nenhum modelo de regressão pode ter erro quadrático esperado abaixo de \(\sigma^2=2{,}4025\), e nenhum classificador pode errar menos que o <strong>erro de Bayes</strong>, 0,1596. O mesmo conjunto atravessa as dez fichas dos grupos de árvores e de classificadores, o que permite comparar todos os métodos na mesma régua.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-randomforest" type="button">Copiar código</button></div><pre id="code-randomforest"><code># Random forests: exemplo completo ----
+# Pacotes: randomForest (ou ranger, mais rápido) e pdp (dependência parcial, opcional)
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site).
+# Baixe o arquivo para a pasta de trabalho, ou leia direto do endereço:
+url &lt;- "https://cassiushenrique.github.io/ModelosEstatisticos/scripts/cafe.csv"
+cafe &lt;- if (file.exists("cafe.csv")) read.csv("cafe.csv") else read.csv(url)
+str(cafe)        # nota, fino (0/1), alt, temp, chuva, somb, nfol, ph
+cafe$fino_f &lt;- factor(cafe$fino, levels = c(0, 1), labels = c("nao", "fino"))
+table(cafe$fino_f)
 
-# Ajuste e resultados ----
-if (!requireNamespace("randomForest", quietly = TRUE)) install.packages("randomForest")
 library(randomForest)
-set.seed(2026)
-ajuste &lt;- randomForest(mpg ~ wt + hp + disp + qsec,
-                       data = mtcars, mtry = 2,
-                       ntree = 500, importance = TRUE)
-print(ajuste)
-print(importance(ajuste))
+f &lt;- nota ~ alt + temp + chuva + somb + nfol + ph
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 1. A floresta padrão (mtry = p/3 na regressão, raiz de p na classificação)
+set.seed(1)
+rf &lt;- randomForest(f, data = cafe, ntree = 500, importance = TRUE)
+rf                       # EQM OOB e % de variância explicada
+plot(rf)                 # erro OOB em função do número de árvores
 
+# ---- 2. O único parâmetro que importa: mtry
+oob &lt;- sapply(1:6, function(m) {
+  set.seed(1); tail(randomForest(f, data = cafe, mtry = m, ntree = 500)$mse, 1) })
+plot(1:6, oob, type = "b", xlab = "mtry", ylab = "EQM OOB")
+# tuneRF() faz uma busca automática
+set.seed(1); tuneRF(cafe[, c("alt","temp","chuva","somb","nfol","ph")], cafe$nota, ntreeTry = 300)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="bagging.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Bagging (bootstrap aggregation)
-    </a>
-<a href="boosting.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Gradient boosting de árvores
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 3. Importância das variáveis: permutação (%IncMSE) e impureza (IncNodePurity)
+importance(rf)
+varImpPlot(rf)
+# Calibrando o olho: acrescente colunas de puro ruído e veja a importância delas
+set.seed(4)
+cafe2 &lt;- transform(cafe, ruido = rnorm(nrow(cafe)), codigo = sample(0:499, nrow(cafe), TRUE))
+rf2 &lt;- randomForest(nota ~ alt + temp + chuva + somb + nfol + ph + ruido + codigo,
+                    data = cafe2, mtry = 3, importance = TRUE)
+importance(rf2)
+
+# ---- 4. Dependência parcial: a forma do efeito de cada variável
+partialPlot(rf, pred.data = cafe, x.var = "alt")
+partialPlot(rf, pred.data = cafe, x.var = "somb")
+# Interação: dependência parcial em duas variáveis (pacote pdp)
+# install.packages("pdp")
+library(pdp)
+pd2 &lt;- partial(rf, pred.var = c("temp", "somb"), train = cafe)
+plotPartial(pd2)
+
+# ---- 5. Classificação
+set.seed(1)
+rfc &lt;- randomForest(fino_f ~ alt + temp + chuva + somb + nfol + ph, data = cafe, ntree = 500)
+rfc                      # matriz de confusão OOB
+head(predict(rfc, type = "prob"))     # probabilidades OOB
+
+# ---- 6. ranger: a mesma floresta, muito mais rápida, com importância por permutação
+# install.packages("ranger")
+library(ranger)
+rg &lt;- ranger(f, data = cafe, num.trees = 500, mtry = 3, importance = "permutation")
+rg$prediction.error; sort(rg$variable.importance, decreasing = TRUE)
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-randomforest" type="button">Copiar código</button></div><pre id="code-py-randomforest"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab16)
+# ------------------------------------------------------------------
+import numpy as np
+from scipy.stats import norm
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados16)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 600 lotes de café (arquivo cafe.csv, pasta scripts/ do site)
+cafe = le_csv('cafe.csv')
+ALT, TEMP, CHUVA = (cafe[k].to_numpy(float) for k in ('alt', 'temp', 'chuva'))
+SOMB, NFOL, PH = (cafe[k].to_numpy(float) for k in ('somb', 'nfol', 'ph'))
+NOTA = cafe['nota'].to_numpy(float); FINO = cafe['fino'].to_numpy(int)
+NOMES=['alt','temp','chuva','somb','nfol','ph']
+ROT={'alt':'Altitude','temp':'Temperatura','chuva':'Chuva','somb':'Sombreamento','nfol':'N foliar','ph':'pH'}
+X=np.column_stack([ALT,TEMP,CHUVA,SOMB,NFOL,PH])
+NC,PC=X.shape; SIGN=1.55
+def f_nota(alt,temp,chuva,somb,nfol,ph):
+    deg=4.6*(np.asarray(alt)&gt;=1050); rampa=0.0028*np.clip(np.asarray(alt)-700,0,None)
+    inter=np.where(np.asarray(temp)&gt;20.5,0.052*np.asarray(somb),-0.030*np.asarray(somb))
+    agua=-2.6e-6*(np.asarray(chuva)-1450)**2
+    nitro=2.9*np.log(np.asarray(nfol)/1.6); acid=-1.9*(np.asarray(ph)-5.4)**2
+    return 74.0+deg+rampa+inter+agua+nitro+acid
+def verdade(A): return f_nota(A[:,0],A[:,1],A[:,2],A[:,3],A[:,4],A[:,5])
+# ------------------------------------------------------------------ fim do bloco comum
+
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - float(np.sum((np.asarray(o)-np.asarray(p))**2))/float(np.sum((np.asarray(o)-np.mean(o))**2))
+def acur(o, p): return float(np.mean(np.asarray(o) == np.asarray(p)))
+
+MU = verdade(X)                                   # média verdadeira da nota
+PVER = 1 - norm.cdf((80 - MU)/SIGN)               # P(fino | x) verdadeira
+ERRO_BAYES = float(np.mean(np.minimum(PVER, 1 - PVER)))
+EQM_PISO = SIGN**2
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_reg(fabrica, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada. fabrica() devolve um estimador sklearn novo."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); e[te] = y[te] - m.predict(A[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+def cv_clf(fabrica, A, y, k=10, seed=0, reps=1, prob=False):
+    """Erro de classificação (e, se prob, log-loss e Brier) por validação cruzada."""
+    err = []; ll = []; br = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 101*r); pred = np.empty(len(y)); pp = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            m = fabrica().fit(A[tr], y[tr]); pred[te] = m.predict(A[te])
+            if prob: pp[te] = m.predict_proba(A[te])[:, 1]
+        err.append(float(np.mean(pred != y)))
+        if prob:
+            q = np.clip(pp, 1e-6, 1 - 1e-6)
+            ll.append(float(-np.mean(y*np.log(q) + (1 - y)*np.log(1 - q))))
+            br.append(float(np.mean((pp - y)**2)))
+    if prob: return float(np.mean(err)), float(np.mean(ll)), float(np.mean(br))
+    return float(np.mean(err)), (float(np.std(err, ddof=1)) if reps &gt; 1 else 0.0)
+
+def padroniza(A, ref=None):
+    ref = A if ref is None else ref
+    mu, sd = ref.mean(0), ref.std(0, ddof=1); return (A - mu)/sd, mu, sd
+
+DADOS_TXT = ('600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: '
+             'altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.')
+# ------------------------------------------------------------------ fim do bloco comum
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.inspection import permutation_importance
+
+y=NOTA
+print('LOTES DE CAFÉ:',DADOS_TXT)
+print('Resposta: a nota. Piso irredutível sigma² = %s. p = 6 preditoras.'%c(EQM_PISO))
+
+print('\n'+'='*70)
+print('O ÚNICO PARÂMETRO QUE IMPORTA: mtry, quantas variáveis sorteadas por corte')
+print('mtry = 6 é o bagging; mtry = 1 escolhe o corte numa variável ao acaso.')
+rg=np.random.default_rng(11)
+idx=rg.permutation(NC); te,tr=idx[:200],idx[200:]; n=len(tr)
+Xtr,Xte=X[tr],X[te]
+R,Bb=20,40
+print('Para cada mtry: variância de uma árvore (s²), correlação entre árvores')
+print('(rho), ambos sobre 20 conjuntos de treino novos, e o EQM OOB da floresta.')
+print()
+print('%6s %12s %10s %14s %14s'%('mtry','s² (1 árv.)','rho','rho*s²','EQM OOB'))
+for mt in [1,2,3,4,6]:
+    Q=np.empty((R,Bb,len(te)))
+    for r in range(R):
+        yr=MU[tr]+rg.normal(0,SIGN,n)
+        f=RandomForestRegressor(n_estimators=Bb,max_features=mt,random_state=r).fit(Xtr,yr)
+        Q[r]=np.array([t.predict(Xte) for t in f.estimators_])
+    s2=float(np.mean(Q.reshape(R*Bb,-1).var(0,ddof=1)))
+    cov=float(np.mean(Q.mean(1).var(0,ddof=1)-Q.var(1,ddof=1).mean(0)/Bb))
+    oob=RandomForestRegressor(n_estimators=500,max_features=mt,oob_score=True,random_state=0).fit(X,y)
+    print('%6d %12s %10s %14s %14s'%(mt,c(s2),c(cov/s2),c(cov),c(eqm(y,oob.oob_prediction_))))
+print()
+print('Diminuir mtry torna cada árvore PIOR (s² sobe) mas MENOS PARECIDA com')
+print('as outras (rho cai). O erro da floresta é o equilíbrio entre os dois.')
+
+print('\n'+'='*70)
+print('A FLORESTA ESCOLHIDA, contra as alternativas (10 dobras x 3 repetições)')
+from sklearn.linear_model import LinearRegression
+print()
+print('%-34s %14s'%('modelo','EQM 10-fold'))
+for nm,f in [('regressão linear',LinearRegression),
+             ('uma árvore podada',lambda: DecisionTreeRegressor(ccp_alpha=0.0443,random_state=0)),
+             ('bagging (mtry = 6), 300 árvores',lambda: RandomForestRegressor(300,max_features=6,random_state=0)),
+             ('random forest mtry = 2, 300 árvores',lambda: RandomForestRegressor(300,max_features=2,random_state=0)),
+             ('random forest mtry = 3, 300 árvores',lambda: RandomForestRegressor(300,max_features=3,random_state=0)),
+             ('rf mtry = 3, folha mínima 5',lambda: RandomForestRegressor(300,max_features=3,min_samples_leaf=5,random_state=0))]:
+    v,_=cv_reg(f,X,y,10,0,3); print('%-34s %14s'%(nm,c(v)))
+print('%-34s %14s'%('função verdadeira (piso)',c(eqm(y,MU))))
+
+print('\n'+'='*70)
+print('QUANTAS ÁRVORES? O EQM OOB em função de B (mtry = 3)')
+f=RandomForestRegressor(n_estimators=10,max_features=3,random_state=0,oob_score=True,warm_start=True)
+curva={}
+for b in (25,50,100,200,500,1000):
+    f.set_params(n_estimators=b); f.fit(X,y)        # warm_start: acrescenta árvores
+    curva[b]=eqm(y,f.oob_prediction_)
+print()
+for b,v in curva.items(): print('  B = %5d   EQM OOB = %s'%(b,c(v)))
+print('Mais árvores nunca causam sobreajuste: o erro só estabiliza.')
+
+print('\n'+'='*70)
+print('IMPORTÂNCIA DAS VARIÁVEIS: duas medidas, e a verdade')
+print('Verdade: quanto o EQM da função verdadeira piora se a variável for')
+print('embaralhada (permutação aplicada à própria função geradora).')
+rf=RandomForestRegressor(500,max_features=3,random_state=0,oob_score=True).fit(X,y)
+imp_imp=rf.feature_importances_
+pi=permutation_importance(rf,X,y,n_repeats=20,random_state=0)
+idx=rg.permutation(NC); te,tr=idx[:200],idx[200:]
+rf2=RandomForestRegressor(500,max_features=3,random_state=0).fit(X[tr],y[tr])
+pit=permutation_importance(rf2,X[te],y[te],n_repeats=30,random_state=0)
+verd=[]
+for j in range(6):
+    v=[]
+    for r in range(30):
+        Z=X.copy(); Z[:,j]=rg.permutation(Z[:,j]); v.append(np.mean((verdade(Z)-MU)**2))
+    verd.append(np.mean(v))
+verd=np.array(verd)
+print()
+print('%-14s %14s %16s %16s %16s'%('variável','impureza (%)','perm. no treino','perm. no teste','VERDADE'))
+for j in range(6):
+    print('%-14s %14s %16s %16s %16s'%(ROT[NOMES[j]],c(100*imp_imp[j],1),c(pi.importances_mean[j],3),c(pit.importances_mean[j],3),c(verd[j],3)))
+print()
+print('A altitude e a temperatura têm correlação %s. Uma floresta pode usar'%c(np.corrcoef(X[:,0],X[:,1])[0,1],3))
+print('uma no lugar da outra, e a importância se divide entre elas.')
+
+print('\n'+'='*70)
+print('UMA VARIÁVEL DE RUÍDO, para calibrar o olho')
+Xr=np.column_stack([X,rg.normal(size=NC),rg.integers(0,500,NC).astype(float)])
+rf3=RandomForestRegressor(500,max_features=3,random_state=0).fit(Xr[tr],y[tr])
+a=rf3.feature_importances_; p=permutation_importance(rf3,Xr[te],y[te],n_repeats=30,random_state=0).importances_mean
+print('Acrescentamos duas colunas sem relação com a nota: ruído normal e um')
+print('código inteiro de 0 a 499 (muitos valores distintos, como um ID).')
+print()
+print('%-22s %14s %16s'%('variável','impureza (%)','perm. no teste'))
+for nm,j in [('Sombreamento',3),('pH',5),('ruído normal',6),('código (tipo ID)',7)]:
+    print('%-22s %14s %16s'%(nm,c(100*a[j],1),c(p[j],3)))
+print()
+print('A importância por impureza atribui uma fatia visível a colunas sem')
+print('NENHUMA relação com a nota, porque elas oferecem muitos cortes possíveis')
+print('para ajustar ruído. A permutação no teste dá a elas praticamente zero.')
+
+print('\n'+'='*70)
+print('DEPENDÊNCIA PARCIAL: a forma do efeito da altitude')
+print('Média das predições com a altitude fixada em cada valor, as demais nos')
+print('valores observados:')
+print()
+print('%10s %14s %14s'%('altitude','floresta','verdade'))
+for a in [650,800,950,1040,1060,1150,1300,1450]:
+    Z=X.copy(); Z[:,0]=a
+    print('%10d %14s %14s'%(a,c(float(rf.predict(Z).mean()),3),c(float(verdade(Z).mean()),3)))
+print()
+print('O degrau aparece nítido: o corte em altitude é tão forte que quase todas')
+print('as árvores o fazem perto de 1.050 m. Entre os degraus, a média de muitas')
+print('escadas com cortes diferentes vira uma rampa suave.')
+
+print('\n'+'='*70)
+print('CLASSIFICAÇÃO (fino ou não), 10 dobras x 3 repetições')
+print()
+print('%-30s %10s %10s %10s'%('modelo','erro','log-loss','Brier'))
+for mt in [1,2,3,6]:
+    er,ll,br=cv_clf(lambda mt=mt: RandomForestClassifier(300,max_features=mt,random_state=0),X,FINO,10,0,3,prob=True)
+    print('%-30s %10s %10s %10s'%('random forest, mtry = %d'%mt,c(er),c(ll),c(br)))
+print('%-30s %10s'%('erro de Bayes',c(ERRO_BAYES)))
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">LOTES DE CAFÉ: 600 lotes de café, nota sensorial (escala SCA, de 70 a 86) e seis variáveis de lavoura: altitude, temperatura média, chuva anual, sombreamento, N foliar e pH. Lote "fino" = nota &gt;= 80.
+Resposta: a nota. Piso irredutível sigma² = 2,4025. p = 6 preditoras.
+
+======================================================================
+O ÚNICO PARÂMETRO QUE IMPORTA: mtry, quantas variáveis sorteadas por corte
+mtry = 6 é o bagging; mtry = 1 escolhe o corte numa variável ao acaso.
+Para cada mtry: variância de uma árvore (s²), correlação entre árvores
+(rho), ambos sobre 20 conjuntos de treino novos, e o EQM OOB da floresta.
+
+  mtry  s² (1 árv.)        rho         rho*s²        EQM OOB
+     1       5,4636     0,0239         0,1306         3,5523
+     2       4,1377     0,0464         0,1920         3,1446
+     3       3,5695     0,0727         0,2596         3,0341
+     4       3,4748     0,0946         0,3286         3,0542
+     6       3,2476     0,1280         0,4156         3,0785
+
+Diminuir mtry torna cada árvore PIOR (s² sobe) mas MENOS PARECIDA com
+as outras (rho cai). O erro da floresta é o equilíbrio entre os dois.
+
+======================================================================
+A FLORESTA ESCOLHIDA, contra as alternativas (10 dobras x 3 repetições)
+
+modelo                                EQM 10-fold
+regressão linear                           5,2218
+uma árvore podada                          3,6933
+bagging (mtry = 6), 300 árvores            3,1107
+random forest mtry = 2, 300 árvores         3,1860
+random forest mtry = 3, 300 árvores         3,0805
+rf mtry = 3, folha mínima 5                3,1355
+função verdadeira (piso)                   2,5695
+
+======================================================================
+QUANTAS ÁRVORES? O EQM OOB em função de B (mtry = 3)
+
+  B =    25   EQM OOB = 3,3730
+  B =    50   EQM OOB = 3,2094
+  B =   100   EQM OOB = 3,0475
+  B =   200   EQM OOB = 3,0606
+  B =   500   EQM OOB = 3,0341
+  B =  1000   EQM OOB = 3,0223
+Mais árvores nunca causam sobreajuste: o erro só estabiliza.
+
+======================================================================
+IMPORTÂNCIA DAS VARIÁVEIS: duas medidas, e a verdade
+Verdade: quanto o EQM da função verdadeira piora se a variável for
+embaralhada (permutação aplicada à própria função geradora).
+
+variável         impureza (%)  perm. no treino   perm. no teste          VERDADE
+Altitude                 49,1            1,686            1,413           17,578
+Temperatura              18,4            0,288            0,123            3,656
+Chuva                     5,2            0,054            0,006            0,150
+Sombreamento              8,8            0,140            0,043            1,186
+N foliar                  7,7            0,137            0,030            0,356
+pH                       10,9            0,148            0,079            0,607
+
+A altitude e a temperatura têm correlação -0,822. Uma floresta pode usar
+uma no lugar da outra, e a importância se divide entre elas.
+
+======================================================================
+UMA VARIÁVEL DE RUÍDO, para calibrar o olho
+Acrescentamos duas colunas sem relação com a nota: ruído normal e um
+código inteiro de 0 a 499 (muitos valores distintos, como um ID).
+
+variável                 impureza (%)   perm. no teste
+Sombreamento                      8,7            0,039
+pH                                7,9            0,068
+ruído normal                      5,7           -0,006
+código (tipo ID)                  3,8            0,003
+
+A importância por impureza atribui uma fatia visível a colunas sem
+NENHUMA relação com a nota, porque elas oferecem muitos cortes possíveis
+para ajustar ruído. A permutação no teste dá a elas praticamente zero.
+
+======================================================================
+DEPENDÊNCIA PARCIAL: a forma do efeito da altitude
+Média das predições com a altitude fixada em cada valor, as demais nos
+valores observados:
+
+  altitude       floresta        verdade
+       650         75,354         75,040
+       800         75,604         75,320
+       950         75,966         75,740
+      1040         76,033         75,992
+      1060         80,969         80,648
+      1150         80,749         80,900
+      1300         81,068         81,320
+      1450         81,213         81,740
+
+O degrau aparece nítido: o corte em altitude é tão forte que quase todas
+as árvores o fazem perto de 1.050 m. Entre os degraus, a média de muitas
+escadas com cortes diferentes vira uma rampa suave.
+
+======================================================================
+CLASSIFICAÇÃO (fino ou não), 10 dobras x 3 repetições
+
+modelo                               erro   log-loss      Brier
+random forest, mtry = 1            0,1978     0,4058     0,1317
+random forest, mtry = 2            0,1911     0,3959     0,1286
+random forest, mtry = 3            0,1933     0,4037     0,1294
+random forest, mtry = 6            0,1806     0,4209     0,1307
+erro de Bayes                      0,1596</pre></div><figure class="fig"><img src="../assets/resultados/randomforest.png" alt="Importância por três medidas contra a verdade, importância de colunas de ruído e dependência parcial da altitude" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a importância de cada variável, normalizada para somar 1, por impureza, por permutação no treino e no teste, e a verdadeira. No centro, duas colunas de puro ruído recebem fatia visível da importância por impureza e praticamente zero por permutação. À direita, a dependência parcial da altitude: o degrau aparece nítido. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Comparação por validação cruzada (10 dobras × 3)</caption><thead><tr><th>Modelo</th><th>EQM 10-fold</th></tr></thead><tbody><tr><td>Regressão linear</td><td>5,2218</td></tr><tr><td>Uma árvore podada</td><td>3,6933</td></tr><tr><td>Bagging (mtry = 6)</td><td>3,1107</td></tr><tr><td>Random forest, mtry = 2</td><td>3,1860</td></tr><tr><td><strong>Random forest, mtry = 3</strong></td><td><strong>3,0805</strong></td></tr><tr><td>Random forest, mtry = 3, folha mínima 5</td><td>3,1355</td></tr><tr><td><em>Função verdadeira (piso)</em></td><td><em>2,5695</em></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Erro OOB em função do número de árvores (mtry = 3)</caption><thead><tr><th>B</th><th>EQM OOB</th></tr></thead><tbody><tr><td>25</td><td>3,3730</td></tr><tr><td>50</td><td>3,2094</td></tr><tr><td>100</td><td>3,0475</td></tr><tr><td>200</td><td>3,0606</td></tr><tr><td>500</td><td>3,0341</td></tr><tr><td>1.000</td><td>3,0223</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Importância das variáveis</caption><thead><tr><th>Variável</th><th>Impureza (%)</th><th>Permutação no treino</th><th>Permutação no teste</th><th>Verdade</th></tr></thead><tbody><tr><td>Altitude</td><td>49,1</td><td>1,686</td><td>1,413</td><td>17,578</td></tr><tr><td>Temperatura</td><td>18,4</td><td>0,288</td><td>0,123</td><td>3,656</td></tr><tr><td>Chuva</td><td>5,2</td><td>0,054</td><td>0,006</td><td>0,150</td></tr><tr><td>Sombreamento</td><td>8,8</td><td>0,140</td><td>0,043</td><td>1,186</td></tr><tr><td>N foliar</td><td>7,7</td><td>0,137</td><td>0,030</td><td>0,356</td></tr><tr><td>pH</td><td>10,9</td><td>0,148</td><td>0,079</td><td>0,607</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Duas colunas sem relação com a nota</caption><thead><tr><th>Variável</th><th>Impureza (%)</th><th>Permutação no teste</th></tr></thead><tbody><tr><td>Sombreamento</td><td>8,7</td><td>0,039</td></tr><tr><td>pH</td><td>7,9</td><td>0,068</td></tr><tr><td>Ruído normal</td><td>5,7</td><td>−0,006</td></tr><tr><td>Código (tipo identificador)</td><td>3,8</td><td>0,003</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Dependência parcial da altitude</caption><thead><tr><th>Altitude (m)</th><th>Floresta</th><th>Verdade</th></tr></thead><tbody><tr><td>650</td><td>75,354</td><td>75,040</td></tr><tr><td>950</td><td>75,966</td><td>75,740</td></tr><tr><td>1.040</td><td>76,033</td><td>75,992</td></tr><tr><td>1.060</td><td>80,969</td><td>80,648</td></tr><tr><td>1.300</td><td>81,068</td><td>81,320</td></tr><tr><td>1.450</td><td>81,213</td><td>81,740</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Classificação (fino ou não), 10 dobras × 3</caption><thead><tr><th>mtry</th><th>Erro</th><th>Log-loss</th><th>Brier</th></tr></thead><tbody><tr><td>1</td><td>0,1978</td><td>0,4058</td><td>0,1317</td></tr><tr><td>2</td><td>0,1911</td><td>0,3959</td><td>0,1286</td></tr><tr><td>3</td><td>0,1933</td><td>0,4037</td><td>0,1294</td></tr><tr><td>6 (bagging)</td><td>0,1806</td><td>0,4209</td><td>0,1307</td></tr><tr><td><em>Erro de Bayes</em></td><td><em>0,1596</em></td><td>—</td><td>—</td></tr></tbody></table></div><p><strong>Leitura:</strong> a floresta com mtry = 3 tem o menor erro do grupo até aqui (3,0805), 16% abaixo da árvore podada e 41% abaixo do modelo linear. A distância ao piso (2,5695) continua sendo, como no bagging, o preço de aproximar as partes suaves por médias de escadas. A curva do erro OOB mostra que 100 a 200 árvores bastam: de 500 para 1.000, o erro muda na terceira casa.</p><p><strong>As importâncias acertam a ordem e erram a escala.</strong> As três medidas põem a altitude em primeiro e a temperatura em segundo, como a verdade. Mas a importância por impureza dá ao pH (10,9%) mais que ao sombreamento (8,8%), invertendo a verdade (0,607 contra 1,186): o efeito do sombreamento é uma interação, que cada corte isolado captura mal. A permutação no teste também subestima o sombreamento, e pela mesma razão.</p><p><strong>A tabela das colunas de ruído é o diagnóstico mais útil da ficha.</strong> Uma coluna de números aleatórios recebe 5,7% da importância por impureza — quase tanto quanto o pH. A permutação no teste dá a ela −0,006, isto é, nada. Incluir uma coluna de ruído na análise é uma forma barata de calibrar o olho: variáveis com importância abaixo da do ruído não devem ser interpretadas.</p><p><strong>Na classificação</strong>, o melhor erro foi o do bagging (0,1806), mas o melhor log-loss foi o de mtry = 2 (0,3959): as duas métricas não escolhem o mesmo modelo, e a escolha depende de se o objetivo é decidir ou estimar probabilidades.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Interpretar a importância por impureza sem referência</td><td>Use permutação; inclua uma coluna de ruído.</td></tr><tr><td>Ler importância como efeito causal</td><td>É dependência do modelo.</td></tr><tr><td>Concluir que uma variável não importa porque uma correlacionada levou a importância</td><td>Examine grupos de variáveis correlacionadas juntos.</td></tr><tr><td>Ajustar muitos hiperparâmetros</td><td>Só mtry importa de verdade.</td></tr><tr><td>Usar a dependência parcial com preditoras muito correlacionadas</td><td>Ela avalia combinações que não existem; use ALE.</td></tr><tr><td>Esperar extrapolação</td><td>Fora da faixa, é constante.</td></tr><tr><td>Avaliar pelo erro de treino</td><td>É quase zero; use OOB.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="boosting.html">Gradient boosting</a></td><td>Menor erro, ao custo de ajustar mais.</td></tr><tr><td><a href="bart.html">BART</a></td><td>Quando se quer incerteza nas predições.</td></tr><tr><td><a href="bagging.html">Bagging</a></td><td>Quando há poucas preditoras e todas relevantes.</td></tr><tr><td>Extremely randomized trees</td><td>Ainda menos correlação: cortes também sorteados.</td></tr><tr><td>Florestas de inferência condicional (<code>partykit::cforest</code>)</td><td>Importância sem viés para variáveis com muitos valores.</td></tr><tr><td>Florestas quantílicas (<code>ranger</code>, <code>quantregForest</code>)</td><td>Quando se quer intervalos de predição.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste com os padrões (500 árvores, mtry = p/3).</li><li>Confira a curva do erro OOB.</li><li>Ajuste mtry pela curva OOB.</li><li>Calcule a importância por permutação, com uma coluna de ruído.</li><li>Desenhe a dependência parcial das variáveis principais.</li><li>Compare com boosting e com o modelo linear.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>BREIMAN, Leo. Random forests. <em>Machine Learning</em>, v. 45, n. 1, p. 5-32, 2001.</li><li>BREIMAN, Leo. Bagging predictors. <em>Machine Learning</em>, v. 24, n. 2, p. 123-140, 1996.</li><li>STROBL, Carolin; BOULESTEIX, Anne-Laure; ZEILEIS, Achim; HOTHORN, Torsten. Bias in random forest variable importance measures: illustrations, sources and a solution. <em>BMC Bioinformatics</em>, v. 8, art. 25, 2007.</li><li>HO, Tin Kam. The random subspace method for constructing decision forests. <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, v. 20, n. 8, p. 832-844, 1998.</li><li>GENUER, Robin; POGGI, Jean-Michel; TULEAU-MALOT, Christine. Variable selection using random forests. <em>Pattern Recognition Letters</em>, v. 31, n. 14, p. 2225-2236, 2010.</li><li>PROBST, Philipp; WRIGHT, Marvin N.; BOULESTEIX, Anne-Laure. Hyperparameters and tuning strategies for random forest. <em>WIREs Data Mining and Knowledge Discovery</em>, v. 9, n. 3, e1301, 2019.</li><li>GREENWELL, Brandon M. pdp: an R package for constructing partial dependence plots. <em>The R Journal</em>, v. 9, n. 1, p. 421-436, 2017.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>LIAW, Andy; WIENER, Matthew. Classification and regression by randomForest. <em>R News</em>, v. 2, n. 3, p. 18-22, 2002.</li><li>WRIGHT, Marvin N.; ZIEGLER, Andreas. ranger: a fast implementation of random forests for high dimensional data in C++ and R. <em>Journal of Statistical Software</em>, v. 77, n. 1, p. 1-17, 2017.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>PEDREGOSA, Fabian et al. Scikit-learn: machine learning in Python. <em>Journal of Machine Learning Research</em>, v. 12, p. 2825-2830, 2011. (Função <code>sklearn.datasets.load_iris</code>.)</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, número de árvores suficiente, mtry escolhido pelo erro fora da sacola e importâncias lidas com referência de ruído.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>randomForest; ranger e pdp (opcionais)</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="bagging.html"><span>← ANTERIOR</span>Bagging (bootstrap aggregation)</a><a href="boosting.html"><span>PRÓXIMO →</span>Gradient boosting de árvores</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

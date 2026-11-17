@@ -4,312 +4,447 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Kappa ponderado: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Kappa ponderado | Estatística e Ciência de Dados
-  </title>
+<meta content="Kappa ponderado: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Kappa ponderado | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Kappa ponderado
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 12 · CONCORDÂNCIA
-    </span>
-<h1>
-     Kappa ponderado
-    </h1>
-<p class="detail-lead">
-     Avalia a concordância entre classificações ordenadas, considerando a gravidade das discordâncias.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/kappa-ponderado.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia a concordância entre classificações ordenadas, considerando a gravidade das discordâncias.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Mesmas unidades.</li><li>escala ordinal igual para avaliadores.</li><li>pesos justificados (lineares ou quadráticos) e categorias ordenadas.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \kappa_w=0\\ H_1&amp;:\ \kappa_w\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\kappa_w=1-\frac{\sum_{ij}w_{ij}O_{ij}}{\sum_{ij}w_{ij}E_{ij}}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(\kappa_w)\approx\widehat\kappa_w\pm1{,}96\operatorname{EP}(\widehat\kappa_w)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(P_o\)
-        </dt>
-<dd>
-         concordância observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(P_e\)
-        </dt>
-<dd>
-         concordância esperada pela regra de referência do coeficiente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\kappa\)
-        </dt>
-<dd>
-         coeficiente de concordância corrigido para acaso
-        </dd>
-</div>
-</dl>
-<p>
-       O intervalo normal é apenas aproximado e depende da definição de pesos e do estimador de variância.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) apenas evidencia \(\kappa_w\) diferente de zero; informe pesos, IC e grau de concordância exigido pela aplicação.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Dois sistemas didáticos de classificação de potência e massa de veículos em baixo/médio/alto.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-kappa-ponderado" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-kappa-ponderado"><code># Kappa ponderado ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Kappa ponderado</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · CONCORDÂNCIA</span><h1>Kappa ponderado</h1><p class="detail-lead">Estende o kappa de Cohen a escalas ordinais, atribuindo crédito parcial aos desacordos entre categorias vizinhas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/kappa-ponderado.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/kappa-ponderado.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o kappa ponderado</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quando a escala é ordinal, o <a href="kappa.html">kappa de Cohen</a> desperdiça informação: ele trata "um avaliador disse 3 e o outro disse 4" exatamente como "um disse 1 e o outro disse 5". O kappa ponderado corrige isso atribuindo um peso a cada tipo de desacordo, de modo que errar por pouco custe menos que errar por muito.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Kappa ponderado" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Kappa com crédito parcial</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">para desacordos pequenos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Para quem</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Dois avaliadores</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">escala ORDINAL</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Esquemas</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Linear: |i − j|</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Quadrático: (i − j)²</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A decisão</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Qual peso usar é</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">substantiva, não técnica</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Identidade</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">Quadrático ≈ ICC(2,1)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">kappa2(weight=)</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">vcd::Kappa()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Kappa ponderado</text></svg><figcaption>Visão geral do kappa ponderado. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O que está em jogo, em um número</strong><p>Na tabela dos avaliadores A e B desta ficha, o kappa vale <strong>0,431</strong> sem pesos, <strong>0,666</strong> com pesos lineares e <strong>0,831</strong> com pesos quadráticos. A tabela não mudou: mudou só o que se decidiu que conta como desacordo. Reportar "kappa = 0,83" sem dizer qual esquema de pesos foi usado é omitir a metade da informação.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o kappa ponderado</h2><p>Em vez de contar apenas a diagonal, atribui-se a cada célula \((i,j)\) um peso de desacordo \(w_{ij}\), com \(w_{ii}=0\) e \(w_{ij}=1\) no desacordo máximo. A concordância observada passa a ser \(1-\sum w_{ij}p_{ij}\), e a esperada, \(1-\sum w_{ij}p_{i\cdot}p_{\cdot j}\). A fórmula do kappa é a mesma.</p><figure class="fig"><img src="../assets/resultados/kappa-ponderado-didatica.png" alt="As três matrizes de peso, o peso por distância e a distribuição dos desacordos observados" loading="lazy"/><figcaption><strong>Os pesos, e o que eles fazem.</strong> À esquerda, as três matrizes de peso para uma escala de cinco classes: a nominal atribui 1 a qualquer desacordo, a linear cresce proporcionalmente à distância, e a quadrática cresce com o quadrado dela. No centro, as mesmas três funções vistas como curvas: um desacordo de uma classe vale 1,00, 0,25 e 0,0625 nos três esquemas. À direita, a distribuição dos desacordos efetivamente observados entre A e B — 22 acordos exatos, 16 desacordos de uma classe e apenas 2 de duas — que é o que faz o kappa quadrático subir tanto nestes dados. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>Duas convenções de peso, e a confusão entre elas</strong><p>A literatura usa tanto pesos de <strong>desacordo</strong> (0 na diagonal, 1 no pior caso) quanto pesos de <strong>concordância</strong> (1 na diagonal, 0 no pior caso). São complementares: \(w^{\text{conc}}=1-w^{\text{desac}}\). O R, em <code>irr::kappa2()</code> e <code>vcd::Kappa()</code>, usa pesos de desacordo; o <a href="gwet.html">AC2 de Gwet</a> usa pesos de concordância. Trocar um pelo outro produz um resultado sem sentido, e é um erro comum em implementações próprias.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Escala ORDINAL</td><td>Os pesos pressupõem uma ordem nas categorias.</td><td>Se não houver ordem, use o <a href="kappa.html">kappa não ponderado</a>.</td></tr><tr><td>Dois avaliadores</td><td>O coeficiente é definido para um par.</td><td>Para mais, <a href="fleiss.html">Fleiss</a> ou <a href="gwet.html">AC2</a>.</td></tr><tr><td>As mesmas categorias para os dois</td><td>A tabela precisa ser quadrada.</td><td>Confira os níveis.</td></tr><tr><td>Unidades independentes</td><td>O erro-padrão pressupõe isso.</td><td>Delineamento.</td></tr><tr><td><strong>Esquema de pesos escolhido a priori</strong></td><td>Escolher depois de ver qual dá o maior valor invalida o resultado.</td><td>Protocolo.</td></tr><tr><td>Pesos quadráticos: escala tratável como intervalar</td><td>Eles equivalem a supor distâncias iguais entre classes vizinhas.</td><td>Pela identidade de Fleiss e Cohen, equivalem ao <a href="icc.html">ICC</a>.</td></tr><tr><td>Categorias sem lacunas</td><td>Categorias nunca usadas distorcem as marginais.</td><td>Tabela de frequências por categoria.</td></tr></tbody></table></div><div class="callout "><strong>A pergunta que decide o esquema</strong><p>Errar por duas classes é <em>duas</em> vezes pior que errar por uma, ou <em>quatro</em> vezes pior? A primeira resposta leva ao peso linear, a segunda ao quadrático. Não há resposta estatística: ela vem do problema. Em diagnóstico clínico, em que confundir "leve" com "grave" é muito pior que confundir "leve" com "moderado", o quadrático costuma ser defensável. Em uma escala de notas de 1 a 5, em que cada degrau tem o mesmo peso administrativo, o linear é mais fiel.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\kappa_w=\frac{p_o^{(w)}-p_e^{(w)}}{1-p_e^{(w)}},\]\[p_o^{(w)}=1-\sum_{i,j}w_{ij}\,p_{ij},\]\[p_e^{(w)}=1-\sum_{i,j}w_{ij}\,p_{i\cdot}p_{\cdot j}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[w^{\text{lin}}_{ij}=\frac{\lvert i-j\rvert}{k-1},\]\[w^{\text{quad}}_{ij}=\frac{(i-j)^{2}}{(k-1)^{2}},\]\[w^{\text{nom}}_{ij}=\mathbb{1}\{i\neq j\}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(w_{ij}\)</dt><dd>peso de desacordo da célula \((i,j)\); vale 0 na diagonal</dd></div><div><dt>\(p_{ij}\)</dt><dd>proporção observada na célula \((i,j)\)</dd></div><div><dt>\(p_{i\cdot},p_{\cdot j}\)</dt><dd>marginais</dd></div><div><dt>\(k\)</dt><dd>número de categorias ordenadas</dd></div></dl><h3>As três matrizes de peso, para k = 5</h3><div class="table-wrap"><table class="method-table"><caption>Peso atribuído a cada distância entre classes</caption><thead><tr><th>Distância</th><th>Nominal</th><th>Linear</th><th>Quadrático</th><th>Folhas no exemplo</th></tr></thead><tbody><tr><td>0 (acordo exato)</td><td>0,0000</td><td>0,0000</td><td>0,0000</td><td>22</td></tr><tr><td>1 classe</td><td><strong>1,0000</strong></td><td>0,2500</td><td><strong>0,0625</strong></td><td>16</td></tr><tr><td>2 classes</td><td>1,0000</td><td>0,5000</td><td>0,2500</td><td>2</td></tr><tr><td>3 classes</td><td>1,0000</td><td>0,7500</td><td>0,5625</td><td>0</td></tr><tr><td>4 classes</td><td>1,0000</td><td>1,0000</td><td>1,0000</td><td>0</td></tr></tbody></table></div><div class="worked"><strong>O cálculo nos avaliadores A e B</strong><p>A tabela 5 × 5 tem 22 folhas na diagonal, 16 a uma classe de distância e 2 a duas classes. Com pesos quadráticos:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}p_o^{(w)} &= 1-\bigl(\tfrac{16}{40}\times0{,}0625+\tfrac{2}{40} \\ &\quad \times0{,}2500\bigr) \\ &= 1-0{,}0375 = 0{,}9625\end{aligned}\]</div><p>A concordância esperada, calculada sobre o produto das marginais, dá \(p_e^{(w)}=0{,}7785\). Logo</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat\kappa_{\text{quad}} &= \frac{0{,}9625-0{,}7785}{1-0{,}7785} \\ &= \frac{0{,}1840}{0{,}2215} \\ &= 0{,}8307.\end{aligned}\]</div><div class="table-wrap"><table class="method-table"><caption>Os três resultados sobre a mesma tabela</caption><thead><tr><th>Esquema</th><th>po ponderada</th><th>pe ponderada</th><th>Kappa</th><th>EP (bootstrap)</th><th>IC 95%</th></tr></thead><tbody><tr><td>Nominal</td><td>0,5500</td><td>0,2088</td><td>0,4313</td><td>0,0984</td><td>[0,2314; 0,6163]</td></tr><tr><td>Linear</td><td>0,8750</td><td>0,6253</td><td>0,6664</td><td>0,0700</td><td>[0,5134; 0,7855]</td></tr><tr><td><strong>Quadrático</strong></td><td>0,9625</td><td>0,7785</td><td><strong>0,8307</strong></td><td>0,0508</td><td>[0,7100; 0,9076]</td></tr></tbody></table></div><p>Note que o intervalo também encolhe à medida que os pesos ficam mais generosos: a estimativa não só sobe como parece mais precisa. Isso é um artefato da escala, não um ganho de informação.</p></div><h3>A identidade de Fleiss e Cohen</h3><p>Fleiss e Cohen (1973) mostraram que o kappa com pesos quadráticos é essencialmente o <a href="icc.html">coeficiente de correlação intraclasse</a> calculado sobre os códigos numéricos das categorias. Nos dados desta ficha:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\kappa_{\text{quad}}=0{,}83069,\]\[\widehat{\text{ICC}}(2{,}1)=0{,}83422,\]\[\text{diferença}=0{,}0035.\]</div><p>A diferença vem apenas da convenção de usar \(n\) ou \(n-1\) no denominador das variâncias, e desaparece com \(n\) grande. A consequência prática é importante: <strong>escolher o peso quadrático é escolher tratar a escala ordinal como se fosse intervalar</strong>. Quem não aceita essa suposição deve preferir o peso linear.</p><h3>Propriedades</h3><ul class="checklist"><li>Com pesos nominais, reduz-se exatamente ao <a href="kappa.html">kappa de Cohen</a>.</li><li>Com pesos quadráticos, é numericamente equivalente ao <a href="icc.html">ICC(2,1)</a> sobre os códigos das categorias.</li><li>Para uma mesma tabela, vale sempre \(\kappa_{\text{nom}}\leq\kappa_{\text{lin}}\leq\kappa_{\text{quad}}\) quando os desacordos observados são predominantemente pequenos — mas a ordem pode se inverter quando são grandes.</li><li>É invariante a transformações monótonas que preservem as distâncias entre as categorias.</li><li>Pode ser negativo, como o kappa não ponderado.</li><li>O peso quadrático é o único da família para o qual existe a identidade com o ICC; os demais não têm essa interpretação.</li><li>O erro-padrão assintótico existe em forma fechada (Fleiss, Cohen e Everitt, 1969), mas o bootstrap sobre as unidades é mais simples e igualmente válido.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>value com weight declarado</td><td>A estimativa.</td><td>Sem o esquema declarado, o número é ambíguo.</td></tr><tr><td>IC 95%</td><td>A precisão.</td><td>Encolhe com pesos mais generosos.</td></tr><tr><td>Distribuição das distâncias</td><td>Onde estão os desacordos.</td><td>É o diagnóstico mais informativo.</td></tr><tr><td>Diferença entre os três kappas</td><td>Se os desacordos são pequenos ou grandes.</td><td>Diferença grande = desacordos pequenos.</td></tr><tr><td>Kappa quadrático</td><td>Equivale ao ICC(2,1).</td><td>Pressupõe escala intervalar.</td></tr><tr><td>Ordem dos pares</td><td>Quais avaliadores concordam mais.</td><td>Pode mudar com o esquema de pesos.</td></tr></tbody></table></div><div class="callout try"><strong>O esquema de pesos pode mudar o ranking</strong><p>Nos dez pares desta ficha, a correlação de Spearman entre a ordenação pelo kappa nominal e pelo quadrático é 0,81 — alta, mas longe de 1. Oito dos dez pares trocam de posição. O caso mais claro é C–D, que sobe do oitavo para o quinto lugar porque os desacordos entre C e D são quase todos de uma classe; e C–E, que cai do sétimo para o décimo porque os desacordos ali são grandes. Seria errado dizer que o esquema de pesos é indiferente à conclusão sobre <em>quem</em> concorda com quem.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>No R, o argumento <code>weight</code> de <code>irr::kappa2()</code> aceita <code>"unweighted"</code>, <code>"equal"</code> (pesos lineares) e <code>"squared"</code> (quadráticos), ou um vetor de pesos próprio. A função <code>vcd::Kappa()</code> devolve as versões não ponderada e ponderada de uma vez, com <code>confint()</code>. Atenção: no R os pesos são de <em>desacordo</em>. Para o intervalo, o bootstrap sobre as unidades é o caminho mais seguro, porque o erro-padrão assintótico é pouco confiável com n pequeno.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-kappa-ponderado-min" type="button">Copiar código</button></div><pre id="code-kappa-ponderado-min"><code>library(irr)
+kappa2(dados[, c("A","B")], weight = "unweighted")
+kappa2(dados[, c("A","B")], weight = "equal")     # linear
+kappa2(dados[, c("A","B")], weight = "squared")   # quadrático
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 40 folhas de cafeeiro avaliadas quanto à severidade de ferrugem por cinco avaliadores (A a E), em escala ordinal de 1 (ausente) a 5 (muito alta). O mesmo conjunto atravessa as seis fichas de concordância, o que permite ver como cada coeficiente responde à mesma estrutura de desacordo. Dois dos avaliadores foram construídos com defeitos distintos: o C classifica sistematicamente cerca de uma classe acima dos demais, e o E é o mais errático sem ser o mais severo. Esta ficha explora a parte ordinal da escala, que o <a href="kappa.html">kappa de Cohen</a> ignora por construção.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-kappa-ponderado" type="button">Copiar código</button></div><pre id="code-kappa-ponderado"><code># Kappa ponderado: exemplo completo ----
+# Pacotes: irr (kappa2 com pesos), vcd (Kappa), psych, DescTools
+# install.packages(c("irr", "vcd", "psych"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("irr", quietly = TRUE)) install.packages("irr")
+# Os mesmos dados da ficha do kappa de Cohen: 40 folhas, cinco avaliadores,
+# severidade de ferrugem em escala ORDINAL de 1 a 5.
+sev &lt;- matrix(c(
+ 3,3,4,3,4, 5,4,4,4,5, 4,4,5,3,5, 5,5,5,4,5, 5,5,5,4,3,
+ 1,2,2,1,1, 2,2,3,2,4, 1,2,1,1,1, 3,3,4,3,4, 3,4,5,4,2,
+ 4,3,4,3,4, 3,4,4,3,3, 1,1,1,1,1, 3,3,5,3,3, 2,3,2,2,1,
+ 5,5,5,5,4, 5,5,4,3,5, 4,5,5,4,4, 2,2,5,2,2, 3,4,5,4,3,
+ 4,4,4,4,1, 1,2,3,1,3, 3,3,3,3,3, 2,3,5,2,3, 2,1,2,2,2,
+ 2,1,3,2,3, 3,3,4,3,1, 2,1,1,1,5, 3,2,4,5,4, 1,1,1,1,2,
+ 4,5,5,4,4, 2,2,4,2,1, 1,1,4,1,3, 1,1,2,1,1, 3,3,3,2,3,
+ 3,3,3,3,3, 3,5,4,3,2, 2,2,4,2,1, 4,2,5,4,4, 5,5,5,5,2),
+ ncol = 5, byrow = TRUE,
+ dimnames = list(NULL, c("A","B","C","D","E")))
+
+tab &lt;- table(A = factor(sev[,"A"], 1:5), B = factor(sev[,"B"], 1:5))
+tab
+sum(diag(tab))                              # acordo exato
+sum(tab[abs(row(tab) - col(tab)) == 1])     # desacordo de uma classe
+
+# Os três kappas
 library(irr)
-d &lt;- data.frame(
-  sistema_A = cut(mtcars$hp, breaks = 3, labels = c("B", "M", "A")),
-  sistema_B = cut(mtcars$wt, breaks = 3, labels = c("B", "M", "A")))
-print(kappa2(d, weight = "squared"))
+kappa2(sev[, c("A","B")], weight = "unweighted")
+kappa2(sev[, c("A","B")], weight = "equal")      # pesos LINEARES
+kappa2(sev[, c("A","B")], weight = "squared")    # pesos QUADRÁTICOS
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+library(vcd)
+Kappa(tab)                                  # devolve as duas de uma vez
+confint(Kappa(tab))
 
+# As matrizes de peso, explicitamente (no R, pesos de DESACORDO)
+k &lt;- 5; i &lt;- row(matrix(0, k, k)); j &lt;- col(matrix(0, k, k))
+w_nom &lt;- 1 * (i != j)
+w_lin &lt;- abs(i - j)/(k - 1)
+w_qua &lt;- (i - j)^2/(k - 1)^2
+round(w_lin, 4); round(w_qua, 4)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kappa.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Kappa de Cohen
-    </a>
-<a href="fleiss.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Kappa de Fleiss
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# A conta à mão, com pesos quadráticos
+P  &lt;- prop.table(tab)
+E  &lt;- outer(rowSums(P), colSums(P))
+po &lt;- 1 - sum(w_qua * P); pe &lt;- 1 - sum(w_qua * E)
+(po - pe)/(1 - pe)
+
+# Intervalo de confiança por bootstrap das unidades
+set.seed(3)
+bs &lt;- replicate(5000, {
+  idx &lt;- sample(nrow(sev), replace = TRUE)
+  kappa2(sev[idx, c("A","B")], weight = "squared")$value
+})
+quantile(bs, c(0.025, 0.975)); sd(bs)
+
+# A identidade de Fleiss e Cohen (1973):
+# kappa quadrático = ICC(2,1) sobre os mesmos dados
+library(irr)
+icc(sev[, c("A","B")], model = "twoway", type = "agreement", unit = "single")
+kappa2(sev[, c("A","B")], weight = "squared")$value
+# As duas quantidades coincidem até a terceira casa decimal.
+
+# Todos os pares, nos três esquemas
+pares &lt;- combn(colnames(sev), 2)
+res &lt;- t(apply(pares, 2, function(p) c(
+  nominal    = kappa2(sev[, p], weight = "unweighted")$value,
+  linear     = kappa2(sev[, p], weight = "equal")$value,
+  quadratico = kappa2(sev[, p], weight = "squared")$value)))
+rownames(res) &lt;- apply(pares, 2, paste, collapse = "-")
+round(res, 4)
+cor(res[, "nominal"], res[, "quadratico"], method = "spearman")
+
+# Gráficos
+library(vcd)
+agreementplot(tab, main = "Concordância entre A e B",
+              weights = c(1, 0.75))   # crédito parcial ao desacordo de 1 classe
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-kappa-ponderado" type="button">Copiar código</button></div><pre id="code-py-kappa-ponderado"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# concordância: 40 folhas de cafeeiro avaliadas quanto à severidade de
+# ferrugem por cinco avaliadores, em escala de 1 (ausente) a 5 (muito alta).
+# ===================================================================
+SEV = np.array([
+ [3,3,4,3,4],[5,4,4,4,5],[4,4,5,3,5],[5,5,5,4,5],[5,5,5,4,3],
+ [1,2,2,1,1],[2,2,3,2,4],[1,2,1,1,1],[3,3,4,3,4],[3,4,5,4,2],
+ [4,3,4,3,4],[3,4,4,3,3],[1,1,1,1,1],[3,3,5,3,3],[2,3,2,2,1],
+ [5,5,5,5,4],[5,5,4,3,5],[4,5,5,4,4],[2,2,5,2,2],[3,4,5,4,3],
+ [4,4,4,4,1],[1,2,3,1,3],[3,3,3,3,3],[2,3,5,2,3],[2,1,2,2,2],
+ [2,1,3,2,3],[3,3,4,3,1],[2,1,1,1,5],[3,2,4,5,4],[1,1,1,1,2],
+ [4,5,5,4,4],[2,2,4,2,1],[1,1,4,1,3],[1,1,2,1,1],[3,3,3,2,3],
+ [3,3,3,3,3],[3,5,4,3,2],[2,2,4,2,1],[4,2,5,4,4],[5,5,5,5,2]])
+AVAL = ["A", "B", "C", "D", "E"]
+
+def tabela(a, b, k):
+    O = np.zeros((k, k), int)
+    for x, y in zip(a, b): O[x-1, y-1] += 1
+    return O
+
+def kappa_w(O, w):
+    """Kappa ponderado. w é a matriz de DESACORDO: 0 na diagonal, 1 no pior caso."""
+    O = np.asarray(O, float); N = O.sum(); P = O/N
+    E = np.outer(P.sum(1), P.sum(0))
+    po = 1 - (w*P).sum(); pe = 1 - (w*E).sum()
+    return (po - pe)/(1 - pe), po, pe
+
+def pesos(k, tipo):
+    i, j = np.arange(k)[:, None], np.arange(k)[None, :]
+    if tipo == "nominal":    return (i != j).astype(float)
+    if tipo == "linear":     return np.abs(i - j)/(k - 1)
+    if tipo == "quadratico": return (i - j)**2/(k - 1)**2
+    raise ValueError(tipo)
+
+def ep_kappa_w(O, w, B=20000, semente=3):
+    """Erro-padrão por bootstrap sobre as unidades (simples e geral)."""
+    O = np.asarray(O, float); k = O.shape[0]
+    cel = np.array([(i, j) for i in range(k) for j in range(k)])
+    pr = (O/O.sum()).ravel(); N = int(O.sum())
+    rng = np.random.default_rng(semente); out = []
+    for _ in range(B):
+        c = rng.multinomial(N, pr).reshape(k, k)
+        try: out.append(kappa_w(c, w)[0])
+        except Exception: pass
+    return np.std(out, ddof=1), np.percentile(out, [2.5, 97.5])
+
+def icc_21(Y):
+    """ICC(2,1): duas vias, efeito aleatório, medida única, concordância absoluta."""
+    Y = np.asarray(Y, float); n, k = Y.shape; gm = Y.mean()
+    MSR = k*((Y.mean(1)-gm)**2).sum()/(n-1)
+    MSC = n*((Y.mean(0)-gm)**2).sum()/(k-1)
+    MSE = ((Y - Y.mean(1)[:,None] - Y.mean(0)[None,:] + gm)**2).sum()/((n-1)*(k-1))
+    return (MSR-MSE)/(MSR+(k-1)*MSE+k*(MSC-MSE)/n)
+
+# ===================================================================
+# PARTE 1 - a mesma tabela, três leituras
+# ===================================================================
+print("Severidade de ferrugem em 40 folhas, avaliadores A e B, escala de 1 a 5")
+O = tabela(SEV[:,0], SEV[:,1], 5)
+print(f"\n{'':&gt;12}" + "".join(f"{'B='+str(j+1):&gt;7}" for j in range(5)) + f"{'total':&gt;8}")
+for i in range(5):
+    print(f"{'A='+str(i+1):&gt;12}" + "".join(f"{O[i,j]:&gt;7d}" for j in range(5))
+          + f"{O[i].sum():&gt;8d}")
+print(f"{'total':&gt;12}" + "".join(f"{O[:,j].sum():&gt;7d}" for j in range(5))
+      + f"{O.sum():&gt;8d}")
+conc = np.trace(O); umaclasse = sum(O[i,j] for i in range(5) for j in range(5)
+                                    if abs(i-j) == 1)
+print(f"\nConcordância exata: {conc} folhas ({100*conc/40:.1f}%)")
+print(f"Desacordo de UMA classe: {umaclasse} folhas ({100*umaclasse/40:.1f}%)")
+print(f"Desacordo de duas ou mais: {40-conc-umaclasse} folhas "
+      f"({100*(40-conc-umaclasse)/40:.1f}%)")
+print("Quatro em cada dez folhas têm desacordo de apenas uma classe. O kappa")
+print("não ponderado conta esses casos como desacordo pleno, igual a quem")
+print("discordou por quatro classes.")
+
+print("\nAs três matrizes de peso (desacordo), para k = 5")
+for tipo in ["nominal", "linear", "quadratico"]:
+    w = pesos(5, tipo)
+    print(f"\n  {tipo}")
+    for i in range(5):
+        print("    " + "  ".join(f"{w[i,j]:5.3f}" for j in range(5)))
+
+print("\nOs três kappas sobre a MESMA tabela")
+print(f"{'peso':&lt;14}{'po':&gt;10}{'pe':&gt;10}{'kappa':&gt;10}{'EP (bootstrap)':&gt;17}"
+      f"{'IC 95% percentil':&gt;26}")
+res = {}
+for tipo in ["nominal", "linear", "quadratico"]:
+    w = pesos(5, tipo)
+    K, po, pe = kappa_w(O, w); ep, ic = ep_kappa_w(O, w)
+    res[tipo] = K
+    print(f"{tipo:&lt;14}{po:&gt;10.4f}{pe:&gt;10.4f}{K:&gt;10.4f}{ep:&gt;17.4f}"
+          f"   [{ic[0]:6.4f}; {ic[1]:6.4f}]")
+print("\nO kappa sobe de 0,43 para 0,83 apenas por mudar o peso: a escolha do")
+print("esquema de pesos é uma decisão substantiva, não um detalhe técnico, e")
+print("tem de ser declarada junto com o valor.")
+
+# ===================================================================
+# PARTE 2 - por que o peso quadrático sobe tanto
+# ===================================================================
+print("\n" + "=" * 70)
+print("O peso quadrático penaliza pouco os desacordos pequenos.")
+print(f"\n{'distância entre as classes':&lt;30}{'linear':&gt;10}{'quadrático':&gt;14}"
+      f"{'folhas':&gt;9}")
+for d in range(5):
+    wl = d/4; wq = d**2/16
+    nf = sum(O[i,j] for i in range(5) for j in range(5) if abs(i-j) == d)
+    print(f"{'desacordo de ' + str(d) + ' classe(s)':&lt;30}{wl:&gt;10.4f}{wq:&gt;14.4f}{nf:&gt;9d}")
+print("\nUm desacordo de uma classe vale 0,25 no esquema linear e apenas 0,0625")
+print("no quadrático: quatro vezes menos. Como esse é o desacordo mais comum")
+print("(16 das 40 folhas), o kappa quadrático é sistematicamente maior.")
+print("A pergunta a fazer é: no SEU problema, errar por duas classes é duas")
+print("vezes pior que errar por uma (linear) ou quatro vezes pior (quadrático)?")
+
+# ===================================================================
+# PARTE 3 - a identidade de Fleiss e Cohen
+# ===================================================================
+print("\n" + "=" * 70)
+print("Fleiss e Cohen (1973): o kappa com pesos QUADRÁTICOS é essencialmente")
+print("o coeficiente de correlação intraclasse calculado sobre os mesmos dados.")
+kq = res["quadratico"]
+ic21 = icc_21(SEV[:, :2])
+print(f"\n  kappa quadrático de A e B = {kq:.5f}")
+print(f"  ICC(2,1) de A e B         = {ic21:.5f}")
+print(f"  diferença                 = {abs(kq-ic21):.5f}")
+print("A diferença está na terceira casa decimal e vem só da convenção de")
+print("usar n ou n − 1 no denominador das variâncias; as duas quantidades")
+print("coincidem quando n cresce. Isso tem uma consequência prática: a escolha")
+print("do peso quadrático equivale a tratar a escala ordinal como se fosse")
+print("intervalar, e quem não aceita essa suposição deve preferir o linear.")
+
+print("\nA verificação vale para todos os pares de avaliadores:")
+print(f"{'par':&gt;6}{'kappa quadrático':&gt;20}{'ICC(2,1)':&gt;12}{'diferença':&gt;12}")
+AV = ["A","B","C","D","E"]
+for i in range(5):
+    for j in range(i+1, 5):
+        Oij = tabela(SEV[:,i], SEV[:,j], 5)
+        kqij = kappa_w(Oij, pesos(5, "quadratico"))[0]
+        icij = icc_21(SEV[:, [i, j]])
+        print(f"{AV[i]+'-'+AV[j]:&gt;6}{kqij:&gt;20.5f}{icij:&gt;12.5f}{abs(kqij-icij):&gt;12.5f}")
+
+# ===================================================================
+# PARTE 4 - todos os pares, nos três esquemas
+# ===================================================================
+print("\n" + "=" * 70)
+print("Os dez pares de avaliadores, nos três esquemas de peso")
+print(f"\n{'par':&gt;6}{'nominal':&gt;11}{'linear':&gt;11}{'quadrático':&gt;13}"
+      f"{'ordem nominal':&gt;16}{'ordem quadrático':&gt;19}")
+linhas = []
+for i in range(5):
+    for j in range(i+1, 5):
+        Oij = tabela(SEV[:,i], SEV[:,j], 5)
+        linhas.append((AV[i]+"-"+AV[j],
+                       kappa_w(Oij, pesos(5,"nominal"))[0],
+                       kappa_w(Oij, pesos(5,"linear"))[0],
+                       kappa_w(Oij, pesos(5,"quadratico"))[0]))
+kn = np.array([l[1] for l in linhas]); kq_ = np.array([l[3] for l in linhas])
+on = len(kn)+1-stats.rankdata(kn); oq = len(kq_)+1-stats.rankdata(kq_)
+for t_, a, b, c in zip(linhas, kn, kq_, range(10)):
+    print(f"{t_[0]:&gt;6}{t_[1]:&gt;11.4f}{t_[2]:&gt;11.4f}{t_[3]:&gt;13.4f}"
+          f"{int(on[c]):&gt;16d}{int(oq[c]):&gt;19d}")
+rho = stats.spearmanr(kn, kq_).statistic
+print(f"\nCorrelação de Spearman entre as duas ordenações = {rho:.4f}")
+trocas = int(np.sum(on != oq))
+print(f"Pares que mudam de posição no ranking: {trocas} de 10")
+print("A escolha do peso muda os valores de forma drástica - A-D passa de 0,65")
+print("para 0,87 - e também mexe na ORDEM: oito dos dez pares trocam de posição.")
+print("O caso mais visível é C-D, que sobe do oitavo para o quinto lugar,")
+print("porque os desacordos entre C e D são quase todos de uma classe só; e")
+print("C-E, que cai do sétimo para o décimo, porque os desacordos ali são")
+print("grandes. A correlação de 0,81 mostra que o quadro geral se mantém, mas")
+print("seria errado dizer que o esquema de pesos é indiferente ao ranking.")
+
+# ===================================================================
+# PARTE 5 - quando o peso realmente muda a conclusão
+# ===================================================================
+print("\n" + "=" * 70)
+print("Dois padrões de desacordo com a MESMA concordância exata, para mostrar")
+print("quando o esquema de pesos decide. Em cada tabela, 20 das 40 folhas")
+print("estão na diagonal; o que muda é o tamanho dos desacordos.")
+T_perto = np.zeros((5,5), int); T_longe = np.zeros((5,5), int)
+for i in range(5):
+    T_perto[i,i] = 4; T_longe[i,i] = 4
+# desacordos de UMA classe
+T_perto[0,1]=5; T_perto[1,2]=5; T_perto[2,3]=5; T_perto[3,4]=5
+# desacordos de TRÊS ou QUATRO classes
+T_longe[0,4]=5; T_longe[1,4]=5; T_longe[4,0]=5; T_longe[3,0]=5
+for nome, T in [("desacordos pequenos (sempre 1 classe)", T_perto),
+                ("desacordos grandes (3 ou 4 classes)", T_longe)]:
+    kn_ = kappa_w(T, pesos(5,"nominal"))[0]
+    kl_ = kappa_w(T, pesos(5,"linear"))[0]
+    kqq = kappa_w(T, pesos(5,"quadratico"))[0]
+    print(f"\n  {nome}")
+    print(f"    concordância exata = {np.trace(T)}/40 = {np.trace(T)/40:.2f}")
+    print(f"    kappa nominal = {kn_:.4f} | linear = {kl_:.4f} | "
+          f"quadrático = {kqq:.4f}")
+print("\nO kappa não ponderado é praticamente o mesmo nas duas tabelas, porque")
+print("ele só enxerga a diagonal. Os ponderados separam os dois casos com")
+print("clareza, e é exatamente para isso que existem.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Severidade de ferrugem em 40 folhas, avaliadores A e B, escala de 1 a 5
+
+                B=1    B=2    B=3    B=4    B=5   total
+         A=1      4      3      0      0      0       7
+         A=2      3      4      2      0      0       9
+         A=3      0      1      7      3      1      12
+         A=4      0      1      1      2      2       6
+         A=5      0      0      0      1      5       6
+       total      7      9     10      6      8      40
+
+Concordância exata: 22 folhas (55.0%)
+Desacordo de UMA classe: 16 folhas (40.0%)
+Desacordo de duas ou mais: 2 folhas (5.0%)
+Quatro em cada dez folhas têm desacordo de apenas uma classe. O kappa
+não ponderado conta esses casos como desacordo pleno, igual a quem
+discordou por quatro classes.
+
+As três matrizes de peso (desacordo), para k = 5
+
+  nominal
+    0.000  1.000  1.000  1.000  1.000
+    1.000  0.000  1.000  1.000  1.000
+    1.000  1.000  0.000  1.000  1.000
+    1.000  1.000  1.000  0.000  1.000
+    1.000  1.000  1.000  1.000  0.000
+
+  linear
+    0.000  0.250  0.500  0.750  1.000
+    0.250  0.000  0.250  0.500  0.750
+    0.500  0.250  0.000  0.250  0.500
+    0.750  0.500  0.250  0.000  0.250
+    1.000  0.750  0.500  0.250  0.000
+
+  quadratico
+    0.000  0.062  0.250  0.562  1.000
+    0.062  0.000  0.062  0.250  0.562
+    0.250  0.062  0.000  0.062  0.250
+    0.562  0.250  0.062  0.000  0.062
+    1.000  0.562  0.250  0.062  0.000
+
+Os três kappas sobre a MESMA tabela
+peso                  po        pe     kappa   EP (bootstrap)          IC 95% percentil
+nominal           0.5500    0.2088    0.4313           0.0984   [0.2314; 0.6163]
+linear            0.8750    0.6253    0.6664           0.0700   [0.5134; 0.7855]
+quadratico        0.9625    0.7785    0.8307           0.0508   [0.7100; 0.9076]
+
+O kappa sobe de 0,43 para 0,83 apenas por mudar o peso: a escolha do
+esquema de pesos é uma decisão substantiva, não um detalhe técnico, e
+tem de ser declarada junto com o valor.
+
+======================================================================
+O peso quadrático penaliza pouco os desacordos pequenos.
+
+distância entre as classes        linear    quadrático   folhas
+desacordo de 0 classe(s)          0.0000        0.0000       22
+desacordo de 1 classe(s)          0.2500        0.0625       16
+desacordo de 2 classe(s)          0.5000        0.2500        2
+desacordo de 3 classe(s)          0.7500        0.5625        0
+desacordo de 4 classe(s)          1.0000        1.0000        0
+
+Um desacordo de uma classe vale 0,25 no esquema linear e apenas 0,0625
+no quadrático: quatro vezes menos. Como esse é o desacordo mais comum
+(16 das 40 folhas), o kappa quadrático é sistematicamente maior.
+A pergunta a fazer é: no SEU problema, errar por duas classes é duas
+vezes pior que errar por uma (linear) ou quatro vezes pior (quadrático)?
+
+======================================================================
+Fleiss e Cohen (1973): o kappa com pesos QUADRÁTICOS é essencialmente
+o coeficiente de correlação intraclasse calculado sobre os mesmos dados.
+
+  kappa quadrático de A e B = 0.83069
+  ICC(2,1) de A e B         = 0.83422
+  diferença                 = 0.00353
+A diferença está na terceira casa decimal e vem só da convenção de
+usar n ou n − 1 no denominador das variâncias; as duas quantidades
+coincidem quando n cresce. Isso tem uma consequência prática: a escolha
+do peso quadrático equivale a tratar a escala ordinal como se fosse
+intervalar, e quem não aceita essa suposição deve preferir o linear.
+
+A verificação vale para todos os pares de avaliadores:
+   par    kappa quadrático    ICC(2,1)   diferença
+   A-B             0.83069     0.83422     0.00353
+   A-C             0.57165     0.57784     0.00619
+   A-D             0.86561     0.86853     0.00292
+   A-E             0.56124     0.56747     0.00622
+   B-C             0.59095     0.59706     0.00611
+   B-D             0.74359     0.74839     0.00480
+   B-E             0.34134     0.34705     0.00571
+   C-D             0.58255     0.58870     0.00614
+   C-E             0.31183     0.31729     0.00546
+   D-E             0.39464     0.40070     0.00606
+
+======================================================================
+Os dez pares de avaliadores, nos três esquemas de peso
+
+   par    nominal     linear   quadrático   ordem nominal   ordem quadrático
+   A-B     0.4313     0.6664       0.8307               3                  2
+   A-C     0.2049     0.4127       0.5717               6                  6
+   A-D     0.6505     0.7699       0.8656               1                  1
+   A-E     0.3370     0.4572       0.5612               4                  7
+   B-C     0.2581     0.4444       0.5910               5                  4
+   B-D     0.4353     0.6102       0.7436               2                  3
+   B-E     0.0618     0.2138       0.3413              10                  9
+   C-D     0.1450     0.4005       0.5826               8                  5
+   C-E     0.1950     0.2587       0.3118               7                 10
+   D-E     0.1408     0.2870       0.3946               9                  8
+
+Correlação de Spearman entre as duas ordenações = 0.8061
+Pares que mudam de posição no ranking: 8 de 10
+A escolha do peso muda os valores de forma drástica - A-D passa de 0,65
+para 0,87 - e também mexe na ORDEM: oito dos dez pares trocam de posição.
+O caso mais visível é C-D, que sobe do oitavo para o quinto lugar,
+porque os desacordos entre C e D são quase todos de uma classe só; e
+C-E, que cai do sétimo para o décimo, porque os desacordos ali são
+grandes. A correlação de 0,81 mostra que o quadro geral se mantém, mas
+seria errado dizer que o esquema de pesos é indiferente ao ranking.
+
+======================================================================
+Dois padrões de desacordo com a MESMA concordância exata, para mostrar
+quando o esquema de pesos decide. Em cada tabela, 20 das 40 folhas
+estão na diagonal; o que muda é o tamanho dos desacordos.
+
+  desacordos pequenos (sempre 1 classe)
+    concordância exata = 20/40 = 0.50
+    kappa nominal = 0.3774 | linear = 0.6721 | quadrático = 0.8621
+
+  desacordos grandes (3 ou 4 classes)
+    concordância exata = 20/40 = 0.50
+    kappa nominal = 0.3651 | linear = 0.0411 | quadrático = -0.1905
+
+O kappa não ponderado é praticamente o mesmo nas duas tabelas, porque
+ele só enxerga a diagonal. Os ponderados separam os dois casos com
+clareza, e é exatamente para isso que existem.</pre></div><figure class="fig"><img src="../assets/resultados/kappa-ponderado.png" alt="Os três kappas com intervalos, duas tabelas com a mesma concordância exata, e a identidade com o ICC" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, os três kappas da mesma tabela de A e B, com intervalos de 95% por bootstrap: de 0,431 a 0,831 sem que nenhum dado mude. No centro, duas tabelas construídas com exatamente 20 das 40 folhas na diagonal, diferindo apenas no tamanho dos desacordos: o kappa nominal mal as distingue, e os ponderados as separam de forma drástica. À direita, a identidade de Fleiss e Cohen: os dez pares de avaliadores, com o kappa quadrático no eixo vertical e o ICC(2,1) no horizontal, caindo todos sobre a reta de 45 graus. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os três kappas, avaliadores A e B</caption><thead><tr><th>Esquema</th><th>po</th><th>pe</th><th>Kappa</th><th>EP</th><th>IC 95% (percentil)</th></tr></thead><tbody><tr><td>Nominal</td><td>0,5500</td><td>0,2088</td><td>0,4313</td><td>0,0984</td><td>[0,2314; 0,6163]</td></tr><tr><td>Linear</td><td>0,8750</td><td>0,6253</td><td>0,6664</td><td>0,0700</td><td>[0,5134; 0,7855]</td></tr><tr><td>Quadrático</td><td>0,9625</td><td>0,7785</td><td><strong>0,8307</strong></td><td>0,0508</td><td>[0,7100; 0,9076]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A identidade de Fleiss e Cohen, nos dez pares</caption><thead><tr><th>Par</th><th>Kappa quadrático</th><th>ICC(2,1)</th><th>Diferença</th></tr></thead><tbody><tr><td>A–B</td><td>0,83069</td><td>0,83422</td><td>0,00353</td></tr><tr><td>A–C</td><td>0,57165</td><td>0,57784</td><td>0,00619</td></tr><tr><td>A–D</td><td>0,86561</td><td>0,86853</td><td>0,00292</td></tr><tr><td>A–E</td><td>0,56124</td><td>0,56747</td><td>0,00622</td></tr><tr><td>B–C</td><td>0,59095</td><td>0,59706</td><td>0,00611</td></tr><tr><td>B–D</td><td>0,74359</td><td>0,74839</td><td>0,00480</td></tr><tr><td>B–E</td><td>0,34134</td><td>0,34705</td><td>0,00571</td></tr><tr><td>C–D</td><td>0,58255</td><td>0,58870</td><td>0,00614</td></tr><tr><td>C–E</td><td>0,31183</td><td>0,31729</td><td>0,00546</td></tr><tr><td>D–E</td><td>0,39464</td><td>0,40070</td><td>0,00606</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os dez pares nos três esquemas, e as duas ordenações</caption><thead><tr><th>Par</th><th>Nominal</th><th>Linear</th><th>Quadrático</th><th>Posição (nominal)</th><th>Posição (quadrático)</th></tr></thead><tbody><tr><td>A–D</td><td>0,6505</td><td>0,7699</td><td>0,8656</td><td>1</td><td>1</td></tr><tr><td>B–D</td><td>0,4353</td><td>0,6102</td><td>0,7436</td><td>2</td><td>3</td></tr><tr><td>A–B</td><td>0,4313</td><td>0,6664</td><td>0,8307</td><td>3</td><td>2</td></tr><tr><td>A–E</td><td>0,3370</td><td>0,4572</td><td>0,5612</td><td>4</td><td><strong>7</strong></td></tr><tr><td>B–C</td><td>0,2581</td><td>0,4444</td><td>0,5910</td><td>5</td><td>4</td></tr><tr><td>A–C</td><td>0,2049</td><td>0,4127</td><td>0,5717</td><td>6</td><td>6</td></tr><tr><td>C–E</td><td>0,1950</td><td>0,2587</td><td>0,3118</td><td>7</td><td><strong>10</strong></td></tr><tr><td>C–D</td><td>0,1450</td><td>0,4005</td><td>0,5826</td><td><strong>8</strong></td><td><strong>5</strong></td></tr><tr><td>D–E</td><td>0,1408</td><td>0,2870</td><td>0,3946</td><td>9</td><td>8</td></tr><tr><td>B–E</td><td>0,0618</td><td>0,2138</td><td>0,3413</td><td>10</td><td>9</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Duas tabelas com a MESMA concordância exata (20 de 40)</caption><thead><tr><th>Padrão de desacordo</th><th>Nominal</th><th>Linear</th><th>Quadrático</th></tr></thead><tbody><tr><td>Desacordos sempre de 1 classe</td><td>0,3774</td><td><strong>0,6721</strong></td><td><strong>0,8621</strong></td></tr><tr><td>Desacordos de 3 ou 4 classes</td><td>0,3651</td><td><strong>0,0411</strong></td><td><strong>−0,1905</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> o kappa de A e B quase dobra ao passar do esquema nominal ao quadrático, e isso é inteiramente consequência da estrutura dos desacordos: das 18 folhas em que os dois discordaram, 16 diferem por uma única classe. O esquema quadrático atribui a esse tipo de desacordo um peso de 0,0625 — dezesseis vezes menos que o nominal —, de modo que a concordância ponderada observada sobe de 0,55 para 0,96.</p><p>O ponto importante é que nenhum dos três números é "o certo". Eles respondem a perguntas diferentes: <em>os avaliadores dão a mesma classe?</em> (nominal), <em>eles dão classes próximas, com o erro medido em degraus?</em> (linear), <em>eles dão classes próximas, com erros grandes penalizados desproporcionalmente?</em> (quadrático). A escolha pertence ao problema, não aos dados, e precisa estar no protocolo.</p><p><strong>Sobre a identidade com o ICC:</strong> os dez pares caem sobre a reta de 45 graus, com diferença máxima de 0,0062. A equivalência não é aproximação empírica, é resultado algébrico — e tem uma leitura substantiva clara: usar pesos quadráticos é o mesmo que tratar as classes 1 a 5 como números, com distâncias iguais entre si. Se essa suposição é aceitável, use o quadrático ou use diretamente o <a href="icc.html">ICC</a>; se não é, o linear é mais conservador.</p><p><strong>Sobre as duas tabelas construídas:</strong> é a demonstração mais nítida do que os pesos fazem. Ambas têm exatamente 20 das 40 folhas na diagonal. Na primeira, todos os desacordos são de uma classe; na segunda, de três ou quatro. O kappa nominal devolve 0,377 e 0,365 — praticamente o mesmo número, porque ele só enxerga a diagonal. Os ponderados devolvem 0,862 contra −0,191: eles distinguem "avaliadores que quase concordam" de "avaliadores que discordam frontalmente", e é precisamente para isso que existem.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Reportar o kappa sem dizer qual esquema de pesos</td><td>O número varia de 0,43 a 0,83 na mesma tabela.</td></tr><tr><td>Escolher o peso depois de ver qual dá o maior valor</td><td>Decida no protocolo.</td></tr><tr><td>Trocar pesos de desacordo por pesos de concordância</td><td>No R são de desacordo; no AC2 de Gwet, de concordância.</td></tr><tr><td>Usar pesos em escala nominal</td><td>Sem ordem, os pesos não fazem sentido.</td></tr><tr><td>Usar o quadrático sem aceitar a escala intervalar</td><td>Ele equivale ao <a href="icc.html">ICC</a> sobre os códigos.</td></tr><tr><td>Comparar um kappa ponderado com um não ponderado</td><td>São escalas diferentes.</td></tr><tr><td>Interpretar o IC mais estreito como maior precisão</td><td>Ele encolhe porque a escala do coeficiente mudou.</td></tr><tr><td>Esquecer categorias nunca usadas</td><td>Elas alteram as marginais e o pe.</td></tr><tr><td>Supor que a ordenação dos pares não muda</td><td>Oito dos dez pares trocam de posição nesta ficha.</td></tr><tr><td>Aplicar a mais de dois avaliadores</td><td>Use <a href="gwet.html">AC2</a> ou médias de kappas pareados.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kappa.html">Kappa de Cohen</a></td><td>Escala nominal, sem ordem entre as categorias.</td></tr><tr><td><a href="icc.html">Correlação intraclasse</a></td><td>Escala contínua, ou ordinal tratável como intervalar.</td></tr><tr><td><a href="gwet.html">AC2 de Gwet</a></td><td>Escala ordinal com categorias muito desequilibradas.</td></tr><tr><td>Alfa de Krippendorff</td><td>Vários avaliadores, dados faltantes, qualquer nível de mensuração.</td></tr><tr><td><a href="fleiss.html">Kappa de Fleiss</a></td><td>Três ou mais avaliadores, escala nominal.</td></tr><tr><td><a href="kendall-w.html">W de Kendall</a></td><td>Quando interessa a ordenação das unidades, não o valor da classe.</td></tr><tr><td>Modelos de limiar (ordinal)</td><td>Quando se quer modelar explicitamente o processo de classificação.</td></tr><tr><td>Bland–Altman sobre os códigos</td><td>Para visualizar o viés sistemático entre os avaliadores.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a escala é ordinal e que a ordem é substantiva.</li><li>Escolha o esquema de pesos ANTES de calcular, e justifique-o.</li><li>Monte a tabela completa e examine a distribuição das distâncias.</li><li>Calcule os três kappas: eles juntos descrevem a estrutura do desacordo.</li><li>Obtenha o intervalo por bootstrap das unidades.</li><li>Se usar o quadrático, declare que isso equivale a tratar a escala como intervalar.</li><li>Reporte o esquema usado, sempre, junto com o valor.</li><li>Se os desacordos forem grandes, verifique se há viés sistemático de um avaliador.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>COHEN, Jacob. Weighted kappa: nominal scale agreement with provision for scaled disagreement or partial credit. <em>Psychological Bulletin</em>, v. 70, n. 4, p. 213-220, 1968.</li><li>FLEISS, Joseph L.; COHEN, Jacob. The equivalence of weighted kappa and the intraclass correlation coefficient as measures of reliability. <em>Educational and Psychological Measurement</em>, v. 33, n. 3, p. 613-619, 1973.</li><li>FLEISS, Joseph L.; COHEN, Jacob; EVERITT, B. S. Large sample standard errors of kappa and weighted kappa. <em>Psychological Bulletin</em>, v. 72, n. 5, p. 323-327, 1969.</li><li>COHEN, Jacob. A coefficient of agreement for nominal scales. <em>Educational and Psychological Measurement</em>, v. 20, n. 1, p. 37-46, 1960.</li><li>CICCHETTI, Domenic V.; ALLISON, Truett. A new procedure for assessing reliability of scoring EEG sleep recordings. <em>American Journal of EEG Technology</em>, v. 11, n. 3, p. 101-110, 1971.</li><li>BRENNER, Hermann; KLIEBSCH, Ulrike. Dependence of weighted kappa coefficients on the number of categories. <em>Epidemiology</em>, v. 7, n. 2, p. 199-202, 1996.</li><li>VANBELLE, Sophie; ALBERT, Adelin. A note on the linearly weighted kappa coefficient for ordinal scales. <em>Statistical Methodology</em>, v. 6, n. 2, p. 157-163, 2009.</li><li>WARRENS, Matthijs J. Some paradoxical results for the quadratically weighted kappa. <em>Psychometrika</em>, v. 77, n. 2, p. 315-323, 2012.</li><li>SCHUSTER, Christof. A note on the interpretation of weighted kappa and its relations to other rater agreement statistics for metric scales. <em>Educational and Psychological Measurement</em>, v. 64, n. 2, p. 243-253, 2004.</li><li>LANDIS, J. Richard; KOCH, Gary G. The measurement of observer agreement for categorical data. <em>Biometrics</em>, v. 33, n. 1, p. 159-174, 1977.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>GWET, Kilem L. <em>Handbook of inter-rater reliability.</em> 4. ed. Gaithersburg: Advanced Analytics, 2014.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>GAMER, Matthias; LEMON, Jim; FELLOWS, Ian; SINGH, Puspendra. <em>irr: various coefficients of interrater reliability and agreement.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=irr" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=irr</a>.</li><li>MEYER, David; ZEILEIS, Achim; HORNIK, Kurt. <em>vcd: visualizing categorical data.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=vcd" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=vcd</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Escala ordinal, dois avaliadores usando as mesmas categorias, unidades independentes e esquema de pesos escolhido antes da análise.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>irr, vcd, psych</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kappa.html"><span>← ANTERIOR</span>Kappa de Cohen</a><a href="fleiss.html"><span>PRÓXIMO →</span>Kappa de Fleiss</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

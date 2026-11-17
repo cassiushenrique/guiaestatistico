@@ -4,324 +4,315 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Duncan: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Duncan | Estatística e Ciência de Dados
-  </title>
+<meta content="Duncan: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Duncan | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Duncan
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Duncan
-    </h1>
-<p class="detail-lead">
-     Explora quais médias de tratamentos diferem, com um critério de comparação menos conservador.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/duncan.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Explora quais médias de tratamentos diferem, com um critério de comparação menos conservador.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Grupos independentes.</li><li>Variância residual comum e erros aproximadamente normais.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_i=\mu_j\\H_1&amp;:\ \mu_i\neq\mu_j\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\alpha_r=1-(1-\alpha)^{r-1}\quad\text{(níveis por amplitude; não controla FWER)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Amplitude studentizada com limiares dependentes do número de médias no intervalo ordenado.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       As letras indicam separações segundo Duncan, mas o método pode inflar erro familiar; não reportar como se controlasse FWER=5%.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparações de tensões de fiação para quebras médias (warpbreaks).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-duncan" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-duncan"><code># Duncan ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Duncan</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Duncan</h1><p class="detail-lead">Teste descendente de amplitudes múltiplas que ganha poder afrouxando o nível conforme o bloco cresce, sem controlar a taxa de erro do conjunto.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/duncan.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/duncan.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O teste de Duncan é, provavelmente, o procedimento de comparações múltiplas mais usado na literatura agronômica brasileira. Ele é descendente, como o <a href="regwf.html">REGW</a>, e produz letras com a mesma facilidade. A diferença está no nível que adota em cada etapa — e essa diferença tem uma consequência que precisa ser dita com clareza: <strong>o teste de Duncan não controla a taxa de erro do conjunto</strong>.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Duncan" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Teste descendente de</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">amplitudes múltiplas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O nível</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Proteção 0,95^(p−1):</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">afrouxa quando p cresce</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Consequência</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">A taxa de erro do conjunto</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">cresce com k</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Vantagem</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Mais poder para detectar</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">diferenças reais</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">agricolae::duncan.test()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Quando usar</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Triagem exploratória,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">com a ressalva explícita</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Duncan</text></svg><figcaption>Visão geral do teste de Duncan. Fonte: o autor.</figcaption></figure><div class="callout try"><strong>O número que resume a ficha</strong><p>Em 10.000 experimentos simulados com seis grupos de médias <em>iguais</em>, o teste de Duncan declarou ao menos uma diferença em 22,84% das vezes. O alvo era 5%. O <a href="regwf.html">REGW</a> e o <a href="tukey.html">Tukey</a>, nos mesmos dados, ficaram em 5,04%.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>A mecânica é a mesma do <a href="regwf.html">REGW</a>: ordenam-se as médias, testam-se blocos de \(p\) médias consecutivas do maior para o menor, e vale a regra de parada. O que muda é o nível de cada etapa. Duncan parte da ideia de <em>nível de proteção</em>: comparar \(p\) médias equivale a \(p-1\) comparações independentes, de modo que a proteção do bloco deveria ser \((1-\alpha)^{p-1}\).</p><figure class="fig"><img src="../assets/resultados/duncan-didatica.png" alt="Nível de proteção por etapa e taxa de erro simulada" loading="lazy"/><figcaption><strong>O raciocínio e a sua consequência.</strong> À esquerda, o nível de proteção que Duncan concede a um bloco de p médias: ele cai de 0,95 para 0,63 quando p vai de 2 a 10, enquanto Tukey e REGW mantêm 0,95 em todas as etapas. À direita, o que isso custa: em experimentos simulados com todas as médias iguais, a taxa de falsos positivos do conjunto sobe de 9,93% com três grupos para 22,84% com seis, enquanto REGW e Tukey permanecem em 5%. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>Onde está o erro do raciocínio</strong><p>A premissa de que comparar \(p\) médias equivale a \(p-1\) testes independentes é razoável como heurística, mas não corresponde à taxa de erro do conjunto que se quer controlar. O que Duncan controla, por construção, é a taxa de erro <em>por comparação</em> — cada par vizinho é testado a 5%, exatamente como no teste t sem ajuste. Daí a semelhança entre as duas curvas na simulação: Duncan é uma versão moderada da LSD de Fisher, não uma versão rigorosa do Tukey.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>O mesmo da ANOVA.</td><td>Delineamento.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a amplitude estudentizada.</td><td><code>shapiro.test(residuals(modelo))</code>.</td></tr><tr><td>Variâncias homogêneas</td><td>Usa um único QM do resíduo.</td><td>Levene e Brown-Forsythe.</td></tr><tr><td>Grupos balanceados (preferível)</td><td>Com n desiguais usa-se o erro-padrão de cada par.</td><td><code>table(grupo)</code>.</td></tr><tr><td><strong>Aceitação explícita de uma taxa de erro maior que α</strong></td><td>É a condição de uso honesto do procedimento.</td><td>Decisão metodológica, declarada no relatório.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[H_0^{(S)}:\ \mu_i=\mu_j\]\[\text{para todo par }i,j\in S\]\[\begin{aligned}&\text{com erro controlado POR } \\ &\quad \text{COMPARAÇÃO, não no conjunto}\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}&\text{nível de proteção do bloco de }p \\ &\quad \text{ médias} \\ &= (1-\alpha)^{p-1}\end{aligned}\]\[\Longleftrightarrow\]\[\alpha_p=1-(1-\alpha)^{p-1}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}q_S &= \frac{\bar{y}_{(1)}-\bar{y}_{(p)}}{\sqrt{\dfrac{QM_{\text{res}}}{2}\left(\dfrac{1}{n_{(1)}}+\dfrac{1}{n_{(p)}}\right)}} \\ &&gt; q_{\alpha_p;\,p,\,\nu},\end{aligned}\]\[\text{AMS}_p=q_{\alpha_p;\,p,\,\nu}\sqrt{\frac{QM_{\text{res}}}{n}}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(p\)</dt><dd>número de médias no bloco</dd></div><div><dt>\(\alpha_p\)</dt><dd>nível de significância da etapa, que CRESCE com p</dd></div><div><dt>\(\text{AMS}_p\)</dt><dd>amplitude mínima significativa para um bloco de p médias (grupos balanceados)</dd></div><div><dt>\(\nu\)</dt><dd>graus de liberdade do resíduo</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Níveis, valores críticos e amplitudes mínimas (n = 12, QM = 3 008,554, ν = 65)</caption><thead><tr><th>p</th><th>Proteção</th><th>α_p</th><th>q de Duncan</th><th>q de Tukey</th><th>q do REGW</th><th>AMS (g)</th></tr></thead><tbody><tr><td>2</td><td>0,950000</td><td>0,050000</td><td>2,8244</td><td>4,1527</td><td>3,4660</td><td>44,721</td></tr><tr><td>3</td><td>0,902500</td><td>0,097500</td><td>2,9714</td><td>4,1527</td><td>3,7816</td><td>47,049</td></tr><tr><td>4</td><td>0,857375</td><td>0,142625</td><td>3,0685</td><td>4,1527</td><td>3,9526</td><td>48,586</td></tr><tr><td>5</td><td>0,814506</td><td>0,185494</td><td>3,1392</td><td>4,1527</td><td>3,9680</td><td>49,706</td></tr><tr><td>6</td><td>0,773781</td><td>0,226219</td><td>3,1938</td><td>4,1527</td><td>4,1527</td><td>50,571</td></tr></tbody></table></div><div class="worked"><strong>O que a tabela revela</strong><p>Para o bloco completo de seis médias, Duncan usa \(\alpha_6=0{,}2262\). Ou seja: ao julgar se as seis rações são todas iguais, ele aceita um risco de 22,6% de dizer que não são quando são — e esse é justamente o número que a simulação reproduz.</p><p>Na outra ponta, para um par vizinho, \(\alpha_2=0{,}05\): é exatamente o teste t sem ajuste. O valor crítico 2,8244 na escala de \(q\) corresponde a \(2{,}8244/\sqrt2=1{,}9971\) na escala de \(t\), que é o \(t_{0{,}975;\,65}\).</p><p>As amplitudes mínimas variam pouco, de 44,7 a 50,6 g, enquanto a do Tukey é fixa em 65,8 g. É daí que vem o poder adicional — e o problema.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Controla a taxa de erro por comparação em \(\alpha\), não a taxa do conjunto.</li><li>A taxa de erro do conjunto cresce com \(k\): cerca de 10% com \(k=3\) e 23% com \(k=6\), nas simulações desta ficha.</li><li>Com k = 2 coincide com o teste t e com todos os demais procedimentos.</li><li>É sempre mais poderoso que Tukey, REGW e Newman–Keuls, e sempre menos conservador que eles.</li><li>Não fornece intervalos de confiança simultâneos.</li><li>As amplitudes mínimas crescem muito devagar com p, o que explica a proximidade com a LSD.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><p>A interpretação mecânica é a mesma de qualquer procedimento de letras. O que muda é o que se pode afirmar a partir dela.</p><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Letras</td><td>Blocos homogêneos.</td><td>Cada par foi testado a 5%, <em>individualmente</em>.</td></tr><tr><td>Amplitude mínima por p</td><td>O critério de cada etapa.</td><td>Cresce pouco com p.</td></tr><tr><td>Número de pares separados</td><td>Em geral maior que o do Tukey.</td><td>Parte da diferença é falso positivo.</td></tr><tr><td>Taxa de erro do conjunto</td><td>Não é 5%.</td><td>Com k = 6, é cerca de 23%.</td></tr></tbody></table></div><div class="callout "><strong>Como relatar com honestidade</strong><p>Se o teste de Duncan for usado, o relatório deve dizer que o controle é por comparação, e não do conjunto. Uma formulação adequada: "as médias foram comparadas pelo teste de Duncan a 5% por comparação; com seis tratamentos, a probabilidade de ao menos um falso positivo no conjunto é de aproximadamente 23%". Essa frase não desqualifica o trabalho — ela permite que o leitor calibre a confiança nas conclusões, que é o objetivo de qualquer medida de incerteza.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Não há função no R base. <code>agricolae::duncan.test()</code> devolve o quadro de letras, as amplitudes mínimas de cada etapa e as médias com desvios-padrão. O mesmo pacote traz <code>LSD.test</code>, <code>SNK.test</code>, <code>REGW.test</code> e <code>HSD.test</code>, com a mesma sintaxe — o que facilita apresentar os procedimentos lado a lado. <code>qtukey()</code>, do pacote <code>stats</code>, fornece os valores críticos de cada etapa.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-duncan-min" type="button">Copiar código</button></div><pre id="code-duncan-min"><code>modelo &lt;- aov(weight ~ feed, data = chickwts)
+agricolae::duncan.test(modelo, "feed", console = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>chickwts</code> registra o peso, aos seis dias, de 71 pintinhos alimentados com seis rações diferentes. Os grupos têm tamanhos ligeiramente desiguais (de 10 a 14 aves), os resíduos passam no teste de normalidade (p = 0,627) e as variâncias são homogêneas (Brown–Forsythe p = 0,590). A ANOVA devolve F(5; 65) = 15,365 com p = 5,9 × 10⁻¹⁰: há diferença, e a pergunta passa a ser <em>onde</em>. Com seis rações são quinze comparações — e é esse número que cria o problema de multiplicidade. As fichas de <a href="bonferroni.html">Bonferroni</a>, <a href="sidak.html">Šidák</a>, <a href="tukey.html">Tukey</a> e <a href="games-howell.html">Games–Howell</a> usam este mesmo conjunto, para que os resultados possam ser comparados diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-duncan" type="button">Copiar código</button></div><pre id="code-duncan"><code># Teste de amplitudes múltiplas de Duncan: exemplo completo ----
+# Pacotes: agricolae (duncan.test). Base: stats
+# install.packages("agricolae")
 
-# Ajuste e resultados ----
-if (!requireNamespace("agricolae", quietly = TRUE)) install.packages("agricolae")
+# 1. Dados: chickwts, peso de pintinhos por tipo de ração
+data(chickwts)
+modelo &lt;- aov(weight ~ feed, data = chickwts)
+summary(modelo)
+k &lt;- nlevels(chickwts$feed); gl &lt;- df.residual(modelo)
+QM &lt;- sum(residuals(modelo)^2) / gl
+
+# 2. O nível de proteção que Duncan adota em cada etapa
+alfa &lt;- 0.05
+p &lt;- 2:k
+data.frame(p,
+           protecao   = (1 - alfa)^(p - 1),
+           alfa_p     = 1 - (1 - alfa)^(p - 1),
+           q_duncan   = qtukey((1 - alfa)^(p - 1), p, gl),
+           q_tukey    = qtukey(1 - alfa, k, gl),
+           AMS_duncan = qtukey((1 - alfa)^(p - 1), p, gl) * sqrt(QM / 12))
+
+# 3. O procedimento
 library(agricolae)
-modelo &lt;- aov(breaks ~ tension, data = warpbreaks)
-resultado &lt;- duncan.test(modelo, "tension", alpha = 0.05)
-print(resultado$groups)
+duncan.test(modelo, "feed", console = TRUE)
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 4. Lado a lado com os demais, no mesmo pacote
+LSD.test(modelo, "feed", console = TRUE)     # sem ajuste
+SNK.test(modelo, "feed", console = TRUE)     # Newman-Keuls
+REGW.test(modelo, "feed", console = TRUE)    # REGW
+HSD.test(modelo, "feed", console = TRUE)     # Tukey
 
+# 5. A simulação que mostra o problema: médias TODAS iguais
+set.seed(2026)
+simula &lt;- function(k, n = 12, M = 2000, alfa = 0.05) {
+  gl &lt;- k * (n - 1)
+  q_tuk &lt;- qtukey(1 - alfa, k, gl)
+  q_dun &lt;- sapply(2:k, function(p) qtukey((1 - alfa)^(p - 1), p, gl))
+  dun &lt;- tuk &lt;- 0
+  for (b in 1:M) {
+    y &lt;- matrix(rnorm(k * n), nrow = n)
+    m &lt;- sort(colMeans(y), decreasing = TRUE)
+    ep &lt;- sqrt(mean(apply(y, 2, var)) / n)
+    if ((m[1] - m[k]) / ep &gt; q_tuk) tuk &lt;- tuk + 1
+    achou &lt;- FALSE; hom &lt;- list()
+    for (pp in k:2) for (a in 1:(k - pp + 1)) {
+      bl &lt;- a:(a + pp - 1)
+      if (any(sapply(hom, function(h) all(bl %in% h)))) next
+      if ((m[bl[1]] - m[bl[pp]]) / ep &gt; q_dun[pp - 1]) achou &lt;- TRUE
+      else hom[[length(hom) + 1]] &lt;- bl
+    }
+    if (achou) dun &lt;- dun + 1
+  }
+  c(duncan = dun / M, tukey = tuk / M)
+}
+sapply(3:6, function(k) simula(k))   # taxa de erro do conjunto, por número de grupos
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Duncan não controla, em geral, a taxa de erro por família no nível nominal; isto é essencial para interpretação.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="sidak.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Ajuste de Šidák
-    </a>
-<a href="hochberg-gt2.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Hochberg GT2
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 6. Gráfico
+par(mar = c(5, 8, 4, 2))
+res &lt;- duncan.test(modelo, "feed")
+barplot(res$means[, 1], horiz = TRUE, las = 1, col = "gray85",
+        xlim = c(0, 420), xlab = "Peso aos 6 dias (g)")
+par(mar = c(5, 4, 4, 2))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-duncan" type="button">Copiar código</button></div><pre id="code-py-duncan"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: chickwts (R). Peso (g) de 71 pintinhos aos 6 dias, segundo seis rações.
+# É o mesmo conjunto das fichas de Bonferroni, Šidák, Tukey e REGW.
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes = list(dados)
+gs = [np.array(v, float) for v in dados.values()]
+k = len(gs); ns = np.array([len(g) for g in gs], float); N = int(ns.sum())
+medias = np.array([g.mean() for g in gs]); vars_ = np.array([g.var(ddof=1) for g in gs])
+QM = np.sum((ns - 1) * vars_) / (N - k); gl = N - k
+alfa = 0.05
+ordem = np.argsort(-medias)
+
+print("ração        n    média     DP")
+for i in ordem:
+    print(f"{nomes[i]:&lt;12}{int(ns[i]):2d}  {medias[i]:7.3f}  {np.sqrt(vars_[i]):6.2f}")
+print(f"\nANOVA: F({k-1}; {gl}) = {stats.f_oneway(*gs)[0]:.4f}, p = {stats.f_oneway(*gs)[1]:.3e}")
+print(f"QM do resíduo = {QM:.4f} | gl = {gl}")
+
+# 1. O nível de proteção de Duncan
+print("\nO nível que Duncan adota para um subconjunto de p médias consecutivas")
+print(" p   nível de proteção   alfa_p = 1 - 0,95^(p-1)   q de Duncan   q de Tukey   q do REGW")
+for p in range(2, k + 1):
+    prot = 0.95**(p - 1)
+    ap = 1 - prot
+    ar = alfa if p &gt;= k - 1 else 1 - (1 - alfa)**(p / k)
+    print(f" {p}       {prot:.6f}          {ap:.6f}            "
+          f"{stats.studentized_range.ppf(prot, p, gl):8.4f}     "
+          f"{stats.studentized_range.ppf(1-alfa, k, gl):8.4f}   "
+          f"{stats.studentized_range.ppf(1-ar, p, gl):8.4f}")
+print("Duncan AUMENTA o nível conforme o subconjunto cresce; o REGW faz o contrário.")
+print("É essa escolha que faz Duncan perder o controle da taxa de erro do conjunto.")
+
+# 2. Amplitudes mínimas significativas
+print("\nAmplitudes mínimas significativas (grupos balanceados em n = 12, para referência)")
+print(" p   q de Duncan   AMS (g)")
+for p in range(2, k + 1):
+    q = stats.studentized_range.ppf(0.95**(p-1), p, gl)
+    print(f" {p}     {q:8.4f}     {q*np.sqrt(QM/12):7.3f}")
+
+# 3. O procedimento descendente
+def passo_descendente(qcrit):
+    difere = np.zeros((k, k), bool); homogeneos = []; passos = []
+    for p in range(k, 1, -1):
+        for a in range(0, k - p + 1):
+            bloco = ordem[a:a + p]; cj = frozenset(bloco)
+            if any(cj &lt;= h for h in homogeneos):
+                passos.append((p, [nomes[i] for i in bloco], None, None, "não testado")); continue
+            i, j = bloco[0], bloco[-1]
+            ep = np.sqrt(QM / 2 * (1/ns[i] + 1/ns[j]))
+            q = abs(medias[i] - medias[j]) / ep
+            c = qcrit(p)
+            if q &gt; c:
+                difere[i, j] = difere[j, i] = True
+                passos.append((p, [nomes[i] for i in bloco], q, c, "heterogêneo"))
+            else:
+                homogeneos.append(cj)
+                passos.append((p, [nomes[i] for i in bloco], q, c, "HOMOGÊNEO: para aqui"))
+    return homogeneos, passos
+
+print("\nTeste de Duncan, passo a passo")
+hom, passos = passo_descendente(lambda p: stats.studentized_range.ppf(0.95**(p-1), p, gl))
+print(f"{'p':&gt;2}  {'subconjunto (do maior ao menor)':&lt;52}{'q':&gt;8}{'crítico':&gt;9}  situação")
+for p, bl, q, c, sit in passos:
+    bls = " &gt; ".join(bl)
+    print(f"{p:&gt;2}  {bls:&lt;52}" + (f"{'':&gt;8}{'':&gt;9}" if q is None else f"{q:8.4f}{c:9.4f}") + f"  {sit}")
+nd = np.zeros((k, k), bool)
+for h in hom:
+    for x, y in itertools.combinations(h, 2): nd[x, y] = nd[y, x] = True
+pares = [(nomes[a], nomes[b]) for a, b in itertools.combinations(range(k), 2) if not nd[a, b]]
+print(f"\nPares declarados diferentes por Duncan: {len(pares)}")
+print("  " + "; ".join(f"{b} - {a}" for a, b in pares))
+
+# 4. Comparação com os demais
+tuk = [(a, b) for a, b in itertools.combinations(range(k), 2)
+       if stats.studentized_range.sf(abs(medias[b]-medias[a])/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl) &lt; alfa]
+print(f"\nQuais pares Duncan acrescenta ao que o Tukey já encontra:")
+for a, b in itertools.combinations(range(k), 2):
+    if not nd[a, b] and (a, b) not in tuk:
+        pt = stats.studentized_range.sf(abs(medias[b]-medias[a])/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl)
+        pb = min(1, 15 * 2*stats.t.sf(abs(medias[b]-medias[a])/np.sqrt(QM*(1/ns[a]+1/ns[b])), gl))
+        print(f"  {nomes[b]} - {nomes[a]}: {medias[b]-medias[a]:+7.2f} g | "
+              f"p de Tukey = {pt:.4f} | p de Bonferroni = {pb:.4f}")
+print("São exatamente as quatro comparações que os métodos que controlam a taxa de erro")
+print("do conjunto classificam como achados compatíveis com o acaso.")
+
+# 5. Letras
+print("\nApresentação em letras (Duncan)")
+cliques = []
+for r in range(k, 0, -1):
+    for comb in itertools.combinations(ordem, r):
+        if all(nd[x, y] for x, y in itertools.combinations(comb, 2)):
+            cj = set(comb)
+            if not any(cj &lt;= c for c in cliques): cliques.append(cj)
+letras = [""] * k
+for idx, c in enumerate(cliques):
+    for j in c: letras[j] += chr(ord("a") + idx)
+print("ração          média   letras")
+for i in ordem:
+    print(f"{nomes[i]:&lt;12}{medias[i]:9.2f}   {''.join(sorted(letras[i]))}")
+
+# 6. A simulação que mostra o problema
+print("\nSimulação: 10.000 experimentos com médias IGUAIS, para 3, 4, 5 e 6 grupos (n = 12)")
+rng = np.random.default_rng(321)
+M = 10000
+print(" k grupos    LSD    Duncan   REGWQ   Tukey   (alvo: 5%)")
+for kk in (3, 4, 5, 6):
+    glr = kk * 11
+    q_t = stats.studentized_range.ppf(1 - alfa, kk, glr)
+    t_l = stats.t.ppf(1 - alfa/2, glr)
+    q_d = {p: stats.studentized_range.ppf(0.95**(p-1), p, glr) for p in range(2, kk+1)}
+    q_r = {p: stats.studentized_range.ppf(1 - (alfa if p &gt;= kk-1 else 1-(1-alfa)**(p/kk)), p, glr)
+           for p in range(2, kk+1)}
+    G = rng.normal(0, 1, (M, kk, 12))
+    MM = G.mean(axis=2); EP = np.sqrt(G.var(axis=2, ddof=1).mean(axis=1) / 12)
+    c = dict(lsd=0, dun=0, reg=0, tuk=0)
+    iu = np.triu_indices(kk, 1)
+    for e in range(M):
+        mm = MM[e]; ep = EP[e]; om = np.argsort(-mm)
+        dif = np.abs(mm[:, None] - mm[None, :]) / ep
+        if (dif[iu] / np.sqrt(2) &gt; t_l).any(): c['lsd'] += 1
+        if (dif[iu] &gt; q_t).any(): c['tuk'] += 1
+        for chave, qc in (('dun', q_d), ('reg', q_r)):
+            achou = False; hm = []
+            for p in range(kk, 1, -1):
+                for a in range(0, kk - p + 1):
+                    bl = om[a:a+p]; cj = frozenset(bl)
+                    if any(cj &lt;= h for h in hm): continue
+                    if dif[bl[0], bl[-1]] &gt; qc[p]: achou = True
+                    else: hm.append(cj)
+            if achou: c[chave] += 1
+    print(f"   {kk:3d}      {100*c['lsd']/M:5.2f}%  {100*c['dun']/M:5.2f}%  "
+          f"{100*c['reg']/M:5.2f}%  {100*c['tuk']/M:5.2f}%")
+print("Duncan só controla a taxa de erro quando k = 2. A partir daí ela cresce,")
+print("e é por isso que o procedimento é considerado liberal.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ração        n    média     DP
+sunflower   12  328.917   48.84
+casein      12  323.583   64.43
+meatmeal    11  276.909   64.90
+soybean     14  246.429   54.13
+linseed     12  218.750   52.24
+horsebean   10  160.200   38.63
+
+ANOVA: F(5; 65) = 15.3648, p = 5.936e-10
+QM do resíduo = 3008.5542 | gl = 65
+
+O nível que Duncan adota para um subconjunto de p médias consecutivas
+ p   nível de proteção   alfa_p = 1 - 0,95^(p-1)   q de Duncan   q de Tukey   q do REGW
+ 2       0.950000          0.050000              2.8244       4.1527     3.4660
+ 3       0.902500          0.097500              2.9714       4.1527     3.7816
+ 4       0.857375          0.142625              3.0685       4.1527     3.9526
+ 5       0.814506          0.185494              3.1392       4.1527     3.9680
+ 6       0.773781          0.226219              3.1938       4.1527     4.1527
+Duncan AUMENTA o nível conforme o subconjunto cresce; o REGW faz o contrário.
+É essa escolha que faz Duncan perder o controle da taxa de erro do conjunto.
+
+Amplitudes mínimas significativas (grupos balanceados em n = 12, para referência)
+ p   q de Duncan   AMS (g)
+ 2       2.8244      44.721
+ 3       2.9714      47.049
+ 4       3.0685      48.586
+ 5       3.1392      49.706
+ 6       3.1938      50.571
+
+Teste de Duncan, passo a passo
+ p  subconjunto (do maior ao menor)                            q  crítico  situação
+ 6  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean 10.1595   3.1938  heterogêneo
+ 5  sunflower &gt; casein &gt; meatmeal &gt; soybean &gt; linseed     6.9576   3.1392  heterogêneo
+ 5  casein &gt; meatmeal &gt; soybean &gt; linseed &gt; horsebean     9.8384   3.1392  heterogêneo
+ 4  sunflower &gt; casein &gt; meatmeal &gt; soybean               5.4062   3.0685  heterogêneo
+ 4  casein &gt; meatmeal &gt; soybean &gt; linseed                 6.6208   3.0685  heterogêneo
+ 4  meatmeal &gt; soybean &gt; linseed &gt; horsebean              6.8870   3.0685  heterogêneo
+ 3  sunflower &gt; casein &gt; meatmeal                         3.2124   2.9714  heterogêneo
+ 3  casein &gt; meatmeal &gt; soybean                           5.0567   2.9714  heterogêneo
+ 3  meatmeal &gt; soybean &gt; linseed                          3.5923   2.9714  heterogêneo
+ 3  soybean &gt; linseed &gt; horsebean                         5.3696   2.9714  heterogêneo
+ 2  sunflower &gt; casein                                    0.3368   2.8244  HOMOGÊNEO: para aqui
+ 2  casein &gt; meatmeal                                     2.8829   2.8244  heterogêneo
+ 2  meatmeal &gt; soybean                                    1.9505   2.8244  HOMOGÊNEO: para aqui
+ 2  soybean &gt; linseed                                     1.8140   2.8244  HOMOGÊNEO: para aqui
+ 2  linseed &gt; horsebean                                   3.5257   2.8244  heterogêneo
+
+Pares declarados diferentes por Duncan: 12
+  linseed - horsebean; soybean - horsebean; sunflower - horsebean; meatmeal - horsebean; casein - horsebean; sunflower - linseed; meatmeal - linseed; casein - linseed; sunflower - soybean; casein - soybean; meatmeal - sunflower; casein - meatmeal
+
+Quais pares Duncan acrescenta ao que o Tukey já encontra:
+  linseed - horsebean:  +58.55 g | p de Tukey = 0.1413 | p de Bonferroni = 0.2283
+  meatmeal - linseed:  +58.16 g | p de Tukey = 0.1277 | p de Bonferroni = 0.2022
+  meatmeal - sunflower:  -52.01 g | p de Tukey = 0.2207 | p de Bonferroni = 0.3965
+  casein - meatmeal:  +46.67 g | p de Tukey = 0.3325 | p de Bonferroni = 0.6835
+São exatamente as quatro comparações que os métodos que controlam a taxa de erro
+do conjunto classificam como achados compatíveis com o acaso.
+
+Apresentação em letras (Duncan)
+ração          média   letras
+sunflower      328.92   a
+casein         323.58   a
+meatmeal       276.91   b
+soybean        246.43   bc
+linseed        218.75   c
+horsebean      160.20   d
+
+Simulação: 10.000 experimentos com médias IGUAIS, para 3, 4, 5 e 6 grupos (n = 12)
+ k grupos    LSD    Duncan   REGWQ   Tukey   (alvo: 5%)
+     3      11.99%   9.93%   4.94%   4.94%
+     4      19.55%  14.01%   4.91%   4.91%
+     5      27.48%  17.97%   4.93%   4.93%
+     6      35.76%  22.84%   5.04%   5.04%
+Duncan só controla a taxa de erro quando k = 2. A partir daí ela cresce,
+e é por isso que o procedimento é considerado liberal.</pre></div><figure class="fig"><img src="../assets/resultados/duncan.png" alt="Pares separados e letras: Duncan contra Tukey" loading="lazy"/><figcaption><strong>O que a diferença de critério produz.</strong> À esquerda, as quinze comparações ordenadas pelo valor-p de Tukey, com um quadrado colorido quando o procedimento declara diferença: Duncan separa doze pares e Tukey, oito. À direita, as letras resultantes. Duncan dá uma letra própria à farinha de carne, separando-a tanto do bloco superior quanto do inferior; Tukey a deixa como "ab", indistinta dos dois. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultados</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Pares separados por Duncan</td><td>12 de 15</td><td>—</td></tr><tr><td>Pares separados sem ajuste (LSD)</td><td>12 de 15</td><td><strong>Os mesmos doze.</strong></td></tr><tr><td>Pares separados pelo REGW</td><td>9 de 15</td><td>—</td></tr><tr><td>Pares separados pelo Tukey</td><td>8 de 15</td><td>—</td></tr><tr><td>Letras de Duncan</td><td>a / a / b / bc / c / d</td><td>sunflower, casein, meatmeal, soybean, linseed, horsebean.</td></tr><tr><td>Letras de Tukey</td><td>a / a / ab / b / bc / c</td><td>—</td></tr><tr><td>Simulação, k = 3</td><td>Duncan 9,93% | REGW 4,94% | Tukey 4,94%</td><td>Alvo: 5%.</td></tr><tr><td>Simulação, k = 4</td><td>Duncan 14,01% | REGW 4,91% | Tukey 4,91%</td><td>—</td></tr><tr><td>Simulação, k = 5</td><td>Duncan 17,97% | REGW 4,93% | Tukey 4,93%</td><td>—</td></tr><tr><td>Simulação, k = 6</td><td>Duncan 22,84% | REGW 5,04% | Tukey 5,04%</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os quatro pares que Duncan acrescenta</caption><thead><tr><th>Comparação</th><th>Diferença (g)</th><th>p de Tukey</th><th>p de Bonferroni</th></tr></thead><tbody><tr><td>linseed − horsebean</td><td>+58,55</td><td>0,1413</td><td>0,2283</td></tr><tr><td>meatmeal − linseed</td><td>+58,16</td><td>0,1277</td><td>0,2022</td></tr><tr><td>meatmeal − sunflower</td><td>−52,01</td><td>0,2207</td><td>0,3965</td></tr><tr><td>casein − meatmeal</td><td>+46,67</td><td>0,3325</td><td>0,6835</td></tr></tbody></table></div><p><strong>Leitura:</strong> nestes dados o teste de Duncan chega exatamente ao mesmo conjunto de conclusões que os testes t sem nenhum ajuste. Os quatro pares que ele acrescenta ao resultado do Tukey têm valores-p brutos entre 0,013 e 0,046 — a faixa em que, num conjunto de quinze comparações, resultados assim são o que se espera encontrar por acaso.</p><p>A simulação é o argumento decisivo. Com quatro tamanhos de experimento, Duncan produz ao menos um falso positivo em 10% a 23% das vezes, quando todas as médias populacionais são iguais. REGW e Tukey ficam em 5% nos quatro casos. Não se trata de uma diferença de filosofia estatística: é uma diferença no que o valor 0,05 significa no relatório final.</p><h3>Quando o uso é defensável</h3><p>O teste de Duncan tem lugar legítimo em duas situações. A primeira é a <strong>triagem exploratória</strong>: quando um experimento preliminar seleciona tratamentos para uma fase posterior, errar para mais custa pouco — um tratamento inócuo segue para a etapa seguinte e lá será descartado —, enquanto errar para menos elimina definitivamente algo que poderia ser bom. A segunda é a <strong>comparabilidade com a literatura anterior</strong>: em áreas onde séries históricas de experimentos foram analisadas por Duncan, mudar de procedimento dificulta a comparação.</p><p>Fora dessas situações, o <a href="regwf.html">REGW</a> oferece quase o mesmo poder com controle rigoroso, e o <a href="tukey.html">Tukey</a> oferece intervalos de confiança. A recomendação da literatura metodológica desde os anos 1980 é consistente: em trabalhos confirmatórios, prefira um procedimento que controle a taxa de erro do conjunto.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Afirmar que o teste controla o erro a 5%</td><td>Ele controla por comparação, não no conjunto.</td></tr><tr><td>Apresentar letras de Duncan como se fossem de Tukey</td><td>Diga qual procedimento foi usado.</td></tr><tr><td>Escolher Duncan porque ele "deu mais letras"</td><td>A escolha é metodológica e anterior à análise.</td></tr><tr><td>Confundir com o teste de Dunnett</td><td>São coisas diferentes: Dunnett compara com um controle.</td></tr><tr><td>Usar em estudo confirmatório sem ressalva</td><td>Em trabalho confirmatório, prefira REGW ou Tukey.</td></tr><tr><td>Procurar intervalos de confiança</td><td>O procedimento não os fornece.</td></tr><tr><td>Usar com variâncias desiguais</td><td>Depende de um QM do resíduo comum.</td></tr><tr><td>Esquecer de informar o número de tratamentos</td><td>A taxa de erro do conjunto depende de k.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="regwf.html">REGW</a></td><td>Quase o mesmo poder, com controle rigoroso. É a substituição natural.</td></tr><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Quando forem necessários intervalos de confiança.</td></tr><tr><td>LSD de Fisher</td><td>Apenas com k = 3 e depois de uma ANOVA significativa, onde o controle é exato.</td></tr><tr><td>Newman–Keuls (SNK)</td><td>Intermediário entre Duncan e REGW; também não controla a taxa do conjunto.</td></tr><tr><td>Dunnett</td><td>Tratamentos contra um controle.</td></tr><tr><td>Scott–Knott</td><td>Agrupamento de médias sem letras ambíguas; popular em melhoramento vegetal.</td></tr><tr><td>Benjamini–Hochberg (FDR)</td><td>Quando se aceita uma proporção de falsas descobertas, com controle formal.</td></tr><tr><td>Contrastes planejados</td><td>Perguntas definidas antes do experimento.</td></tr></tbody></table></div><ol class="steps"><li>Ajuste a ANOVA e verifique os pressupostos.</li><li>Pergunte se o estudo é exploratório ou confirmatório.</li><li>Em estudo confirmatório, considere REGW ou Tukey antes de Duncan.</li><li>Se usar Duncan, declare no relatório qual taxa de erro está sendo controlada.</li><li>Apresente as médias com erros-padrão ao lado das letras.</li><li>Quando possível, mostre também o resultado de um procedimento rigoroso.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>DUNCAN, David B. Multiple range and multiple F tests. <em>Biometrics</em>, v. 11, n. 1, p. 1-42, 1955.</li><li>DUNCAN, David B. A Bayesian approach to multiple comparisons. <em>Technometrics</em>, v. 7, n. 2, p. 171-222, 1965.</li><li>CARMER, S. G.; SWANSON, M. R. An evaluation of ten pairwise multiple comparison procedures by Monte Carlo methods. <em>Journal of the American Statistical Association</em>, v. 68, n. 341, p. 66-74, 1973.</li><li>EINOT, Israel; GABRIEL, K. Ruben. A study of the powers of several methods of multiple comparisons. <em>Journal of the American Statistical Association</em>, v. 70, n. 351, p. 574-583, 1975.</li><li>SEAMAN, Michael A.; LEVIN, Joel R.; SERLIN, Ronald C. New developments in pairwise multiple comparisons: some powerful and practicable procedures. <em>Psychological Bulletin</em>, v. 110, n. 3, p. 577-586, 1991.</li><li>SCOTT, A. J.; KNOTT, M. A cluster analysis method for grouping means in the analysis of variance. <em>Biometrics</em>, v. 30, n. 3, p. 507-512, 1974.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>MILLER JR., Rupert G. <em>Simultaneous statistical inference.</em> 2. ed. New York: Springer, 1981.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>qtukey</code>, pacote <code>stats</code>.)</li><li>DE MENDIBURU, Felipe. <em>agricolae: statistical procedures for agricultural research.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=agricolae" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=agricolae</a>. (Função <code>duncan.test</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os mesmos da ANOVA: observações independentes, resíduos aproximadamente normais e variâncias homogêneas. Controla o erro por comparação, e não no conjunto.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>agricolae</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="sidak.html"><span>← ANTERIOR</span>Ajuste de Šidák</a><a href="hochberg-gt2.html"><span>PRÓXIMO →</span>Hochberg GT2</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

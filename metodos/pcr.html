@@ -4,309 +4,710 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão por componentes principais (PCR): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão por componentes principais (PCR) | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão por componentes principais (PCR): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão por componentes principais (PCR) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão por componentes principais (PCR)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 14 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Regressão por componentes principais (PCR)
-    </h1>
-<p class="detail-lead">
-     Resume variáveis correlacionadas para construir um modelo preditivo com menos dimensões.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/pcr.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Resume variáveis correlacionadas para construir um modelo preditivo com menos dimensões.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Escalonamento quando unidades diferem.</li><li>Relações aproximadamente lineares nos componentes.</li><li>Componentes selecionados por CV e ausência de vazamento entre folds.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbf Z=\mathbf X\mathbf V,\qquad \widehat Y=\widehat\beta_0+\sum_{j=1}^{m}\widehat\gamma_j Z_j\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\lambda\)
-        </dt>
-<dd>
-         parâmetro de penalização, quando existente
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         vetor de coeficientes do modelo
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mathbf X\)
-        </dt>
-<dd>
-         matriz dos preditores
-        </dd>
-</div>
-</dl>
-<p>
-       Componentes de PCA por decomposição singular de X; selecionar ncomp pela RMSE de validação.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor RMSE_CV pode favorecer um número de componentes; explicar muita variância de X não garante prever bem Y.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Previsão da autonomia por atributos colineares de automóveis (mtcars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-pcr" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-pcr"><code># Regressão por componentes principais (PCR) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão por componentes principais (PCR)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · REGULARIZAÇÃO E SELEÇÃO</span><h1>Regressão por componentes principais (PCR)</h1><p class="detail-lead">Substitui as candidatas por componentes principais ortogonais e regride nos m primeiros — eliminando a colinearidade, ao preço de escolher os componentes sem olhar a resposta.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/pcr.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/pcr.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a PCR</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A regressão por componentes principais faz duas coisas em sequência: primeiro substitui as \(p\) variáveis candidatas por \(m\) combinações lineares ortogonais delas — os componentes principais — e depois ajusta mínimos quadrados nesses \(m\) componentes. A colinearidade desaparece por construção, porque os componentes são ortogonais. Em troca, surge um problema novo e menos óbvio: <strong>os componentes são escolhidos olhando apenas X, sem olhar y</strong>.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: PCR" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que faz</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Troca p variáveis por</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">m componentes ortogonais</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A virtude</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Colinearidade some:</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">todo VIF é 1</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O defeito</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Escolhe componentes</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">sem olhar y</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">É um ridge</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">discreto: fator 1 ou 0</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">em vez de contínuo</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Não seleciona</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Todas as p variáveis</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">continuam no modelo</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Escolha de m</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Por validação cruzada,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">nunca por "80%"</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">PCR</text></svg><figcaption>Visão geral da PCR. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>O resultado que define a ficha</strong><p>No conjunto espectral, o primeiro componente principal carrega <strong>83,54%</strong> da variância das 200 colunas e tem correlação de apenas <strong>0,151</strong> com a resposta. Uma PCR com um componente tem \(R^2\) validado <strong>negativo</strong> — prediz pior que a média de \(y\). O terceiro componente carrega 3,49% da variância e tem correlação de 0,599. A ordem da variância em X não é a ordem da relevância para y, e essa é a limitação estrutural do método.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a PCR</h2><p>Os componentes principais de \(X\) são as direções de maior variância, obtidas da decomposição em valores singulares \(X=UDV^{\top}\). O \(j\)-ésimo escore é \(t_j=Xv_j\), com variância proporcional a \(d_j^2\), e os escores são mutuamente ortogonais. A PCR regride \(y\) nos \(m\) primeiros e devolve os coeficientes à escala original por \(\hat\beta=V_m\hat\gamma\).</p><figure class="fig"><img src="../assets/resultados/pcr-didatica.png" alt="Os espectros, a divergência entre variância e relevância, e a PCR nos dois conjuntos" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, vinte dos sessenta espectros: as colunas vizinhas têm \(r=0{,}998\), e a maior fonte de variação é a deriva da linha de base. No centro, para cada um dos dez primeiros componentes, a variância de X que ele carrega (azul) contra a correlação dele com a resposta (vermelho): as duas ordens são diferentes. À direita, o \(R^2\) validado por número de componentes nos dois conjuntos — e no espectro o primeiro componente tem \(R^2\) negativo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os doze componentes do conjunto de solo</caption><thead><tr><th>CP</th><th>Valor singular d</th><th>% da variância de X</th><th>% acumulada</th><th>|r| com y</th></tr></thead><tbody><tr><td>1</td><td>19,901</td><td>37,08</td><td>37,08</td><td>0,4204</td></tr><tr><td>2</td><td>15,914</td><td>23,71</td><td>60,80</td><td>0,3626</td></tr><tr><td>3</td><td>11,353</td><td>12,07</td><td>72,87</td><td>0,2939</td></tr><tr><td>4</td><td>9,640</td><td>8,70</td><td>81,57</td><td><strong>0,0772</strong></td></tr><tr><td>5</td><td>8,846</td><td>7,33</td><td>88,89</td><td>0,2848</td></tr><tr><td>6</td><td>7,403</td><td>5,13</td><td>94,03</td><td>0,2161</td></tr><tr><td><strong>7</strong></td><td>5,179</td><td><strong>2,51</strong></td><td>96,54</td><td><strong>0,4103</strong></td></tr><tr><td>8</td><td>3,982</td><td>1,48</td><td>98,02</td><td>0,0512</td></tr><tr><td>9</td><td>3,323</td><td>1,03</td><td>99,06</td><td>0,0821</td></tr><tr><td>10</td><td>2,694</td><td>0,68</td><td>99,74</td><td>0,0128</td></tr><tr><td>11</td><td>1,573</td><td>0,23</td><td>99,97</td><td>0,1099</td></tr><tr><td>12</td><td>0,589</td><td>0,03</td><td>100,00</td><td>0,0571</td></tr></tbody></table></div><p>Ordenados por <strong>variância em X</strong>: CP1, CP2, CP3, CP4, …, CP12. Ordenados por <strong>relevância para y</strong>: CP1, <strong>CP7</strong>, CP2, CP3, CP5, CP6, CP11, CP9, CP4, CP12, CP8, CP10. O sétimo componente, que carrega apenas 2,51% da variância das candidatas, é o segundo mais correlacionado com a produtividade.</p><p>Os componentes são ortogonais, de modo que o fator de inflação de variância de cada um é exatamente 1 — contra VIF de até 126 nas variáveis originais. É a primeira virtude do método, e é incondicional.</p></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Variáveis padronizadas</strong></td><td>Componentes de dados não padronizados seguem a variável de maior escala.</td><td><code>scale = TRUE</code> no pacote <code>pls</code>.</td></tr><tr><td><strong>m escolhido por validação cruzada</strong></td><td>A regra da variância explicada ignora y.</td><td><code>validation = "CV"</code>; veja a tabela desta ficha.</td></tr><tr><td>Relevância alinhada com variância</td><td>É o pressuposto IMPLÍCITO e frequentemente falso.</td><td>Correlação de cada componente com y.</td></tr><tr><td>Linearidade na média</td><td>A PCR é um modelo linear.</td><td>Resíduos contra ajustados.</td></tr><tr><td>Erros com variância constante</td><td>Caso contrário, use <a href="wls.html">mínimos quadrados ponderados</a>.</td><td><a href="levene.html">Teste de homocedasticidade</a>.</td></tr><tr><td>Observações independentes</td><td>A validação cruzada pressupõe isso.</td><td>Com agrupamento, valide por grupo.</td></tr><tr><td>Não se espera seleção de variáveis</td><td>Todas as p continuam no modelo.</td><td>Use <a href="lasso.html">lasso</a> se precisar selecionar.</td></tr><tr><td>Interpretação das cargas apresentada como tal</td><td>Ler cargas é interpretação, não resultado.</td><td>Diga isso no texto.</td></tr></tbody></table></div><div class="callout warn"><strong>O pressuposto que ninguém enuncia</strong><p>A PCR só é uma boa ideia se as direções de maior variância em \(X\) forem também as mais relacionadas com \(y\). Esse pressuposto não é testável antes de olhar \(y\) — e quando se olha \(y\) para escolher os componentes, já não se está fazendo PCR, e sim <a href="pls.html">PLS</a>. No conjunto de solo o pressuposto vale razoavelmente; no espectro ele falha de forma clara. A verificação prática é a tabela de correlações de cada componente com \(y\): se ela não decresce com \(j\), a PCR está em desvantagem.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[X=UDV^{\top},\]\[T=UD,\]\[t_j=Xv_j,\]\[\operatorname{Var}(t_j)\propto d_j^{2}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat\gamma &= \arg\min_{\gamma}\left\|y-T_m\gamma\right\|^{2} \\ &= \left(T_m^{\top}T_m\right)^{-1}T_m^{\top}y,\end{aligned}\]\[\hat\beta^{\text{PCR}}=V_m\hat\gamma\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(U\)</dt><dd>matriz \(n\times p\) dos vetores singulares à esquerda</dd></div><div><dt>\(D\)</dt><dd>diagonal dos valores singulares \(d_1\ge\dots\ge d_p\)</dd></div><div><dt>\(V\)</dt><dd>matriz \(p\times p\) dos vetores singulares à direita: as CARGAS</dd></div><div><dt>\(T_m\)</dt><dd>as \(m\) primeiras colunas de \(T\): os ESCORES</dd></div><div><dt>\(\hat\gamma\)</dt><dd>coeficientes na escala dos componentes</dd></div><div><dt>\(\hat\beta^{\text{PCR}}\)</dt><dd>coeficientes de volta na escala das variáveis</dd></div></dl><p>Como \(T_m^{\top}T_m\) é diagonal, cada \(\hat\gamma_j=t_j^{\top}y/d_j^2\) é calculado independentemente dos demais — acrescentar um componente não altera os coeficientes dos anteriores. Essa propriedade é exclusiva de bases ortogonais, e é o que torna a PCR um caminho limpo de regularização.</p><h3>A relação com o ridge</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}X\hat\beta^{\text{PCR}} &= \sum_{j=1}^{p}u_j\,\underbrace{\mathbb{1}\{j\le m\}}_{\text{fator 1 ou 0}}\,u_j^{\top}y\end{aligned}\]\[\text{contra}\]\[\begin{aligned}X\hat\beta^{\text{ridge}} &= \sum_{j=1}^{p}u_j\,\underbrace{\frac{d_j^{2}}{d_j^{2}+n\lambda}}_{\text{fator contínuo}}\,u_j^{\top}y\end{aligned}\]</div><p>A fórmula põe os dois métodos lado a lado: ambos encolhem direções principais, o <a href="ridge.html">ridge</a> de forma contínua e a PCR de forma abrupta. A PCR é, nesse sentido, o ridge levado ao limite — e a comparação explica por que o ridge costuma ser preferível: o corte abrupto descarta informação útil junto com o ruído.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>O encolhimento comparado, conjunto de solo</caption><thead><tr><th>CP</th><th>d</th><th>Ridge (λ = 0,032)</th><th>PCR (m = 5)</th><th>PCR (m = 7)</th></tr></thead><tbody><tr><td>1</td><td>19,901</td><td>0,9929</td><td>1</td><td>1</td></tr><tr><td>2</td><td>15,914</td><td>0,9889</td><td>1</td><td>1</td></tr><tr><td>3</td><td>11,353</td><td>0,9784</td><td>1</td><td>1</td></tr><tr><td>4</td><td>9,640</td><td>0,9703</td><td>1</td><td>1</td></tr><tr><td>5</td><td>8,846</td><td>0,9649</td><td>1</td><td>1</td></tr><tr><td>6</td><td>7,403</td><td>0,9506</td><td><strong>0</strong></td><td>1</td></tr><tr><td>7</td><td>5,179</td><td>0,9041</td><td><strong>0</strong></td><td>1</td></tr><tr><td>8</td><td>3,982</td><td>0,8479</td><td><strong>0</strong></td><td><strong>0</strong></td></tr><tr><td>9</td><td>3,323</td><td>0,7951</td><td><strong>0</strong></td><td><strong>0</strong></td></tr><tr><td>10</td><td>2,694</td><td>0,7183</td><td><strong>0</strong></td><td><strong>0</strong></td></tr><tr><td>11</td><td>1,573</td><td>0,4651</td><td><strong>0</strong></td><td><strong>0</strong></td></tr><tr><td>12</td><td>0,589</td><td>0,1087</td><td><strong>0</strong></td><td><strong>0</strong></td></tr></tbody></table></div><div class="worked"><strong>A PCR com m = p é exatamente o MQO</strong><p>Quando \(m=p\), \(V_m=V\) é ortogonal completa e \(\hat\beta^{\text{PCR}}=V\hat\gamma=V(T^{\top}T)^{-1}T^{\top}y=\hat\beta^{\text{MQO}}\). Nos dados de solo, a maior diferença entre os doze coeficientes calculados pelos dois caminhos é de <strong>0,0000000000</strong> — identidade algébrica, verificada numericamente.</p><p>A consequência conceitual importa: a PCR, como o ridge e o <a href="lasso.html">lasso</a>, é um <strong>caminho</strong> entre o modelo nulo (\(m=0\), só a média) e os mínimos quadrados (\(m=p\)). Escolher \(m\) é escolher o grau de regularização, e nada mais. Não existe "a PCR" como modelo: existe a PCR com \(m\) componentes.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Os componentes são ortogonais: o VIF de cada um é exatamente 1.</li><li>Os coeficientes \(\hat\gamma_j\) são independentes entre si; acrescentar um componente não altera os demais.</li><li>\(m=p\) devolve o MQO; \(m=0\) devolve a média de \(y\).</li><li>Equivale ao ridge com fator de encolhimento 1 ou 0 em vez de contínuo.</li><li>Não seleciona variáveis: todas as \(p\) recebem coeficiente não nulo.</li><li>Os componentes dependem só de \(X\): são os mesmos qualquer que seja a resposta.</li><li>Funciona com \(p&gt;n\), porque usa no máximo \(\min(n-1,p)\) componentes.</li><li>Depende da escala: exige padronização quando as unidades diferem.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Gráfico de escarpa (<em>scree</em>)</td><td>A variância de cada componente.</td><td>Não diz nada sobre y.</td></tr><tr><td>% acumulada da variância de X</td><td>Quanto de X os m componentes retêm.</td><td><strong>Mau critério</strong> para escolher m.</td></tr><tr><td><code>summary(mp)</code> — % variance explained</td><td>Duas linhas: X e y.</td><td>Compare as duas: elas divergem.</td></tr><tr><td><code>RMSEP</code> e <code>validationplot</code></td><td>O erro validado por m.</td><td>É o critério correto.</td></tr><tr><td><code>coef(mp, ncomp = m)</code></td><td>Coeficientes na escala original.</td><td>Nenhum é zero.</td></tr><tr><td>Cargas (matriz V)</td><td>A composição de cada componente.</td><td>Interpretação, não resultado estatístico.</td></tr><tr><td>Escores (matriz T)</td><td>A posição de cada observação.</td><td>Úteis para detectar observações atípicas.</td></tr></tbody></table></div><h3>Por que a regra dos 80% é um mau critério</h3><div class="table-wrap"><table class="method-table"><caption>O que cada critério escolhe no conjunto de solo (VC com 20 repetições)</caption><thead><tr><th>Critério</th><th>m escolhido</th><th>EQM validado</th></tr></thead><tbody><tr><td>70% da variância de X</td><td>3</td><td>0,7662</td></tr><tr><td><strong>80% da variância de X</strong></td><td><strong>4</strong></td><td><strong>0,7840</strong></td></tr><tr><td>90% da variância de X</td><td>6</td><td>0,6481</td></tr><tr><td>95% da variância de X</td><td>7</td><td>0,4243</td></tr><tr><td><strong>Validação cruzada</strong></td><td><strong>7</strong></td><td><strong>0,4243</strong></td></tr></tbody></table></div><div class="callout warn"><strong>Leitura honesta desta tabela</strong><p>A regra dos 80% escolhe \(m=4\) e um erro de 0,7840, contra 0,4243 da validação cruzada — <strong>46% maior</strong>. Note, porém, que a regra dos 95% escolhe o mesmo \(m=7\) da validação cruzada: ela acertou, por coincidência destes dados. A objeção ao critério da variância explicada não é que ele erre sempre, é que ele <em>não tem como saber</em> — olha apenas \(X\). Num conjunto em que o sinal esteja no quarto componente, qualquer limiar de variância pode acertar ou errar por acidente. A validação cruzada custa pouco e responde à pergunta certa.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O pacote <code>pls</code> traz a função <code>pcr</code> com a mesma interface de fórmula do <code>lm</code>. <code>scale = TRUE</code> padroniza as colunas, o que é necessário quando as unidades diferem; <code>validation = "CV"</code> com <code>segments = 10</code> faz a validação cruzada de dez dobras durante o ajuste. <code>summary()</code> imprime duas linhas de variância explicada — uma para \(X\) e outra para \(y\) — e a comparação entre elas é o diagnóstico central desta ficha. <code>validationplot(mp, val.type = "MSEP")</code> desenha a curva do erro validado por número de componentes, e <code>RMSEP(mp)</code> dá os valores. Os coeficientes de um \(m\) específico saem de <code>coef(mp, ncomp = m)</code>, já na escala das variáveis originais. Os escores e as cargas ficam em <code>scores(mp)</code> e <code>loadings(mp)</code>. Para apenas obter os componentes, <code>prcomp</code> do R base basta.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-pcr-min" type="button">Copiar código</button></div><pre id="code-pcr-min"><code>library(pls)
+mp &lt;- pcr(y ~ ., data = solo, scale = TRUE, validation = "CV", segments = 10)
+summary(mp)            # compare as duas linhas de variância explicada
+validationplot(mp, val.type = "MSEP")
+coef(mp, ncomp = 7)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 90 amostras de solo de uma área experimental, com a produtividade da cultura (t/ha) e <strong>doze</strong> variáveis candidatas de análise de rotina — pH, matéria orgânica, fósforo resina, potássio, cálcio, magnésio, alumínio, CTC, saturação por bases (V%), argila, silte e areia. O processo gerador é conhecido e usa <strong>apenas quatro</strong> delas: matéria orgânica, fósforo, V% e argila, com erro de desvio-padrão 0,60 t/ha. A colinearidade é deliberada e realista: argila, silte e areia somam aproximadamente 100% por construção física, e cálcio, magnésio e potássio estão ligados à CTC e ao V%. Saber qual é o modelo verdadeiro permite verificar se cada método o encontra — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as seis fichas do grupo.</p><p>O segundo conjunto, também fictício, é um espectro de reflectância no infravermelho próximo: 60 amostras, <strong>200 comprimentos de onda</strong> entre 1.100 e 2.300 nm, e o teor de proteína (%) como resposta. Quatro bandas de absorção foram construídas, mas apenas duas determinam a proteína; a maior fonte de variação do espectro é uma deriva de linha de base sem relação com ela. Aqui <strong>p > n</strong>, e os métodos clássicos de seleção deixam de ser aplicáveis.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-pcr" type="button">Copiar código</button></div><pre id="code-pcr"><code># Regressão por componentes principais (PCR): exemplo completo ----
+# Pacotes: pls (função pcr)
+# Dados fictícios: 90 amostras de solo, 12 candidatas.
+# O arquivo solo.csv acompanha o site, na pasta scripts/.
+solo &lt;- read.csv("solo.csv")
+str(solo)          # y (t/ha) e as 12 candidatas
+dim(solo)
+# O modelo VERDADEIRO (conhecido por construção) usa só quatro:
+#   y = 4,00 + 0,80*mo + 0,0250*pres + 0,0300*v + 0,0200*argila + erro
+cand &lt;- c("ph","mo","pres","k","ca","mg","al","ctc","v","argila","silte","areia")
+verdadeiras &lt;- c("mo","pres","v","argila")
 
-# Ajuste e resultados ----
-if (!requireNamespace("pls", quietly = TRUE)) install.packages("pls")
+# A colinearidade, que é o problema central do grupo
+library(car)
+vif(lm(y ~ ., data = solo))
+round(cor(solo[, cand]), 2)
+
+# ---- 1. Os componentes principais
+Xp &lt;- scale(as.matrix(solo[, cand]))
+sv &lt;- svd(Xp)
+pv &lt;- sv$d^2/sum(sv$d^2)                   # proporção da variância de X
+Tm &lt;- sv$u %*% diag(sv$d)                  # os escores
+data.frame(CP = 1:12, d = round(sv$d, 3),
+           var_pct = round(100*pv, 2), acum = round(100*cumsum(pv), 2),
+           r_com_y = round(abs(cor(Tm, solo$y)), 4))
+# Os componentes são ORTOGONAIS: todo VIF é exatamente 1.
+round(cor(Tm[, 1:4]), 10)
+
+# ---- 2. A PCR com o pacote pls
 library(pls)
-ajuste &lt;- pcr(mpg ~ wt + hp + disp + qsec, data = mtcars,
-              scale = TRUE, validation = "CV")
-print(summary(ajuste))
-print(RMSEP(ajuste, estimate = "CV"))
+mp &lt;- pcr(y ~ ., data = solo, scale = TRUE, validation = "CV", segments = 10)
+summary(mp)
+validationplot(mp, val.type = "MSEP")
+RMSEP(mp)
+# O m escolhido:
+which.min(RMSEP(mp)$val[1, 1, -1])
+coef(mp, ncomp = 7)                        # na escala das variáveis originais
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# ---- 3. A REGRA DOS "80% DA VARIÂNCIA" É UM MAU CRITÉRIO
+for (alvo in c(0.70, 0.80, 0.90, 0.95)) {
+  m &lt;- which(cumsum(pv) &gt;= alvo)[1]
+  cat(sprintf("%2.0f%% da variância -&gt; m = %d\n", 100*alvo, m))
+}
+# O critério só olha X e ignora y por completo. Use validação cruzada.
+
+# ---- 4. PCR com m = p é EXATAMENTE o MQO
+max(abs(coef(pcr(y ~ ., data = solo, scale = TRUE), ncomp = 12) -
+        coef(lm(y ~ ., data = solo))[-1]*apply(solo[, cand], 2, sd)))
+
+# ---- 5. O caso em que a ordem da variância ENGANA: p &gt; n
+# Dados fictícios: espectro NIR, 60 amostras, 200 comprimentos de onda.
+# O arquivo espectro.csv acompanha o site, na pasta scripts/.
+esp &lt;- read.csv("espectro.csv")
+dim(esp)                      # 60 x 201: proteina + nm1100 ... nm2300
+Xe &lt;- as.matrix(esp[, -1]); ye &lt;- esp$proteina
+qr(scale(Xe))$rank            # 59: o posto é menor que o número de colunas
+
+Ep &lt;- scale(Xe); sve &lt;- svd(Ep)
+Te &lt;- sve$u %*% diag(sve$d)
+pve &lt;- sve$d^2/sum(sve$d^2)
+data.frame(CP = 1:10, var_pct = round(100*pve[1:10], 2),
+           r_com_y = round(abs(cor(Te[, 1:10], ye)), 4))
+# O CP1 explica 83,5% da variância do espectro e tem r de só 0,151 com a
+# proteína. O CP3 explica 3,5% e tem r de 0,599.
+
+me &lt;- pcr(ye ~ Ep, validation = "CV", segments = 10)
+summary(me)
+validationplot(me, val.type = "R2")
+# Com UM componente o R² validado é NEGATIVO: o CP1 prediz pior que a
+# média de y, apesar de carregar 83,5% da variância do espectro.
+
+# ---- 6. A PCR É UM RIDGE DISCRETO
+l0 &lt;- 0.03162
+data.frame(CP = 1:12,
+           ridge = round(sv$d^2/(sv$d^2 + l0*nrow(solo)), 4),
+           pcr_m7 = c(rep(1, 7), rep(0, 5)))
+# O ridge multiplica cada direção por um fator CONTÍNUO; a PCR, por 1 ou 0.
+
+# ---- 7. As cargas: interpretação, não resultado estatístico
+round(sve$v[, 1:4], 3)                     # espectro
+round(svd(Xp)$v[, 1:4], 3)                 # solo
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-pcr" type="button">Copiar código</button></div><pre id="code-py-pcr"><code>import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab14)
+# ------------------------------------------------------------------
+import numpy as np, itertools
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 90 amostras de solo (arquivo solo.csv, pasta scripts/ do site)
+solo = le_csv('solo.csv')
+NOMES=['ph', 'mo', 'pres', 'k', 'ca', 'mg', 'al', 'ctc', 'v', 'argila', 'silte', 'areia']
+ROT={'ph':'pH','mo':'M.O.','pres':'P (resina)','k':'K','ca':'Ca','mg':'Mg','al':'Al','ctc':'CTC','v':'V%','argila':'Argila','silte':'Silte','areia':'Areia'}
+X=solo[NOMES].to_numpy(float); Y=solo['y'].to_numpy(float)
+VERD={"mo":0.80,"pres":0.0250,"v":0.0300,"argila":0.0200}
+N,P=X.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+def pad(A, mu=None, sd=None):
+    """Padroniza colunas (média 0, desvio 1, com n-1)."""
+    if mu is None: mu = A.mean(0)
+    if sd is None: sd = A.std(0, ddof=1)
+    sd = np.where(sd &lt; 1e-12, 1.0, sd)
+    return (A - mu)/sd, mu, sd
+
+def ols(A, y):
+    Ad = np.column_stack([np.ones(len(A)), A])
+    return np.linalg.lstsq(Ad, y, rcond=None)[0]
+
+def prev(A, b):
+    return b[0] + A @ b[1:]
+
+def sqr(obs, p_): return float(np.sum((obs - p_)**2))
+def eqm(obs, p_): return float(np.mean((obs - p_)**2))
+
+def ridge(A, y, lam):
+    """Ridge em A JÁ padronizado; não penaliza o intercepto."""
+    n_, p_ = A.shape
+    G = A.T @ A + lam*n_*np.eye(p_)
+    b = np.linalg.solve(G, A.T @ (y - y.mean()))
+    return np.concatenate([[y.mean()], b])
+
+def lasso(A, y, lam, it=20000, tol=1e-11):
+    """Descida por coordenadas em A JÁ padronizado (Friedman et al., 2010)."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean()
+    nrm = (A**2).sum(0)/n_
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = A[:, j] @ (r + A[:, j]*bj)/n_
+            nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+            if nb != bj:
+                r = r - A[:, j]*(nb - bj); b[j] = nb
+                mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return np.concatenate([[y.mean()], b])
+
+def pcr(A, y, m):
+    """Regressão nos m primeiros componentes principais de A padronizado."""
+    u, s, vt = np.linalg.svd(A, full_matrices=False)
+    T = (u*s)[:, :m]
+    g = np.linalg.lstsq(T, y - y.mean(), rcond=None)[0]
+    b = vt[:m].T @ g
+    return np.concatenate([[y.mean()], b])
+
+def pls(A, y, m):
+    """NIPALS para uma resposta; devolve coeficientes na escala de A."""
+    Xr = A.copy(); yr = y - y.mean()
+    W = np.zeros((A.shape[1], m)); Pm = np.zeros((A.shape[1], m)); q = np.zeros(m)
+    for a in range(m):
+        w = Xr.T @ yr; w = w/np.linalg.norm(w)
+        t = Xr @ w; tt = t @ t
+        pj = Xr.T @ t/tt; qa = (yr @ t)/tt
+        Xr = Xr - np.outer(t, pj); yr = yr - qa*t
+        W[:, a] = w; Pm[:, a] = pj; q[a] = qa
+    Rm = W @ np.linalg.inv(Pm.T @ W)
+    b = Rm @ q
+    return np.concatenate([[y.mean()], b])
+
+def dobras(n_, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n_/k)))[:n_]
+    rg.shuffle(d); return d
+
+def cv(ajusta, A, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada; TODA a padronização dentro do laço."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 1000*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            b = ajusta(Ap, y[tr])
+            e[te] = y[te] - prev((A[te] - mu)/sd, b)
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0
+
+def crit(A, y, cols, s2):
+    """Cp de Mallows, AIC e BIC de um submodelo."""
+    Ad = np.column_stack([np.ones(len(A))] + [A[:, j] for j in cols])
+    b = np.linalg.lstsq(Ad, y, rcond=None)[0]
+    sq = sqr(y, Ad @ b); n_, d = len(y), len(cols) + 1
+    return dict(sqr=sq, p=d, r2=1 - sq/np.sum((y - y.mean())**2),
+                r2a=1 - (sq/(n_ - d))/(np.sum((y - y.mean())**2)/(n_ - 1)),
+                cp=sq/s2 - n_ + 2*d,
+                aic=n_*np.log(sq/n_) + 2*d, bic=n_*np.log(sq/n_) + np.log(n_)*d)
+
+def vif(A):
+    Ap, _, _ = pad(A); out = []
+    for j in range(A.shape[1]):
+        o = [i for i in range(A.shape[1]) if i != j]
+        b = ols(Ap[:, o], Ap[:, j]); r = Ap[:, j] - prev(Ap[:, o], b)
+        out.append(1/(1 - (1 - r @ r/np.sum((Ap[:, j] - Ap[:, j].mean())**2))))
+    return np.array(out)
+
+def c(v, d=4):
+    return ('%.*f' % (d, v)).replace('.', ',')
+
+def lasso_path(A, y, lams, it=5000, tol=1e-10):
+    """Caminho do lasso com partida quente (como o glmnet). lams DECRESCENTE."""
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam, 0.0)/nrm[j]
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def enet_path(A, y, lams, al, it=5000, tol=1e-10):
+    n_, p_ = A.shape
+    b = np.zeros(p_); r = y - y.mean(); nrm = (A**2).sum(0)/n_
+    out = []
+    for lam in lams:
+        for _ in range(it):
+            mx = 0.0
+            for j in range(p_):
+                bj = b[j]
+                rho = A[:, j] @ (r + A[:, j]*bj)/n_
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(nrm[j] + lam*(1 - al))
+                if nb != bj:
+                    r = r - A[:, j]*(nb - bj); b[j] = nb
+                    mx = max(mx, abs(nb - bj))
+            if mx &lt; tol: break
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def cv_path(ajusta_path, A, y, lams, k=10, seed=0, reps=1):
+    """EQM por VC para TODA a grade de lambda de uma vez, com partida quente."""
+    acc = np.zeros((reps, len(lams)))
+    for rp in range(reps):
+        d = dobras(len(y), k, seed + 1000*rp); E = np.zeros((len(lams), len(y)))
+        for j in range(k):
+            tr, te = d != j, d == j
+            Ap, mu, sd = pad(A[tr])
+            bs = ajusta_path(Ap, y[tr], lams)
+            Ate = (A[te] - mu)/sd
+            for i, b in enumerate(bs): E[i, te] = y[te] - prev(Ate, b)
+        acc[rp] = (E**2).mean(1)
+    return acc.mean(0), acc.std(0, ddof=1) if reps &gt; 1 else np.zeros(len(lams))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="lasso.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão lasso
-    </a>
-<a href="pls.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão por mínimos quadrados parciais (PLS)
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def _cd_gram(G, Ay, lam, al, b, dg, it=10000, tol=1e-11):
+    """Descida por coordenadas usando a matriz de Gram: só escalares no laço."""
+    p_ = len(b)
+    for _ in range(it):
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        if mx &lt; tol: break
+    return b
+
+def enet_path_g(A, y, lams, al=1.0):
+    """Caminho da rede elástica (al=1 é o lasso) com Gram e partida quente."""
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_gram(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_g(A, y, lams): return enet_path_g(A, y, lams, 1.0)
+
+
+def _cd_ativo(G, Ay, lam, al, b, dg, it=200, tol=1e-11):
+    """Descida por coordenadas com CONJUNTO ATIVO (estratégia do glmnet):
+    varre tudo, depois itera só nos coeficientes não nulos."""
+    p_ = len(b)
+    for _ in range(it):
+        # varredura completa
+        mx = 0.0
+        for j in range(p_):
+            bj = b[j]
+            rho = Ay[j] - (G[j] @ b - dg[j]*bj)
+            nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dg[j] + lam*(1 - al))
+            if nb != bj:
+                b[j] = nb; mx = max(mx, abs(nb - bj))
+        ativo = np.flatnonzero(b)
+        if len(ativo) == 0 or mx &lt; tol: break
+        Ga = G[np.ix_(ativo, ativo)]; Aya = Ay[ativo]; dga = dg[ativo]
+        ba = b[ativo].copy()
+        for _ in range(2000):
+            mxa = 0.0
+            for i in range(len(ativo)):
+                bi = ba[i]
+                rho = Aya[i] - (Ga[i] @ ba - dga[i]*bi)
+                nb = np.sign(rho)*max(abs(rho) - lam*al, 0.0)/(dga[i] + lam*(1 - al))
+                if nb != bi:
+                    ba[i] = nb; mxa = max(mxa, abs(nb - bi))
+            if mxa &lt; tol: break
+        b[ativo] = ba
+        if mx &lt; tol: break
+    return b
+
+def enet_path_a(A, y, lams, al=1.0):
+    n_, p_ = A.shape
+    G = A.T @ A/n_; Ay = A.T @ (y - y.mean())/n_; dg = np.diag(G).copy()
+    b = np.zeros(p_); out = []
+    for lam in lams:
+        b = _cd_ativo(G, Ay, lam, al, b, dg)
+        out.append(np.concatenate([[y.mean()], b.copy()]))
+    return out
+
+def lasso_path_a(A, y, lams): return enet_path_a(A, y, lams, 1.0)
+# ------------------------------------------------------------------ fim do bloco comum
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados14b)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 60 espectros NIR de 200 bandas (arquivo espectro.csv)
+esp = le_csv('espectro.csv')
+LAM=np.round(np.linspace(1100,2300,200),1)          # comprimentos de onda (nm)
+XE=esp.drop(columns='proteina').to_numpy(float); YE=esp['proteina'].to_numpy(float)
+NE,PE=XE.shape
+# ------------------------------------------------------------------ fim do bloco comum
+
+Xp,mu,sd=pad(X); yc=Y-Y.mean()
+Ep,emu,esd=pad(XE); yec=YE-YE.mean()
+
+print('Dois conjuntos nesta ficha, porque a PCR se comporta de modo muito')
+print('diferente nos dois:')
+print('  (a) SOLO:     90 amostras, 12 candidatas colineares')
+print('  (b) ESPECTRO: 60 amostras, 200 comprimentos de onda (p &gt; n)')
+
+print('\n'+'='*70)
+print('(a) SOLO — os 12 componentes principais')
+u,s,vt=np.linalg.svd(Xp,full_matrices=False)
+T=u*s; pv=s**2/np.sum(s**2)
+print()
+print('%3s %10s %12s %12s %14s %10s'%('CP','d_j','% var. X','% acum.','|r(CP, y)|','VIF do CP'))
+for j in range(P):
+    print('%3d %10s %12s %12s %14s %10s'%(j+1,c(float(s[j]),3),c(100*pv[j],2),
+          c(100*pv[:j+1].sum(),2),c(abs(float(np.corrcoef(T[:,j],Y)[0,1]))),c(1.0,2)))
+print()
+print('Os componentes são ORTOGONAIS entre si: todo VIF é exatamente 1. É a')
+print('primeira virtude do método — a colinearidade desaparece por construção.')
+print()
+ordem=np.argsort(-np.abs([np.corrcoef(T[:,j],Y)[0,1] for j in range(P)]))
+print('Ordenados por VARIÂNCIA em X:   %s'%', '.join('CP%d'%(j+1) for j in range(P)))
+print('Ordenados por RELEVÂNCIA para y: %s'%', '.join('CP%d'%(j+1) for j in ordem))
+print()
+print('Nos dados de solo as duas ordens quase coincidem no começo, e a PCR')
+print('funciona bem. No espectro elas são MUITO diferentes.')
+
+print('\n'+'='*70)
+print('(a) Quantos componentes? Validação cruzada (10 dobras, 20 repetições)')
+print()
+print('%3s %12s %12s %12s %10s'%('m','EQM resub','EQM 10-fold','% var. X','R² val.'))
+best=None
+for m in range(1,P+1):
+    b=pcr(Xp,Y,m); rs=eqm(Y,prev(Xp,b))
+    cvm,_=cv(lambda A,y,m=m: pcr(A,y,m),X,Y,10,0,20)
+    if best is None or cvm&lt;best[1]: best=(m,cvm)
+    print('%3d %12s %12s %12s %10s'%(m,c(rs),c(cvm),c(100*pv[:m].sum(),2),
+          c(1-cvm/float(Y.var(ddof=1)))))
+print()
+print('  melhor m = %d, EQM validado = %s'%(best[0],c(best[1])))
+print('  EQM validado do MQO com as 12 = %s'%c(cv(ols,X,Y,10,0,20)[0]))
+bo=ols(Xp,Y); bp=pcr(Xp,Y,P)
+print('  PCR com m = p é EXATAMENTE o MQO. Maior diferença entre os coeficientes:')
+print('    %s'%c(float(np.abs(bo-bp).max()),10))
+
+print('\n'+'='*70)
+print('A REGRA DOS "80% DA VARIÂNCIA" É UM MAU CRITÉRIO')
+print()
+for alvo in [0.70,0.80,0.90,0.95]:
+    m=int(np.searchsorted(np.cumsum(pv),alvo)+1)
+    cvm,_=cv(lambda A,y,m=m: pcr(A,y,m),X,Y,10,0,20)
+    print('  %d%% da variância de X -&gt; m = %2d -&gt; EQM validado %s'%(100*alvo,m,c(cvm)))
+print('  escolha por validação cruzada -&gt; m = %2d -&gt; EQM validado %s  &lt;- melhor'%(best[0],c(best[1])))
+print()
+print('O critério da variância explicada só olha X e ignora y por completo.')
+print('A validação cruzada olha o que importa: o erro de predição.')
+
+print('\n'+'='*70)
+print('(b) ESPECTRO — aqui a ordem de variância ENGANA')
+eu,es,evt=np.linalg.svd(Ep,full_matrices=False)
+TE=eu*es; epv=es**2/np.sum(es**2)
+print()
+print('%3s %12s %12s %14s'%('CP','% var. X','% acum.','|r(CP, y)|'))
+for j in range(10):
+    print('%3d %12s %12s %14s'%(j+1,c(100*epv[j],2),c(100*epv[:j+1].sum(),2),
+          c(abs(float(np.corrcoef(TE[:,j],YE)[0,1])))))
+print()
+print('O CP1 explica %s%% da variância do espectro e tem correlação de apenas'%c(100*epv[0],2))
+print('%s com a proteína. O CP3 explica %s%% e tem correlação de %s.'%(
+      c(abs(float(np.corrcoef(TE[:,0],YE)[0,1]))),c(100*epv[2],2),
+      c(abs(float(np.corrcoef(TE[:,2],YE)[0,1])))))
+print()
+print('A razão é física: a maior fonte de variação de um espectro de')
+print('reflectância é a deriva da linha de base (espalhamento, tamanho de')
+print('partícula), que nada tem a ver com o teor de proteína. A PCR é obrigada')
+print('a gastar o primeiro componente nela.')
+print()
+print('%3s %12s %12s %10s'%('m','EQM 10-fold','% var. X','R² val.'))
+bste=None
+for m in range(1,13):
+    cvm,_=cv(lambda A,y,m=m: pcr(A,y,m),XE,YE,10,0,5)
+    if bste is None or cvm&lt;bste[1]: bste=(m,cvm)
+    print('%3d %12s %12s %10s'%(m,c(cvm),c(100*epv[:m].sum(),2),c(1-cvm/float(YE.var(ddof=1)))))
+print()
+print('  melhor m = %d, EQM validado = %s, R² validado = %s'%(bste[0],c(bste[1]),
+      c(1-bste[1]/float(YE.var(ddof=1)))))
+print()
+print('Quantos componentes a PCR precisa para chegar ao erro que a PLS alcança')
+print('com 3? (a comparação completa está na ficha pls)')
+_pls = pls
+cvpls3,_=cv(lambda A,y: _pls(A,y,3),XE,YE,10,0,5)
+print('  PLS com 3 componentes: EQM validado = %s'%c(cvpls3))
+mm=[m for m in range(1,21) if cv(lambda A,y,m=m: pcr(A,y,m),XE,YE,10,0,5)[0]&lt;=cvpls3]
+print('  PCR precisa de m = %s para igualar'%(mm[0] if mm else 'mais de 20'))
+
+print('\n'+'='*70)
+print('PCR É UMA VERSÃO DISCRETA DO RIDGE')
+print()
+print('O ridge multiplica o componente j pelo fator d_j²/(d_j² + n*lambda), que')
+print('é contínuo entre 0 e 1. A PCR multiplica por 1 (se j &lt;= m) ou 0 (se j &gt; m).')
+print()
+l0=0.03162
+print('%3s %12s %16s %12s'%('CP','d_j','ridge (lam=0,032)','PCR (m=5)'))
+for j in range(P):
+    print('%3s %12s %16s %12s'%(j+1,c(float(s[j]),3),
+          c(float(s[j]**2/(s[j]**2+l0*N))),'1,0000' if j&lt;5 else '0,0000'))
+print()
+print('É por isso que os dois métodos dão resultados parecidos quando a')
+print('colinearidade é moderada, e por isso que o ridge é geralmente preferível:')
+print('o corte abrupto da PCR descarta informação útil junto com o ruído.')
+
+print('\n'+'='*70)
+print('A PCR NÃO SELECIONA VARIÁVEIS')
+b=pcr(Xp,Y,best[0])
+print()
+print('Com m = %d, os coeficientes voltam para a escala das variáveis originais'%best[0])
+print('(b = V_m * gamma), e TODAS as 12 recebem coeficiente não nulo:')
+for j in np.argsort(-np.abs(b[1:])):
+    print('  %-11s %10s   %s'%(ROT[NOMES[j]],c(b[1+j]),'(no modelo verdadeiro)' if NOMES[j] in VERD else ''))
+print()
+print('  coeficientes exatamente zero: %d de 12'%int(np.sum(np.abs(b[1:])&lt;1e-12)))
+print()
+print('A PCR reduz a DIMENSÃO, não o número de variáveis medidas. Para análise')
+print('de solo isso importa: continua sendo preciso medir as doze.')
+
+print('\n'+'='*70)
+print('AS CARGAS: o que cada componente significa')
+print()
+print('Cargas dos quatro primeiros componentes (solo):')
+print('%-11s %9s %9s %9s %9s'%('variável','CP1','CP2','CP3','CP4'))
+for j in range(P):
+    print('%-11s %9s %9s %9s %9s'%(ROT[NOMES[j]],c(float(vt[0,j]),3),c(float(vt[1,j]),3),
+          c(float(vt[2,j]),3),c(float(vt[3,j]),3)))
+print()
+print('%-11s %9s %9s %9s %9s'%('% var. X',c(100*pv[0],1),c(100*pv[1],1),c(100*pv[2],1),c(100*pv[3],1)))
+print('%-11s %9s %9s %9s %9s'%('|r| com y',
+      c(abs(float(np.corrcoef(T[:,0],Y)[0,1])),3),c(abs(float(np.corrcoef(T[:,1],Y)[0,1])),3),
+      c(abs(float(np.corrcoef(T[:,2],Y)[0,1])),3),c(abs(float(np.corrcoef(T[:,3],Y)[0,1])),3)))
+print()
+print('O CP1 opõe o complexo de troca (Ca, Mg, K, V%) à areia: é o gradiente de')
+print('fertilidade química. O CP2 carrega a textura. A leitura das cargas é')
+print('interpretação, não resultado estatístico, e deve ser apresentada como tal.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Dois conjuntos nesta ficha, porque a PCR se comporta de modo muito
+diferente nos dois:
+  (a) SOLO:     90 amostras, 12 candidatas colineares
+  (b) ESPECTRO: 60 amostras, 200 comprimentos de onda (p &gt; n)
+
+======================================================================
+(a) SOLO — os 12 componentes principais
+
+ CP        d_j     % var. X      % acum.     |r(CP, y)|  VIF do CP
+  1     19,901        37,08        37,08         0,4204       1,00
+  2     15,914        23,71        60,80         0,3626       1,00
+  3     11,353        12,07        72,87         0,2939       1,00
+  4      9,640         8,70        81,57         0,0772       1,00
+  5      8,846         7,33        88,89         0,2848       1,00
+  6      7,403         5,13        94,03         0,2161       1,00
+  7      5,179         2,51        96,54         0,4103       1,00
+  8      3,982         1,48        98,02         0,0512       1,00
+  9      3,323         1,03        99,06         0,0821       1,00
+ 10      2,694         0,68        99,74         0,0128       1,00
+ 11      1,573         0,23        99,97         0,1099       1,00
+ 12      0,589         0,03       100,00         0,0571       1,00
+
+Os componentes são ORTOGONAIS entre si: todo VIF é exatamente 1. É a
+primeira virtude do método — a colinearidade desaparece por construção.
+
+Ordenados por VARIÂNCIA em X:   CP1, CP2, CP3, CP4, CP5, CP6, CP7, CP8, CP9, CP10, CP11, CP12
+Ordenados por RELEVÂNCIA para y: CP1, CP7, CP2, CP3, CP5, CP6, CP11, CP9, CP4, CP12, CP8, CP10
+
+Nos dados de solo as duas ordens quase coincidem no começo, e a PCR
+funciona bem. No espectro elas são MUITO diferentes.
+
+======================================================================
+(a) Quantos componentes? Validação cruzada (10 dobras, 20 repetições)
+
+  m    EQM resub  EQM 10-fold     % var. X    R² val.
+  1       0,9396       0,9894        37,08     0,1428
+  2       0,7896       0,8547        60,80     0,2594
+  3       0,6911       0,7662        72,87     0,3361
+  4       0,6842       0,7840        81,57     0,3207
+  5       0,5917       0,6911        88,89     0,4012
+  6       0,5384       0,6481        94,03     0,4385
+  7       0,3463       0,4243        96,54     0,6324
+  8       0,3433       0,4288        98,02     0,6284
+  9       0,3356       0,4269        99,06     0,6301
+ 10       0,3354       0,4397        99,74     0,6190
+ 11       0,3216       0,4329        99,97     0,6249
+ 12       0,3179       0,4384       100,00     0,6201
+
+  melhor m = 7, EQM validado = 0,4243
+  EQM validado do MQO com as 12 = 0,4384
+  PCR com m = p é EXATAMENTE o MQO. Maior diferença entre os coeficientes:
+    0,0000000000
+
+======================================================================
+A REGRA DOS "80% DA VARIÂNCIA" É UM MAU CRITÉRIO
+
+  70% da variância de X -&gt; m =  3 -&gt; EQM validado 0,7662
+  80% da variância de X -&gt; m =  4 -&gt; EQM validado 0,7840
+  90% da variância de X -&gt; m =  6 -&gt; EQM validado 0,6481
+  95% da variância de X -&gt; m =  7 -&gt; EQM validado 0,4243
+  escolha por validação cruzada -&gt; m =  7 -&gt; EQM validado 0,4243  &lt;- melhor
+
+O critério da variância explicada só olha X e ignora y por completo.
+A validação cruzada olha o que importa: o erro de predição.
+
+======================================================================
+(b) ESPECTRO — aqui a ordem de variância ENGANA
+
+ CP     % var. X      % acum.     |r(CP, y)|
+  1        83,54        83,54         0,1512
+  2         6,26        89,81         0,3907
+  3         3,49        93,30         0,5994
+  4         2,83        96,14         0,2211
+  5         2,30        98,44         0,4759
+  6         1,39        99,83         0,3796
+  7         0,01        99,83         0,0037
+  8         0,01        99,84         0,0330
+  9         0,01        99,85         0,0072
+ 10         0,01        99,86         0,0241
+
+O CP1 explica 83,54% da variância do espectro e tem correlação de apenas
+0,1512 com a proteína. O CP3 explica 3,49% e tem correlação de 0,5994.
+
+A razão é física: a maior fonte de variação de um espectro de
+reflectância é a deriva da linha de base (espalhamento, tamanho de
+partícula), que nada tem a ver com o teor de proteína. A PCR é obrigada
+a gastar o primeiro componente nela.
+
+  m  EQM 10-fold     % var. X    R² val.
+  1       3,5948        83,54    -0,0287
+  2       3,1853        89,81     0,0885
+  3       1,9529        93,30     0,4412
+  4       1,7939        96,14     0,4866
+  5       0,8988        98,44     0,7428
+  6       0,1991        99,83     0,9430
+  7       0,2018        99,83     0,9423
+  8       0,2049        99,84     0,9414
+  9       0,2067        99,85     0,9408
+ 10       0,2108        99,86     0,9397
+ 11       0,2124        99,87     0,9392
+ 12       0,2164        99,87     0,9381
+
+  melhor m = 6, EQM validado = 0,1991, R² validado = 0,9430
+
+Quantos componentes a PCR precisa para chegar ao erro que a PLS alcança
+com 3? (a comparação completa está na ficha pls)
+  PLS com 3 componentes: EQM validado = 0,3165
+  PCR precisa de m = 6 para igualar
+
+======================================================================
+PCR É UMA VERSÃO DISCRETA DO RIDGE
+
+O ridge multiplica o componente j pelo fator d_j²/(d_j² + n*lambda), que
+é contínuo entre 0 e 1. A PCR multiplica por 1 (se j &lt;= m) ou 0 (se j &gt; m).
+
+ CP          d_j ridge (lam=0,032)    PCR (m=5)
+  1       19,901           0,9929       1,0000
+  2       15,914           0,9889       1,0000
+  3       11,353           0,9784       1,0000
+  4        9,640           0,9703       1,0000
+  5        8,846           0,9649       1,0000
+  6        7,403           0,9506       0,0000
+  7        5,179           0,9041       0,0000
+  8        3,982           0,8479       0,0000
+  9        3,323           0,7951       0,0000
+ 10        2,694           0,7183       0,0000
+ 11        1,573           0,4651       0,0000
+ 12        0,589           0,1087       0,0000
+
+É por isso que os dois métodos dão resultados parecidos quando a
+colinearidade é moderada, e por isso que o ridge é geralmente preferível:
+o corte abrupto da PCR descarta informação útil junto com o ruído.
+
+======================================================================
+A PCR NÃO SELECIONA VARIÁVEIS
+
+Com m = 7, os coeficientes voltam para a escala das variáveis originais
+(b = V_m * gamma), e TODAS as 12 recebem coeficiente não nulo:
+  M.O.            0,8717   (no modelo verdadeiro)
+  CTC            -0,2543   
+  V%              0,2276   (no modelo verdadeiro)
+  P (resina)      0,1861   (no modelo verdadeiro)
+  pH              0,1668   
+  Areia          -0,1578   
+  K               0,1453   
+  Argila          0,1385   (no modelo verdadeiro)
+  Silte           0,0944   
+  Al              0,0111   
+  Mg              0,0061   
+  Ca             -0,0023   
+
+  coeficientes exatamente zero: 0 de 12
+
+A PCR reduz a DIMENSÃO, não o número de variáveis medidas. Para análise
+de solo isso importa: continua sendo preciso medir as doze.
+
+======================================================================
+AS CARGAS: o que cada componente significa
+
+Cargas dos quatro primeiros componentes (solo):
+variável          CP1       CP2       CP3       CP4
+pH              0,408    -0,182     0,082    -0,063
+M.O.           -0,014     0,271    -0,605    -0,076
+P (resina)      0,067     0,016     0,412     0,420
+K               0,431     0,126    -0,151     0,010
+Ca              0,449     0,105    -0,053     0,043
+Mg              0,443     0,080    -0,085     0,032
+Al             -0,209     0,261    -0,224     0,085
+CTC             0,087     0,505    -0,246     0,091
+V%              0,439    -0,149     0,038    -0,023
+Argila          0,006     0,478     0,303     0,302
+Silte           0,026     0,191     0,248    -0,829
+Areia          -0,017    -0,500    -0,399     0,128
+
+% var. X         37,1      23,7      12,1       8,7
+|r| com y       0,420     0,363     0,294     0,077
+
+O CP1 opõe o complexo de troca (Ca, Mg, K, V%) à areia: é o gradiente de
+fertilidade química. O CP2 carrega a textura. A leitura das cargas é
+interpretação, não resultado estatístico, e deve ser apresentada como tal.</pre></div><figure class="fig"><img src="../assets/resultados/pcr.png" alt="O gráfico de escarpa com a regra dos 80%, a PCR como ridge discreto e as cargas" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, a variância de cada componente e a acumulada, com os limiares de 80% e 95%. No centro, a comparação direta entre o fator de encolhimento contínuo do <a href="ridge.html">ridge</a> e o corte abrupto da PCR. À direita, as cargas dos quatro primeiros componentes do conjunto de solo, em mapa de cores. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A PCR no conjunto de solo, por número de componentes (VC de 10 dobras, 20 repetições)</caption><thead><tr><th>m</th><th>EQM resubstituição</th><th>EQM validado</th><th>% var. de X</th><th>R² validado</th></tr></thead><tbody><tr><td>1</td><td>0,9396</td><td>0,9894</td><td>37,08</td><td>0,1428</td></tr><tr><td>2</td><td>0,7896</td><td>0,8547</td><td>60,80</td><td>0,2594</td></tr><tr><td>3</td><td>0,6911</td><td>0,7662</td><td>72,87</td><td>0,3361</td></tr><tr><td>4</td><td>0,6842</td><td><strong>0,7840</strong></td><td>81,57</td><td>0,3207</td></tr><tr><td>5</td><td>0,5917</td><td>0,6911</td><td>88,89</td><td>0,4012</td></tr><tr><td>6</td><td>0,5384</td><td>0,6481</td><td>94,03</td><td>0,4385</td></tr><tr><td><strong>7</strong></td><td>0,3463</td><td><strong>0,4243</strong></td><td>96,54</td><td><strong>0,6324</strong></td></tr><tr><td>8</td><td>0,3433</td><td>0,4288</td><td>98,02</td><td>0,6284</td></tr><tr><td>9</td><td>0,3356</td><td>0,4269</td><td>99,06</td><td>0,6301</td></tr><tr><td>10</td><td>0,3354</td><td>0,4397</td><td>99,74</td><td>0,6190</td></tr><tr><td>11</td><td>0,3216</td><td>0,4329</td><td>99,97</td><td>0,6249</td></tr><tr><td>12 (= MQO)</td><td>0,3179</td><td>0,4384</td><td>100,00</td><td>0,6201</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>No conjunto espectral, a ordem da variância ENGANA</caption><thead><tr><th>CP</th><th>% da variância de X</th><th>% acumulada</th><th>|r| com a proteína</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><strong>83,54</strong></td><td>83,54</td><td><strong>0,1512</strong></td></tr><tr><td>2</td><td>6,26</td><td>89,81</td><td>0,3907</td></tr><tr><td><strong>3</strong></td><td><strong>3,49</strong></td><td>93,30</td><td><strong>0,5994</strong></td></tr><tr><td>4</td><td>2,83</td><td>96,14</td><td>0,2211</td></tr><tr><td>5</td><td>2,30</td><td>98,44</td><td>0,4759</td></tr><tr><td>6</td><td>1,39</td><td>99,83</td><td>0,3796</td></tr><tr><td>7</td><td>0,01</td><td>99,83</td><td>0,0037</td></tr><tr><td>8</td><td>0,01</td><td>99,84</td><td>0,0330</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A PCR no espectro: o preço de ignorar y</caption><thead><tr><th>m</th><th>EQM validado</th><th>% var. de X</th><th>R² validado</th></tr></thead><tbody><tr><td><strong>1</strong></td><td>3,5948</td><td>83,54</td><td><strong>−0,0287</strong></td></tr><tr><td>2</td><td>3,1853</td><td>89,81</td><td>0,0885</td></tr><tr><td>3</td><td>1,9529</td><td>93,30</td><td>0,4412</td></tr><tr><td>4</td><td>1,7939</td><td>96,14</td><td>0,4866</td></tr><tr><td>5</td><td>0,8988</td><td>98,44</td><td>0,7428</td></tr><tr><td><strong>6</strong></td><td><strong>0,1991</strong></td><td>99,83</td><td><strong>0,9430</strong></td></tr><tr><td>7</td><td>0,2018</td><td>99,83</td><td>0,9423</td></tr><tr><td>8</td><td>0,2049</td><td>99,84</td><td>0,9414</td></tr><tr><td>12</td><td>0,2164</td><td>99,87</td><td>0,9381</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os doze coeficientes com m = 7: nenhum é zero</caption><thead><tr><th>Variável</th><th>Coeficiente</th><th>No modelo verdadeiro?</th></tr></thead><tbody><tr><td>M.O.</td><td>0,8717</td><td>SIM</td></tr><tr><td>CTC</td><td>−0,2543</td><td>não</td></tr><tr><td>V%</td><td>0,2276</td><td>SIM</td></tr><tr><td>P (resina)</td><td>0,1861</td><td>SIM</td></tr><tr><td>pH</td><td>0,1668</td><td>não</td></tr><tr><td>Areia</td><td>−0,1578</td><td>não</td></tr><tr><td>K</td><td>0,1453</td><td>não</td></tr><tr><td>Argila</td><td>0,1385</td><td>SIM</td></tr><tr><td>Silte</td><td>0,0944</td><td>não</td></tr><tr><td>Al</td><td>0,0111</td><td>não</td></tr><tr><td>Mg</td><td>0,0061</td><td>não</td></tr><tr><td>Ca</td><td><strong>−0,0023</strong></td><td>não</td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela do conjunto de solo tem uma característica que merece atenção. A curva do erro validado não é suave: ela cai de 0,9867 a 0,6481 entre \(m=1\) e \(m=6\), <strong>despenca</strong> para 0,4243 em \(m=7\), e depois oscila. O salto entre o sexto e o sétimo componente é maior que toda a melhora acumulada dos seis anteriores. A explicação está na coluna da correlação com \(y\) da tabela de componentes: o sétimo componente tem \(|r|=0{,}3732\), mais que o terceiro, o quarto, o quinto e o sexto — e carrega apenas 2,24% da variância de \(X\). Um critério baseado em variância explicada jamais chegaria a ele.</p><p>Note também que \(m=4\) tem erro <em>maior</em> que \(m=3\) (0,7840 contra 0,7662): acrescentar um componente pode piorar a predição, porque o quarto componente tem \(|r|\) de apenas 0,0768 com \(y\) e o custo em variância não é compensado. Isso não aconteceria com o <a href="ridge.html">ridge</a>, que encolhe gradualmente em vez de admitir ou excluir direções inteiras.</p><p><strong>Sobre o espectro:</strong> esta é a demonstração mais forte da ficha, e vale enunciá-la com clareza. O primeiro componente principal das 200 colunas carrega 83,54% da variância do espectro, e uma PCR com esse único componente tem \(R^2\) validado de <strong>−0,0287</strong> — negativo, isto é, pior que simplesmente prever a média do teor de proteína para todas as amostras. O que o componente está capturando é a deriva da linha de base, que em espectroscopia de reflectância decorre do espalhamento e do tamanho de partícula, e que de fato é a maior fonte de variação de um espectro. Nada disso tem relação com a composição química da amostra.</p><p>A curva só se resolve em \(m=6\), onde o \(R^2\) validado salta de 0,7428 para 0,9430. São necessários seis componentes para chegar onde a <a href="pls.html">PLS</a> chega com três, e o motivo é que a PCR gastou os primeiros em variação irrelevante. É precisamente esse o problema que a PLS foi criada para resolver, e a ficha <a href="pls.html">pls</a> faz a comparação completa.</p><p><strong>Sobre não selecionar:</strong> nos doze coeficientes com \(m=7\), nenhum é zero — o menor é o do cálcio, \(-0{,}0023\). A PCR reduz a <em>dimensão</em> do problema de doze para sete, e não o número de variáveis <em>medidas</em>: continua sendo necessário analisar as doze para aplicar o modelo. Para um laboratório de análise de solo, essa distinção é prática e importante, e é onde o <a href="lasso.html">lasso</a> leva vantagem. Note, em compensação, que a argila — que o lasso zera — recebe aqui coeficiente 0,1385, ao lado da areia com \(-0{,}1578\): a PCR, por não selecionar, não é forçada a escolher entre as duas. Em troca, ela dá à CTC o segundo maior coeficiente em magnitude (\(-0{,}2543\)), acima do V% e do fósforo, que estão no modelo verdadeiro — sinal de que não selecionar também tem custo interpretativo.</p><p><strong>Sobre a relação com o ridge:</strong> a tabela do encolhimento é a mesma ideia vista de dois modos. Em \(\lambda=0{,}032\), o ridge multiplica o oitavo componente por 0,8475 e o décimo segundo por 0,1091; a PCR com \(m=7\) multiplica ambos por zero. O ridge, portanto, retém 85% da informação do oitavo componente, que a PCR descarta inteiramente. Nos dados de solo os dois erros validados são próximos (0,4219 do ridge contra 0,4243 da PCR), com leve vantagem do ridge — compatível com a expectativa teórica de que o encolhimento gradual seja preferível ao corte.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td><strong>Escolher m pela variância explicada</strong></td><td>Use validação cruzada; o critério ignora y.</td></tr><tr><td>Não padronizar</td><td><code>scale = TRUE</code>; sem isso a variável de maior escala domina.</td></tr><tr><td>Supor que o CP1 é o mais relevante para y</td><td>Pode ser o menos; examine as correlações.</td></tr><tr><td>Esperar que a PCR selecione variáveis</td><td>Ela reduz dimensão, não variáveis medidas.</td></tr><tr><td>Interpretar cargas como resultado estatístico</td><td>É interpretação; apresente como tal.</td></tr><tr><td>Nomear componentes ("fator de fertilidade") sem ressalva</td><td>O nome é uma leitura, não um achado.</td></tr><tr><td>Usar os componentes de um conjunto em outro</td><td>As cargas dependem da amostra.</td></tr><tr><td>Comparar % de variância de X com R²</td><td>São quantidades diferentes.</td></tr><tr><td>Avaliar o erro com m escolhido na amostra inteira</td><td>Reescolha m dentro de cada dobra.</td></tr><tr><td>Esquecer que m = p é o MQO</td><td>Se m cresce muito, não há regularização alguma.</td></tr><tr><td>Rodar PCA em dados com faltantes sem tratar</td><td>Trate antes; o SVD não aceita NA.</td></tr><tr><td>Preferir PCR à <a href="pls.html">PLS</a> sem comparar</td><td>A PLS costuma chegar antes; compare.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><strong><a href="pls.html">PLS</a></strong></td><td>Quase sempre: constrói os componentes olhando y.</td></tr><tr><td><a href="ridge.html">Ridge</a></td><td>Encolhimento gradual em vez de corte abrupto; costuma ser melhor.</td></tr><tr><td><a href="lasso.html">Lasso</a></td><td>Quando se quer reduzir o número de variáveis MEDIDAS.</td></tr><tr><td>Rede elástica</td><td>Grupos colineares, com seleção.</td></tr><tr><td>Análise fatorial</td><td>Quando há um modelo de fatores latentes a estimar.</td></tr><tr><td>PCA esparso</td><td>Quando se quer componentes com poucas variáveis.</td></tr><tr><td>PCR com componentes escolhidos por correlação com y</td><td>Possível, mas exige validação aninhada rigorosa.</td></tr><tr><td><a href="subset.html">Seleção exaustiva</a> e <a href="stepwise.html">stepwise</a></td><td>Quando o objetivo é um modelo com poucas variáveis.</td></tr><tr><td>Remover redundância por conhecimento da área</td><td>Frequentemente a melhor solução.</td></tr><tr><td>Correção da linha de base antes da PCR</td><td>Em espectroscopia: SNV, MSC, derivadas de Savitzky-Golay.</td></tr></tbody></table></div><ol class="steps"><li>Padronize as variáveis.</li><li>Examine o gráfico de escarpa — mas não escolha m por ele.</li><li>Calcule a correlação de cada componente com y: se não decrescer, a PCR está em desvantagem.</li><li>Escolha m por validação cruzada, com <code>validation = "CV"</code>.</li><li>Compare as duas linhas de variância explicada do <code>summary</code>.</li><li>Compare sempre com a PLS e com o ridge por validação cruzada.</li><li>Em espectroscopia, considere corrigir a linha de base antes.</li><li>Estime o erro reescolhendo m dentro de cada dobra.</li><li>Ao interpretar cargas, diga que é interpretação.</li><li>Reporte m, o critério de escolha e o erro validado.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>PEARSON, Karl. On lines and planes of closest fit to systems of points in space. <em>Philosophical Magazine</em>, v. 2, n. 11, p. 559-572, 1901.</li><li>HOTELLING, Harold. Analysis of a complex of statistical variables into principal components. <em>Journal of Educational Psychology</em>, v. 24, n. 6, p. 417-441, 1933.</li><li>MASSY, William F. Principal components regression in exploratory statistical research. <em>Journal of the American Statistical Association</em>, v. 60, n. 309, p. 234-256, 1965.</li><li>JOLLIFFE, Ian T. A note on the use of principal components in regression. <em>Journal of the Royal Statistical Society: Series C</em>, v. 31, n. 3, p. 300-303, 1982.</li><li>JOLLIFFE, Ian T. <em>Principal component analysis.</em> 2. ed. New York: Springer, 2002.</li><li>HADI, Ali S.; LING, Robert F. Some cautionary notes on the use of principal components regression. <em>The American Statistician</em>, v. 52, n. 1, p. 15-19, 1998.</li><li>FRANK, Ildiko E.; FRIEDMAN, Jerome H. A statistical view of some chemometrics regression tools. <em>Technometrics</em>, v. 35, n. 2, p. 109-135, 1993.</li><li>ZOU, Hui; HASTIE, Trevor; TIBSHIRANI, Robert. Sparse principal component analysis. <em>Journal of Computational and Graphical Statistics</em>, v. 15, n. 2, p. 265-286, 2006.</li><li>HOERL, Arthur E.; KENNARD, Robert W. Ridge regression: biased estimation for nonorthogonal problems. <em>Technometrics</em>, v. 12, n. 1, p. 55-67, 1970.</li><li>WOLD, Svante; SJÖSTRÖM, Michael; ERIKSSON, Lennart. PLS-regression: a basic tool of chemometrics. <em>Chemometrics and Intelligent Laboratory Systems</em>, v. 58, n. 2, p. 109-130, 2001.</li><li>MEVIK, Bjørn-Helge; WEHRENS, Ron. The pls package: principal component and partial least squares regression in R. <em>Journal of Statistical Software</em>, v. 18, n. 2, p. 1-23, 2007.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>MEVIK, Bjørn-Helge; WEHRENS, Ron; LILAND, Kristian H. <em>pls: partial least squares and principal component regression.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=pls" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=pls</a>.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>prcomp</code>, <code>svd</code> e <code>scale</code>, pacote <code>stats</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Variáveis padronizadas, m escolhido por validação cruzada, relevância para y alinhada com a variância em X (o pressuposto implícito), linearidade na média e observações independentes.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>pls</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="lasso.html"><span>← ANTERIOR</span>Regressão lasso</a><a href="pls.html"><span>PRÓXIMO →</span>Regressão por mínimos quadrados parciais (PLS)</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

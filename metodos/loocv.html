@@ -4,313 +4,511 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Leave-one-out cross-validation (LOOCV): conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Leave-one-out cross-validation (LOOCV) | Estatística e Ciência de Dados
-  </title>
+<meta content="Leave-one-out cross-validation (LOOCV): conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Leave-one-out cross-validation (LOOCV) | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Leave-one-out cross-validation (LOOCV)
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 13 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Leave-one-out cross-validation (LOOCV)
-    </h1>
-<p class="detail-lead">
-     Avalia o desempenho preditivo reservando uma observação por vez para validação.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/loocv.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia o desempenho preditivo reservando uma observação por vez para validação.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Observações independentes.</li><li>Processo estacionário/representativo.</li><li>Modelagem e seleção devem ocorrer dentro de cada fold quando houver escolha de variáveis.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\operatorname{LOOCV\!\!\!-MSE}=\frac1n\sum_{i=1}^n\left(\frac{e_i}{1-h_{ii}}\right)^2\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(n\)
-        </dt>
-<dd>
-         quantidade de observações
-        </dd>
-</div>
-<div>
-<dt>
-         \(e_i\)
-        </dt>
-<dd>
-         resíduo do ajuste linear completo para a observação i
-        </dd>
-</div>
-<div>
-<dt>
-         \(h_{ii}\)
-        </dt>
-<dd>
-         elemento diagonal i da matriz chapéu, que mede alavancagem
-        </dd>
-</div>
-<div>
-<dt>
-         \(LOOCV\)
-        </dt>
-<dd>
-         erro de validação deixando uma observação de fora por vez
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Menor MSE indica previsão aparentemente melhor; estimador LOOCV pode apresentar variância alta na comparação de modelos.
-      </p>
-<p>
-       Compare as medidas obtidas em observações não usadas no treinamento. Uma estimativa baixa do erro em treino não demonstra capacidade de generalização.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Ajustar distância de frenagem por velocidade usando cada observação de cars como caso de validação.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-loocv" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-loocv"><code># Leave-one-out cross-validation (LOOCV) ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Leave-one-out cross-validation (LOOCV)</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · AVALIAÇÃO DE MODELOS</span><h1>Leave-one-out cross-validation (LOOCV)</h1><p class="detail-lead">Valida o modelo omitindo uma observação por vez; para modelos lineares, o atalho da alavancagem a torna gratuita.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/loocv.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/loocv.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a deixa-um-de-fora</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A deixa-um-de-fora é a <a href="kfold.html">validação cruzada</a> levada ao extremo: \(k=n\). Cada observação é predita por um modelo ajustado com todas as outras. Por treinar com \(n-1\) das \(n\) observações, é a de menor viés da família — e, para modelos lineares, há um atalho que a torna praticamente gratuita.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Deixa-um-de-fora" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Validação cruzada</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">com k = n</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A virtude</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Menor viés: treina com</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">n − 1 observações</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O atalho</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">resíduo/(1 − h)</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">um ajuste só</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Determinística</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Não há sorteio de dobras</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A fama</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">"variância alta" —</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">e o que isso quer dizer</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">hatvalues()</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">boot::cv.glm()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Deixa-um-de-fora</text></svg><figcaption>Visão geral da deixa-um-de-fora. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O atalho, em uma linha</strong><p>Para qualquer modelo linear ajustado por mínimos quadrados, o resíduo deixa-um-de-fora da observação \(i\) é simplesmente \(r_i/(1-h_i)\), com \(r_i\) o resíduo comum e \(h_i\) a alavancagem. Não é aproximação: é identidade algébrica. Nos dados desta ficha, a maior discrepância entre as 120 parcelas calculadas pelos dois caminhos é de 1,3 × 10⁻⁹.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a deixa-um-de-fora</h2><p>O procedimento é literal: omita a observação 1, ajuste o modelo com as outras 119, prediga a observação 1 e guarde o erro; repita para as 120. A média dos erros quadráticos é a estimativa. Como não há sorteio, o resultado é <strong>determinístico</strong> — a mesma análise, no mesmo conjunto, devolve sempre o mesmo número.</p><figure class="fig"><img src="../assets/resultados/loocv-didatica.png" alt="O atalho contra a força bruta, a alavancagem e as duas fontes de variância" loading="lazy"/><figcaption><strong>Os três fatos que definem o método.</strong> À esquerda, os 120 erros quadráticos calculados pelos dois caminhos caem exatamente sobre a reta de identidade: o atalho é exato, com discrepância máxima de 1,3 × 10⁻⁹. No centro, a relação entre alavancagem e resíduo: quanto maior o h, mais o resíduo cresce quando a observação é removida, porque ela puxava o ajuste para si. À direita, as duas fontes de variância da estimativa, que a literatura frequentemente confunde. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>A soma dos resíduos deixa-um-de-fora tem nome</strong><p>\(\text{PRESS}=\sum_i\left[r_i/(1-h_i)\right]^2\) é a <em>predicted residual error sum of squares</em>, proposta por Allen (1974). A estimativa da deixa-um-de-fora é simplesmente PRESS/n, e o \(R^2\) de predição, \(1-\text{PRESS}/\text{SQT}\), é uma medida de validação que custa um único ajuste.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Omitir uma só faz sentido se ela for a unidade.</td><td>Com dados agrupados, omita o GRUPO, não a observação.</td></tr><tr><td>Todo o pré-processamento dentro do laço</td><td>Igual à <a href="kfold.html">validação cruzada k-fold</a>.</td><td>Com o atalho, isso é automático só para o ajuste linear.</td></tr><tr><td><strong>O atalho vale só para modelos lineares</strong></td><td>Ele vem da álgebra da matriz chapéu.</td><td>Para GLM há aproximações; para outros modelos, força bruta.</td></tr><tr><td>Modelo estável à remoção de uma observação</td><td>Modelos instáveis tornam a estimativa errática.</td><td>Compare com k = 5 e k = 10.</td></tr><tr><td>Ausência de observações muito influentes</td><td>Um h próximo de 1 explode o resíduo deixa-um-de-fora.</td><td>Examine h; alerte-se acima de 2p/n.</td></tr><tr><td>Custo computacional aceitável</td><td>Sem atalho, são n ajustes.</td><td>Com n grande e modelo caro, prefira k = 10.</td></tr><tr><td>Classes equilibradas em classificação</td><td>Com classes 50/50, pode colapsar.</td><td>Veja o exemplo construído desta ficha.</td></tr></tbody></table></div><div class="callout warn"><strong>O caso em que ela falha de forma espetacular</strong><p>Considere dados sem nenhum sinal, com duas classes em proporção exatamente 50/50, e a regra "classificar tudo na classe majoritária do treino". Com \(n\) par, remover uma observação <em>sempre</em> deixa a outra classe em maioria — e a predição é <em>sempre</em> errada. A deixa-um-de-fora estima acurácia <strong>0,0000</strong> para um classificador cuja acurácia verdadeira é 50%. O 5-fold estima 0,34 a 0,42, também abaixo, mas sem colapsar. O exemplo é construído, mas o mecanismo é real: os \(n\) conjuntos de treino são quase idênticos, e qualquer dependência do modelo em relação ao conjunto inteiro se propaga às \(n\) predições de uma vez.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\widehat{\text{Err}}_{\text{LOO}}=\frac{1}{n}\sum_{i=1}^{n}\left(y_i-\hat f^{-i}(x_i)\right)^{2}\]</div><h3>O atalho, e por que ele funciona</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}y_i-\hat f^{-i}(x_i) &= \frac{y_i-\hat f(x_i)}{1-h_{ii}} \\ &= \frac{r_i}{1-h_{ii}},\end{aligned}\]\[H=X\left(X^{\top}X\right)^{-1}X^{\top}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\widehat{\text{Err}}_{\text{LOO}}=\frac{1}{n}\sum_{i=1}^{n}\left(\frac{r_i}{1-h_{ii}}\right)^{2}=\frac{\text{PRESS}}{n}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(\hat f^{-i}\)</dt><dd>modelo ajustado sem a observação \(i\)</dd></div><div><dt>\(r_i\)</dt><dd>resíduo comum, \(y_i-\hat f(x_i)\)</dd></div><div><dt>\(h_{ii}\)</dt><dd>alavancagem: elemento \(i\) da diagonal de \(H\)</dd></div><div><dt>\(H\)</dt><dd>matriz chapéu, ou matriz de projeção</dd></div><div><dt>\(\text{PRESS}\)</dt><dd>soma de quadrados dos resíduos deixa-um-de-fora</dd></div></dl><p>A identidade decorre de uma atualização de posto 1 da inversa de \(X^{\top}X\): remover uma linha de \(X\) altera o ajuste de forma que pode ser calculada em forma fechada. O custo é o de um único ajuste mais a diagonal de \(H\).</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Os dois caminhos, nos 120 talhões</caption><thead><tr><th>Caminho</th><th>EQM</th><th>Tempo</th></tr></thead><tbody><tr><td>Força bruta (120 ajustes)</td><td>0,785447</td><td>2,7 ms</td></tr><tr><td>Atalho (1 ajuste)</td><td>0,785447</td><td>0,1 ms</td></tr><tr><td>Diferença máxima entre as 120 parcelas</td><td>1,33 × 10⁻⁹</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A alavancagem no modelo de 7 parâmetros</caption><thead><tr><th>Quantidade</th><th>Valor</th></tr></thead><tbody><tr><td>Soma das alavancagens</td><td>7,0000 = p (é sempre assim)</td></tr><tr><td>Alavancagem média</td><td>p/n = 0,0583</td></tr><tr><td>Menor / maior</td><td>0,0183 / 0,3805</td></tr><tr><td>Observações com h &gt; 2p/n</td><td>6 de 120</td></tr></tbody></table></div><div class="worked"><strong>As cinco observações de maior alavancagem</strong><div class="table-wrap"><table class="method-table"><caption>Quanto maior o h, mais o resíduo cresce ao remover a observação</caption><thead><tr><th>Obs.</th><th>N</th><th>Densidade</th><th>M.O.</th><th>Chuva</th><th>h</th><th>Resíduo</th><th>Resíduo LOO</th></tr></thead><tbody><tr><td>26</td><td>80</td><td>39,1</td><td>1,73</td><td>589</td><td><strong>0,3805</strong></td><td>0,0297</td><td>0,0479</td></tr><tr><td>114</td><td>200</td><td>77,6</td><td>3,55</td><td>497</td><td>0,1574</td><td>0,8478</td><td>1,0061</td></tr><tr><td>18</td><td>200</td><td>45,0</td><td>3,70</td><td>621</td><td>0,1563</td><td>0,2100</td><td>0,2489</td></tr><tr><td>58</td><td>200</td><td>44,6</td><td>2,65</td><td>532</td><td>0,1482</td><td>−0,5484</td><td>−0,6438</td></tr><tr><td>2</td><td>200</td><td>65,2</td><td>3,67</td><td>736</td><td>0,1197</td><td>−0,5227</td><td>−0,5938</td></tr></tbody></table></div><p>A observação 26 tem alavancagem de 0,38 — seis vezes a média — porque combina a menor densidade do conjunto (39,1 mil plantas/ha) com matéria orgânica baixa. O resíduo dela é minúsculo, 0,03, justamente porque o ajuste foi puxado até ela; removida, o resíduo cresce 61%.</p><p>A observação 114 ilustra o outro padrão: alavancagem moderada e resíduo grande. É a combinação dos dois — h alto <em>e</em> resíduo alto — que caracteriza uma observação influente, e é isso que a distância de Cook mede.</p></div><h3>Propriedades</h3><ul class="checklist"><li>É o caso \(k=n\) da <a href="kfold.html">validação cruzada</a>, e o de menor viés da família.</li><li>É determinística: não há sorteio de dobras, logo a estimativa é sempre a mesma.</li><li>Para modelos lineares, custa um único ajuste pelo atalho da alavancagem.</li><li>A soma \(\sum_i h_{ii}\) é sempre igual a \(p\), o número de parâmetros.</li><li>Para modelos lineares, é assintoticamente equivalente ao <a href="stepwise.html">AIC</a> (Stone, 1977).</li><li>\(R^2_{\text{predição}}=1-\text{PRESS}/\text{SQT}\) é a versão validada do \(R^2\), e pode ser negativa.</li><li>Os \(n\) erros são fortemente correlacionados entre si, porque os conjuntos de treino diferem em uma só observação.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>EQM deixa-um-de-fora</td><td>A estimativa de menor viés.</td><td>Com modelos instáveis, pode ser errática.</td></tr><tr><td>PRESS</td><td>A soma dos erros deixa-um-de-fora.</td><td>É n vezes o EQM.</td></tr><tr><td>R² de predição</td><td>Versão validada do R².</td><td>Pode ser negativa.</td></tr><tr><td>hatvalues</td><td>A alavancagem de cada observação.</td><td>Soma = p; alerta acima de 2p/n.</td></tr><tr><td>Resíduo LOO grande</td><td>Observação mal predita quando omitida.</td><td>Combine com h para identificar influência.</td></tr><tr><td>delta de <code>cv.glm</code></td><td>Estimativa bruta e corrigida.</td><td>A segunda corrige o viés de k &lt; n.</td></tr></tbody></table></div><h3>A afirmação clássica, examinada</h3><div class="callout try"><strong>"A deixa-um-de-fora tem variância alta"</strong><p>A afirmação é correta, mas refere-se a uma fonte específica de variância, e vale separar as duas. <strong>Fonte 1</strong>, o sorteio das dobras com os dados fixos: aqui a deixa-um-de-fora é a de <em>menor</em> variância — exatamente zero, porque não há nada a sortear. <strong>Fonte 2</strong>, a variabilidade entre amostras diferentes da mesma população: é a essa que a afirmação se refere. Nos dados desta ficha, a simulação com 2 000 conjuntos gerados do mesmo processo dá desvios-padrão de 0,1108 (k = 5), 0,1062 (k = 10) e 0,1036 (deixa-um-de-fora) — praticamente iguais, e a deixa-um-de-fora sequer é a pior. A razão é que o modelo é linear e estável. Com modelos instáveis — árvores, vizinhos mais próximos, seleção de variáveis — a correlação entre os \(n\) erros é forte e a variância cresce de fato.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>O atalho sai do R base: <code>hatvalues(m)</code> dá a diagonal da matriz chapéu e <code>residuals(m)</code> os resíduos, de modo que <code>mean((residuals(m)/(1 - hatvalues(m)))^2)</code> é a estimativa completa a partir de um único ajuste. Para GLM, <code>boot::cv.glm(dados, modelo)</code> usa \(K=n\) por padrão e aplica uma aproximação quando o modelo não é linear. <code>caret::train()</code> com <code>trainControl(method = "LOOCV")</code> funciona para qualquer modelo, por força bruta.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-loocv-min" type="button">Copiar código</button></div><pre id="code-loocv-min"><code>m &lt;- lm(f_completo, data = milho)
+mean((residuals(m)/(1 - hatvalues(m)))^2)   # a estimativa completa
+sum((residuals(m)/(1 - hatvalues(m)))^2)    # a estatística PRESS
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 120 talhões de milho, com a produtividade em t/ha e quatro variáveis explicativas — dose de nitrogênio (kg/ha), densidade de plantio (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm). O processo gerador tem resposta quadrática ao nitrogênio e à densidade, e um erro de desvio-padrão 0,85 t/ha. O mesmo conjunto atravessa as fichas de avaliação de modelos, de modo que as estimativas de erro produzidas por cada método podem ser comparadas diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-loocv" type="button">Copiar código</button></div><pre id="code-loocv"><code># Deixa-um-de-fora (LOOCV): exemplo completo ----
+# Pacotes: boot (cv.glm), caret; o atalho sai do R base
+# Dados fictícios: 120 talhões de milho. Produtividade (t/ha) em função da
+# dose de nitrogênio, densidade de plantio, matéria orgânica e precipitação.
+# O arquivo scripts/milho.csv acompanha o repositório.
+milho &lt;- read.csv("milho.csv")
+str(milho); summary(milho$y)
+colMeans(milho)
 
-# Ajuste e resultados ----
-ajuste &lt;- lm(dist ~ speed, data = cars)
-e &lt;- residuals(ajuste); h &lt;- hatvalues(ajuste)
-MSE_LOOCV &lt;- mean((e / (1 - h))^2)
-print(c(MSE_LOOCV = MSE_LOOCV,
-        RMSE_LOOCV = sqrt(MSE_LOOCV)))
+# O modelo usado em todas as fichas deste grupo
+f_completo &lt;- y ~ N + I(N^2) + densidade + I(densidade^2) + mo + chuva
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+eqm &lt;- function(obs, prev) mean((obs - prev)^2)
+n &lt;- nrow(milho)
+
+# ---- Força bruta: n ajustes
+e_bruta &lt;- numeric(n)
+for (i in 1:n) {
+  mm &lt;- lm(f_completo, data = milho[-i, ])
+  e_bruta[i] &lt;- (milho$y[i] - predict(mm, newdata = milho[i, ]))^2
+}
+mean(e_bruta)
+
+# ---- O ATALHO: um ajuste só, pela alavancagem
+m &lt;- lm(f_completo, data = milho)
+h &lt;- hatvalues(m)                    # diagonal da matriz chapéu
+r &lt;- residuals(m)
+e_atalho &lt;- (r/(1 - h))^2
+mean(e_atalho)
+max(abs(e_bruta - e_atalho))         # praticamente zero: é identidade
+
+# A soma das residuais deixa-um-de-fora é a estatística PRESS
+PRESS &lt;- sum(e_atalho)*1; PRESS
+sum(h)                                # é sempre p
+mean(h)                               # p/n
+sum(h &gt; 2*length(coef(m))/n)          # observações de alta alavancagem
+
+# As cinco de maior alavancagem
+o &lt;- order(h, decreasing = TRUE)[1:5]
+data.frame(obs = o, h = round(h[o], 4), residuo = round(r[o], 4),
+           res_loo = round(r[o]/(1 - h[o]), 4))
+
+# ---- Com o pacote boot
+library(boot)
+g &lt;- glm(f_completo, data = milho)
+cv.glm(milho, g)$delta               # K = n por padrão
+cv.glm(milho, g, K = 10)$delta
+
+# ---- Com o caret
+library(caret)
+train(f_completo, data = milho, method = "lm",
+      trControl = trainControl(method = "LOOCV"))
+
+# ---- Comparação com os demais k
+for (k in c(2, 3, 5, 10, 20, 40, n)) {
+  v &lt;- if (k == n) mean(e_atalho) else mean(replicate(200, {
+    d &lt;- sample(rep(1:k, length.out = n)); e &lt;- numeric(n)
+    for (j in 1:k) {
+      mm &lt;- lm(f_completo, data = milho[d != j, ])
+      e[d == j] &lt;- (milho$y[d == j] - predict(mm, newdata = milho[d == j, ]))^2
+    }
+    mean(e) }))
+  cat(sprintf("k = %3d: EQM %.4f\n", k, v))
+}
+
+# ---- Seleção de modelo: LOOCV, AIC e BIC
+cands &lt;- list("so N"       = y ~ N,
+              "N+dens"     = y ~ N + densidade,
+              "4 lineares" = y ~ N + densidade + mo + chuva,
+              "com N2"     = y ~ N + I(N^2) + densidade + mo + chuva,
+              "com dens2"  = y ~ N + densidade + I(densidade^2) + mo + chuva,
+              "ambos"      = f_completo)
+t(sapply(cands, function(f) {
+  mm &lt;- lm(f, data = milho); hh &lt;- hatvalues(mm); rr &lt;- residuals(mm)
+  c(resub = mean(rr^2), loocv = mean((rr/(1 - hh))^2),
+    AIC = AIC(mm), BIC = BIC(mm)) }))
+# Para modelos lineares, LOOCV e AIC são assintoticamente equivalentes
+# (Stone, 1977), e aqui escolhem o mesmo modelo.
+
+# ---- Quando a deixa-um-de-fora FALHA (exemplo construído)
+# Classificador que prevê a classe majoritária do treino, em dados
+# sem sinal e com classes 50/50: a deixa-um-de-fora estima acurácia ZERO.
+set.seed(9)
+nn &lt;- 50; yy &lt;- sample(rep(0:1, each = nn/2))
+err &lt;- sum(sapply(1:nn, function(i)
+  (as.numeric(mean(yy[-i]) &gt; 0.5) != yy[i])))
+1 - err/nn       # acurácia estimada pela deixa-um-de-fora
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-loocv" type="button">Copiar código</button></div><pre id="code-py-loocv"><code># Bibliotecas: numpy e scipy (ambas já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Dados fictícios, criados pelo autor, compartilhados pelas fichas de
+# avaliação de modelos: 120 talhões de milho, com a produtividade (t/ha)
+# e quatro variáveis: dose de nitrogênio (kg/ha), densidade de plantio
+# (mil plantas/ha), matéria orgânica do solo (%) e precipitação no ciclo (mm).
+# Colunas: y, N, densidade, materia_organica, chuva
+# ===================================================================
+MILHO = np.array([
+ [7.65,40,56.3,1.86,572], [9.35,200,65.2,3.67,736], [6.8,160,71.1,2.46,372], [7.52,80,62.6,3.54,340],
+ [6.39,0,64,3.17,528], [8.54,160,58.2,2.81,433], [9.29,80,60.3,3.48,530], [6.85,120,59.8,2.58,375],
+ [8.76,120,60,3.54,532], [8,40,57.8,1.87,638], [5.86,80,64.8,2.27,620], [9.23,200,71.1,3.65,421],
+ [7.37,160,55.4,1.32,492], [8.55,200,71.8,3.13,600], [5.73,0,59.2,2.51,684], [6.3,80,59.4,2.41,434],
+ [5.66,0,46.9,2.31,443], [10.2,200,45,3.7,621], [8.84,120,67.1,1.72,488], [7.22,40,54.4,3.38,428],
+ [8.62,160,67.6,3.13,615], [8.97,160,62.4,2.5,369], [5.58,40,63.8,2.74,458], [8.52,160,71.3,3.29,607],
+ [6.97,0,61.5,2.38,463], [7.8,80,39.1,1.73,589], [8.8,120,49.8,3,410], [6.51,0,68.8,2.21,590],
+ [8.1,160,76,2.51,562], [10.13,200,61.3,2.84,666], [8.7,160,57.1,3.32,498], [9.12,120,52.3,4.07,488],
+ [9.21,200,65.8,3.04,511], [9.56,80,49.4,2.88,614], [7.59,80,53.3,3.37,453], [9,80,63,3,507],
+ [7.84,80,62.7,1.62,695], [7.23,120,60.2,2.38,590], [5.79,80,69.4,1.93,585], [7.6,80,53.3,3.29,473],
+ [10.46,120,53.7,3.69,597], [8.81,120,59.1,3.05,415], [6.29,0,62.5,2.08,386], [8.3,80,59.6,3.36,435],
+ [8.54,80,75.9,2.13,648], [6.05,0,57.8,2.98,535], [3.93,0,66.4,1.96,436], [6.95,40,57.9,1.83,488],
+ [5.84,40,64.2,1.82,561], [8.31,200,58.9,2.81,626], [7.77,200,59.2,2.34,373], [8.83,160,73.4,3.11,640],
+ [7.99,80,59.6,1.89,604], [9.28,160,74,3.14,457], [9.28,160,56.8,2.37,484], [10.55,80,58.7,3.68,564],
+ [6.44,80,69.8,3.51,494], [8.6,200,44.6,2.65,532], [9.92,80,50.3,2.88,425], [8.44,200,62.1,2.97,356],
+ [7.78,80,65.3,3.12,739], [6.18,40,66,2.61,535], [8.88,200,59.7,3.57,540], [8.22,120,51.9,2.44,566],
+ [9.58,120,67.8,1.45,640], [8.23,200,65.1,2.97,604], [4.71,0,54,2.72,427], [10.63,160,62.6,3.38,510],
+ [6.94,40,74.7,3.22,526], [8.58,80,62.9,2.89,589], [8.7,200,53.6,2.88,466], [9.05,80,59,2.89,554],
+ [5.96,40,59.4,2.34,540], [9.37,120,64.4,1.95,644], [7.89,160,68.4,2.23,285], [9,200,55.3,2.74,527],
+ [4.34,0,57.4,1.21,551], [9.67,160,69.2,2.49,581], [8.81,160,67.2,2.11,519], [7.04,80,71.6,2.74,445],
+ [6.92,40,51.6,2.23,580], [7.32,80,55.2,2.84,553], [7.51,40,69.1,2.64,444], [7.03,0,55.2,3.71,397],
+ [7.94,40,64.3,2.56,570], [7.95,80,61.6,2.63,442], [9.43,120,56.7,2.82,578], [5.06,40,72.4,1.53,656],
+ [6.3,40,61.9,2.05,539], [6.17,0,58.4,3.81,541], [8.22,80,60.8,3.16,531], [6.58,0,63.7,2.86,645],
+ [7.46,40,50.8,3.56,646], [6.37,40,55.8,2.67,528], [6.78,0,52.9,2.63,587], [8.54,160,47,2.59,524],
+ [3.94,0,68.9,1.56,475], [5.5,40,72.2,3.46,589], [6.46,80,70.4,2.67,512], [8.17,120,49.4,2.73,444],
+ [8.73,200,64.8,2.57,385], [7.1,120,66.8,2.36,609], [5.78,40,57.9,1.22,433], [8.98,200,67.8,2.91,420],
+ [9.57,160,54,4.33,496], [8.76,80,54.3,3.49,587], [8.66,80,56,2.6,365], [8.29,160,56.8,2.15,577],
+ [4.35,0,54.8,2.82,555], [4.89,0,68.8,3.06,411], [4.53,0,54.4,2.72,417], [9.05,120,58.7,3.38,504],
+ [8.82,80,57.4,2.13,694], [9.44,200,77.6,3.55,497], [9.43,120,55.6,2.91,618], [6.77,0,65.3,2.42,605],
+ [8.24,200,74.9,2.6,377], [10.17,200,53.6,3.04,520], [7.96,40,56.1,3.33,609], [5.79,0,59.6,2.85,475]])
+
+y = MILHO[:, 0]; Xv = MILHO[:, 1:]
+nomes = ["nitrogênio", "densidade", "mat. orgânica", "chuva"]
+n = len(y)
+
+def monta(X, grau_n=1, grau_d=1):
+    """Matriz de delineamento: intercepto, as quatro variáveis e termos
+       quadráticos opcionais para nitrogênio e densidade."""
+    cols = [np.ones(len(X))] + [X[:, j] for j in range(4)]
+    if grau_n &gt;= 2: cols.append(X[:, 0]**2)
+    if grau_d &gt;= 2: cols.append(X[:, 1]**2)
+    return np.column_stack(cols)
+
+def ajusta(Xd, yy):
+    return np.linalg.lstsq(Xd, yy, rcond=None)[0]
+
+def eqm(obs, prev):
+    return float(np.mean((obs - prev)**2))
 
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kfold.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Validação cruzada k-fold
-    </a>
-<a href="bootstrap.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Bootstrap não paramétrico
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+def cv_k(Xd, yy, k, semente=0):
+    nn = len(yy); rng = np.random.default_rng(semente)
+    dob = np.array_split(rng.permutation(nn), k); e = np.empty(nn)
+    for d in dob:
+        m = np.ones(nn, bool); m[d] = False
+        b = ajusta(Xd[m], yy[m]); e[d] = (yy[d] - Xd[d] @ b)**2
+    return e.mean()
+
+def loocv_forca_bruta(Xd, yy):
+    """n ajustes, um por observação omitida."""
+    nn = len(yy); e = np.empty(nn)
+    for i in range(nn):
+        m = np.ones(nn, bool); m[i] = False
+        b = ajusta(Xd[m], yy[m]); e[i] = (yy[i] - Xd[i] @ b)**2
+    return e
+
+def loocv_atalho(Xd, yy):
+    """UM ajuste só, usando os valores de alavancagem (PRESS)."""
+    b = ajusta(Xd, yy); r = yy - Xd @ b
+    H = Xd @ np.linalg.pinv(Xd.T @ Xd) @ Xd.T
+    h = np.diag(H)
+    return (r/(1 - h))**2, h
+
+# ===================================================================
+# PARTE 1 - a deixa-um-de-fora, e o atalho que a torna gratuita
+# ===================================================================
+print(f"{n} talhões de milho. Modelo com as quatro variáveis e os dois")
+print("termos quadráticos (p = 7 parâmetros).")
+Xd = monta(Xv, 2, 2)
+
+import time
+t0 = time.time()
+for _ in range(20): e_bruta = loocv_forca_bruta(Xd, y)
+t_b = (time.time() - t0)/20
+t0 = time.time()
+for _ in range(20): e_atalho, h = loocv_atalho(Xd, y)
+t_a = (time.time() - t0)/20
+print(f"\nA deixa-um-de-fora é a validação cruzada com k = n: são {n} ajustes,")
+print("cada um omitindo uma observação.")
+print(f"\n  EQM por força bruta ({n} ajustes): {e_bruta.mean():.6f}  "
+      f"({t_b*1000:.1f} ms)")
+print(f"  EQM pelo atalho (1 ajuste só):    {e_atalho.mean():.6f}  "
+      f"({t_a*1000:.1f} ms)")
+print(f"  diferença máxima entre as {n} parcelas: "
+      f"{np.abs(e_bruta-e_atalho).max():.2e}")
+print(f"  o atalho é cerca de {t_b/t_a:.0f} vezes mais rápido, e exato")
+print("  (tempos médios de 20 execuções; a vantagem cresce com n, porque a")
+print("   força bruta faz n ajustes e o atalho sempre faz um)")
+print("\nO atalho vale para QUALQUER modelo linear ajustado por mínimos")
+print("quadrados, e é uma identidade algébrica, não uma aproximação:")
+print("  resíduo deixa-um-de-fora = resíduo comum / (1 − h_i)")
+print("em que h_i é a alavancagem da observação i, o i-ésimo elemento da")
+print("diagonal da matriz chapéu H = X(X'X)⁻¹X'.")
+print(f"\n  soma das alavancagens = {h.sum():.4f} = p = {Xd.shape[1]}  "
+      "(é sempre assim)")
+print(f"  alavancagem média = p/n = {h.mean():.4f}")
+print(f"  menor {h.min():.4f} | maior {h.max():.4f} "
+      f"| observações com h &gt; 2p/n: {int(np.sum(h &gt; 2*Xd.shape[1]/n))}")
+
+print("\nAs cinco observações de maior alavancagem")
+o = np.argsort(h)[::-1][:5]
+print(f"{'obs.':&gt;6}{'N':&gt;7}{'densid.':&gt;10}{'M.O.':&gt;8}{'chuva':&gt;8}"
+      f"{'h':&gt;9}{'resíduo':&gt;10}{'res. LOO':&gt;10}")
+b = ajusta(Xd, y); r = y - Xd @ b
+for i in o:
+    print(f"{i+1:&gt;6}{Xv[i,0]:&gt;7.0f}{Xv[i,1]:&gt;10.1f}{Xv[i,2]:&gt;8.2f}"
+          f"{Xv[i,3]:&gt;8.0f}{h[i]:&gt;9.4f}{r[i]:&gt;10.4f}{r[i]/(1-h[i]):&gt;10.4f}")
+print("Quanto maior a alavancagem, mais o resíduo cresce ao se remover a")
+print("observação: ela puxava o ajuste para si.")
+
+# ===================================================================
+# PARTE 2 - comparação com os demais k
+# ===================================================================
+print("\n" + "=" * 70)
+print("A deixa-um-de-fora no contexto dos demais valores de k")
+print(f"\n{'k':&gt;6}{'n de treino':&gt;14}{'EQM':&gt;11}{'ajustes':&gt;10}{'viés*':&gt;10}")
+loo = e_atalho.mean()
+for k in [2, 3, 5, 10, 20, 40, n]:
+    vals = [cv_k(Xd, y, k, semente=s) for s in range(200)] if k &lt; n else [loo]
+    print(f"{k:&gt;6}{n - n//k:&gt;14}{np.mean(vals):&gt;11.4f}"
+          f"{k:&gt;10}{np.mean(vals)-loo:&gt;10.4f}")
+print(f"* diferença em relação à deixa-um-de-fora, tomada como referência")
+print("\nA deixa-um-de-fora é a de MENOR VIÉS, porque treina com n − 1")
+print("observações - praticamente o conjunto inteiro. É essa a sua virtude,")
+print("e é a razão de ela ser a referência natural.")
+
+# ===================================================================
+# PARTE 3 - a variância: a afirmação clássica, posta à prova
+# ===================================================================
+print("\n" + "=" * 70)
+print("'A deixa-um-de-fora tem variância alta.' A afirmação é correta, mas")
+print("refere-se a uma fonte de variância específica, e vale separar as duas.")
+print("\nFONTE 1 - o sorteio das dobras, com os DADOS FIXOS.")
+print(f"{'k':&gt;6}{'DP entre 500 sorteios':&gt;26}")
+for k in [2, 5, 10, 20, n]:
+    if k == n:
+        print(f"{k:&gt;6}{0.0:&gt;26.4f}   (não há sorteio)")
+    else:
+        v = [cv_k(Xd, y, k, semente=s) for s in range(500)]
+        print(f"{k:&gt;6}{np.std(v, ddof=1):&gt;26.4f}")
+print("Nessa fonte, a deixa-um-de-fora é a de MENOR variância: zero, porque")
+print("não há nada a sortear. Não é a essa variância que a afirmação se refere.")
+
+print("\nFONTE 2 - a variabilidade entre AMOSTRAS diferentes da mesma")
+print("população. É esta que importa, e é esta que a afirmação descreve.")
+print("Simulação: 2.000 conjuntos de 120 talhões gerados do mesmo processo")
+print("(o mesmo que originou os dados desta ficha), e em cada um calculam-se")
+print("as estimativas por k = 5, k = 10 e deixa-um-de-fora.")
+def gera(rng, nn=120):
+    N_ = rng.choice([0,40,80,120,160,200], nn)
+    de = np.round(rng.normal(62,7,nn),1)
+    mo = np.round(np.clip(rng.normal(2.8,0.7,nn),1.0,None),2)
+    ch = np.round(rng.normal(520,90,nn),0)
+    mu = (3.2 + 0.0385*N_ - 0.000105*N_**2 + 0.055*(de-45)
+          - 0.0022*(de-45)**2 + 0.62*mo + 0.0032*(ch-400))
+    return np.column_stack([N_, de, mo, ch]), mu + rng.normal(0, 0.85, nn)
+rng = np.random.default_rng(77)
+col = {5: [], 10: [], "loo": []}
+for _ in range(2000):
+    Xs, ys = gera(rng); Xds = monta(Xs, 2, 2)
+    col[5].append(cv_k(Xds, ys, 5, semente=1))
+    col[10].append(cv_k(Xds, ys, 10, semente=1))
+    col["loo"].append(loocv_atalho(Xds, ys)[0].mean())
+print(f"\n{'método':&gt;22}{'média':&gt;11}{'DP entre amostras':&gt;22}{'CV':&gt;9}")
+for rot, v in [("k = 5", col[5]), ("k = 10", col[10]),
+               ("deixa-um-de-fora", col["loo"])]:
+    v = np.array(v)
+    print(f"{rot:&gt;22}{v.mean():&gt;11.4f}{v.std(ddof=1):&gt;22.4f}"
+          f"{100*v.std(ddof=1)/v.mean():&gt;8.1f}%")
+print(f"\n(o valor verdadeiro do erro irredutível é σ² = {0.85**2:.4f})")
+print("\nAqui a diferença de variância entre os três é pequena, e a")
+print("deixa-um-de-fora sequer é a pior. O resultado contraria a versão")
+print("simplificada da afirmação clássica, e a razão é que o modelo é LINEAR e")
+print("ESTÁVEL: remover uma observação de 120 quase não muda o ajuste, de modo")
+print("que os n erros deixa-um-de-fora não ficam tão correlacionados quanto o")
+print("argumento supõe. Com modelos instáveis - árvores, vizinhos mais")
+print("próximos, seleção de variáveis - a correlação é forte e a variância da")
+print("deixa-um-de-fora cresce de fato.")
+
+# ===================================================================
+# PARTE 4 - onde a deixa-um-de-fora FALHA mesmo
+# ===================================================================
+print("\n" + "=" * 70)
+print("O caso em que a deixa-um-de-fora falha de forma espetacular:")
+print("um classificador treinado em dados SEM NENHUM SINAL, com as duas")
+print("classes em proporções iguais.")
+print("\nRegra: classificar tudo na classe MAJORITÁRIA do treino.")
+print("Com n par e classes 50/50, remover uma observação SEMPRE deixa a outra")
+print("classe em maioria no treino - e a predição é SEMPRE errada.")
+rng = np.random.default_rng(9)
+for nn in [20, 50, 100]:
+    acl, ak5 = [], []
+    for _ in range(2000):
+        yy = np.r_[np.ones(nn//2), np.zeros(nn//2)]
+        yy = rng.permutation(yy)
+        # deixa-um-de-fora
+        err = 0
+        for i in range(nn):
+            m = np.ones(nn, bool); m[i] = False
+            maj = 1.0 if yy[m].mean() &gt; 0.5 else 0.0
+            err += (maj != yy[i])
+        acl.append(1 - err/nn)
+        # 5-fold
+        dob = np.array_split(rng.permutation(nn), 5); e5 = 0
+        for d in dob:
+            m = np.ones(nn, bool); m[d] = False
+            maj = 1.0 if yy[m].mean() &gt; 0.5 else 0.0
+            e5 += np.sum(maj != yy[d])
+        ak5.append(1 - e5/nn)
+    print(f"  n = {nn:&gt;3}: acurácia estimada por deixa-um-de-fora = "
+          f"{np.mean(acl):.4f} | por 5-fold = {np.mean(ak5):.4f} "
+          f"| verdadeira = 0,5000")
+print("\nA deixa-um-de-fora estima acurácia ZERO para um classificador cuja")
+print("acurácia verdadeira é 50%. O 5-fold também subestima - 0,34 a 0,42,")
+print("conforme n - mas não colapsa, e o seu viés diminui com n enquanto o da")
+print("deixa-um-de-fora permanece total. É um exemplo construído,")
+print("mas expõe o mecanismo: os n conjuntos de treino da deixa-um-de-fora são")
+print("quase idênticos entre si, e qualquer dependência do modelo em relação")
+print("ao conjunto inteiro se propaga a todas as n predições de uma vez.")
+
+# ===================================================================
+# PARTE 5 - a seleção de modelo pela deixa-um-de-fora
+# ===================================================================
+print("\n" + "=" * 70)
+print("Seleção dos seis modelos candidatos, pela deixa-um-de-fora")
+modelos = [("só nitrogênio", lambda X: np.column_stack([np.ones(len(X)), X[:,0]])),
+           ("N + densidade", lambda X: np.column_stack([np.ones(len(X)), X[:,0], X[:,1]])),
+           ("as quatro, linear", lambda X: monta(X, 1, 1)),
+           ("com N²", lambda X: monta(X, 2, 1)),
+           ("com densidade²", lambda X: monta(X, 1, 2)),
+           ("com os dois quadráticos", lambda X: monta(X, 2, 2))]
+print(f"\n{'modelo':&lt;26}{'p':&gt;4}{'resubst.':&gt;11}{'LOOCV':&gt;10}"
+      f"{'5-fold':&gt;10}{'AIC':&gt;11}{'BIC':&gt;11}")
+for rot, f in modelos:
+    Xm = f(Xv); p_ = Xm.shape[1]
+    bb = ajusta(Xm, y); sq = np.sum((y - Xm@bb)**2)
+    lo = loocv_atalho(Xm, y)[0].mean()
+    k5 = np.mean([cv_k(Xm, y, 5, semente=s) for s in range(200)])
+    aic = n*np.log(sq/n) + 2*p_
+    bic = n*np.log(sq/n) + np.log(n)*p_
+    print(f"{rot:&lt;26}{p_:&gt;4}{sq/n:&gt;11.4f}{lo:&gt;10.4f}{k5:&gt;10.4f}"
+          f"{aic:&gt;11.2f}{bic:&gt;11.2f}")
+print("\nOs quatro critérios concordam em preferir o modelo 'com N²'. A")
+print("deixa-um-de-fora e o AIC são assintoticamente equivalentes para modelos")
+print("lineares (Stone, 1977), o que explica a coincidência; o BIC penaliza")
+print("mais a complexidade e, com n maior, poderia divergir deles.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">120 talhões de milho. Modelo com as quatro variáveis e os dois
+termos quadráticos (p = 7 parâmetros).
+
+A deixa-um-de-fora é a validação cruzada com k = n: são 120 ajustes,
+cada um omitindo uma observação.
+
+  EQM por força bruta (120 ajustes): 0.785447  (2.7 ms)
+  EQM pelo atalho (1 ajuste só):    0.785447  (0.1 ms)
+  diferença máxima entre as 120 parcelas: 1.33e-09
+  o atalho é cerca de 32 vezes mais rápido, e exato
+  (tempos médios de 20 execuções; a vantagem cresce com n, porque a
+   força bruta faz n ajustes e o atalho sempre faz um)
+
+O atalho vale para QUALQUER modelo linear ajustado por mínimos
+quadrados, e é uma identidade algébrica, não uma aproximação:
+  resíduo deixa-um-de-fora = resíduo comum / (1 − h_i)
+em que h_i é a alavancagem da observação i, o i-ésimo elemento da
+diagonal da matriz chapéu H = X(X'X)⁻¹X'.
+
+  soma das alavancagens = 7.0000 = p = 7  (é sempre assim)
+  alavancagem média = p/n = 0.0583
+  menor 0.0183 | maior 0.3805 | observações com h &gt; 2p/n: 6
+
+As cinco observações de maior alavancagem
+  obs.      N   densid.    M.O.   chuva        h   resíduo  res. LOO
+    26     80      39.1    1.73     589   0.3805    0.0297    0.0479
+   114    200      77.6    3.55     497   0.1574    0.8478    1.0061
+    18    200      45.0    3.70     621   0.1563    0.2100    0.2489
+    58    200      44.6    2.65     532   0.1482   -0.5484   -0.6438
+     2    200      65.2    3.67     736   0.1197   -0.5227   -0.5938
+Quanto maior a alavancagem, mais o resíduo cresce ao se remover a
+observação: ela puxava o ajuste para si.
+
+======================================================================
+A deixa-um-de-fora no contexto dos demais valores de k
+
+     k   n de treino        EQM   ajustes     viés*
+     2            60     0.8441         2    0.0587
+     3            80     0.8120         3    0.0266
+     5            96     0.7969         5    0.0115
+    10           108     0.7901        10    0.0047
+    20           114     0.7865        20    0.0011
+    40           117     0.7857        40    0.0003
+   120           119     0.7854       120    0.0000
+* diferença em relação à deixa-um-de-fora, tomada como referência
+
+A deixa-um-de-fora é a de MENOR VIÉS, porque treina com n − 1
+observações - praticamente o conjunto inteiro. É essa a sua virtude,
+e é a razão de ela ser a referência natural.
+
+======================================================================
+'A deixa-um-de-fora tem variância alta.' A afirmação é correta, mas
+refere-se a uma fonte de variância específica, e vale separar as duas.
+
+FONTE 1 - o sorteio das dobras, com os DADOS FIXOS.
+     k     DP entre 500 sorteios
+     2                    0.0726
+     5                    0.0264
+    10                    0.0162
+    20                    0.0097
+   120                    0.0000   (não há sorteio)
+Nessa fonte, a deixa-um-de-fora é a de MENOR variância: zero, porque
+não há nada a sortear. Não é a essa variância que a afirmação se refere.
+
+FONTE 2 - a variabilidade entre AMOSTRAS diferentes da mesma
+população. É esta que importa, e é esta que a afirmação descreve.
+Simulação: 2.000 conjuntos de 120 talhões gerados do mesmo processo
+(o mesmo que originou os dados desta ficha), e em cada um calculam-se
+as estimativas por k = 5, k = 10 e deixa-um-de-fora.
+
+                método      média     DP entre amostras       CV
+                 k = 5     0.7868                0.1108    14.1%
+                k = 10     0.7795                0.1062    13.6%
+      deixa-um-de-fora     0.7735                0.1036    13.4%
+
+(o valor verdadeiro do erro irredutível é σ² = 0.7225)
+
+Aqui a diferença de variância entre os três é pequena, e a
+deixa-um-de-fora sequer é a pior. O resultado contraria a versão
+simplificada da afirmação clássica, e a razão é que o modelo é LINEAR e
+ESTÁVEL: remover uma observação de 120 quase não muda o ajuste, de modo
+que os n erros deixa-um-de-fora não ficam tão correlacionados quanto o
+argumento supõe. Com modelos instáveis - árvores, vizinhos mais
+próximos, seleção de variáveis - a correlação é forte e a variância da
+deixa-um-de-fora cresce de fato.
+
+======================================================================
+O caso em que a deixa-um-de-fora falha de forma espetacular:
+um classificador treinado em dados SEM NENHUM SINAL, com as duas
+classes em proporções iguais.
+
+Regra: classificar tudo na classe MAJORITÁRIA do treino.
+Com n par e classes 50/50, remover uma observação SEMPRE deixa a outra
+classe em maioria no treino - e a predição é SEMPRE errada.
+  n =  20: acurácia estimada por deixa-um-de-fora = 0.0000 | por 5-fold = 0.3359 | verdadeira = 0,5000
+  n =  50: acurácia estimada por deixa-um-de-fora = 0.0000 | por 5-fold = 0.3916 | verdadeira = 0,5000
+  n = 100: acurácia estimada por deixa-um-de-fora = 0.0000 | por 5-fold = 0.4218 | verdadeira = 0,5000
+
+A deixa-um-de-fora estima acurácia ZERO para um classificador cuja
+acurácia verdadeira é 50%. O 5-fold também subestima - 0,34 a 0,42,
+conforme n - mas não colapsa, e o seu viés diminui com n enquanto o da
+deixa-um-de-fora permanece total. É um exemplo construído,
+mas expõe o mecanismo: os n conjuntos de treino da deixa-um-de-fora são
+quase idênticos entre si, e qualquer dependência do modelo em relação
+ao conjunto inteiro se propaga a todas as n predições de uma vez.
+
+======================================================================
+Seleção dos seis modelos candidatos, pela deixa-um-de-fora
+
+modelo                       p   resubst.     LOOCV    5-fold        AIC        BIC
+só nitrogênio                2     1.1143    1.1497    1.1521      16.99      22.56
+N + densidade                3     1.0422    1.0932    1.0975      10.96      19.33
+as quatro, linear            5     0.8614    0.9354    0.9434      -7.91       6.03
+com N²                       6     0.7089    0.7806    0.7900     -29.28     -12.56
+com densidade²               6     0.8559    0.9428    0.9529      -6.67      10.06
+com os dois quadráticos      7     0.7051    0.7854    0.7969     -27.93      -8.42
+
+Os quatro critérios concordam em preferir o modelo 'com N²'. A
+deixa-um-de-fora e o AIC são assintoticamente equivalentes para modelos
+lineares (Stone, 1977), o que explica a coincidência; o BIC penaliza
+mais a complexidade e, com n maior, poderia divergir deles.</pre></div><figure class="fig"><img src="../assets/resultados/loocv.png" alt="O viés por k, o caso em que ela colapsa e a concordância dos critérios de seleção" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, o EQM estimado em função de k: ele cai de 0,8441 em k = 2 até 0,7854 na deixa-um-de-fora, que é a referência de menor viés. No centro, o exemplo construído em que ela falha: em dados sem sinal com classes 50/50, a deixa-um-de-fora estima acurácia zero e o 5-fold estima entre 0,34 e 0,42, contra a verdade de 0,50. À direita, os quatro critérios de seleção aplicados aos seis modelos candidatos, todos escolhendo o mesmo. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A deixa-um-de-fora entre os demais k</caption><thead><tr><th>k</th><th>n de treino</th><th>EQM</th><th>Viés em relação à LOO</th></tr></thead><tbody><tr><td>2</td><td>60</td><td>0,8441</td><td>+0,0587</td></tr><tr><td>3</td><td>80</td><td>0,8120</td><td>+0,0266</td></tr><tr><td>5</td><td>96</td><td>0,7969</td><td>+0,0115</td></tr><tr><td>10</td><td>108</td><td>0,7901</td><td>+0,0047</td></tr><tr><td>20</td><td>114</td><td>0,7865</td><td>+0,0011</td></tr><tr><td>40</td><td>117</td><td>0,7857</td><td>+0,0003</td></tr><tr><td><strong>120</strong></td><td><strong>119</strong></td><td><strong>0,7854</strong></td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>As duas fontes de variância</caption><thead><tr><th>k</th><th>Fonte 1: sorteio das dobras</th><th>Fonte 2: entre amostras</th></tr></thead><tbody><tr><td>2</td><td>0,0726</td><td>—</td></tr><tr><td>5</td><td>0,0264</td><td>0,1108</td></tr><tr><td>10</td><td>0,0162</td><td>0,1062</td></tr><tr><td>20</td><td>0,0097</td><td>—</td></tr><tr><td><strong>120 (LOO)</strong></td><td><strong>0,0000</strong></td><td><strong>0,1036</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Onde a deixa-um-de-fora colapsa (dados sem sinal, classes 50/50)</caption><thead><tr><th>n</th><th>Acurácia estimada pela LOO</th><th>Pelo 5-fold</th><th>Verdadeira</th></tr></thead><tbody><tr><td>20</td><td><strong>0,0000</strong></td><td>0,3359</td><td>0,5000</td></tr><tr><td>50</td><td><strong>0,0000</strong></td><td>0,3916</td><td>0,5000</td></tr><tr><td>100</td><td><strong>0,0000</strong></td><td>0,4218</td><td>0,5000</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Quatro critérios de seleção, os seis modelos</caption><thead><tr><th>Modelo</th><th>p</th><th>Resubstituição</th><th>LOOCV</th><th>5-fold</th><th>AIC</th><th>BIC</th></tr></thead><tbody><tr><td>Só nitrogênio</td><td>2</td><td>1,1143</td><td>1,1497</td><td>1,1521</td><td>16,99</td><td>22,56</td></tr><tr><td>N + densidade</td><td>3</td><td>1,0422</td><td>1,0932</td><td>1,0975</td><td>10,96</td><td>19,33</td></tr><tr><td>As quatro, lineares</td><td>5</td><td>0,8614</td><td>0,9354</td><td>0,9434</td><td>−7,91</td><td>6,03</td></tr><tr><td><strong>Com N²</strong></td><td>6</td><td>0,7089</td><td><strong>0,7806</strong></td><td><strong>0,7900</strong></td><td><strong>−29,28</strong></td><td><strong>−12,56</strong></td></tr><tr><td>Com densidade²</td><td>6</td><td>0,8559</td><td>0,9428</td><td>0,9529</td><td>−6,67</td><td>10,06</td></tr><tr><td>Com os dois quadráticos</td><td>7</td><td>0,7051</td><td>0,7854</td><td>0,7969</td><td>−27,93</td><td>−8,42</td></tr></tbody></table></div><p><strong>Leitura:</strong> o atalho reproduz a força bruta até a nona casa decimal e é cerca de trinta vezes mais rápido nestes dados — vantagem que cresce com \(n\), porque a força bruta faz \(n\) ajustes e o atalho sempre faz um. Para modelos lineares, portanto, não há razão para não calcular a deixa-um-de-fora: ela vem de graça junto com o ajuste.</p><p>A tabela dos \(k\) mostra a virtude do método: ele é a referência de menor viés, e os demais valores de \(k\) convergem para ele à medida que crescem. A diferença entre \(k=10\) e a deixa-um-de-fora é de apenas 0,0047 — menos de 1% — o que explica por que \(k=10\) é a escolha prática usual quando o atalho não está disponível.</p><p><strong>Sobre a variância:</strong> a tabela das duas fontes é o ponto mais delicado da ficha, e contraria a leitura simplificada da afirmação clássica. Na fonte que de fato importa — a variabilidade entre amostras diferentes da mesma população — os três métodos são praticamente equivalentes aqui, com a deixa-um-de-fora sendo até ligeiramente a mais estável. Isso não refuta a teoria: ela prevê variância alta quando os \(n\) erros são fortemente correlacionados, o que acontece com modelos <em>instáveis</em>. Um modelo linear com 7 parâmetros e 120 observações é estável, e remover uma observação quase não o altera. A lição é que a afirmação precisa ser qualificada pelo tipo de modelo, e não repetida como regra geral.</p><p><strong>Sobre o colapso:</strong> o exemplo construído é extremo de propósito, e por isso instrutivo. Ele mostra que a deixa-um-de-fora não é universalmente segura: quando a predição depende de uma propriedade <em>global</em> do conjunto de treino — aqui, qual classe é majoritária — omitir uma observação pode inverter essa propriedade de forma sistemática. O 5-fold, que remove 20% de cada vez, não sofre o mesmo efeito. A verificação prática é simples: calcule também \(k=5\) e \(k=10\), e desconfie se os três discordarem muito.</p><p><strong>Sobre a seleção:</strong> os quatro critérios concordam em preferir o modelo com N². A coincidência entre a deixa-um-de-fora e o AIC não é acidente — Stone (1977) mostrou que, para modelos lineares, os dois são assintoticamente equivalentes. O BIC, que penaliza a complexidade com \(\ln n\) em vez de 2, concorda aqui mas poderia divergir com \(n\) maior, preferindo um modelo mais parcimonioso.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar o atalho em modelos não lineares</td><td>Ele vale só para mínimos quadrados lineares.</td></tr><tr><td>Rodar n ajustes quando o atalho existe</td><td>Para <code>lm</code>, use <code>hatvalues</code>.</td></tr><tr><td>Omitir uma observação em dados agrupados</td><td>Omita o grupo inteiro.</td></tr><tr><td>Repetir a afirmação "tem variância alta" sem qualificar</td><td>Depende da estabilidade do modelo.</td></tr><tr><td>Usá-la como único critério com modelos instáveis</td><td>Compare com k = 5 e k = 10.</td></tr><tr><td>Ignorar observações de alta alavancagem</td><td>Um h próximo de 1 explode o resíduo LOO.</td></tr><tr><td>Usá-la com classes perfeitamente equilibradas em classificação</td><td>Pode colapsar; veja o exemplo da ficha.</td></tr><tr><td>Esquecer o pré-processamento dentro do laço</td><td>O atalho só cobre o ajuste linear.</td></tr><tr><td>Confundir R² de predição com R² comum</td><td>O primeiro pode ser negativo.</td></tr><tr><td>Usá-la com n muito grande e modelo caro</td><td>São n ajustes; prefira k = 10.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kfold.html">Validação cruzada k-fold</a></td><td>n grande, modelo caro, ou modelo instável.</td></tr><tr><td>Validação cruzada repetida</td><td>Quando se quer reduzir a variabilidade do sorteio.</td></tr><tr><td>PRESS e R² de predição</td><td>Modelos lineares: saem do mesmo ajuste.</td></tr><tr><td><a href="stepwise.html">AIC</a> e BIC</td><td>Modelos lineares: analíticos e equivalentes assintoticamente.</td></tr><tr><td>Cp de Mallows</td><td>Comparação de submodelos com o mesmo σ².</td></tr><tr><td>GCV (validação cruzada generalizada)</td><td>Suavizadores e <a href="splines.html">splines</a>: substitui h por sua média.</td></tr><tr><td><a href="bootstrap.html">Bootstrap 0,632</a></td><td>Quando se quer também o erro-padrão de outras estatísticas.</td></tr><tr><td>Deixa-um-GRUPO-de-fora</td><td>Dados agrupados por fazenda, paciente, lote.</td></tr><tr><td><a href="holdout.html">Separação treino-teste</a></td><td>Quando há conjunto externo natural.</td></tr></tbody></table></div><ol class="steps"><li>Confirme que a unidade a omitir é a observação, e não um grupo.</li><li>Para modelos lineares, use o atalho da alavancagem.</li><li>Examine as alavancagens antes de interpretar a estimativa.</li><li>Compare com k = 5 e k = 10: discordância grande indica instabilidade.</li><li>Reporte também o R² de predição, que é interpretável na escala usual.</li><li>Com seleção de modelo, use a validação cruzada aninhada.</li><li>Com modelos instáveis ou classificação equilibrada, prefira k = 10.</li><li>Ajuste o modelo final com todos os dados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>ALLEN, David M. The relationship between variable selection and data augmentation and a method for prediction. <em>Technometrics</em>, v. 16, n. 1, p. 125-127, 1974.</li><li>STONE, M. Cross-validatory choice and assessment of statistical predictions. <em>Journal of the Royal Statistical Society: Series B</em>, v. 36, n. 2, p. 111-147, 1974.</li><li>GEISSER, Seymour. The predictive sample reuse method with applications. <em>Journal of the American Statistical Association</em>, v. 70, n. 350, p. 320-328, 1975.</li><li>STONE, M. An asymptotic equivalence of choice of model by cross-validation and Akaike’s criterion. <em>Journal of the Royal Statistical Society: Series B</em>, v. 39, n. 1, p. 44-47, 1977.</li><li>CRAVEN, Peter; WAHBA, Grace. Smoothing noisy data with spline functions. <em>Numerische Mathematik</em>, v. 31, n. 4, p. 377-403, 1978. (Validação cruzada generalizada.)</li><li>SHAO, Jun. Linear model selection by cross-validation. <em>Journal of the American Statistical Association</em>, v. 88, n. 422, p. 486-494, 1993.</li><li>KOHAVI, Ron. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: <em>Proceedings of the 14th International Joint Conference on Artificial Intelligence.</em> San Francisco: Morgan Kaufmann, 1995. p. 1137-1143.</li><li>ARLOT, Sylvain; CELISSE, Alain. A survey of cross-validation procedures for model selection. <em>Statistics Surveys</em>, v. 4, p. 40-79, 2010.</li><li>COOK, R. Dennis. Detection of influential observation in linear regression. <em>Technometrics</em>, v. 19, n. 1, p. 15-18, 1977.</li><li>BENGIO, Yoshua; GRANDVALET, Yves. No unbiased estimator of the variance of k-fold cross-validation. <em>Journal of Machine Learning Research</em>, v. 5, p. 1089-1105, 2004.</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>hatvalues</code> e <code>residuals</code>, pacote <code>stats</code>.)</li><li>CANTY, Angelo; RIPLEY, Brian D. <em>boot: bootstrap R (S-Plus) functions.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=boot" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=boot</a>.</li><li>KUHN, Max. Building predictive models in R using the caret package. <em>Journal of Statistical Software</em>, v. 28, n. 5, p. 1-26, 2008.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, modelo estável à remoção de uma observação, ausência de alavancagens extremas e — para o atalho — ajuste linear por mínimos quadrados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>boot, caret</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kfold.html"><span>← ANTERIOR</span>Validação cruzada k-fold</a><a href="bootstrap.html"><span>PRÓXIMO →</span>Bootstrap não paramétrico</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

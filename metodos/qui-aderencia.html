@@ -4,313 +4,315 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Qui-quadrado de aderência: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Qui-quadrado de aderência | Estatística e Ciência de Dados
-  </title>
+<meta content="Qui-quadrado de aderência: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Qui-quadrado de aderência | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Qui-quadrado de aderência
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 07 · DADOS CATEGÓRICOS
-    </span>
-<h1>
-     Qui-quadrado de aderência
-    </h1>
-<p class="detail-lead">
-     Verifica se as frequências observadas seguem proporções previamente estabelecidas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/qui-aderencia.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se as frequências observadas seguem proporções previamente estabelecidas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Contagens de unidades independentes, classes mutuamente exclusivas e valores esperados suficientes para aproximação.</li><li>Em amostras pequenas use método exato/Monte Carlo.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ p_j=p_{j,0}\quad\forall j\\ H_1&amp;:\ \exists\,j:p_j\neq p_{j,0}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[X^2=\sum_{i=1}^k\frac{(O_i-E_i)^2}{E_i},\qquad gl=k-1-q\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(O_i\)
-        </dt>
-<dd>
-         frequência observada na categoria i
-        </dd>
-</div>
-<div>
-<dt>
-         \(E_i\)
-        </dt>
-<dd>
-         frequência esperada n p_i sob a hipótese nula
-        </dd>
-</div>
-<div>
-<dt>
-         \(k\)
-        </dt>
-<dd>
-         número de categorias
-        </dd>
-</div>
-<div>
-<dt>
-         \(q\)
-        </dt>
-<dd>
-         quantidade de parâmetros da distribuição de referência estimados com os mesmos dados, quando aplicável
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) indica incompatibilidade com proporções de referência; não identifica isoladamente a classe discrepante.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto mtcars reúne atributos de 32 modelos de automóveis, incluindo consumo, potência e massa.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Verificar a proporção de três arquiteturas de transmissão (3, 4, 5 marchas) em mtcars, contra referência uniforme hipotética.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-qui-aderencia" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-qui-aderencia"><code># Qui-quadrado de aderência ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Qui-quadrado de aderência</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · DADOS CATEGÓRICOS</span><h1>Qui-quadrado de aderência</h1><p class="detail-lead">Verifica se as frequências observadas em categorias são compatíveis com as proporções que uma hipótese ou uma distribuição prevê.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/qui-aderencia.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/qui-aderencia.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Uma teoria genética prevê que quatro tipos de ervilha apareçam na proporção 9:3:3:1. Um setor de qualidade supõe que cinco tipos de defeito sejam igualmente frequentes. Um engenheiro quer saber se o número de falhas por turno segue uma distribuição de Poisson. As três perguntas têm a mesma forma: <em>as frequências observadas são compatíveis com as que a hipótese prevê?</em> O teste qui-quadrado de aderência responde a todas elas com a mesma conta.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Qui-quadrado de aderência" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Compara frequências</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">observadas e esperadas</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A conta</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Soma de (O − E)²/E</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">sobre as categorias</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Graus de liberdade</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">categorias − 1 − parâmetros</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">estimados dos dados</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Esperados de pelo menos 5</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">na maioria das células</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">chisq.test(obs, p = prop)</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Diagnóstico</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Resíduos padronizados</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">apontam onde está o erro</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Qui-quadrado de aderência</text></svg><figcaption>Visão geral do teste qui-quadrado de aderência. Fonte: o autor.</figcaption></figure><div class="callout "><strong>O teste mais antigo da estatística moderna</strong><p>Karl Pearson publicou o teste em 1900, e ele é geralmente considerado o marco inicial da inferência estatística como disciplina. A ideia de comparar o observado com o esperado numa escala que não depende da unidade de medida — dividindo o quadrado do desvio pela própria frequência esperada — está por trás de boa parte do que veio depois.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>Cada categoria contribui com \((O-E)^2/E\): o quadrado do desvio, normalizado pela frequência que se esperaria. A divisão por \(E\) é o que torna as contribuições comparáveis — um desvio de 10 unidades é muito numa categoria em que se esperavam 20 e pouco numa em que se esperavam 500. A soma dessas contribuições segue, aproximadamente, uma distribuição qui-quadrado.</p><figure class="fig"><img src="../assets/resultados/qui-aderencia-didatica.png" alt="Ervilhas de Mendel e a distribuição qui-quadrado" loading="lazy"/><figcaption><strong>O teste e os seus dois lados.</strong> À esquerda, as 556 plantas da F2 de Mendel comparadas ao que a razão 9:3:3:1 prevê: os desvios são de 2 a 4 unidades em categorias de 30 a 315, e o teste devolve p = 0,925. À direita, a distribuição de referência com 3 graus de liberdade. A cauda direita é a região de rejeição usual; a cauda <em>esquerda</em>, muitas vezes esquecida, corresponde a um ajuste bom demais para ser verdade. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>O lado esquerdo do teste</strong><p>Em 1936, Fisher somou os qui-quadrados de todos os experimentos de Mendel e obteve 41,6 com 84 graus de liberdade. A probabilidade de um ajuste tão bom ou melhor, se os dados fossem realmente aleatórios, é de 0,00004 — cerca de uma em 25 mil. A conclusão de Fisher foi que os dados haviam sido, de algum modo, ajustados à expectativa. O episódio continua debatido, mas a lição metodológica permanece: um qui-quadrado muito pequeno também é um resultado a ser explicado.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Observações independentes</td><td>Cada unidade entra em uma única categoria, sem influenciar as demais.</td><td>Delineamento; cuidado com medidas repetidas no mesmo indivíduo.</td></tr><tr><td>Categorias mutuamente exclusivas e exaustivas</td><td>Cada unidade cai em exatamente uma.</td><td>Definição das categorias.</td></tr><tr><td>Frequências <strong>esperadas</strong> suficientemente grandes</td><td>A aproximação qui-quadrado é assintótica.</td><td>Regra prática: nenhuma esperada abaixo de 1 e no máximo 20% delas abaixo de 5. O R avisa quando falha.</td></tr><tr><td>Contagens, não proporções nem percentagens</td><td>A conta precisa dos valores absolutos.</td><td>Use as frequências brutas.</td></tr><tr><td>Graus de liberdade corrigidos pelos parâmetros estimados</td><td>Estimar um parâmetro dos próprios dados consome um grau de liberdade.</td><td>Conte quantos parâmetros foram estimados.</td></tr><tr><td>Hipótese especificada antes de ver os dados</td><td>Ajustar a hipótese aos dados invalida o teste.</td><td>Plano de análise.</td></tr></tbody></table></div><div class="callout "><strong>Onde a regra dos 5 nasce</strong><p>Ela não vem de um teorema, e sim de simulação. Com cinco categorias equiprováveis, o teste rejeita em 3,84% das vezes quando n = 10 (esperado 2 por célula), oscila em torno de 4,2% a 4,9% entre n = 15 e n = 25, e converge para cerca de 4,9% a partir de n = 100. A regra marca o ponto em que a aproximação deixa de ser visivelmente conservadora.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ p_1=p_{10},\ p_2=p_{20},\\ &\quad\ldots,\ p_c=p_{c0}\\ &\quad\text{(as proporções são}\\ &\quad\text{as especificadas)}\\ H_1&:\ \text{ao menos uma proporção}\\ &\quad\text{difere da especificada}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[X^{2}=\sum_{i=1}^{c}\frac{\left(O_i-E_i\right)^{2}}{E_i},\]\[E_i=n\,p_{i0},\]\[X^{2}\ \dot\sim\ \chi^{2}_{\,c-1-s}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[r_i=\frac{O_i-E_i}{\sqrt{E_i}}\]\[\text{(resíduo de Pearson)},\]\[w=\sqrt{\frac{X^{2}}{n}}\quad \text{(tamanho de efeito)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(c\)</dt><dd>número de categorias</dd></div><div><dt>\(O_i\)</dt><dd>frequência observada na categoria i</dd></div><div><dt>\(E_i\)</dt><dd>frequência esperada sob a hipótese nula</dd></div><div><dt>\(n\)</dt><dd>total de observações</dd></div><div><dt>\(s\)</dt><dd>número de parâmetros estimados a partir dos dados</dd></div><div><dt>\(r_i\)</dt><dd>resíduo padronizado da categoria i</dd></div><div><dt>\(w\)</dt><dd>w de Cohen: 0,1 pequeno; 0,3 médio; 0,5 grande</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>As ervilhas de Mendel</caption><thead><tr><th>Categoria</th><th>Observado</th><th>Esperado</th><th>O − E</th><th>(O−E)²/E</th><th>Resíduo</th></tr></thead><tbody><tr><td>lisa amarela</td><td>315</td><td>312,75</td><td>+2,25</td><td>0,01619</td><td>+0,127</td></tr><tr><td>lisa verde</td><td>108</td><td>104,25</td><td>+3,75</td><td>0,13489</td><td>+0,367</td></tr><tr><td>rugosa amarela</td><td>101</td><td>104,25</td><td>−3,25</td><td>0,10132</td><td>−0,318</td></tr><tr><td>rugosa verde</td><td>32</td><td>34,75</td><td>−2,75</td><td>0,21763</td><td>−0,467</td></tr><tr><td><strong>total</strong></td><td><strong>556</strong></td><td><strong>556,00</strong></td><td><strong>0</strong></td><td><strong>0,47002</strong></td><td>—</td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>A frequência esperada da primeira categoria é \(556\times9/16=312{,}75\); a da última, \(556\times1/16=34{,}75\).</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}X^{2} &= \frac{(315-312{,}75)^2}{312{,}75}+\cdots \\ &\quad +\frac{(32-34{,}75)^2}{34{,}75} \\ &= 0{,}47002.\end{aligned}\]</div><p>Com \(c=4\) categorias e nenhum parâmetro estimado, \(\text{gl}=4-1=3\) e \(p=P\!\left(\chi^2_3&gt;0{,}470\right)=0{,}9254\).</p><p>Os dados são perfeitamente compatíveis com a razão 9:3:3:1. Isso não <em>prova</em> a teoria: o teste de aderência nunca prova a hipótese nula. Com n = 556, ele distingue 9:3:3:1 de 7:3:3:1 (p = 2 × 10⁻⁴), mas não de 8,5:3,2:3,2:1,1 (p = 0,78).</p></div><h3>Quando o parâmetro é estimado dos dados</h3><p>Ao ajustar uma <em>distribuição</em> — Poisson, normal, binomial — é preciso estimar os seus parâmetros. Cada parâmetro estimado consome um grau de liberdade. Isso é fácil de esquecer, e a função <code>chisq.test()</code> do R <strong>não faz essa correção automaticamente</strong>: ela sempre usa \(c-1\).</p><div class="worked"><strong>Mortes por coice de cavalo (Bortkiewicz, 1898)</strong><p>Duzentos corpos-ano do exército prussiano registraram 122 mortes, de modo que \(\hat\lambda=122/200=0{,}61\).</p><div class="table-wrap"><table class="method-table"><caption>Frequências com cinco categorias</caption><thead><tr><th>Mortes</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4 ou mais</th></tr></thead><tbody><tr><td>Observado</td><td>109</td><td>65</td><td>22</td><td>3</td><td>1</td></tr><tr><td>Esperado</td><td>108,670</td><td>66,289</td><td>20,218</td><td>4,111</td><td>0,712</td></tr></tbody></table></div><p>A última categoria tem esperada 0,712, abaixo de 1: a regra prática manda agrupar. Juntando "3 ou mais":</p><div class="table-wrap"><table class="method-table"><caption>Frequências agrupadas</caption><thead><tr><th>Mortes</th><th>0</th><th>1</th><th>2</th><th>3 ou mais</th></tr></thead><tbody><tr><td>Observado</td><td>109</td><td>65</td><td>22</td><td>4</td></tr><tr><td>Esperado</td><td>108,670</td><td>66,289</td><td>20,218</td><td>4,823</td></tr></tbody></table></div><div class="math-display" role="group" aria-label="Expressão matemática">\[X^{2}=0{,}3235,\]\[\text{gl}=4-1-1=2,\]\[p=0{,}8506.\]</div><p>As mortes por coice são compatíveis com um processo de Poisson. Se os graus de liberdade não fossem corrigidos, o valor-p sairia como 0,956 — mais otimista do que deveria.</p></div><h3>Propriedades</h3><ul class="checklist"><li>\(X^2\geq0\), com valor 0 quando o observado coincide exatamente com o esperado.</li><li>A aproximação melhora com n; com esperados muito pequenos, use o valor-p simulado ou o teste multinomial exato.</li><li>Os resíduos de Pearson somam zero e indicam a direção e a magnitude de cada discrepância; valores acima de 2 em módulo merecem atenção.</li><li>A razão de verossimilhanças \(G^2=2\sum O_i\ln(O_i/E_i)\) é uma alternativa assintoticamente equivalente.</li><li>Para duas categorias, equivale ao teste de proporção; o teste exato binomial é preferível com n pequeno.</li><li>O teste é bilateral na escala das frequências, mas unilateral à direita na escala de \(X^2\) — exceto quando se investiga um ajuste bom demais.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>X-squared</td><td>A soma das contribuições.</td><td>Sem direção: só a magnitude.</td></tr><tr><td>df</td><td>Categorias − 1 − parâmetros estimados.</td><td>O R não desconta os estimados.</td></tr><tr><td>p-value</td><td>Evidência contra a hipótese.</td><td>Um p grande não prova a hipótese.</td></tr><tr><td>expected</td><td>Frequências sob H₀.</td><td>Confira se nenhuma é pequena demais.</td></tr><tr><td>residuals</td><td>Resíduos de Pearson.</td><td>É aqui que se vê ONDE está a discrepância.</td></tr><tr><td>w de Cohen</td><td>Tamanho de efeito.</td><td>Com n grande, qualquer desvio vira significativo.</td></tr></tbody></table></div><p>Reporte: X², graus de liberdade, valor-p, a menor frequência esperada, o tamanho de efeito e os resíduos das categorias discrepantes. Quando houver esperados pequenos, informe também o valor-p simulado.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>chisq.test()</code> está no pacote <code>stats</code>, já instalado com o R. Sem o argumento <code>p</code>, testa a hipótese de que todas as categorias são equiprováveis; com ele, testa as proporções informadas. O objeto devolvido traz <code>$expected</code>, <code>$residuals</code> (resíduos de Pearson) e <code>$stdres</code>. O argumento <code>simulate.p.value = TRUE</code> calcula o valor-p por reamostragem, dispensando a aproximação. <strong>Atenção:</strong> os graus de liberdade são sempre \(c-1\) — ao ajustar uma distribuição com parâmetros estimados, calcule o valor-p manualmente com <code>pchisq()</code>.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-qui-aderencia-min" type="button">Copiar código</button></div><pre id="code-qui-aderencia-min"><code>chisq.test(observado, p = proporcoes)
+chisq.test(defeitos, simulate.p.value = TRUE, B = 100000)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>A ficha percorre três situações. A primeira usa os dados de ervilha publicados por Mendel em 1866, em que a teoria especifica as proporções. A segunda ajusta uma distribuição de Poisson às mortes por coice de cavalo registradas por Bortkiewicz no exército prussiano entre 1875 e 1894, com o parâmetro estimado dos próprios dados. A terceira é um exemplo fictício de controle de qualidade, em que a hipótese é rejeitada e os resíduos indicam onde.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-qui-aderencia" type="button">Copiar código</button></div><pre id="code-qui-aderencia"><code># Qui-quadrado de aderência: exemplo completo ----
+# Pacotes: stats (base). Opcionais: vcd (gráficos), DescTools
+# install.packages(c("vcd", "DescTools"))
 
-# Ajuste e resultados ----
-freq &lt;- table(mtcars$gear)
-print(freq)
-resultado &lt;- chisq.test(freq, p = rep(1 / length(freq), length(freq)))
-print(resultado)
-print(resultado$expected)
+# PARTE 1 - proporções dadas pela teoria: as ervilhas de Mendel
+observado &lt;- c("lisa amarela" = 315, "lisa verde" = 108,
+               "rugosa amarela" = 101, "rugosa verde" = 32)
+proporcoes &lt;- c(9, 3, 3, 1) / 16
+chisq.test(observado, p = proporcoes)
 
-# Visualização e diagnóstico ----
-plot(mpg ~ wt, data = mtcars, pch = 19, xlab = "Massa (mil libras)", ylab = "Autonomia (mpg)")
-lines(lowess(mtcars$wt, mtcars$mpg), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+teste &lt;- chisq.test(observado, p = proporcoes)
+teste$expected                  # frequências esperadas
+teste$residuals                 # resíduos de Pearson: (O - E)/raiz(E)
+teste$residuals^2               # contribuição de cada categoria
+sum(teste$residuals^2)          # = a estatística
 
+# O teste tem DOIS lados: valores muito pequenos indicam ajuste bom demais
+pchisq(teste$statistic, teste$parameter)            # probabilidade de um ajuste PIOR
+pchisq(41.6, 84)                # a crítica de Fisher a todos os dados de Mendel
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="dunnett-c.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Dunnett C
-    </a>
-<a href="qui-independencia.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Qui-quadrado de independência
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# PARTE 2 - ajuste de uma DISTRIBUIÇÃO, com parâmetro estimado
+# Mortes por coice de cavalo no exército prussiano (Bortkiewicz, 1898)
+mortes  &lt;- 0:4
+corpos  &lt;- c(109, 65, 22, 3, 1)
+n &lt;- sum(corpos)
+(lambda &lt;- sum(mortes * corpos) / n)          # parâmetro ESTIMADO dos dados
+esperado &lt;- c(dpois(0:3, lambda), ppois(3, lambda, lower.tail = FALSE)) * n
+round(esperado, 3)
+min(esperado)                                  # abaixo de 1: é preciso agrupar
+
+# Agrupando a cauda e corrigindo os graus de liberdade
+obs2 &lt;- c(109, 65, 22, 4)
+esp2 &lt;- c(dpois(0:2, lambda), ppois(2, lambda, lower.tail = FALSE)) * n
+X2 &lt;- sum((obs2 - esp2)^2 / esp2)
+gl &lt;- length(obs2) - 1 - 1                     # UM a menos: lambda foi estimado
+c(qui_quadrado = X2, gl = gl, p = pchisq(X2, gl, lower.tail = FALSE))
+# ATENÇÃO: chisq.test() NÃO desconta o parâmetro estimado. Com
+# chisq.test(obs2, p = esp2/n) o valor-p sairia errado (gl = 3 em vez de 2).
+
+# PARTE 3 - um caso que rejeita, com dados fictícios
+defeitos &lt;- c(dimensional = 58, acabamento = 41, montagem = 35,
+              material = 32, outros = 14)
+t3 &lt;- chisq.test(defeitos)                     # H0: as cinco categorias são equiprováveis
+t3
+t3$expected
+round(t3$residuals, 3)                         # ONDE está a discrepância
+sqrt(t3$statistic / sum(defeitos))             # w de Cohen
+
+# Valor-p por simulação, sem depender da aproximação
+chisq.test(defeitos, simulate.p.value = TRUE, B = 100000)
+
+# Intervalos de confiança simultâneos para as proporções (método de Goodman)
+library(DescTools)
+MultinomCI(defeitos, conf.level = 0.95, method = "goodman")
+
+# Gráficos
+par(mfrow = c(1, 2))
+bp &lt;- barplot(rbind(defeitos, t3$expected), beside = TRUE, col = c("gray40", "gray85"),
+              legend.text = c("observado", "esperado"), ylab = "Peças refugadas")
+barplot(t3$residuals, col = ifelse(abs(t3$residuals) &gt; 2, "firebrick", "gray70"),
+        ylab = "Resíduo padronizado", las = 2)
+abline(h = c(-2, 2), lty = 2)
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-qui-aderencia" type="button">Copiar código</button></div><pre id="code-py-qui-aderencia"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# PARTE 1 - proporções especificadas pela teoria: as ervilhas de Mendel
+# F2 do cruzamento dibrido; a teoria prevê a razão 9:3:3:1.
+categorias = ["lisa amarela", "lisa verde", "rugosa amarela", "rugosa verde"]
+obs = np.array([315, 108, 101, 32])
+razao = np.array([9, 3, 3, 1])
+n = obs.sum()
+esp = n * razao / razao.sum()
+print("Ervilhas de Mendel (1866), F2 do cruzamento dibrido")
+print(f"{'categoria':&lt;18}{'observado':&gt;10}{'esperado':&gt;11}{'O - E':&gt;9}{'(O-E)²/E':&gt;11}")
+for c, o, e in zip(categorias, obs, esp):
+    print(f"{c:&lt;18}{o:10d}{e:11.2f}{o-e:9.2f}{(o-e)**2/e:11.5f}")
+qui = ((obs - esp)**2 / esp).sum()
+gl = len(obs) - 1
+print(f"{'total':&lt;18}{n:10d}{esp.sum():11.2f}{0:9.2f}{qui:11.5f}")
+print(f"\nqui-quadrado = {qui:.5f} | gl = {gl} | p-valor = {stats.chi2.sf(qui, gl):.5f}")
+print(f"scipy: {stats.chisquare(obs, esp)}")
+print(f"Menor frequência esperada: {esp.min():.2f} (a regra prática pede pelo menos 5)")
+print("Resíduos padronizados (O - E)/raiz(E):", np.round((obs - esp)/np.sqrt(esp), 4))
+
+# 1b. O valor-p grande: o que ele significa e o que não significa
+print("\nUm valor-p de 0,925 NÃO prova que a teoria 9:3:3:1 está certa.")
+print("Ele diz apenas que os dados são compatíveis com ela. Veja o que aconteceria")
+print("se a razão verdadeira fosse ligeiramente diferente:")
+for alt, nome in [(np.array([9,3,3,1]), "9:3:3:1 (a hipótese)"),
+                  (np.array([8.5,3.2,3.2,1.1]), "8,5:3,2:3,2:1,1"),
+                  (np.array([7,3,3,1]), "7:3:3:1"),
+                  (np.array([1,1,1,1]), "1:1:1:1")]:
+    ea = n*alt/alt.sum(); qa = ((obs-ea)**2/ea).sum()
+    print(f"  contra {nome:&lt;24} qui² = {qa:9.3f} | p = {stats.chi2.sf(qa, gl):.3e}")
+print("Com n = 556 o teste distingue bem 9:3:3:1 de 7:3:3:1, mas não de 8,5:3,2:3,2:1,1.")
+
+# 1c. A crítica de Fisher: um ajuste bom demais
+print("\nA crítica de R. A. Fisher (1936): somando os qui-quadrados de TODOS os")
+print("experimentos de Mendel, ele obteve 41,6 com 84 graus de liberdade.")
+print(f"P(qui²(84) &lt;= 41,6) = {stats.chi2.cdf(41.6, 84):.5f}")
+print("Ou seja, um ajuste tão bom ou melhor ocorreria em cerca de 1 em 25.000 repetições.")
+print("O teste de aderência tem, portanto, DOIS lados: valores grandes indicam")
+print("incompatibilidade com a teoria; valores muito pequenos indicam dados bons demais.")
+
+# ===================================================================
+# PARTE 2 - ajuste de uma DISTRIBUIÇÃO, com parâmetro estimado
+print("\n" + "=" * 70)
+print("Mortes por coice de cavalo no exército prussiano (Bortkiewicz, 1898)")
+print("200 observações corpo-ano; a hipótese é a distribuição de Poisson.")
+obs2 = np.array([109, 65, 22, 3, 1])
+x = np.arange(5); n2 = obs2.sum()
+lam = (obs2 * x).sum() / n2
+print(f"\nTotal de mortes = {int((obs2*x).sum())} em {n2} corpos-ano -&gt; lambda estimado = {lam:.4f}")
+esp2 = np.array([stats.poisson.pmf(i, lam) * n2 for i in range(4)] + [stats.poisson.sf(3, lam) * n2])
+rot = ["0 mortes", "1 morte", "2 mortes", "3 mortes", "4 ou mais"]
+print(f"{'categoria':&lt;14}{'observado':&gt;10}{'esperado':&gt;11}{'(O-E)²/E':&gt;11}")
+for r, o, e in zip(rot, obs2, esp2):
+    print(f"{r:&lt;14}{o:10d}{e:11.3f}{(o-e)**2/e:11.5f}")
+q2 = ((obs2 - esp2)**2 / esp2).sum()
+print(f"\nqui-quadrado = {q2:.4f}")
+print(f"Graus de liberdade = {len(obs2)} - 1 - 1 = {len(obs2)-2}  (um a menos, porque lambda foi ESTIMADO)")
+print(f"p-valor = {stats.chi2.sf(q2, len(obs2)-2):.4f}")
+print(f"Menor frequência esperada = {esp2.min():.3f}: abaixo de 5, e até abaixo de 1.")
+
+print("\nAgrupando as categorias de cauda, como a regra prática recomenda:")
+obs3 = np.array([109, 65, 22, 4]); esp3 = np.array(list(esp2[:3]) + [esp2[3:].sum()])
+rot3 = ["0 mortes", "1 morte", "2 mortes", "3 ou mais"]
+for r, o, e in zip(rot3, obs3, esp3):
+    print(f"  {r:&lt;12}{o:6d}{e:10.3f}{(o-e)**2/e:10.5f}")
+q3 = ((obs3 - esp3)**2 / esp3).sum()
+print(f"  qui-quadrado = {q3:.4f} | gl = {len(obs3)-2} | p-valor = {stats.chi2.sf(q3, len(obs3)-2):.4f}")
+print(f"  menor esperado = {esp3.min():.3f}: agora dentro da regra.")
+print("Conclusão: as mortes por coice são compatíveis com um processo de Poisson.")
+
+# ===================================================================
+# PARTE 3 - um caso que REJEITA, e o que fazer com esperados pequenos
+print("\n" + "=" * 70)
+print("Dados fictícios: 180 peças refugadas em uma linha, por tipo de defeito.")
+print("A hipótese do setor de qualidade é que os cinco tipos são equiprováveis.")
+tipos = ["dimensional", "acabamento", "montagem", "material", "outros"]
+obs4 = np.array([58, 41, 35, 32, 14])
+n4 = obs4.sum(); esp4 = np.full(5, n4/5)
+print(f"{'defeito':&lt;14}{'observado':&gt;10}{'esperado':&gt;10}{'(O-E)²/E':&gt;11}{'resíduo pad.':&gt;14}")
+for t, o, e in zip(tipos, obs4, esp4):
+    print(f"{t:&lt;14}{o:10d}{e:10.1f}{(o-e)**2/e:11.4f}{(o-e)/np.sqrt(e):14.3f}")
+q4 = ((obs4 - esp4)**2 / esp4).sum()
+print(f"\nqui-quadrado = {q4:.4f} | gl = 4 | p-valor = {stats.chi2.sf(q4, 4):.5f}")
+print(f"scipy: {stats.chisquare(obs4)}")
+print("Os resíduos padronizados dizem ONDE está a discrepância: o defeito dimensional")
+print(f"contribui com {(obs4[0]-esp4[0])**2/esp4[0]:.3f} dos {q4:.3f}, "
+      f"e 'outros' com {(obs4[4]-esp4[4])**2/esp4[4]:.3f}.")
+print(f"Resíduos acima de 2 em valor absoluto merecem atenção: "
+      f"{[t for t,r in zip(tipos,(obs4-esp4)/np.sqrt(esp4)) if abs(r)&gt;2]}")
+
+# 3b. Tamanho de efeito e poder
+w = np.sqrt(q4 / n4)
+print(f"\nTamanho de efeito w de Cohen = raiz(qui²/n) = {w:.4f}")
+print("  (0,1 pequeno; 0,3 médio; 0,5 grande)")
+
+# 3c. Valor-p por simulação: aqui, só para conferir a aproximação
+print("\nO valor-p também pode ser obtido por simulação, sem recorrer à aproximação:")
+rng = np.random.default_rng(2026)
+B = 100000
+sim = rng.multinomial(n4, np.full(5, 0.2), size=B)
+qsim = (((sim - esp4)**2) / esp4).sum(axis=1)
+print(f"  valor-p simulado ({B} reamostragens) = {(1 + (qsim &gt;= q4).sum()) / (B + 1):.6f}")
+print(f"  valor-p pela aproximação qui-quadrado = {stats.chi2.sf(q4, 4):.6f}")
+print("  No R: chisq.test(obs, simulate.p.value = TRUE, B = 100000)")
+
+print("Aqui os dois coincidem na prática, porque todas as frequências esperadas são 36.")
+
+# 3d. Quando a aproximação falha: a taxa de erro real com esperados pequenos
+print("\nA aproximação qui-quadrado é assintótica. Para ver quando ela falha, basta")
+print("simular sob a hipótese nula e contar quantas vezes ela rejeita a 5%:")
+print(" n     esperado por célula   taxa de rejeição a 5% (alvo: 5%)")
+for n_ in (10, 15, 20, 25, 50, 100, 200):
+    e_ = np.full(5, n_/5)
+    sim_ = rng.multinomial(n_, np.full(5, 0.2), size=40000)
+    q_ = (((sim_ - e_)**2)/e_).sum(axis=1)
+    print(f" {n_:4d}        {n_/5:6.1f}            {100*(q_ &gt; stats.chi2.ppf(0.95, 4)).mean():6.2f}%")
+print("Com n = 10 (esperado 2 por célula) o teste rejeita menos que o nominal, e com")
+print("n = 15 e 20 ele oscila: a distribuição discreta não se ajusta bem à contínua.")
+print("A partir de cerca de 25 observações, ou seja 5 por célula, a aproximação fica boa.")
+print("É dessa simulação que vem a regra prática, e não de um teorema.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Ervilhas de Mendel (1866), F2 do cruzamento dibrido
+categoria          observado   esperado    O - E   (O-E)²/E
+lisa amarela             315     312.75     2.25    0.01619
+lisa verde               108     104.25     3.75    0.13489
+rugosa amarela           101     104.25    -3.25    0.10132
+rugosa verde              32      34.75    -2.75    0.21763
+total                    556     556.00     0.00    0.47002
+
+qui-quadrado = 0.47002 | gl = 3 | p-valor = 0.92543
+scipy: Power_divergenceResult(statistic=np.float64(0.4700239808153477), pvalue=np.float64(0.925425895103616))
+Menor frequência esperada: 34.75 (a regra prática pede pelo menos 5)
+Resíduos padronizados (O - E)/raiz(E): [ 0.1272  0.3673 -0.3183 -0.4665]
+
+Um valor-p de 0,925 NÃO prova que a teoria 9:3:3:1 está certa.
+Ele diz apenas que os dados são compatíveis com ela. Veja o que aconteceria
+se a razão verdadeira fosse ligeiramente diferente:
+  contra 9:3:3:1 (a hipótese)     qui² =     0.470 | p = 9.254e-01
+  contra 8,5:3,2:3,2:1,1          qui² =     3.345 | p = 3.414e-01
+  contra 7:3:3:1                  qui² =    10.228 | p = 1.673e-02
+  contra 1:1:1:1                  qui² =   322.518 | p = 1.329e-69
+Com n = 556 o teste distingue bem 9:3:3:1 de 7:3:3:1, mas não de 8,5:3,2:3,2:1,1.
+
+A crítica de R. A. Fisher (1936): somando os qui-quadrados de TODOS os
+experimentos de Mendel, ele obteve 41,6 com 84 graus de liberdade.
+P(qui²(84) &lt;= 41,6) = 0.00003
+Ou seja, um ajuste tão bom ou melhor ocorreria em cerca de 1 em 25.000 repetições.
+O teste de aderência tem, portanto, DOIS lados: valores grandes indicam
+incompatibilidade com a teoria; valores muito pequenos indicam dados bons demais.
+
+======================================================================
+Mortes por coice de cavalo no exército prussiano (Bortkiewicz, 1898)
+200 observações corpo-ano; a hipótese é a distribuição de Poisson.
+
+Total de mortes = 122 em 200 corpos-ano -&gt; lambda estimado = 0.6100
+categoria      observado   esperado   (O-E)²/E
+0 mortes             109    108.670    0.00100
+1 morte               65     66.289    0.02506
+2 mortes              22     20.218    0.15705
+3 mortes               3      4.111    0.30025
+4 ou mais              1      0.712    0.11657
+
+qui-quadrado = 0.5999
+Graus de liberdade = 5 - 1 - 1 = 3  (um a menos, porque lambda foi ESTIMADO)
+p-valor = 0.8964
+Menor frequência esperada = 0.712: abaixo de 5, e até abaixo de 1.
+
+Agrupando as categorias de cauda, como a regra prática recomenda:
+  0 mortes       109   108.670   0.00100
+  1 morte         65    66.289   0.02506
+  2 mortes        22    20.218   0.15705
+  3 ou mais        4     4.823   0.14042
+  qui-quadrado = 0.3235 | gl = 2 | p-valor = 0.8506
+  menor esperado = 4.823: agora dentro da regra.
+Conclusão: as mortes por coice são compatíveis com um processo de Poisson.
+
+======================================================================
+Dados fictícios: 180 peças refugadas em uma linha, por tipo de defeito.
+A hipótese do setor de qualidade é que os cinco tipos são equiprováveis.
+defeito        observado  esperado   (O-E)²/E  resíduo pad.
+dimensional           58      36.0    13.4444         3.667
+acabamento            41      36.0     0.6944         0.833
+montagem              35      36.0     0.0278        -0.167
+material              32      36.0     0.4444        -0.667
+outros                14      36.0    13.4444        -3.667
+
+qui-quadrado = 28.0556 | gl = 4 | p-valor = 0.00001
+scipy: Power_divergenceResult(statistic=np.float64(28.055555555555557), pvalue=np.float64(1.215369356340457e-05))
+Os resíduos padronizados dizem ONDE está a discrepância: o defeito dimensional
+contribui com 13.444 dos 28.056, e 'outros' com 13.444.
+Resíduos acima de 2 em valor absoluto merecem atenção: ['dimensional', 'outros']
+
+Tamanho de efeito w de Cohen = raiz(qui²/n) = 0.3948
+  (0,1 pequeno; 0,3 médio; 0,5 grande)
+
+O valor-p também pode ser obtido por simulação, sem recorrer à aproximação:
+  valor-p simulado (100000 reamostragens) = 0.000020
+  valor-p pela aproximação qui-quadrado = 0.000012
+  No R: chisq.test(obs, simulate.p.value = TRUE, B = 100000)
+Aqui os dois coincidem na prática, porque todas as frequências esperadas são 36.
+
+A aproximação qui-quadrado é assintótica. Para ver quando ela falha, basta
+simular sob a hipótese nula e contar quantas vezes ela rejeita a 5%:
+ n     esperado por célula   taxa de rejeição a 5% (alvo: 5%)
+   10           2.0              3.84%
+   15           3.0              4.15%
+   20           4.0              4.92%
+   25           5.0              4.46%
+   50          10.0              4.45%
+  100          20.0              4.85%
+  200          40.0              4.94%
+Com n = 10 (esperado 2 por célula) o teste rejeita menos que o nominal, e com
+n = 15 e 20 ele oscila: a distribuição discreta não se ajusta bem à contínua.
+A partir de cerca de 25 observações, ou seja 5 por célula, a aproximação fica boa.
+É dessa simulação que vem a regra prática, e não de um teorema.</pre></div><figure class="fig"><img src="../assets/resultados/qui-aderencia.png" alt="Tipos de defeito com resíduos e a taxa de erro por tamanho de amostra" loading="lazy"/><figcaption><strong>O caso que rejeita e a origem da regra prática.</strong> À esquerda, 180 peças refugadas distribuídas em cinco tipos de defeito, com a linha do esperado sob equiprobabilidade e o resíduo padronizado de cada categoria; os dois em vermelho ultrapassam 2 em módulo. À direita, a taxa de rejeição do teste quando a hipótese nula é verdadeira, em função do tamanho da amostra: abaixo de 25 observações (menos de 5 por célula) a aproximação é visivelmente conservadora. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Os três exemplos</caption><thead><tr><th>Exemplo</th><th>X²</th><th>gl</th><th>p</th><th>Conclusão</th></tr></thead><tbody><tr><td>Mendel, 9:3:3:1</td><td>0,47002</td><td>3</td><td>0,92543</td><td>Compatível com a teoria.</td></tr><tr><td>Bortkiewicz, Poisson (5 categorias)</td><td>0,5999</td><td>3</td><td>0,8964</td><td>Esperada mínima de 0,712: agrupar.</td></tr><tr><td>Bortkiewicz, Poisson (agrupado)</td><td>0,3235</td><td>2</td><td>0,8506</td><td>Compatível com Poisson.</td></tr><tr><td>Defeitos, equiprobabilidade</td><td>28,0556</td><td>4</td><td>0,0000122</td><td><strong>Rejeita.</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O exemplo que rejeita</caption><thead><tr><th>Defeito</th><th>Observado</th><th>Esperado</th><th>(O−E)²/E</th><th>Resíduo</th></tr></thead><tbody><tr><td>dimensional</td><td>58</td><td>36,0</td><td>13,4444</td><td>+3,667</td></tr><tr><td>acabamento</td><td>41</td><td>36,0</td><td>0,6944</td><td>+0,833</td></tr><tr><td>montagem</td><td>35</td><td>36,0</td><td>0,0278</td><td>−0,167</td></tr><tr><td>material</td><td>32</td><td>36,0</td><td>0,4444</td><td>−0,667</td></tr><tr><td>outros</td><td>14</td><td>36,0</td><td>13,4444</td><td>−3,667</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Complementos</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>w de Cohen</td><td>0,3948</td><td>Efeito médio a grande.</td></tr><tr><td>Valor-p simulado (100 000 reamostragens)</td><td>0,000020</td><td>Confirma a aproximação (0,000012).</td></tr><tr><td>Categorias com resíduo acima de 2</td><td>dimensional e outros</td><td>São elas que carregam o resultado.</td></tr><tr><td>Contribuição dessas duas</td><td>26,89 dos 28,06</td><td>96% da estatística.</td></tr></tbody></table></div><p><strong>Leitura do terceiro exemplo:</strong> os cinco tipos de defeito não ocorrem com a mesma frequência (p = 0,000012). Os resíduos mostram que o resultado não se distribui pelas cinco categorias: ele vem quase inteiramente de duas. O defeito dimensional aparece 58 vezes onde se esperariam 36, e a categoria "outros" aparece 14 vezes onde se esperariam 36. As três categorias intermediárias estão praticamente onde deveriam.</p><p>Essa é a diferença entre o teste e o diagnóstico. O valor-p diz que a hipótese de equiprobabilidade não se sustenta; os resíduos dizem o que fazer com essa informação — concentrar a investigação no processo de usinagem, que gera o defeito dimensional. Um teste significativo sem o exame dos resíduos é meia análise.</p><h3>Sobre a regra do "esperado maior que 5"</h3><p>A simulação da figura mostra de onde vem a recomendação. Com cinco categorias equiprováveis e todas as frequências esperadas iguais, a taxa de rejeição do teste sob a hipótese nula é de 3,84% com n = 10, sobe irregularmente entre n = 15 e n = 50, e só se estabiliza perto de 4,9% a partir de n = 100. O teste é <em>conservador</em> com amostras pequenas — rejeita menos do que deveria —, e a irregularidade vem do fato de uma distribuição discreta estar sendo aproximada por uma contínua.</p><p>Na prática: quando algum esperado ficar abaixo de 5, use <code>simulate.p.value = TRUE</code> ou agrupe categorias. A segunda opção custa graus de liberdade e informação, mas mantém a interpretação direta.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Aplicar o teste a proporções ou percentagens</td><td>Ele precisa das contagens absolutas.</td></tr><tr><td>Esquecer de descontar os parâmetros estimados</td><td><code>chisq.test()</code> não faz isso; calcule com <code>pchisq()</code>.</td></tr><tr><td>Ignorar o aviso de esperados pequenos</td><td>Agrupe categorias ou use o valor-p simulado.</td></tr><tr><td>Concluir que a hipótese está certa quando p é grande</td><td>Ausência de evidência não é evidência de ausência.</td></tr><tr><td>Parar no valor-p sem olhar os resíduos</td><td>São eles que dizem ONDE está a discrepância.</td></tr><tr><td>Usar com observações não independentes</td><td>Medidas repetidas no mesmo indivíduo violam o pressuposto.</td></tr><tr><td>Definir as categorias depois de ver os dados</td><td>Isso invalida o teste.</td></tr><tr><td>Esquecer que n grande torna tudo significativo</td><td>Reporte o tamanho de efeito.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Teste multinomial exato</td><td>Amostras pequenas; disponível em <code>EMT::multinomial.test</code>.</td></tr><tr><td>Valor-p por simulação</td><td>Esperados pequenos, sem agrupar categorias.</td></tr><tr><td>Razão de verossimilhanças G²</td><td>Equivalente assintótico; preferido em modelos log-lineares.</td></tr><tr><td>Teste binomial exato</td><td>Apenas duas categorias.</td></tr><tr><td><a href="ks.html">Kolmogorov–Smirnov</a></td><td>Variável contínua, sem categorizar.</td></tr><tr><td><a href="ad.html">Anderson–Darling</a></td><td>Variável contínua, com ênfase nas caudas.</td></tr><tr><td><a href="sw.html">Shapiro–Wilk</a></td><td>Especificamente para a hipótese de normalidade.</td></tr><tr><td>Modelo log-linear</td><td>Mais de uma variável categórica, com estrutura a modelar.</td></tr></tbody></table></div><ol class="steps"><li>Garanta que as categorias são exclusivas e exaustivas e que as observações são independentes.</li><li>Especifique as proporções esperadas <em>antes</em> de ver os dados.</li><li>Calcule as frequências esperadas e verifique se são grandes o bastante.</li><li>Se um parâmetro foi estimado, desconte um grau de liberdade.</li><li>Aplique o teste e reporte X², gl e valor-p.</li><li>Examine os resíduos padronizados para localizar a discrepância.</li><li>Informe o tamanho de efeito, sobretudo com amostras grandes.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>PEARSON, Karl. On the criterion that a given system of deviations from the probable in the case of a correlated system of variables is such that it can be reasonably supposed to have arisen from random sampling. <em>Philosophical Magazine, Series 5</em>, v. 50, n. 302, p. 157-175, 1900.</li><li>FISHER, Ronald A. The conditions under which chi-square measures the discrepancy between observation and hypothesis. <em>Journal of the Royal Statistical Society</em>, v. 87, n. 3, p. 442-450, 1924.</li><li>FISHER, Ronald A. Has Mendel’s work been rediscovered? <em>Annals of Science</em>, v. 1, n. 2, p. 115-137, 1936.</li><li>MENDEL, Gregor. Versuche über Pflanzen-Hybriden. <em>Verhandlungen des naturforschenden Vereines in Brünn</em>, v. 4, p. 3-47, 1866.</li><li>BORTKIEWICZ, Ladislaus von. <em>Das Gesetz der kleinen Zahlen.</em> Leipzig: Teubner, 1898.</li><li>COCHRAN, William G. The chi-square test of goodness of fit. <em>The Annals of Mathematical Statistics</em>, v. 23, n. 3, p. 315-345, 1952.</li><li>FRANKLIN, Allan et al. <em>Ending the Mendel-Fisher controversy.</em> Pittsburgh: University of Pittsburgh Press, 2008.</li><li>AGRESTI, Alan. <em>Categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2013.</li><li>AGRESTI, Alan. <em>An introduction to categorical data analysis.</em> 3. ed. Hoboken: Wiley, 2019.</li><li>FLEISS, Joseph L.; LEVIN, Bruce; PAIK, Myunghee Cho. <em>Statistical methods for rates and proportions.</em> 3. ed. Hoboken: Wiley, 2003.</li><li>COHEN, Jacob. <em>Statistical power analysis for the behavioral sciences.</em> 2. ed. Hillsdale: Lawrence Erlbaum, 1988.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>chisq.test</code>, pacote <code>stats</code>.)</li><li>SIGNORELL, Andri et al. <em>DescTools: tools for descriptive statistics.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=DescTools" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=DescTools</a>. (Função <code>MultinomCI</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Observações independentes, categorias exclusivas e exaustivas, frequências esperadas suficientemente grandes e graus de liberdade corrigidos pelos parâmetros estimados.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>stats, DescTools, vcd</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="dunnett-c.html"><span>← ANTERIOR</span>Dunnett C</a><a href="qui-independencia.html"><span>PRÓXIMO →</span>Qui-quadrado de independência</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

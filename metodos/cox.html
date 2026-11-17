@@ -4,320 +4,223 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão de Cox: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão de Cox | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão de Cox: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão de Cox | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão de Cox
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 03 · MODELOS ESTATÍSTICOS
-    </span>
-<h1>
-     Regressão de Cox
-    </h1>
-<p class="detail-lead">
-     Avalia como determinadas características se associam à taxa de ocorrência de uma falha ao longo do tempo.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/cox.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Avalia como determinadas características se associam à taxa de ocorrência de uma falha ao longo do tempo.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência condicional entre unidades (verifique se há eventos recorrentes ou agrupamento).</li><li>Censura não informativa condicionalmente às covariáveis (examine as causas das saídas do acompanhamento).</li><li>Proporcionalidade das funções de risco (resíduos de Schoenfeld e inspeção gráfica).</li><li>Forma funcional adequada das covariáveis contínuas (resíduos de Martingale, splines ou termos flexíveis).</li><li>Observações influentes e empates de eventos (resíduos de influência; confira a abordagem para empates).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_j=0\quad(HR_j=1)\\ H_1&amp;:\ \beta_j\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[h(t\mid\mathbf x)=h_0(t)\exp(\mathbf x^\top\boldsymbol\beta),\qquad HR=e^{\beta_j}\]
-      </div>
-<div aria-label="Intervalo de confiança" class="math-display" role="group">
-       \[IC_{95\%}(HR_j)\approx\exp\!\left[\widehat\beta_j\pm1{,}96\operatorname{EP}(\widehat\beta_j)\right]\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(h(t\mid\mathbf x)\)
-        </dt>
-<dd>
-         taxa instantânea do evento no tempo t, condicional às covariáveis
-        </dd>
-</div>
-<div>
-<dt>
-         \(h_0(t)\)
-        </dt>
-<dd>
-         taxa basal não especificada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\boldsymbol\beta\)
-        </dt>
-<dd>
-         coeficientes logarítmicos de risco
-        </dd>
-</div>
-<div>
-<dt>
-         \(HR\)
-        </dt>
-<dd>
-         razão de taxas instantâneas entre perfis que diferem uma unidade em uma covariável, mantidas as demais fixas
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de associação com a taxa instantânea de evento. HR não é razão de probabilidades de falha nem diferença de tempo médio.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto lung, do pacote survival, contém tempos até óbito ou censura de pacientes, além de covariáveis. É um exemplo metodológico com dados clínicos, não um conjunto de falhas industriais.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Examinar como covariáveis se associam à taxa instantânea de evento, considerando censura à direita. O procedimento também é usado em confiabilidade de equipamentos.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-cox" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-cox"><code># Regressão de Cox ----
-
-# Ajuste e resultados ----
-if (!requireNamespace("survival", quietly = TRUE)) install.packages("survival")
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão de Cox</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · MODELOS ESTATÍSTICOS</span><h1>Regressão de Cox</h1><p class="detail-lead">Avalia como características se associam à taxa de falha ao longo do tempo, aproveitando observações censuradas.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/cox.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/cox.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o modelo</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Quanto tempo até a bomba falhar? Até o paciente apresentar recidiva? Até o cliente cancelar o contrato? Esse tipo de dado tem uma particularidade: ao fim do estudo, parte das unidades <strong>ainda não falhou</strong>. Descartá-las enviesa tudo; fingir que falharam no último dia, também. A regressão de Cox lida com essas observações censuradas e, ao mesmo tempo, mede o efeito de cada fator sobre o risco de falha.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão de Cox" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Efeito de fatores sobre</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">a taxa de falha ao longo do tempo</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Como funciona</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Verossimilhança parcial</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">sem supor forma do risco basal</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">Riscos proporcionais</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">Censura não informativa</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">HR = razão de risco</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">HR &gt; 1: falha mais cedo</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">survival::coxph()</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">cox.zph()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Kaplan–Meier e log-rank</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Modelos paramétricos</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Cox com covariáveis no tempo</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão de Cox</text></svg><figcaption>Visão geral do modelo de riscos proporcionais de Cox. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Curiosidade</strong><p>O artigo de David Cox (1972) é um dos mais citados de toda a estatística. A ideia central, a verossimilhança parcial, permite estimar o efeito das covariáveis <strong>sem</strong> especificar como o risco varia ao longo do tempo: um ganho de generalidade raro em modelagem.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o modelo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[h(t\mid\mathbf x)=h_0(t)\,\exp\!\left(\beta_1x_1+\cdots+\beta_px_p\right)\]</div><p>A função \(h(t)\) é a <strong>taxa de falha</strong> (ou risco): a propensão instantânea de falhar no instante \(t\), dado que a unidade chegou até ali. O modelo a separa em duas partes: \(h_0(t)\), o risco basal, que depende do tempo e fica <em>sem forma especificada</em>, e um fator multiplicativo que depende apenas das covariáveis. Como o risco basal é comum a todas as unidades, ele se cancela nas comparações, e os coeficientes podem ser estimados sem conhecê-lo.</p><figure class="fig"><img src="../assets/resultados/cox-didatica.png" alt="Riscos proporcionais e diagrama de censura com conjunto de risco" loading="lazy"/><figcaption><strong>As duas ideias centrais.</strong> À esquerda, riscos proporcionais: as duas curvas de risco mudam com o tempo, mas a razão entre elas é constante — é isso que o modelo supõe. À direita, por que a censura não é um problema: cada unidade contribui para as comparações enquanto esteve em observação, e a unidade censurada participa do conjunto de risco até o momento em que saiu. <span class="source-line">Fonte: o autor.</span></figcaption></figure></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Riscos proporcionais</td><td>A razão de risco entre dois perfis é constante no tempo; é a hipótese central.</td><td>Resíduos de Schoenfeld contra o tempo (<code>cox.zph</code>); curvas de Kaplan–Meier que não se cruzam; gráfico log-log.</td></tr><tr><td>Censura não informativa</td><td>Unidades censuradas devem ter o mesmo prognóstico das que seguem em observação.</td><td>Avalie o motivo da censura: fim do estudo é aceitável; retirada por piora não é.</td></tr><tr><td>Observações independentes</td><td>Condição dos erros-padrão.</td><td>Delineamento; para unidades agrupadas, use modelos de fragilidade ou variância robusta.</td></tr><tr><td>Forma funcional correta das covariáveis quantitativas</td><td>O efeito entra linearmente na escala log do risco.</td><td>Resíduos martingale contra a covariável; splines.</td></tr><tr><td>Eventos suficientes</td><td>A precisão depende do número de falhas, não do de unidades.</td><td>Referência usual: ao menos 10 eventos por covariável.</td></tr><tr><td>Poucos empates nos tempos</td><td>Muitos empates exigem aproximações.</td><td>O R usa a correção de Efron por padrão, adequada na maioria dos casos.</td></tr></tbody></table></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ \beta_j=0 \\ &\quad \text{(a covariável não altera a } \\ &\quad \text{taxa de falha)} \\ H_1&:\ \beta_j\neq0\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[L(\boldsymbol\beta)=\prod_{i:\,\delta_i=1}\frac{\exp(\mathbf x_i^{\top}\boldsymbol\beta)}{\sum_{j\in R(t_i)}\exp(\mathbf x_j^{\top}\boldsymbol\beta)},\]\[HR_j=e^{\beta_j}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(h(t\mid\mathbf x)\)</dt><dd>taxa de falha no instante t para o perfil de covariáveis \(\mathbf x\)</dd></div><div><dt>\(h_0(t)\)</dt><dd>risco basal, comum a todas as unidades e não especificado</dd></div><div><dt>\(t_i,\ \delta_i\)</dt><dd>tempo observado da unidade i e indicador de falha (1 = falhou, 0 = censurada)</dd></div><div><dt>\(R(t_i)\)</dt><dd>conjunto de risco: unidades ainda em observação imediatamente antes de \(t_i\)</dd></div><div><dt>\(L\)</dt><dd>verossimilhança parcial: considera apenas a ordem das falhas, não os tempos em si</dd></div><div><dt>\(HR_j\)</dt><dd>razão de risco (<em>hazard ratio</em>): fator que multiplica a taxa de falha por unidade de \(x_j\)</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Suponha o primeiro instante de falha de um estudo com 5 unidades ainda em risco, uma única covariável binária \(x\) e \(\beta=0{,}7\). A unidade que falha tem \(x=1\); entre as 5 em risco, duas têm \(x=1\) e três têm \(x=0\).</p><div class="worked"><strong>Contribuição desse instante para a verossimilhança parcial</strong><p>Numerador: \(e^{0{,}7\times1}=2{,}014\).</p><p>Denominador: \(2\times e^{0{,}7}+3\times e^{0}=2\times2{,}014+3=7{,}028\).</p><p>Contribuição: \(2{,}014/7{,}028=0{,}287\). Se não houvesse efeito (\(\beta=0\)), a contribuição seria \(1/5=0{,}200\): a falha de uma unidade de alto risco é mais provável sob \(\beta&gt;0\).</p><p>A verossimilhança parcial é o produto de contribuições como essa, uma por falha observada. Repare que o instante exato da falha não entra na conta: só importa quem estava em risco e quem falhou.</p></div><h3>Testes e intervalos</h3><div class="table-wrap"><table class="method-table"><caption>Três testes globais</caption><thead><tr><th>Teste</th><th>Como é calculado</th><th>Observação</th></tr></thead><tbody><tr><td>Razão de verossimilhanças</td><td>\(G=2(\ell_{modelo}-\ell_{nulo})\)</td><td>O mais confiável em amostras pequenas.</td></tr><tr><td>Wald</td><td>\(\mathbf b^{\top}\widehat{\operatorname{Var}}(\mathbf b)^{-1}\mathbf b\)</td><td>O que aparece coeficiente a coeficiente.</td></tr><tr><td>Escore (log-rank)</td><td>Derivada da log-verossimilhança em zero</td><td>Com uma covariável binária, equivale ao teste log-rank.</td></tr></tbody></table></div><div class="math-display" role="group" aria-label="Expressão matemática">\[IC_{95\%}(HR_j)=\exp\!\left(b_j\pm1{,}96\,EP(b_j)\right)\]</div><h3>Propriedades</h3><ul class="checklist"><li>O modelo é <strong>semiparamétrico</strong>: a forma do risco basal fica livre, e só a parte das covariáveis é paramétrica.</li><li>A verossimilhança parcial usa apenas a ordem dos tempos; transformações monotônicas do tempo não alteram as estimativas.</li><li>\(HR=1\) indica ausência de efeito; \(HR&gt;1\), risco maior (falha mais cedo); \(HR&lt;1\), risco menor.</li><li>A razão de risco é constante ao longo do tempo: é exatamente o que a hipótese de riscos proporcionais afirma.</li><li>O risco basal pode ser estimado depois, pelo estimador de Breslow, quando se deseja prever curvas de sobrevivência.</li><li>Covariáveis que mudam ao longo do tempo podem ser incorporadas, o que também é uma forma de contornar a violação dos riscos proporcionais.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>HR = exp(b)</td><td>Fator multiplicativo da taxa de falha.</td><td>Não é razão de tempos de vida nem de probabilidades.</td></tr><tr><td>IC da HR</td><td>Precisão do efeito.</td><td>Se contém 1, o efeito não é distinguível de zero.</td></tr><tr><td>HR por variação relevante</td><td>exp(k·b) para um aumento de k unidades.</td><td>Mais informativo que o efeito por unidade.</td></tr><tr><td>Testes globais</td><td>Se o conjunto de covariáveis importa.</td><td>Prefira a razão de verossimilhanças.</td></tr><tr><td>cox.zph</td><td>Se a hipótese de riscos proporcionais se sustenta.</td><td>Valor-p pequeno indica efeito que muda com o tempo.</td></tr><tr><td>Curvas previstas</td><td>Tradução do modelo em probabilidades.</td><td>Dependem do risco basal estimado.</td></tr></tbody></table></div><p>Reporte o número de unidades e de <strong>eventos</strong>, as razões de risco com intervalos de confiança, o teste global e a verificação dos riscos proporcionais.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>coxph()</code> pertence ao pacote <code>survival</code> (THERNEAU; GRAMBSCH, 2000), que acompanha a instalação padrão do R. A resposta é construída com <code>Surv(tempo, evento)</code>, em que o indicador vale 1 para falha e 0 para censura. <code>cox.zph()</code> verifica os riscos proporcionais e <code>survfit()</code> produz as curvas. Para gráficos mais elaborados, o pacote <code>survminer</code> é a opção usual.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-cox-min" type="button">Copiar código</button></div><pre id="code-cox-min"><code>library(survival)
+modelo &lt;- coxph(Surv(tempo, falha) ~ carga + temp_c, data = dados)
+summary(modelo)
+cox.zph(modelo)
+</code></pre><div class="callout "><strong>Sobre o código em Python</strong><p>O código Python desta ficha faz as contas passo a passo com <code>numpy</code> e <code>scipy</code>, para que cada resultado possa ser acompanhado. No dia a dia, as bibliotecas <code>statsmodels</code> e <code>lifelines</code>, também disponíveis no Google Colab, oferecem esses modelos prontos.</p></div></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Trinta bombas centrífugas foram acompanhadas em um ensaio de confiabilidade. Quinze operaram em carga normal e quinze em carga severa, cada uma a uma temperatura média registrada. Para cada bomba anotou-se o tempo em horas até a falha ou até o encerramento do acompanhamento, o que viesse primeiro. Sete bombas não falharam durante o ensaio: são as observações censuradas. Os dados são fictícios, criados para esta ficha.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-cox" type="button">Copiar código</button></div><pre id="code-cox"><code># Regressão de Cox: exemplo completo ----
+# Pacote: survival (acompanha a instalação padrão do R)
 library(survival)
-d &lt;- na.omit(lung[, c("time", "status", "age", "sex")])
-ajuste &lt;- coxph(Surv(time, status == 2) ~ age + sex, data = d)
-print(summary(ajuste))
-print(cox.zph(ajuste))
-print(exp(confint(ajuste)))
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       Dados disponíveis no pacote survival, mas são clínicos; não os apresente como falhas de equipamentos.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="nb.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão binomial negativa
-    </a>
-<a href="quantilica.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Regressão quantílica
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+
+# 1. Dados: ensaio de confiabilidade com 30 bombas centrífugas (dados fictícios)
+dados &lt;- data.frame(
+  tempo = c(1347, 790, 748, 1424, 827, 744, 265, 811, 257, 247, 557, 802, 59, 444, 655,
+            266, 678, 932, 136, 249, 23, 83, 80, 1151, 24, 477, 46, 326, 378, 332),
+  falha = c(0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+  carga = factor(rep(c("normal", "severa"), each = 15)),
+  temp  = c(65, 67, 72, 70, 72, 72, 81, 58, 77, 80, 76, 67, 83, 56, 79,
+            73, 56, 65, 66, 60, 74, 68, 76, 66, 57, 76, 77, 57, 69, 69))
+dados$temp_c &lt;- dados$temp - 70        # temperatura centrada em 70 °C
+table(dados$carga, dados$falha)
+
+# 2. Kaplan-Meier por grupo e teste log-rank
+km &lt;- survfit(Surv(tempo, falha) ~ carga, data = dados)
+summary(km, times = c(250, 500, 750, 1000))
+survdiff(Surv(tempo, falha) ~ carga, data = dados)
+
+# 3. Modelo de Cox
+modelo &lt;- coxph(Surv(tempo, falha) ~ carga + temp_c, data = dados)
+summary(modelo)
+
+# 4. Razões de risco para variações relevantes
+exp(10 * coef(modelo)["temp_c"])                   # efeito de +10 °C
+exp(coef(modelo)["cargasevera"] + 20 * coef(modelo)["temp_c"])
+
+# 5. Curvas de sobrevivência previstas pelo modelo
+perfis &lt;- data.frame(carga = factor(c("normal", "normal", "severa", "severa"),
+                                    levels = c("normal", "severa")),
+                     temp_c = c(-10, 10, -10, 10))
+plot(survfit(modelo, newdata = perfis), col = 1:4, lwd = 2,
+     xlab = "Tempo (h)", ylab = "Sobrevivência estimada")
+legend("topright", c("normal 60 °C", "normal 80 °C", "severa 60 °C", "severa 80 °C"),
+       col = 1:4, lwd = 2, bty = "n")
+
+# 6. Verificação de riscos proporcionais (resíduos de Schoenfeld)
+zph &lt;- cox.zph(modelo)
+print(zph)
+plot(zph)
+
+# 7. Observações influentes (resíduos dfbeta)
+plot(residuals(modelo, type = "dfbeta")[, 1], ylab = "dfbeta (carga)"); abline(h = 0, col = "red")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-cox" type="button">Copiar código</button></div><pre id="code-py-cox"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats, optimize
+import matplotlib.pyplot as plt
+
+# Dados: ensaio de confiabilidade com 30 bombas centrífugas (dados fictícios)
+# tempo: horas até a falha ou até o fim do ensaio | falha: 1 = falhou, 0 = censurado
+# carga: 0 = normal, 1 = severa | temp: temperatura média de operação (°C)
+tempo = np.array([1347, 790, 748, 1424, 827, 744, 265, 811, 257, 247, 557, 802, 59, 444, 655,
+                   266, 678, 932, 136, 249, 23, 83, 80, 1151, 24, 477, 46, 326, 378, 332.])
+falha = np.array([0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.])
+carga = np.repeat([0., 1.], 15)
+temp  = np.array([65, 67, 72, 70, 72, 72, 81, 58, 77, 80, 76, 67, 83, 56, 79,
+                   73, 56, 65, 66, 60, 74, 68, 76, 66, 57, 76, 77, 57, 69, 69.])
+n = len(tempo)
+
+def logv_parcial(b, X, t, d):
+    """Log-verossimilhança parcial de Cox com a correção de Efron para empates."""
+    eta = X @ b; total = 0.0
+    for tt in np.unique(t[d == 1]):
+        D = (t == tt) &amp; (d == 1); R = t &gt;= tt; m = D.sum()
+        soma_risco = np.exp(eta[R]).sum(); soma_falhas = np.exp(eta[D]).sum()
+        total += eta[D].sum() - sum(np.log(soma_risco - (l / m) * soma_falhas) for l in range(m))
+    return total
+
+def hessiana(f, x, h=1e-4):
+    p = len(x); H = np.zeros((p, p))
+    for i in range(p):
+        for j in range(p):
+            e1 = np.zeros(p); e2 = np.zeros(p); e1[i] = h; e2[j] = h
+            H[i, j] = (f(x+e1+e2) - f(x+e1-e2) - f(x-e1+e2) + f(x-e1-e2)) / (4 * h * h)
+    return H
+
+def cox(X, t, d, nomes):
+    f = lambda b: -logv_parcial(b, X, t, d)
+    res = optimize.minimize(f, np.zeros(X.shape[1]), method="BFGS")
+    cov = np.linalg.inv(hessiana(f, res.x)); ep = np.sqrt(np.diag(cov))
+    b = res.x; z = b / ep; p = 2 * stats.norm.sf(np.abs(z)); zc = stats.norm.ppf(0.975)
+    print(f"{'Termo':&lt;10}{'Estimativa':&gt;11}{'Erro-padrão':&gt;13}{'z':&gt;8}{'p-valor':&gt;10}{'HR':&gt;8}{'IC 95% de HR':&gt;22}")
+    for nm, bi, ei, zi, pi in zip(nomes, b, ep, z, p):
+        print(f"{nm:&lt;10}{bi:&gt;11.4f}{ei:&gt;13.4f}{zi:&gt;8.3f}{pi:&gt;10.4f}{np.exp(bi):&gt;8.3f}   [{np.exp(bi-zc*ei):&gt;6.3f}; {np.exp(bi+zc*ei):&gt;6.3f}]")
+    return dict(b=b, ep=ep, cov=cov, logv=-res.fun)
+
+# 1. Descrição dos dados
+print(f"n = {n} | falhas = {int(falha.sum())} | censuras = {int(n - falha.sum())}")
+for g, nome in [(0, "carga normal"), (1, "carga severa")]:
+    m_ = carga == g
+    print(f"{nome}: n = {int(m_.sum())} | falhas = {int(falha[m_].sum())} | mediana dos tempos observados = {np.median(tempo[m_]):.0f} h")
+
+# 2. Estimador de Kaplan-Meier por grupo
+def kaplan_meier(t, d):
+    ts = np.unique(t[d == 1]); S = 1.0; curva = [(0.0, 1.0)]
+    for tt in ts:
+        em_risco = (t &gt;= tt).sum(); falhas = ((t == tt) &amp; (d == 1)).sum()
+        S *= 1 - falhas / em_risco; curva.append((tt, S))
+    return np.array(curva)
+
+for g, nome in [(0, "carga normal"), (1, "carga severa")]:
+    km = kaplan_meier(tempo[carga == g], falha[carga == g])
+    abaixo = km[km[:, 1] &lt;= 0.5]
+    mediana = abaixo[0, 0] if len(abaixo) else np.nan
+    print(f"{nome}: sobrevivência em 500 h = {km[km[:, 0] &lt;= 500][-1, 1]:.3f} | tempo mediano = {mediana:.0f} h")
+
+# 3. Modelo de Cox com os dois preditores (temperatura centrada em 70 °C)
+X = np.column_stack([carga, temp - 70])
+print()
+m = cox(X, tempo, falha, ["carga", "temp-70"])
+
+# 4. Testes globais
+m0_logv = logv_parcial(np.zeros(2), X, tempo, falha)
+G = 2 * (m["logv"] - m0_logv)
+print(f"\nLog-verossimilhança parcial: nula = {m0_logv:.4f} | modelo = {m['logv']:.4f}")
+print(f"Razão de verossimilhanças: G = {G:.3f}, gl = 2, p-valor = {stats.chi2.sf(G, 2):.3e}")
+W = m["b"] @ np.linalg.inv(m["cov"]) @ m["b"]
+print(f"Teste de Wald: {W:.3f}, gl = 2, p-valor = {stats.chi2.sf(W, 2):.3e}")
+
+# 5. Razão de risco para variações relevantes
+print(f"\nHR carga severa / normal = {np.exp(m['b'][0]):.3f}")
+print(f"HR por +10 °C = {np.exp(10 * m['b'][1]):.3f}")
+print(f"HR de uma bomba com carga severa a 80 °C em relação a carga normal a 60 °C = {np.exp(m['b'][0] + 20 * m['b'][1]):.2f}")
+
+# 6. Sobrevivência estimada (risco basal de Breslow)
+def sobrevivencia_basal(b, X, t, d):
+    eta = X @ b; ts = np.unique(t[d == 1]); H = 0.0; saida = [(0.0, 1.0)]
+    for tt in ts:
+        H += ((t == tt) &amp; (d == 1)).sum() / np.exp(eta[t &gt;= tt]).sum()
+        saida.append((tt, np.exp(-H)))
+    return np.array(saida)
+
+S0 = sobrevivencia_basal(m["b"], X, tempo, falha)
+print("\nSobrevivência estimada em 500 h (temperatura de 70 °C):")
+S0_500 = S0[S0[:, 0] &lt;= 500][-1, 1]
+for g, nome in [(0, "carga normal"), (1, "carga severa")]:
+    print(f"  {nome}: {S0_500 ** np.exp(m['b'][0] * g):.3f}")
+
+# 7. Verificação de riscos proporcionais: resíduos de Schoenfeld contra o tempo
+def schoenfeld(b, X, t, d):
+    eta = X @ b; res = []; tempos = []
+    for i in np.where(d == 1)[0]:
+        R = t &gt;= t[i]; w = np.exp(eta[R]); media = (X[R] * w[:, None]).sum(axis=0) / w.sum()
+        res.append(X[i] - media); tempos.append(t[i])
+    return np.array(tempos), np.array(res)
+
+tt, sch = schoenfeld(m["b"], X, tempo, falha)
+print("\nResíduos de Schoenfeld: correlação com o posto do tempo")
+for j, nm in enumerate(["carga", "temp-70"]):
+    r, p = stats.spearmanr(stats.rankdata(tt), sch[:, j])
+    print(f"  {nm:&lt;8} rho = {r:&gt;7.4f}, p-valor = {p:.4f}")
+
+# 8. Gráficos: Kaplan-Meier por grupo e resíduos de Schoenfeld
+fig, ax = plt.subplots(1, 2, figsize=(11, 4))
+for g, nome in [(0, "carga normal"), (1, "carga severa")]:
+    km = kaplan_meier(tempo[carga == g], falha[carga == g])
+    ax[0].step(km[:, 0], km[:, 1], where="post", label=nome)
+ax[0].set_xlabel("Tempo (h)"); ax[0].set_ylabel("Sobrevivência estimada"); ax[0].legend()
+ax[1].scatter(tt, sch[:, 1]); ax[1].axhline(0, color="red")
+ax[1].set_xlabel("Tempo da falha (h)"); ax[1].set_ylabel("Resíduo de Schoenfeld (temperatura)")
+plt.show()
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">n = 30 | falhas = 23 | censuras = 7
+carga normal: n = 15 | falhas = 9 | mediana dos tempos observados = 744 h
+carga severa: n = 15 | falhas = 14 | mediana dos tempos observados = 266 h
+carga normal: sobrevivência em 500 h = 0.733 | tempo mediano = 748 h
+carga severa: sobrevivência em 500 h = 0.200 | tempo mediano = 266 h
+
+Termo      Estimativa  Erro-padrão       z   p-valor      HR          IC 95% de HR
+carga          1.4744       0.4753   3.102    0.0019   4.368   [ 1.721; 11.090]
+temp-70        0.1272       0.0446   2.849    0.0044   1.136   [ 1.040;  1.239]
+
+Log-verossimilhança parcial: nula = -62.5030 | modelo = -55.0208
+Razão de verossimilhanças: G = 14.964, gl = 2, p-valor = 5.630e-04
+Teste de Wald: 12.703, gl = 2, p-valor = 1.744e-03
+
+HR carga severa / normal = 4.368
+HR por +10 °C = 3.566
+HR de uma bomba com carga severa a 80 °C em relação a carga normal a 60 °C = 55.56
+
+Sobrevivência estimada em 500 h (temperatura de 70 °C):
+  carga normal: 0.722
+  carga severa: 0.241
+
+Resíduos de Schoenfeld: correlação com o posto do tempo
+  carga    rho = -0.1196, p-valor = 0.5869
+  temp-70  rho =  0.1067, p-valor = 0.6279</pre></div><figure class="fig"><img src="../assets/resultados/cox.png" alt="Curvas de Kaplan-Meier, curvas previstas e resíduos de Schoenfeld" loading="lazy"/><figcaption><strong>Três vistas da mesma análise.</strong> À esquerda, as curvas de Kaplan–Meier por carga, com os traços verticais marcando as censuras: a separação entre os grupos é nítida. No centro, as curvas previstas pelo modelo para quatro perfis, combinando carga e temperatura. À direita, os resíduos de Schoenfeld da temperatura contra o tempo: sem tendência, como se espera quando os riscos são proporcionais. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Descrição dos dados</caption><thead><tr><th>Grupo</th><th>n</th><th>Falhas</th><th>Tempo mediano (Kaplan–Meier)</th><th>Sobrevivência em 500 h</th></tr></thead><tbody><tr><td>Carga normal</td><td>15</td><td>9</td><td>748 h</td><td>0,733</td></tr><tr><td>Carga severa</td><td>15</td><td>14</td><td>266 h</td><td>0,200</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Coeficientes do modelo</caption><thead><tr><th>Termo</th><th>Estimativa</th><th>Erro-padrão</th><th>z</th><th>Valor-p</th><th>HR</th><th>IC 95%</th></tr></thead><tbody><tr><td>Carga severa</td><td>1,4744</td><td>0,4753</td><td>3,102</td><td>0,0019</td><td>4,368</td><td>[1,721; 11,090]</td></tr><tr><td>Temperatura (−70 °C)</td><td>0,1272</td><td>0,0446</td><td>2,849</td><td>0,0044</td><td>1,136</td><td>[1,040; 1,239]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Testes e previsões</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Razão de verossimilhanças</td><td>G = 14,96; 2 g.l.; p = 0,00056</td><td>O conjunto de fatores importa.</td></tr><tr><td>Wald global</td><td>12,70; 2 g.l.; p = 0,0017</td><td></td></tr><tr><td>HR por +10 °C</td><td>3,566</td><td>Dez graus a mais multiplicam a taxa de falha por 3,6.</td></tr><tr><td>HR: severa a 80 °C contra normal a 60 °C</td><td>55,6</td><td>Combinação dos dois efeitos.</td></tr><tr><td>Sobrevivência prevista em 500 h, a 70 °C</td><td>0,722 (normal) e 0,241 (severa)</td><td></td></tr><tr><td>Schoenfeld, carga</td><td>rho = −0,120; p = 0,587</td><td>Sem tendência temporal.</td></tr><tr><td>Schoenfeld, temperatura</td><td>rho = 0,107; p = 0,628</td><td>Sem tendência temporal.</td></tr></tbody></table></div><p><strong>Leitura:</strong> bombas em carga severa têm taxa de falha cerca de 4,4 vezes maior que as de carga normal, mantida a temperatura. A temperatura também pesa: cada grau aumenta o risco em 13,6%, o que acumula em 3,6 vezes a cada dez graus. Os dois efeitos se multiplicam, de modo que uma bomba em carga severa a 80 °C tem risco 56 vezes maior que uma em carga normal a 60 °C. Os resíduos de Schoenfeld não apontam violação dos riscos proporcionais, e as curvas de Kaplan–Meier não se cruzam.</p><p>Duas ressalvas de leitura. Com 23 falhas e duas covariáveis, a amostra está no limite do recomendado, o que explica o intervalo largo da razão de risco da carga (de 1,7 a 11,1). E a razão de risco não se traduz diretamente em tempo de vida: dizer que o risco quadruplica não significa que a bomba dure um quarto do tempo.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Descartar as observações censuradas</td><td>É o principal erro: elimina justamente as unidades de maior duração.</td></tr><tr><td>Ler HR como razão de tempos médios</td><td>HR é razão de taxas instantâneas.</td></tr><tr><td>Não verificar os riscos proporcionais</td><td>Use <code>cox.zph</code> e observe as curvas de Kaplan–Meier.</td></tr><tr><td>Usar regressão linear no tempo até a falha</td><td>Ignora a censura e a assimetria dos tempos.</td></tr><tr><td>Contar unidades em vez de eventos</td><td>A precisão vem do número de falhas.</td></tr><tr><td>Interpretar o risco basal</td><td>Ele não é estimado no ajuste e não tem interpretação direta.</td></tr><tr><td>Ignorar censura informativa</td><td>Se a saída do estudo se relaciona ao prognóstico, as estimativas ficam enviesadas.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="kaplan.html">Kaplan–Meier</a> e <a href="logrank.html">log-rank</a></td><td>Descrição e comparação de grupos, sem ajuste por covariáveis.</td></tr><tr><td>Cox com covariáveis dependentes do tempo</td><td>O efeito muda ao longo do acompanhamento.</td></tr><tr><td>Cox estratificado</td><td>O risco basal difere entre estratos, mas os efeitos são comuns.</td></tr><tr><td>Modelos paramétricos (Weibull, exponencial, log-normal)</td><td>Interesse em extrapolar além do período observado ou em prever vida útil.</td></tr><tr><td>Modelos de tempo de falha acelerado (AFT)</td><td>Interesse em razões de tempos, e não de riscos.</td></tr><tr><td>Modelos de fragilidade</td><td>Unidades agrupadas (mesma planta, mesmo lote).</td></tr><tr><td><a href="gehan.html">Wilcoxon–Gehan</a></td><td>Diferenças concentradas nos tempos iniciais.</td></tr></tbody></table></div><ol class="steps"><li>Organize os dados com tempo e indicador de evento.</li><li>Descreva com Kaplan–Meier e compare grupos pelo log-rank.</li><li>Ajuste o modelo de Cox com as covariáveis de interesse.</li><li>Verifique os riscos proporcionais e observações influentes.</li><li>Interprete por razões de risco e curvas previstas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>COX, David R. Regression models and life-tables. <em>Journal of the Royal Statistical Society: Series B</em>, v. 34, n. 2, p. 187-220, 1972.</li><li>THERNEAU, Terry M.; GRAMBSCH, Patricia M. <em>Modeling survival data: extending the Cox model.</em> New York: Springer, 2000. (Pacote <code>survival</code>.)</li><li>EFRON, Bradley. The efficiency of Cox’s likelihood function for censored data. <em>Journal of the American Statistical Association</em>, v. 72, n. 359, p. 557-565, 1977.</li><li>KALBFLEISCH, John D.; PRENTICE, Ross L. <em>The statistical analysis of failure time data.</em> 2. ed. Hoboken: Wiley, 2002.</li><li>GRAMBSCH, Patricia M.; THERNEAU, Terry M. Proportional hazards tests and diagnostics based on weighted residuals. <em>Biometrika</em>, v. 81, n. 3, p. 515-526, 1994.</li><li>COLOSIMO, Enrico A.; GIOLO, Suely R. <em>Análise de sobrevivência aplicada.</em> São Paulo: Blucher, 2006.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>Os dados do exemplo são fictícios e foram criados pelo autor. As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Tempo até o evento com indicador de censura, observações independentes, censura não informativa e riscos proporcionais.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p><code>survival</code> (<code>coxph</code>, <code>survfit</code>, <code>cox.zph</code>).</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="nb.html"><span>← ANTERIOR</span>Regressão binomial negativa</a><a href="quantilica.html"><span>PRÓXIMO →</span>Regressão quantílica</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,310 +4,757 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Regressão polinomial: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Regressão polinomial | Estatística e Ciência de Dados
-  </title>
+<meta content="Regressão polinomial: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Regressão polinomial | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Aprendizado supervisionado
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Regressão polinomial
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Aprendizado supervisionado · 15 · APRENDIZADO SUPERVISIONADO
-    </span>
-<h1>
-     Regressão polinomial
-    </h1>
-<p class="detail-lead">
-     Investiga relações curvas entre variáveis quantitativas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/polinomial.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Investiga relações curvas entre variáveis quantitativas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência, forma funcional apropriada e diagnóstico de resíduos.</li><li>Evitar extrapolação e grau excessivo.</li><li>Considerar escala/centragem numérica.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \beta_{2}=0 \text{ ao comparar grau 2 versus grau 1}\\ H_1&amp;:\ \beta_{2}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\mathbb E(Y\mid x)=\beta_0+\beta_1x+\beta_2x^2\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(x\)
-        </dt>
-<dd>
-         preditor
-        </dd>
-</div>
-<div>
-<dt>
-         \(f(x)\)
-        </dt>
-<dd>
-         função desconhecida aproximada por bases ou ajustes locais
-        </dd>
-</div>
-<div>
-<dt>
-         \(\beta\)
-        </dt>
-<dd>
-         coeficiente estimado
-        </dd>
-</div>
-</dl>
-<p>
-       t do coeficiente quadrático ou teste F parcial entre modelos aninhados.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) para termo adicional sugere curvatura sob modelo paramétrico; compare também erro fora da amostra e IC de previsão.
-      </p>
-<p>
-       Priorize o desempenho preditivo ou a estabilidade do ajuste. Quando não houver teste intrínseco, não interprete a métrica como valor-p nem aplique automaticamente o nível de 5%.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto cars registra velocidade e distância de parada observadas em 50 automóveis.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Distância de frenagem em função da velocidade (cars).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-polinomial" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-polinomial"><code># Regressão polinomial ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Aprendizado supervisionado</span><span>›</span><span>Regressão polinomial</span></div>
+<section class="detail-intro"><span class="eyebrow">Aprendizado supervisionado · RELAÇÕES NÃO LINEARES</span><h1>Regressão polinomial</h1><p class="detail-lead">Acrescenta potências da preditora ao modelo linear — simples e eficaz até cerca de seis graus de liberdade, e problemático além disso.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/polinomial.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/polinomial.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a regressão polinomial</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e quando cada uma é preferível</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>A regressão polinomial é a primeira resposta de todo mundo quando a relação não é linear: acrescentam-se \(x^2\), \(x^3\) e assim por diante. É simples, cabe no <a href="linear-multipla.html">modelo linear</a> de sempre, e funciona — até certo ponto. Esta ficha mostra onde está esse ponto, e por que ele chega mais cedo do que se espera.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Regressão polinomial" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Modelo linear com</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">potências de x</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A vantagem</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Cabe no lm;</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">inferência usual</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Base ortogonal</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Obrigatória: a crua</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">quebra no grau 6</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Escolha do grau</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Validação cruzada,</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">não valores-p</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O defeito 1</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">Variância explode</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">nas bordas</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O defeito 2</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">É GLOBAL: não extrapola</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">e propaga perturbações</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Regressão polinomial</text></svg><figcaption>Visão geral da regressão polinomial. Fonte: o autor.</figcaption></figure><div class="callout warn"><strong>Dois números que resumem a ficha</strong><p>Com grau 8 e a base de potências cruas, o ajuste calculado difere do ajuste correto em <strong>13 μmol</strong> — a ordem de grandeza da própria resposta. E a 3.000 μmol de radiação, 50% além do maior valor observado, o polinômio de grau 8 prevê <strong>1.024 μmol</strong> de fotossíntese, contra 12,5 da função verdadeira. Os dois problemas têm a mesma origem: o polinômio é uma função global.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a regressão polinomial</h2><p>Ajusta-se \(y=\beta_0+\beta_1x+\beta_2x^2+\dots+\beta_gx^g+\varepsilon\). Apesar das potências, o modelo é <strong>linear nos parâmetros</strong>, de modo que toda a teoria de <a href="linear-multipla.html">mínimos quadrados</a> se aplica sem mudança: estimativas, erros-padrão, testes, intervalos. O que se escolhe é o grau \(g\), e essa escolha é todo o problema.</p><figure class="fig"><img src="../assets/resultados/polinomial-didatica.png" alt="A curva de luz com três polinômios, a escolha do grau e o condicionamento das duas bases" loading="lazy"/><figcaption><strong>As três ideias centrais.</strong> À esquerda, a curva de resposta da fotossíntese à radiação com a função verdadeira em tracejado e três polinômios: a reta erra em toda parte, o grau 2 não consegue ser côncavo embaixo e quase reto em cima ao mesmo tempo, e o grau 5 acompanha. No centro, o erro de resubstituição — que nunca sobe e por isso não pode escolher o grau — contra o erro validado, que tem mínimo em 5. À direita, o número de condição das bases crua e ortogonal, com a diferença entre os dois ajustes no eixo da direita. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As duas bases do mesmo espaço</caption><thead><tr><th>Base</th><th>Colunas</th><th>Propriedade</th><th>Uso</th></tr></thead><tbody><tr><td>Crua</td><td>\(1,x,x^2,\dots,x^g\)</td><td>colunas fortemente correlacionadas</td><td>só quando os coeficientes brutos importam</td></tr><tr><td>Ortogonal</td><td>polinômios de Legendre ou de Gram-Schmidt</td><td>colunas ortogonais</td><td>sempre, no ajuste</td></tr><tr><td></td><td></td><td>os ajustes são iguais em aritmética exata</td><td></td></tr></tbody></table></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Os do modelo linear</td><td>A polinomial É um modelo linear.</td><td><a href="sw.html">Normalidade</a>, <a href="levene.html">homocedasticidade</a>, independência dos resíduos.</td></tr><tr><td><strong>Base ortogonal no ajuste</strong></td><td>A base crua quebra numericamente.</td><td><code>poly(x, g)</code>, nunca <code>I(x^2) + I(x^3) + …</code> para g alto.</td></tr><tr><td><strong>Grau escolhido por validação</strong></td><td>Resubstituição nunca escolhe.</td><td>Validação cruzada, AIC ou testes F sequenciais.</td></tr><tr><td>Hierarquia respeitada</td><td>Incluir \(x^3\) exige \(x\) e \(x^2\).</td><td><code>poly</code> faz isso automaticamente.</td></tr><tr><td><strong>Não extrapolar</strong></td><td>Fora do domínio o erro é ilimitado.</td><td>Confira o intervalo de <code>newdata</code> antes de prever.</td></tr><tr><td>Bordas examinadas com cuidado</td><td>A variância ali é várias vezes maior.</td><td>Intervalos de predição ao longo de todo o domínio.</td></tr><tr><td>Curvatura razoavelmente homogênea</td><td>Um polinômio tem uma única forma global.</td><td>Se a curvatura muda de regime, veja <a href="splines.html">splines</a>.</td></tr><tr><td>Observações influentes verificadas</td><td>Potências altas amplificam alavancagem.</td><td>Alavancagem e distância de Cook; veja <a href="loocv.html">loocv</a>.</td></tr></tbody></table></div><div class="callout warn"><strong>O que "base ortogonal" compra, em números</strong><p>Com grau 8 nestes dados, o número de condição da base crua é \(7{,}9\times10^{27}\) contra 5,8 da ortogonal. A precisão dupla oferece cerca de 16 dígitos decimais; um condicionamento de \(10^{27}\) consome todos eles e mais. O resultado é que os dois ajustes, que deveriam ser idênticos, diferem em até 13 μmol. A partir do grau 4 a discrepância já aparece na primeira casa decimal.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}y_i &= \beta_0+\beta_1x_i+\beta_2x_i^{2}+\dots+\beta_gx_i^{g} \\ &\quad +\varepsilon_i,\end{aligned}\]\[\varepsilon_i\sim N(0,\sigma^{2})\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(g\)</dt><dd>grau do polinômio</dd></div><div><dt>\(\beta_j\)</dt><dd>coeficiente do termo de grau \(j\)</dd></div><div><dt>\(x_i\)</dt><dd>valor da preditora na observação \(i\)</dd></div><div><dt>\(\sigma^{2}\)</dt><dd>variância do erro</dd></div></dl><p>Em forma matricial, \(y=X\beta+\varepsilon\) com \(X=[1,x,x^2,\dots,x^g]\), e a solução é a de mínimos quadrados de sempre. O número de parâmetros é \(p=g+1\).</p><h3>A base ortogonal</h3><p>Aplicando Gram-Schmidt às colunas de \(X\) obtém-se \(X=QR\) com \(Q^{\top}Q=I\). O ajuste em \(Q\) é o mesmo — \(QQ^{\top}y=X(X^{\top}X)^{-1}X^{\top}y\) — mas os coeficientes são independentes:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat\gamma_j=q_j^{\top}y,\]\[\operatorname{Var}(\hat\gamma_j)=\sigma^{2},\]\[\operatorname{Cov}(\hat\gamma_j,\hat\gamma_k)=0\]</div><p>A consequência prática é a que importa: na base ortogonal, o teste do último coeficiente <em>é</em> o teste sequencial daquele grau, e os valores-p da tabela de <code>summary</code> podem ser lidos de cima para baixo como uma sequência de testes aninhados. Na base crua não podem.</p><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Os dois caminhos, 260 medições de fotossíntese</caption><thead><tr><th>Grau</th><th>cond(X) base crua</th><th>cond(X) ortogonal</th><th>Maior |diferença| entre os ajustes</th></tr></thead><tbody><tr><td>1</td><td>1,93 × 10³</td><td>2,16</td><td>7,11 × 10⁻¹⁵</td></tr><tr><td>2</td><td>4,41 × 10⁶</td><td>2,83</td><td>1,71 × 10⁻¹¹</td></tr><tr><td>3</td><td>1,07 × 10¹⁰</td><td>3,35</td><td>3,48 × 10⁻⁸</td></tr><tr><td><strong>4</strong></td><td>2,70 × 10¹³</td><td>4,18</td><td><strong>4,94</strong></td></tr><tr><td>5</td><td>7,03 × 10¹⁶</td><td>4,51</td><td>5,18</td></tr><tr><td>6</td><td>2,54 × 10²¹</td><td>4,93</td><td>6,79</td></tr><tr><td><strong>8</strong></td><td>7,85 × 10²⁷</td><td>5,80</td><td><strong>13,12</strong></td></tr><tr><td>10</td><td>7,69 × 10³⁴</td><td>6,14</td><td>16,10</td></tr><tr><td>12</td><td>1,42 × 10⁴¹</td><td>7,43</td><td>15,40</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os coeficientes da base ortogonal, grau 8</caption><thead><tr><th>Termo</th><th>Coeficiente</th><th>Erro-padrão</th><th>t</th><th>p</th></tr></thead><tbody><tr><td>constante</td><td>15,0973</td><td>0,1687</td><td>89,49</td><td>&lt; 10⁻³⁰⁰</td></tr><tr><td>L1</td><td>8,4198</td><td>0,3229</td><td>26,08</td><td>&lt; 10⁻³⁰⁰</td></tr><tr><td>L2</td><td>−6,5635</td><td>0,3933</td><td>−16,69</td><td>&lt; 10⁻³⁰⁰</td></tr><tr><td>L3</td><td>2,6741</td><td>0,4916</td><td>5,44</td><td>1,3 × 10⁻⁷</td></tr><tr><td>L4</td><td>−1,3805</td><td>0,5654</td><td>−2,44</td><td>0,0153</td></tr><tr><td>L5</td><td>1,3801</td><td>0,5804</td><td>2,38</td><td>0,0182</td></tr><tr><td>L6</td><td>0,1115</td><td>0,6248</td><td>0,18</td><td>0,8590</td></tr><tr><td>L7</td><td>0,8742</td><td>0,6594</td><td>1,33</td><td>0,1860</td></tr><tr><td>L8</td><td>−0,1663</td><td>0,6663</td><td>−0,25</td><td>0,8030</td></tr></tbody></table></div><p>Os erros-padrão são praticamente iguais entre si — consequência direta da ortogonalidade, que torna \(\operatorname{Var}(\hat\gamma_j)=\sigma^2\) para todo \(j\). Os termos de grau 6 a 8 não são distinguíveis de zero.</p><div class="worked"><strong>A escolha do grau: quatro critérios que quase concordam</strong><div class="table-wrap"><table class="method-table"><caption>Os doze graus, avaliados de quatro maneiras</caption><thead><tr><th>Grau</th><th>p</th><th>EQM resubstituição</th><th>EQM 10-fold</th><th>AIC</th><th>BIC</th></tr></thead><tbody><tr><td>1</td><td>2</td><td>13,5645</td><td>13,8718</td><td>681,94</td><td>689,06</td></tr><tr><td>2</td><td>3</td><td>6,4965</td><td>6,7069</td><td>492,53</td><td>503,21</td></tr><tr><td>3</td><td>4</td><td>5,6322</td><td>5,8564</td><td>457,41</td><td>471,65</td></tr><tr><td><strong>4</strong></td><td>5</td><td>5,4673</td><td>5,7655</td><td>451,68</td><td><strong>469,49</strong></td></tr><tr><td><strong>5</strong></td><td>6</td><td>5,3697</td><td><strong>5,6789</strong></td><td><strong>449,00</strong></td><td>470,36</td></tr><tr><td>6</td><td>7</td><td>5,3695</td><td>5,7638</td><td>450,99</td><td>475,92</td></tr><tr><td>7</td><td>8</td><td>5,3227</td><td>5,7504</td><td>450,71</td><td>479,20</td></tr><tr><td>8</td><td>9</td><td>5,3214</td><td>5,8573</td><td>452,65</td><td>484,70</td></tr><tr><td>10</td><td>11</td><td>5,2860</td><td>6,3919</td><td>454,91</td><td>494,08</td></tr><tr><td>12</td><td>13</td><td>5,2770</td><td>8,2113</td><td>458,47</td><td>504,76</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Os testes F sequenciais</caption><thead><tr><th>Grau</th><th>SQR</th><th>F</th><th>p</th></tr></thead><tbody><tr><td>1</td><td>3 526,77</td><td>—</td><td>—</td></tr><tr><td>2</td><td>1 689,08</td><td>279,61</td><td>&lt; 0,0001</td></tr><tr><td>3</td><td>1 464,38</td><td>39,28</td><td>&lt; 0,0001</td></tr><tr><td>4</td><td>1 421,49</td><td>7,70</td><td>0,0059</td></tr><tr><td><strong>5</strong></td><td>1 396,11</td><td><strong>4,62</strong></td><td><strong>0,0326</strong></td></tr><tr><td>6</td><td>1 396,07</td><td>0,01</td><td>0,9343</td></tr><tr><td>7</td><td>1 383,90</td><td>2,22</td><td>0,1377</td></tr><tr><td>8</td><td>1 383,55</td><td>0,06</td><td>0,8031</td></tr><tr><td>9</td><td>1 376,81</td><td>1,22</td><td>0,2696</td></tr><tr><td>10</td><td>1 374,35</td><td>0,44</td><td>0,5054</td></tr></tbody></table></div><p>A validação cruzada e o AIC escolhem grau 5; o BIC, que penaliza mais, escolhe 4; os testes F sequenciais param no 5, porque o termo de grau 6 tem \(F=0{,}01\). A concordância é confortável, e não é regra: quando os critérios discordam muito, isso é informação — significa que os graus candidatos estão praticamente empatados.</p><p>Note a coluna da resubstituição: ela cai monotonicamente de 13,56 a 5,28 e <strong>nunca sobe</strong>. É o mesmo fenômeno das fichas de <a href="subset.html">seleção</a> e de <a href="bias-variance.html">viés-variância</a>, e vale repetir: o erro de ajuste não pode escolher a complexidade.</p></div><h3>Propriedades</h3><ul class="checklist"><li>É um modelo LINEAR nos parâmetros: toda a teoria de mínimos quadrados se aplica.</li><li>Com \(n\) pontos distintos, o grau \(n-1\) interpola exatamente.</li><li>O \(R^2\) é não decrescente no grau.</li><li>Na base ortogonal, os coeficientes são não correlacionados e têm a mesma variância.</li><li>A variância do ajuste é mínima no centro do domínio e cresce nas bordas.</li><li>Fora do domínio observado o erro é ilimitado e cresce como \(x^{g}\).</li><li>É uma função GLOBAL: alterar os dados numa região muda o ajuste em todas.</li><li>A base crua é mal condicionada: inutilizável a partir do grau 6 em dupla precisão.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Coeficientes da base crua</td><td>Nada de interpretável isoladamente.</td><td>Não os reporte como efeitos.</td></tr><tr><td>Coeficientes da base ortogonal</td><td>Componentes de ordem crescente.</td><td>Não têm unidade interpretável.</td></tr><tr><td>Valores-p da base ortogonal</td><td>Testes sequenciais dos graus.</td><td>Válidos se o grau não foi escolhido olhando-os.</td></tr><tr><td>Valores-p da base crua</td><td>Cada um condicionado a todos os outros.</td><td><strong>Não servem</strong> para escolher o grau.</td></tr><tr><td><code>anova(m)</code></td><td>A tabela sequencial.</td><td>Coincide com os p da base ortogonal.</td></tr><tr><td>R²</td><td>Ajuste.</td><td>Não decrescente no grau; não escolhe.</td></tr><tr><td>Erro validado</td><td>O que importa.</td><td>Tem mínimo interior.</td></tr><tr><td>Gráfico do ajuste com banda</td><td>A forma e a incerteza.</td><td>Olhe as bordas: é onde a banda se abre.</td></tr></tbody></table></div><h3>O que fazer com os coeficientes</h3><p>Em geral, nada. Um polinômio ajustado não tem coeficientes com significado físico ou biológico: \(\beta_3=2{,}67\) não responde a nenhuma pergunta de agronomia. O que se reporta é a <strong>curva</strong> — o gráfico do ajuste com banda de confiança — e as quantidades derivadas dela que tenham significado próprio: o ponto de máximo, a dose de resposta nula, a inclinação em um ponto de interesse. Essas quantidades se obtêm do ajuste e sua incerteza, por <a href="bootstrap.html">bootstrap</a> ou pelo método delta.</p><div class="callout try"><strong>O caso particular em que os coeficientes importam</strong><p>Há uma exceção que vale conhecer: a quadrática \(y=\beta_0+\beta_1x+\beta_2x^2\) com \(\beta_2&lt;0\), usada para estimar <strong>dose ótima</strong> em experimentos de adubação. Ali o ponto de máximo é \(-\beta_1/(2\beta_2)\), tem significado direto, e os coeficientes da base crua são o caminho natural de obtê-lo. Com grau 2 o condicionamento ainda é aceitável (\(4{,}4\times10^6\) nestes dados), de modo que usar a base crua é defensável. A partir do grau 3, não é.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Tudo está no R base. <code>poly(x, g)</code> constrói a base ortogonal e é o que se deve usar dentro da fórmula: <code>lm(A ~ poly(par, 5), data = fot)</code>. Para a base crua, <code>poly(x, g, raw = TRUE)</code> ou os termos explícitos <code>I(x^2) + I(x^3)</code> — defensável só até o grau 2. <code>anova(m)</code> dá a tabela sequencial, que com a base ortogonal reproduz os valores-p do <code>summary</code>. Para a validação cruzada, <code>boot::cv.glm</code> com o modelo ajustado por <code>glm</code>. Para prever, <code>predict(m, newdata = …)</code>, sempre conferindo que os valores novos estão dentro do domínio observado — o R não avisa. Para a banda de confiança, <code>predict(…, interval = "confidence")</code>, e vale desenhá-la ao longo de todo o domínio para ver o leque das bordas.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-polinomial-min" type="button">Copiar código</button></div><pre id="code-polinomial-min"><code>m &lt;- lm(A ~ poly(par, 5), data = fot)   # base ORTOGONAL
+summary(m)      # os p são os testes sequenciais dos graus
+anova(m)        # a mesma informação, em tabela
 
-# Ajuste e resultados ----
-m1 &lt;- lm(dist ~ speed, data = cars)
-m2 &lt;- lm(dist ~ speed + I(speed^2), data = cars)
-print(anova(m1, m2))
-print(confint(m2))
-x &lt;- data.frame(speed = seq(min(cars$speed), max(cars$speed), len = 100))
-plot(dist ~ speed, data = cars)
-lines(x$speed, predict(m2, x), col = "red", lwd = 2)
+# para a curva, com banda:
+gx &lt;- data.frame(par = seq(min(fot$par), max(fot$par), length = 200))
+p  &lt;- predict(m, newdata = gx, interval = "confidence")
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são fictícios e foram criados pelo autor: 260 medições de trocas gasosas em folhas de cafeeiro. A resposta é a <strong>fotossíntese líquida</strong> \(A\) (μmol CO₂ m⁻² s⁻¹) e as três preditoras são a <strong>radiação</strong> PAR (μmol m⁻² s⁻¹, de 57 a 1.998), a <strong>temperatura foliar</strong> (°C, de 11,3 a 38,3) e o <strong>déficit de pressão de vapor</strong> VPD (kPa, de 0,30 a 2,45). O processo gerador é conhecido: \(A=\alpha+f_1(\text{PAR})+f_2(\text{temp})+f_3(\text{VPD})+\varepsilon\), com erro de desvio-padrão 1,30. A curva de luz \(f_1\) sobe depressa, satura e cai um pouco por fotoinibição acima de 1.000 μmol; \(f_2\) tem ótimo em 27 °C; \(f_3\) é um declínio convexo. Saber as funções verdadeiras permite medir o viés de cada método — o que, em dados reais, nunca é possível. O mesmo conjunto atravessa as cinco fichas do grupo.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-polinomial" type="button">Copiar código</button></div><pre id="code-polinomial"><code># Regressão polinomial: exemplo completo ----
+# Pacotes: nenhum (poly e lm são do R base)
+# Dados fictícios: 260 medições de trocas gasosas em folhas de cafeeiro.
+# O arquivo fotossintese.csv acompanha o site, na pasta scripts/.
+fot &lt;- read.csv("fotossintese.csv")
+str(fot)            # A (umol CO2 m-2 s-1), par, temp, vpd
+summary(fot)
+plot(A ~ par, data = fot, pch = 16, col = "#8aa59680",
+     xlab = "PAR (umol m-2 s-1)", ylab = "A (umol CO2 m-2 s-1)")
 
-# Visualização e diagnóstico ----
-plot(dist ~ speed, data = cars, pch = 19, xlab = "Velocidade (mph)", ylab = "Distância de parada (pés)")
-lines(lowess(cars$speed, cars$dist), col = "red", lwd = 2)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# O ponto de partida: quanto o modelo LINEAR deixa na mesa
+summary(lm(A ~ par + temp + vpd, data = fot))$r.squared   # 0,6747
+# O processo gerador verdadeiro daria R² = 0,9514. É esse buraco que o
+# grupo inteiro de fichas tenta preencher.
 
+# ---- 1. BASE CRUA contra BASE ORTOGONAL
+# As duas geram o MESMO espaço de funções. Em aritmética exata os ajustes
+# seriam idênticos; em aritmética de máquina, não.
+for (g in c(1, 2, 3, 4, 6, 8, 10, 12)) {
+  Xc &lt;- outer(fot$par, 0:g, "^")              # base crua: 1, x, x^2, ...
+  Xo &lt;- cbind(1, poly(fot$par, g))            # base ortogonal
+  ac &lt;- fitted(lm.fit(Xc, fot$A)); ao &lt;- fitted(lm.fit(Xo, fot$A))
+  cat(sprintf("grau %2d: cond(crua) %.2e | maior |dif| nos ajustes %.2e\n",
+              g, kappa(Xc, exact = TRUE), max(abs(ac - ao))))
+}
+# Até o grau 4 as duas concordam até a 10a casa. No grau 8 a base crua
+# DEIXA DE FUNCIONAR: os ajustes diferem em 13 umol.
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Aprendizado supervisionado
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="pls.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Regressão por mínimos quadrados parciais (PLS)
-    </a>
-<a href="splines.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Splines de regressão
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# ---- 2. Os valores-p da base ortogonal SÃO os testes sequenciais
+m8 &lt;- lm(A ~ poly(par, 8), data = fot)
+summary(m8)
+# Cada coeficiente da base ortogonal é independente dos demais, de modo
+# que o teste do ultimo termo e o teste sequencial daquele grau.
+anova(m8)          # compare com a coluna de valores-p acima
+
+# Na base CRUA os valores-p nao servem para escolher o grau:
+summary(lm(A ~ par + I(par^2) + I(par^3) + I(par^4), data = fot))
+
+# ---- 3. A ESCOLHA DO GRAU
+library(boot)
+set.seed(1)
+for (g in 1:12) {
+  m &lt;- glm(A ~ poly(par, g), data = fot)
+  cv &lt;- cv.glm(fot, m, K = 10)$delta[1]
+  cat(sprintf("grau %2d: EQM resub %.4f | EQM 10-fold %.4f | AIC %.2f | BIC %.2f\n",
+      g, mean(residuals(m)^2), cv, AIC(m), BIC(m)))
+}
+# Testes F sequenciais, do grau 1 ao 10:
+anova(lm(A ~ poly(par, 10), data = fot))
+
+# ---- 4. A VARIÂNCIA POR REGIÃO: o leque das bordas
+set.seed(7)
+gx &lt;- seq(min(fot$par), max(fot$par), length.out = 200)
+P &lt;- replicate(500, {
+  i &lt;- sample(nrow(fot), replace = TRUE)
+  predict(lm(A ~ poly(par, 5), data = fot[i, ]), newdata = data.frame(par = gx)) })
+va &lt;- apply(P, 1, var)
+faixas &lt;- cut(gx, c(0, 200, 500, 900, 1400, 2100))
+tapply(va, faixas, mean)
+# A variância nas bordas é cerca de 6 vezes a do miolo: é o mesmo
+# fenômeno da ficha bias-variance, agora em dados de campo.
+
+# ---- 5. EXTRAPOLAR
+nd &lt;- data.frame(par = c(2100, 2200, 2400, 2600, 3000))
+for (g in c(2, 4, 6, 8))
+  print(round(predict(lm(A ~ poly(par, g), data = fot), newdata = nd), 2))
+# A 3.000 umol o grau 8 preve 1.024 umol de fotossintese. Nao extrapole.
+
+# ---- 6. O POLINÔMIO É GLOBAL: uma perturbação local contamina tudo
+set.seed(3)
+extra &lt;- data.frame(par = runif(25, 1800, 2000))
+extra$A &lt;- 26*(1 - exp(-0.0024*extra$par)) -
+           1.9e-6*pmax(extra$par - 1000, 0)^2 + 4.0 + rnorm(25, 0, 1.3)
+extra$A &lt;- extra$A - mean(26*(1 - exp(-0.0024*fot$par)) -
+           1.9e-6*pmax(fot$par - 1000, 0)^2) + mean(fot$A)
+fot2 &lt;- rbind(fot[, c("A","par")], extra)
+library(splines)
+for (p in c(5, 8, 11, 14)) {
+  g &lt;- p - 1; K &lt;- p - 4
+  nos &lt;- quantile(fot$par, probs = seq(0, 1, length.out = K + 2)[-c(1, K+2)])
+  a1 &lt;- predict(lm(A ~ poly(par, g), data = fot),  newdata = data.frame(par = 150))
+  a2 &lt;- predict(lm(A ~ poly(par, g), data = fot2), newdata = data.frame(par = 150))
+  s1 &lt;- predict(lm(A ~ bs(par, knots = nos), data = fot),  newdata = data.frame(par = 150))
+  s2 &lt;- predict(lm(A ~ bs(par, knots = nos), data = fot2), newdata = data.frame(par = 150))
+  cat(sprintf("p = %2d: polinomio move %.4f | spline move %.4f\n",
+              p, abs(a2 - a1), abs(s2 - s1)))
+}
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-polinomial" type="button">Copiar código</button></div><pre id="code-py-polinomial"><code>import numpy as np, sys, time
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (cab15)
+# ------------------------------------------------------------------
+import numpy as np
+# ------------------------------------------------------------------
+# Bloco comum às fichas deste grupo: funções auxiliares e dados (dados15)
+# ------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+def le_csv(nome):
+    """Lê o arquivo de dados da ficha: primeiro na pasta atual; se não
+    estiver lá (por exemplo, no Google Colab), direto do site."""
+    try:
+        return pd.read_csv(nome)
+    except FileNotFoundError:
+        return pd.read_csv('https://cassiushenrique.github.io/ModelosEstatisticos/scripts/' + nome)
+
+# Dados fictícios: 260 medições de trocas gasosas (arquivo fotossintese.csv)
+fot = le_csv('fotossintese.csv')
+PAR=fot['par'].to_numpy(float); TEMP=fot['temp'].to_numpy(float)
+VPD=fot['vpd'].to_numpy(float); A=fot['A'].to_numpy(float)
+NG=len(A)
+SIG=1.30
+INT=14.0
+
+def f_par(x):
+    x=np.asarray(x,float)
+    return 26.0*(1-np.exp(-0.0024*x))-1.9e-6*np.maximum(x-1000,0)**2
+def f_temp(t): t=np.asarray(t,float); return -0.042*(t-27.0)**2
+def f_vpd(v):  v=np.asarray(v,float); return -2.9*v+0.33*v**2
+C1=19.9605909253; C2=-1.4311050277; C3=-2.0245067433
+def verdade(x,t,v): return INT+(f_par(x)-C1)+(f_temp(t)-C2)+(f_vpd(v)-C3)
+# ------------------------------------------------------------------ fim do bloco comum
+
+# ------------------------------------------------------------------ utilidades
+def c(v, d=4): return ('%.*f' % (d, v)).replace('.', ',')
+def eqm(o, p): return float(np.mean((np.asarray(o) - np.asarray(p))**2))
+def sqr(o, p): return float(np.sum((np.asarray(o) - np.asarray(p))**2))
+def r2(o, p):  return 1 - sqr(o, p)/float(np.sum((np.asarray(o) - np.mean(o))**2))
+
+def dobras(n, k, seed):
+    rg = np.random.default_rng(seed)
+    d = np.tile(np.arange(k), int(np.ceil(n/k)))[:n]; rg.shuffle(d); return d
+
+def cv_uni(ajusta, x, y, k=10, seed=0, reps=1):
+    """EQM por validação cruzada para um suavizador univariado.
+    ajusta(xtr, ytr, xte) -&gt; predições em xte."""
+    tot = []
+    for r in range(reps):
+        d = dobras(len(y), k, seed + 991*r); e = np.empty(len(y))
+        for j in range(k):
+            tr, te = d != j, d == j
+            e[te] = y[te] - ajusta(x[tr], y[tr], x[te])
+        tot.append(float(np.mean(e**2)))
+    return float(np.mean(tot)), (float(np.std(tot, ddof=1)) if reps &gt; 1 else 0.0)
+
+# ------------------------------------------------------------------ polinômios
+def poli(x, g, xr=None):
+    """Base polinomial ORTOGONAL (Legendre reescalada ao intervalo de xr)."""
+    x = np.asarray(x, float); xr = x if xr is None else np.asarray(xr, float)
+    a, b = xr.min(), xr.max()
+    z = 2*(x - a)/(b - a) - 1
+    return np.polynomial.legendre.legvander(z, g)
+
+def poli_cru(x, g):
+    x = np.asarray(x, float)
+    return np.column_stack([x**j for j in range(g+1)])
+
+# ------------------------------------------------------------------ B-splines
+def bspline(x, nos, grau=3):
+    """Base B-spline por Cox-de Boor. 'nos' = vetor de nós INTERNOS."""
+    x = np.asarray(x, float); nos = np.asarray(nos, float)
+    a, b = bspline.lim
+    t = np.concatenate([[a]*(grau+1), nos, [b]*(grau+1)])
+    m = len(t) - grau - 1
+    B = np.zeros((len(x), m))
+    for i in range(m):
+        B[:, i] = (x &gt;= t[i]) &amp; (x &lt; t[i+1])
+    B[np.isclose(x, b), m-1] = 1.0
+    for d in range(1, grau+1):
+        Bn = np.zeros((len(x), len(t) - d - 1))
+        for i in range(Bn.shape[1]):
+            den1 = t[i+d] - t[i]; den2 = t[i+d+1] - t[i+1]
+            a1 = (x - t[i])/den1*B[:, i] if den1 &gt; 0 else 0.0
+            a2 = (t[i+d+1] - x)/den2*B[:, i+1] if den2 &gt; 0 else 0.0
+            Bn[:, i] = a1 + a2
+        B = Bn
+    return B
+
+def base_bs(x, nos, grau=3, lim=None):
+    bspline.lim = lim if lim is not None else (float(np.min(x)), float(np.max(x)))
+    return bspline(x, nos, grau)
+
+def trunc_pot(x, nos, grau=3):
+    """Base de potências truncadas: 1, x, ..., x^g, (x-k)_+^g."""
+    x = np.asarray(x, float)
+    cols = [x**j for j in range(grau+1)]
+    for k in np.asarray(nos, float):
+        cols.append(np.maximum(x - k, 0.0)**grau)
+    return np.column_stack(cols)
+
+def natural_cs(x, nos, lim):
+    """Base de spline cúbica NATURAL (linear fora dos nós de fronteira)."""
+    x = np.asarray(x, float); K = np.concatenate([[lim[0]], np.asarray(nos, float), [lim[1]]])
+    k = len(K)
+    def d(j):
+        return (np.maximum(x - K[j], 0)**3 - np.maximum(x - K[k-1], 0)**3)/(K[k-1] - K[j])
+    cols = [np.ones_like(x), x] + [d(j) - d(k-2) for j in range(k-2)]
+    return np.column_stack(cols)
+
+def ajusta_base(B, y):
+    return np.linalg.lstsq(B, y, rcond=None)[0]
+
+# --------------------------------------------------- spline de suavização
+def suav_spline(x, y, lam, escala=True):
+    """Spline cúbica de suavização EXATA, pelo algoritmo de Reinsch
+    (Green e Silverman, 1994, cap. 2). Resolve o sistema BANDADO
+        (R + lam Q' W^-1 Q) gama = Q' ybar ,   ajustado = ybar - lam W^-1 Q gama
+    que é numericamente muito mais estável que inverter (W + lam K).
+    Com escala=True, x é levado a [0, 1] antes de penalizar, de modo que lambda
+    tenha o mesmo significado para variáveis de unidades diferentes — é o que o
+    smooth.spline faz por trás do argumento spar.
+    Devolve (ajustados, x únicos na escala original, contagens, médias, g.l. efetivos)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    a0, b0 = (x.min(), x.max()) if escala else (0.0, 1.0)
+    xs = (x - a0)/(b0 - a0) if escala else x
+    xo_s, inv = np.unique(np.round(xs, 12), return_inverse=True)
+    m = len(xo_s)
+    xo = xo_s*(b0 - a0) + a0 if escala else xo_s
+    cont = np.bincount(inv, minlength=m).astype(float)
+    ybar = np.bincount(inv, weights=y, minlength=m)/cont
+    h = np.diff(xo_s)
+    Q = np.zeros((m, m-2)); R = np.zeros((m-2, m-2))
+    for j in range(1, m-1):
+        Q[j-1, j-1] = 1/h[j-1]; Q[j, j-1] = -1/h[j-1] - 1/h[j]; Q[j+1, j-1] = 1/h[j]
+        R[j-1, j-1] = (h[j-1] + h[j])/3
+        if j &lt; m-2:
+            R[j-1, j] = h[j]/6; R[j, j-1] = h[j]/6
+    Winv = 1.0/cont
+    M = R + lam*(Q.T*Winv) @ Q
+    gama = np.linalg.solve(M, Q.T @ ybar)
+    aj = ybar - lam*Winv*(Q @ gama)
+    # g.l. efetivos = tr(S) = m - lam * tr( W^-1 Q M^-1 Q' )
+    tr = m - lam*float(np.sum(Winv*np.einsum('ij,ji-&gt;i', Q, np.linalg.solve(M, Q.T))))
+    return aj, xo, cont, ybar, tr
+
+def ss_edf(x, lam):
+    return suav_spline(x, np.zeros(len(x)), lam)[4]
+
+def ss_gcv(x, y, lam):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    n = len(y)
+    res = np.asarray(y, float) - np.interp(x, xo, aj)
+    return float(np.sum(res**2)/n)/((1 - tr/n)**2), tr
+
+def ss_prev(x, y, lam, xnovo):
+    aj, xo, cont, ybar, tr = suav_spline(x, y, lam)
+    # extrapolação LINEAR fora do domínio, como manda a spline natural
+    d0 = (aj[1]-aj[0])/(xo[1]-xo[0]); d1 = (aj[-1]-aj[-2])/(xo[-1]-xo[-2])
+    xn = np.asarray(xnovo, float); out = np.interp(xn, xo, aj)
+    out = np.where(xn &lt; xo[0],  aj[0]  + d0*(xn - xo[0]),  out)
+    out = np.where(xn &gt; xo[-1], aj[-1] + d1*(xn - xo[-1]), out)
+    return out
+
+# ------------------------------------------------------------------ LOESS
+def tricubo(u): return (1 - np.abs(u)**3)**3
+
+def loess(x, y, xnovo, span=0.35, grau=1, iteracoes=0):
+    """Regressão local ponderada (Cleveland, 1979).
+    iteracoes &gt; 0 ativa a reponderação robusta bisquare: os pesos de robustez
+    são sempre calculados a partir dos resíduos NOS PONTOS DE AJUSTE x, e não
+    nos pontos onde se quer prever."""
+    x = np.asarray(x, float); y = np.asarray(y, float); xn = np.asarray(xnovo, float)
+    n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+
+    def ajusta_em(alvos, rob):
+        out = np.empty(len(alvos))
+        for i, x0 in enumerate(alvos):
+            dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+            dmax = dd[viz[-1]]
+            w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+            w = w*rob[viz]
+            Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+            WZ = Z*w[:, None]
+            try: b = np.linalg.solve(Z.T @ WZ, WZ.T @ y[viz])
+            except np.linalg.LinAlgError: b = np.linalg.lstsq(Z.T @ WZ, WZ.T @ y[viz], rcond=None)[0]
+            out[i] = b[0]
+        return out
+
+    rob = np.ones(n)
+    for _ in range(iteracoes):
+        aj = ajusta_em(x, rob)            # SEMPRE nos x de ajuste
+        res = y - aj
+        s = np.median(np.abs(res))
+        rob = np.clip(1 - (res/(6*s))**2, 0, None)**2 if s &gt; 0 else np.ones(n)
+    return ajusta_em(xn, rob)
+
+def loess_edf(x, span=0.35, grau=1):
+    """Graus de liberdade efetivos: traço da matriz suavizadora."""
+    x = np.asarray(x, float); n = len(x); q = max(grau + 2, int(np.ceil(span*n)))
+    tr = 0.0
+    for i, x0 in enumerate(x):
+        dd = np.abs(x - x0); ord_ = np.argsort(dd); viz = ord_[:q]
+        dmax = dd[viz[-1]]
+        w = tricubo(dd[viz]/dmax) if dmax &gt; 0 else np.ones(q)
+        Z = np.column_stack([(x[viz] - x0)**j for j in range(grau+1)])
+        WZ = Z*w[:, None]
+        try: li = np.linalg.solve(Z.T @ WZ, WZ.T)
+        except np.linalg.LinAlgError: li = np.linalg.lstsq(Z.T @ WZ, WZ.T, rcond=None)[0]
+        k = np.where(viz == i)[0]
+        if len(k): tr += li[0, k[0]]
+    return tr
+
+# ------------------------------------------------------------------ GAM
+def gam_backfit(Xs, y, suav, it=60, tol=1e-9):
+    """Retroajuste (backfitting) de Hastie e Tibshirani.
+    Xs: lista de vetores; suav[j](x, r) -&gt; parcela ajustada, centrada."""
+    y = np.asarray(y, float); p = len(Xs)
+    f = [np.zeros(len(y)) for _ in range(p)]; a0 = y.mean()
+    for _ in range(it):
+        maxd = 0.0
+        for j in range(p):
+            r = y - a0 - sum(f[k] for k in range(p) if k != j)
+            nv = suav[j](Xs[j], r); nv = nv - nv.mean()
+            maxd = max(maxd, float(np.max(np.abs(nv - f[j])))); f[j] = nv
+        if maxd &lt; tol: break
+    return a0, f
+# ------------------------------------------------------------------ fim do bloco comum
+from scipy import stats
+
+x=PAR.copy(); y=A.copy()
+o=np.argsort(x); xs=x[o]; ys=y[o]
+print('TROCAS GASOSAS: 260 medições em folhas de cafeeiro.')
+print('Resposta: fotossíntese líquida A (umol CO2 m-2 s-1).')
+print('Preditoras: radiação PAR (umol m-2 s-1), temperatura foliar (C) e VPD (kPa).')
+print('Dados fictícios, com processo gerador CONHECIDO: A = f1(PAR) + f2(temp)')
+print('+ f3(VPD) + erro, com erro de desvio-padrão 1,30.')
+print()
+print('  n = %d | A de %s a %s | variância de A = %s'%(NG,c(A.min(),2),c(A.max(),2),c(float(A.var(ddof=1)))))
+print('  PAR  de %s a %s'%(c(PAR.min(),0),c(PAR.max(),0)))
+print('  TEMP de %s a %s'%(c(TEMP.min(),1),c(TEMP.max(),1)))
+print('  VPD  de %s a %s'%(c(VPD.min(),2),c(VPD.max(),2)))
+Xd=np.column_stack([np.ones(NG),PAR,TEMP,VPD]); b=np.linalg.lstsq(Xd,A,rcond=None)[0]
+print()
+print('  R² do modelo LINEAR nas três          = %s'%c(r2(A,Xd@b)))
+print('  R² máximo possível (função verdadeira) = %s'%c(r2(A,verdade(PAR,TEMP,VPD))))
+print('  O modelo linear perde %s pontos de R². É esse buraco que o grupo'%c(r2(A,verdade(PAR,TEMP,VPD))-r2(A,Xd@b),4))
+print('  inteiro de fichas tenta preencher.')
+
+print('\n'+'='*70)
+print('ESTA FICHA: a resposta à RADIAÇÃO, uma variável de cada vez')
+print('A relação é a curva de luz: sobe depressa, satura, e cai um pouco por')
+print('fotoinibição acima de 1.000 umol. É nitidamente não linear.')
+print()
+print('  r de Pearson entre PAR e A = %s'%c(float(np.corrcoef(PAR,A)[0,1])))
+bl=np.polyfit(x,y,1)
+print('  R² da RETA                  = %s'%c(r2(y,np.polyval(bl,x))))
+print('  R² da função verdadeira f1  = %s'%c(r2(y,f_par(x)-f_par(x).mean()+y.mean())))
+
+print('\n'+'='*70)
+print('BASE CRUA contra BASE ORTOGONAL: mesmo ajuste, números muito diferentes')
+print()
+print('%5s %18s %18s %14s %14s'%('grau','cond(X) base crua','cond(X) ortogonal','maior |coef| cru','maior |coef| ort'))
+for g in [1,2,3,4,6,8,10,12]:
+    Bc=poli_cru(x,g); Bo=poli(x,g)
+    bc=ajusta_base(Bc,y); bo=ajusta_base(Bo,y)
+    print('%5d %18s %18s %14s %14s'%(g,'%.3g'%np.linalg.cond(Bc),'%.3g'%np.linalg.cond(Bo),
+          '%.3g'%np.abs(bc).max(),'%.3g'%np.abs(bo).max()))
+print()
+print('Em ARITMÉTICA EXATA os dois ajustes seriam idênticos: as duas bases geram')
+print('o mesmo espaço de funções. Em aritmética de máquina, não:')
+print()
+print('%6s %22s %20s'%('grau','maior |diferença| entre','cond(X) da base crua'))
+print('%6s %22s %20s'%('','os dois ajustes',''))
+for g in [1,2,3,4,5,6,8,10,12]:
+    Bc=poli_cru(x,g); Bo=poli(x,g)
+    d=float(np.abs(Bc@ajusta_base(Bc,y)-Bo@ajusta_base(Bo,y)).max())
+    print('%6d %22s %20s'%(g,('%.2e'%d),'%.2e'%np.linalg.cond(Bc)))
+print()
+print('Até o grau 4 as duas bases concordam até a 10ª casa decimal. A partir do')
+print('grau 6 a base crua simplesmente DEIXA DE FUNCIONAR: no grau 8 os dois')
+print('ajustes diferem em até %s umol, que é a ordem de grandeza da própria'%c(float(np.abs(poli_cru(x,8)@ajusta_base(poli_cru(x,8),y)-poli(x,8)@ajusta_base(poli(x,8),y)).max()),2))
+print('resposta. Não é questão de estilo: com número de condição de 10^27 e')
+print('precisão dupla (cerca de 16 dígitos), não sobra dígito nenhum.')
+print()
+g=8; Bo=poli(x,g)
+print('A consequência prática: os valores-p dos coeficientes da base CRUA não')
+print('servem para escolher o grau, porque cada um deles testa algo que depende')
+print('de todos os outros. Na base ORTOGONAL cada coeficiente é independente,')
+print('e o teste do último termo É o teste sequencial do grau.')
+print()
+print('%5s %14s %12s %12s   %s'%('termo','coef. ortog.','erro-padrão','t','p'))
+bo=ajusta_base(Bo,y); res=y-Bo@bo; s2=float(res@res)/(NG-g-1)
+ep=np.sqrt(np.diag(np.linalg.inv(Bo.T@Bo))*s2); t=bo/ep
+for j in range(g+1):
+    pv=2*(1-stats.t.cdf(abs(t[j]),NG-g-1))
+    print('%5s %14s %12s %12s   %s'%('L%d'%j if j else 'const',c(bo[j],4),c(ep[j],4),c(t[j],2),
+          '%.2e'%pv if pv&gt;=1e-300 else '&lt; 1e-300'))
+
+print('\n'+'='*70)
+print('A ESCOLHA DO GRAU: quatro critérios')
+print()
+print('%5s %10s %12s %14s %12s %12s'%('grau','p','EQM resub','EQM 10-fold','AIC','BIC'))
+res=[]
+for g in range(1,13):
+    B=poli(x,g); bb=ajusta_base(B,y); sq=sqr(y,B@bb); p_=g+1
+    aic=NG*np.log(sq/NG)+2*p_; bic=NG*np.log(sq/NG)+np.log(NG)*p_
+    cvm,_=cv_uni(lambda xt,yt,xe,g=g: poli(xe,g,x)@ajusta_base(poli(xt,g,x),yt),x,y,10,1,10)
+    res.append((g,sq/NG,cvm,aic,bic))
+    print('%5d %10d %12s %14s %12s %12s'%(g,p_,c(sq/NG),c(cvm),c(aic,2),c(bic,2)))
+res=np.array(res)
+print()
+print('  menor EQM validado: grau %d (%s)'%(int(res[np.argmin(res[:,2]),0]),c(res[:,2].min())))
+print('  menor AIC:          grau %d'%int(res[np.argmin(res[:,3]),0]))
+print('  menor BIC:          grau %d'%int(res[np.argmin(res[:,4]),0]))
+print()
+print('Testes F sequenciais (cada grau contra o anterior):')
+print('%5s %12s %12s %12s'%('grau','SQR','F','p'))
+sq_ant=None
+for g in range(1,11):
+    B=poli(x,g); sq=sqr(y,B@ajusta_base(B,y))
+    if sq_ant is not None:
+        F=(sq_ant-sq)/(sq/(NG-g-1)); pv=1-stats.f.cdf(F,1,NG-g-1)
+        print('%5d %12s %12s %12s'%(g,c(sq,2),c(F,2),'%.4f'%pv))
+    else:
+        print('%5d %12s %12s %12s'%(g,c(sq,2),'—','—'))
+    sq_ant=sq
+
+print('\n'+'='*70)
+print('ONDE O POLINÔMIO ERRA: o viés não se distribui por igual')
+gsel=int(res[np.argmin(res[:,2]),0])
+B=poli(xs,gsel,x); aj=B@ajusta_base(poli(x,gsel),y)
+vd=f_par(xs)-f_par(x).mean()+y.mean()
+print()
+print('Com o grau escolhido (%d), comparando o ajuste à função VERDADEIRA f1:'%gsel)
+print('%26s %12s %12s %12s'%('faixa de PAR','n','viés médio','|viés| médio'))
+cortes=[(0,200),(200,500),(500,900),(900,1400),(1400,2100)]
+for lo,hi in cortes:
+    mk=(xs&gt;=lo)&amp;(xs&lt;hi)
+    print('%26s %12d %12s %12s'%('%d a %d'%(lo,hi),int(mk.sum()),c(float((aj[mk]-vd[mk]).mean())),
+          c(float(np.abs(aj[mk]-vd[mk]).mean()))))
+print()
+print('A VARIÂNCIA do ajuste, por região (500 reamostras bootstrap):')
+rg=np.random.default_rng(7); P_=np.zeros((500,len(xs)))
+for r in range(500):
+    i=rg.integers(0,NG,NG)
+    P_[r]=poli(xs,gsel,x)@ajusta_base(poli(x[i],gsel,x),y[i])
+va=P_.var(0,ddof=1)
+print('%26s %12s %12s'%('faixa de PAR','variância','razão com o miolo'))
+mio=(xs&gt;=500)&amp;(xs&lt;1400); vm=float(va[mio].mean())
+for lo,hi in cortes:
+    mk=(xs&gt;=lo)&amp;(xs&lt;hi)
+    print('%26s %12s %12s'%('%d a %d'%(lo,hi),c(float(va[mk].mean())),c(float(va[mk].mean())/vm,2)))
+print()
+print('A variância nas BORDAS é %s vezes a do miolo. É o mesmo fenômeno da'%c(float(va[xs&gt;=1400].mean())/vm,1))
+print('ficha bias-variance, agora numa aplicação real: nas extremidades há')
+print('dados de um lado só para ancorar a curva.')
+
+print('\n'+'='*70)
+print('EXTRAPOLAR COM POLINÔMIO: o que acontece fora do domínio')
+xf=np.array([2100.,2200.,2400.,2600.,3000.])
+print()
+print('%10s %12s %12s %12s %12s %12s'%('PAR','grau 2','grau 4','grau 6','grau 8','VERDADE'))
+for i,xv in enumerate(xf):
+    linha=[]
+    for g in [2,4,6,8]:
+        bb=ajusta_base(poli(x,g),y)
+        linha.append(float((poli(np.array([xv]),g,x)@bb)[0]))
+    vdd=float((f_par(np.array([xv]))-f_par(x).mean()+y.mean())[0])
+    print('%10s %12s %12s %12s %12s %12s'%(c(xv,0),*[c(v,2) for v in linha],c(vdd,2)))
+print()
+print('A %s umol — 5%% além do maior PAR observado — o grau 8 já prevê %s'%(c(2100.,0),
+      c(float((poli(np.array([2100.]),8,x)@ajusta_base(poli(x,8),y))[0]),2)))
+print('contra %s da verdade. A %s, prevê %s. Polinômio não extrapola.'%(
+      c(float((f_par(np.array([2100.]))-f_par(x).mean()+y.mean())[0]),2),c(3000.,0),
+      c(float((poli(np.array([3000.]),8,x)@ajusta_base(poli(x,8),y))[0]),2)))
+
+print('\n'+'='*70)
+print('A LIMITAÇÃO ESTRUTURAL: um polinômio é GLOBAL')
+print()
+print('A curva de luz tem curvaturas MUITO diferentes em regiões diferentes:')
+print('sobe quase reta até 300, dobra entre 300 e 900, e vira para baixo depois.')
+print('Um polinômio tem um único conjunto de coeficientes para todo o domínio,')
+print('de modo que mexer na curvatura de uma região mexe em todas.')
+print()
+print("A demonstração: acrescentam-se 25 pontos SÓ na faixa de 1.800 a 2.000,")
+print('DESLOCADOS em +4 umol (como se um lote de folhas tivesse sido medido com')
+print('o equipamento descalibrado), e mede-se quanto o ajuste muda LONGE dali,')
+print('em PAR de 150 a 1.000 — a mais de 800 umol da perturbação.')
+print()
+print('A comparação é feita com a MESMA flexibilidade nos dois lados: polinômio')
+print('de grau g contra spline cúbica com o mesmo número de parâmetros.')
+rg=np.random.default_rng(3)
+xn=rg.uniform(1800,2000,25); yn=f_par(xn)-f_par(x).mean()+y.mean()+4.0+rg.normal(0,SIG,25)
+x2=np.concatenate([x,xn]); y2=np.concatenate([y,yn])
+lim=(min(x.min(),x2.min()),max(x.max(),x2.max()))
+alvo=np.array([150.,300.,600.,1000.])
+print()
+print('%5s %8s %16s %16s %10s'%('p','grau','polinômio','spline cúbica','razão'))
+print('%5s %8s %16s %16s %10s'%('','','deslocamento médio fora da região perturbada','',''))
+guarda={}
+for df in [5,8,11,14]:
+    g=df-1; nos=np.percentile(x,np.linspace(0,100,df-2)[1:-1])
+    dp=[];ds=[]
+    for xv in alvo:
+        a1=float((poli(np.array([xv]),g,x)@ajusta_base(poli(x,g),y))[0])
+        a2=float((poli(np.array([xv]),g,x2)@ajusta_base(poli(x2,g,x2),y2))[0])
+        dp.append(abs(a2-a1))
+        Bv=base_bs(np.array([xv]),nos,3,lim)
+        s1=float((Bv@ajusta_base(base_bs(x,nos,3,lim),y))[0])
+        s2=float((Bv@ajusta_base(base_bs(x2,nos,3,lim),y2))[0])
+        ds.append(abs(s2-s1))
+    guarda[df]=(float(np.mean(dp)),float(np.mean(ds)),dp[0],ds[0])
+    print('%5d %8d %16s %16s %10s'%(df,g,c(np.mean(dp),4),c(np.mean(ds),4),c(np.mean(dp)/np.mean(ds),1)))
+print()
+print('%5s %8s %16s %16s %10s'%('p','grau','polinômio','spline cúbica','razão'))
+print('%5s %8s %16s %16s %10s'%('','','deslocamento em PAR = 150, o ponto MAIS DISTANTE','',''))
+for df in [5,8,11,14]:
+    _,_,a,b=guarda[df]
+    print('%5d %8d %16s %16s %10s'%(df,df-1,c(a,4),c(b,4),c(a/max(b,1e-9),1)))
+print()
+print('O resultado é mais interessante que a formulação usual do manual, e')
+print('exige dizê-lo com cuidado: a diferença entre base GLOBAL e base LOCAL')
+print('DEPENDE DA FLEXIBILIDADE, e com pouca flexibilidade quase não existe.')
+print()
+print('Com p = 5 — o modelo que a validação cruzada escolheu — os dois se')
+print('deslocam igualmente, e a spline até um pouco mais: a razão é %s.'%c(guarda[5][0]/guarda[5][1],1))
+print('Com p = 8 a razão já é %s; com p = 11, %s; com p = 14, no ponto mais'%(
+      c(guarda[8][0]/guarda[8][1],1),c(guarda[11][0]/guarda[11][1],1)))
+print('distante, o polinômio se desloca %s e a spline %s — razão de %s para 1.'%(
+      c(guarda[14][2],4),c(guarda[14][3],4),c(guarda[14][2]/guarda[14][3],0)))
+print()
+print('A leitura correta: um polinômio tem um único conjunto de coeficientes')
+print('para TODO o domínio, de modo que um problema localizado contamina o')
+print('ajuste inteiro — e quanto mais termos, mais ele contamina, porque os')
+print('termos de ordem alta oscilam ao longo de todo o intervalo. A spline,')
+print('definida por partes, absorve a perturbação onde ela está, e melhora')
+print('à medida que ganha nós. É a razão técnica para preferir bases LOCAIS')
+print('quando se precisa de flexibilidade, e o assunto da próxima ficha.')
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">TROCAS GASOSAS: 260 medições em folhas de cafeeiro.
+Resposta: fotossíntese líquida A (umol CO2 m-2 s-1).
+Preditoras: radiação PAR (umol m-2 s-1), temperatura foliar (C) e VPD (kPa).
+Dados fictícios, com processo gerador CONHECIDO: A = f1(PAR) + f2(temp)
++ f3(VPD) + erro, com erro de desvio-padrão 1,30.
+
+  n = 260 | A de -8,52 a 22,15 | variância de A = 34,8025
+  PAR  de 57 a 1998
+  TEMP de 11,3 a 38,3
+  VPD  de 0,30 a 2,45
+
+  R² do modelo LINEAR nas três          = 0,6747
+  R² máximo possível (função verdadeira) = 0,9514
+  O modelo linear perde 0,2767 pontos de R². É esse buraco que o grupo
+  inteiro de fichas tenta preencher.
+
+======================================================================
+ESTA FICHA: a resposta à RADIAÇÃO, uma variável de cada vez
+A relação é a curva de luz: sobe depressa, satura, e cai um pouco por
+fotoinibição acima de 1.000 umol. É nitidamente não linear.
+
+  r de Pearson entre PAR e A = 0,7802
+  R² da RETA                  = 0,6087
+  R² da função verdadeira f1  = 0,8406
+
+======================================================================
+BASE CRUA contra BASE ORTOGONAL: mesmo ajuste, números muito diferentes
+
+ grau  cond(X) base crua  cond(X) ortogonal maior |coef| cru maior |coef| ort
+    1           1.93e+03               2.16           6.06             16
+    2           4.41e+06               2.83           1.14           15.2
+    3           1.07e+10               3.35           4.79           15.1
+    4            2.7e+13               4.18         0.0243           15.1
+    6           2.54e+21               4.93       2.04e-07           15.1
+    8           7.85e+27                5.8        2.7e-13           15.1
+   10           7.69e+34               6.14       1.84e-19           15.1
+   12           1.42e+41               7.43       9.59e-26           15.1
+
+Em ARITMÉTICA EXATA os dois ajustes seriam idênticos: as duas bases geram
+o mesmo espaço de funções. Em aritmética de máquina, não:
+
+  grau maior |diferença| entre cond(X) da base crua
+              os dois ajustes                     
+     1               7.11e-15             1.93e+03
+     2               1.71e-11             4.41e+06
+     3               3.48e-08             1.07e+10
+     4               4.94e+00             2.70e+13
+     5               5.18e+00             7.03e+16
+     6               6.79e+00             2.54e+21
+     8               1.31e+01             7.85e+27
+    10               1.61e+01             7.69e+34
+    12               1.54e+01             1.42e+41
+
+Até o grau 4 as duas bases concordam até a 10ª casa decimal. A partir do
+grau 6 a base crua simplesmente DEIXA DE FUNCIONAR: no grau 8 os dois
+ajustes diferem em até 13,12 umol, que é a ordem de grandeza da própria
+resposta. Não é questão de estilo: com número de condição de 10^27 e
+precisão dupla (cerca de 16 dígitos), não sobra dígito nenhum.
+
+A consequência prática: os valores-p dos coeficientes da base CRUA não
+servem para escolher o grau, porque cada um deles testa algo que depende
+de todos os outros. Na base ORTOGONAL cada coeficiente é independente,
+e o teste do último termo É o teste sequencial do grau.
+
+termo   coef. ortog.  erro-padrão            t   p
+const        15,0973       0,1687        89,49   &lt; 1e-300
+   L1         8,4198       0,3229        26,08   &lt; 1e-300
+   L2        -6,5635       0,3933       -16,69   &lt; 1e-300
+   L3         2,6741       0,4916         5,44   1.27e-07
+   L4        -1,3805       0,5654        -2,44   1.53e-02
+   L5         1,3801       0,5804         2,38   1.82e-02
+   L6         0,1115       0,6248         0,18   8.59e-01
+   L7         0,8742       0,6594         1,33   1.86e-01
+   L8        -0,1663       0,6663        -0,25   8.03e-01
+
+======================================================================
+A ESCOLHA DO GRAU: quatro critérios
+
+ grau          p    EQM resub    EQM 10-fold          AIC          BIC
+    1          2      13,5645        13,8718       681,94       689,06
+    2          3       6,4965         6,7069       492,53       503,21
+    3          4       5,6322         5,8564       457,41       471,65
+    4          5       5,4673         5,7655       451,68       469,49
+    5          6       5,3697         5,6789       449,00       470,36
+    6          7       5,3695         5,7638       450,99       475,92
+    7          8       5,3227         5,7504       450,71       479,20
+    8          9       5,3214         5,8573       452,65       484,70
+    9         10       5,2954         5,9762       453,38       488,99
+   10         11       5,2860         6,3919       454,91       494,08
+   11         12       5,2779         6,8174       456,52       499,24
+   12         13       5,2770         8,2113       458,47       504,76
+
+  menor EQM validado: grau 5 (5,6789)
+  menor AIC:          grau 5
+  menor BIC:          grau 4
+
+Testes F sequenciais (cada grau contra o anterior):
+ grau          SQR            F            p
+    1      3526,77            —            —
+    2      1689,08       279,61       0.0000
+    3      1464,38        39,28       0.0000
+    4      1421,49         7,70       0.0059
+    5      1396,11         4,62       0.0326
+    6      1396,07         0,01       0.9343
+    7      1383,90         2,22       0.1377
+    8      1383,55         0,06       0.8031
+    9      1376,81         1,22       0.2696
+   10      1374,35         0,44       0.5054
+
+======================================================================
+ONDE O POLINÔMIO ERRA: o viés não se distribui por igual
+
+Com o grau escolhido (5), comparando o ajuste à função VERDADEIRA f1:
+              faixa de PAR            n   viés médio |viés| médio
+                   0 a 200           23      -0,8477       0,8477
+                 200 a 500           52       0,1958       0,2110
+                 500 a 900           86      -0,1597       0,1765
+                900 a 1400           65       0,1415       0,1952
+               1400 a 2100           34       0,4075       0,4075
+
+A VARIÂNCIA do ajuste, por região (500 reamostras bootstrap):
+              faixa de PAR    variância razão com o miolo
+                   0 a 200       0,4072         5,81
+                 200 a 500       0,1060         1,51
+                 500 a 900       0,0693         0,99
+                900 a 1400       0,0712         1,02
+               1400 a 2100       0,4238         6,04
+
+A variância nas BORDAS é 6,0 vezes a do miolo. É o mesmo fenômeno da
+ficha bias-variance, agora numa aplicação real: nas extremidades há
+dados de um lado só para ancorar a curva.
+
+======================================================================
+EXTRAPOLAR COM POLINÔMIO: o que acontece fora do domínio
+
+       PAR       grau 2       grau 4       grau 6       grau 8      VERDADE
+      2100        14,83        16,39        21,04        26,28        17,70
+      2200        13,22        14,22        23,81        38,84        17,30
+      2400         9,36         7,21        35,34       101,25        16,36
+      2600         4,63        -4,63        59,48       251,42        15,25
+      3000        -7,41       -50,01       175,51      1023,98        12,54
+
+A 2100 umol — 5% além do maior PAR observado — o grau 8 já prevê 26,28
+contra 17,70 da verdade. A 3000, prevê 1023,98. Polinômio não extrapola.
+
+======================================================================
+A LIMITAÇÃO ESTRUTURAL: um polinômio é GLOBAL
+
+A curva de luz tem curvaturas MUITO diferentes em regiões diferentes:
+sobe quase reta até 300, dobra entre 300 e 900, e vira para baixo depois.
+Um polinômio tem um único conjunto de coeficientes para todo o domínio,
+de modo que mexer na curvatura de uma região mexe em todas.
+
+A demonstração: acrescentam-se 25 pontos SÓ na faixa de 1.800 a 2.000,
+DESLOCADOS em +4 umol (como se um lote de folhas tivesse sido medido com
+o equipamento descalibrado), e mede-se quanto o ajuste muda LONGE dali,
+em PAR de 150 a 1.000 — a mais de 800 umol da perturbação.
+
+A comparação é feita com a MESMA flexibilidade nos dois lados: polinômio
+de grau g contra spline cúbica com o mesmo número de parâmetros.
+
+    p     grau        polinômio    spline cúbica      razão
+               deslocamento médio fora da região perturbada                            
+    5        4           0,0223           0,0342        0,7
+    8        7           0,0666           0,0250        2,7
+   11       10           0,0668           0,0177        3,8
+   14       13           0,0652           0,0130        5,0
+
+    p     grau        polinômio    spline cúbica      razão
+               deslocamento em PAR = 150, o ponto MAIS DISTANTE                            
+    5        4           0,0067           0,0102        0,7
+    8        7           0,0816           0,0123        6,6
+   11       10           0,0560           0,0038       14,9
+   14       13           0,0296           0,0003      100,0
+
+O resultado é mais interessante que a formulação usual do manual, e
+exige dizê-lo com cuidado: a diferença entre base GLOBAL e base LOCAL
+DEPENDE DA FLEXIBILIDADE, e com pouca flexibilidade quase não existe.
+
+Com p = 5 — o modelo que a validação cruzada escolheu — os dois se
+deslocam igualmente, e a spline até um pouco mais: a razão é 0,7.
+Com p = 8 a razão já é 2,7; com p = 11, 3,8; com p = 14, no ponto mais
+distante, o polinômio se desloca 0,0296 e a spline 0,0003 — razão de 100 para 1.
+
+A leitura correta: um polinômio tem um único conjunto de coeficientes
+para TODO o domínio, de modo que um problema localizado contamina o
+ajuste inteiro — e quanto mais termos, mais ele contamina, porque os
+termos de ordem alta oscilam ao longo de todo o intervalo. A spline,
+definida por partes, absorve a perturbação onde ela está, e melhora
+à medida que ganha nós. É a razão técnica para preferir bases LOCAIS
+quando se precisa de flexibilidade, e o assunto da próxima ficha.</pre></div><figure class="fig"><img src="../assets/resultados/polinomial.png" alt="O leque das reamostras, a decomposição do erro ao longo do domínio e a extrapolação" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, 400 ajustes de grau 5 em reamostras bootstrap: o leque se abre nas duas pontas. No centro, a decomposição do erro ao longo do domínio em viés² e variância — nas bordas domina a variância, no miolo o pouco que sobra é viés de forma. À direita, o que acontece fora do domínio observado, sombreado em verde. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>A variância do ajuste por região (500 reamostras, grau 5)</caption><thead><tr><th>Faixa de PAR</th><th>n</th><th>Variância do ajuste</th><th>Razão com o miolo</th></tr></thead><tbody><tr><td>57 a 200</td><td>23</td><td>0,4072</td><td><strong>5,81</strong></td></tr><tr><td>200 a 500</td><td>52</td><td>0,1060</td><td>1,51</td></tr><tr><td>500 a 900</td><td>86</td><td>0,0693</td><td>0,99</td></tr><tr><td>900 a 1 400</td><td>65</td><td>0,0712</td><td>1,02</td></tr><tr><td>1 400 a 1 998</td><td>34</td><td>0,4238</td><td><strong>6,04</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O viés por região, contra a função verdadeira</caption><thead><tr><th>Faixa de PAR</th><th>Viés médio</th><th>|Viés| médio</th></tr></thead><tbody><tr><td>57 a 200</td><td>−0,8477</td><td>0,8477</td></tr><tr><td>200 a 500</td><td>0,1958</td><td>0,2110</td></tr><tr><td>500 a 900</td><td>−0,1597</td><td>0,1765</td></tr><tr><td>900 a 1 400</td><td>0,1415</td><td>0,1952</td></tr><tr><td>1 400 a 1 998</td><td>0,4075</td><td>0,4075</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Extrapolar: predições fora do domínio (máximo observado: 1.998)</caption><thead><tr><th>PAR</th><th>Grau 2</th><th>Grau 4</th><th>Grau 6</th><th>Grau 8</th><th>VERDADE</th></tr></thead><tbody><tr><td>2 100</td><td>14,83</td><td>16,39</td><td>21,04</td><td><strong>26,28</strong></td><td>17,70</td></tr><tr><td>2 200</td><td>13,22</td><td>14,22</td><td>23,81</td><td>38,84</td><td>17,30</td></tr><tr><td>2 400</td><td>9,36</td><td>7,21</td><td>35,34</td><td>101,25</td><td>16,36</td></tr><tr><td>2 600</td><td>4,63</td><td>−4,63</td><td>59,48</td><td>251,42</td><td>15,25</td></tr><tr><td>3 000</td><td>−7,41</td><td>−50,01</td><td>175,51</td><td><strong>1 023,98</strong></td><td>12,54</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Uma perturbação LOCAL contamina o ajuste GLOBAL?</caption><thead><tr><th>p</th><th>Grau / nós</th><th>Deslocamento médio: polinômio</th><th>Spline</th><th>Razão</th></tr></thead><tbody><tr><td>5</td><td>g=4 / K=1</td><td>0,0223</td><td>0,0342</td><td>0,7</td></tr><tr><td>8</td><td>g=7 / K=4</td><td>0,0666</td><td>0,0250</td><td>2,7</td></tr><tr><td>11</td><td>g=10 / K=7</td><td>0,0668</td><td>0,0177</td><td>3,8</td></tr><tr><td>14</td><td>g=13 / K=10</td><td>0,0652</td><td>0,0130</td><td>5,0</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>O mesmo, no ponto MAIS DISTANTE da perturbação (PAR = 150)</caption><thead><tr><th>p</th><th>Polinômio</th><th>Spline</th><th>Razão</th></tr></thead><tbody><tr><td>5</td><td>0,0067</td><td>0,0102</td><td>0,7</td></tr><tr><td>8</td><td>0,0816</td><td>0,0123</td><td>6,6</td></tr><tr><td>11</td><td>0,0560</td><td>0,0038</td><td>14,9</td></tr><tr><td>14</td><td>0,0296</td><td>0,0003</td><td><strong>100,0</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> a tabela do condicionamento é a que mais surpreende quem nunca a viu. Até o grau 3 as duas bases concordam até a oitava casa decimal; a partir do <strong>grau 4</strong> a discrepância já é de 4,94 μmol, e no grau 8 chega a 13,12 — da ordem de grandeza da própria resposta, que vai de −8,5 a 22,2. Não é uma sutileza de precisão: o ajuste calculado na base crua simplesmente não é o ajuste de mínimos quadrados. A regra prática é simples e absoluta: <code>poly(x, g)</code> sempre, exceto para a quadrática em que se quer o ponto de máximo.</p><p><strong>Sobre a escolha do grau:</strong> os quatro critérios concordam em 4 ou 5, e os testes F sequenciais param exatamente ali — o termo de grau 6 tem \(F=0{,}01\) e \(p=0{,}93\). É um caso confortável. Note que a melhora de 1 para 2 é enorme (EQM validado de 13,87 para 6,71) e de 2 para 3 ainda substancial (5,86), mas de 3 em diante o ganho é de centésimos. Com \(n=260\) e um sinal forte, os dados distinguem bem os graus baixos e mal os altos.</p><p><strong>Sobre a variância:</strong> a razão borda/miolo de 6 é o fenômeno da ficha <a href="bias-variance.html">viés-variância</a> aparecendo em dados de campo. A causa é geométrica: no centro do domínio há pontos dos dois lados ancorando o ajuste; nas pontas, de um lado só. Note que não é uma questão de quantidade de dados — a faixa de 1.400 a 1.998 tem 34 observações e a de 57 a 200 tem 23, mas a de 500 a 900, com 86, tem variância seis vezes menor. A posição importa mais que a contagem.</p><p>A tabela do viés mostra o outro lado: no miolo, onde a variância é pequena, o que sobra é viés de <em>forma</em> — a curva verdadeira não é um polinômio de grau 5, e o |viés| de 0,18 a 0,21 μmol é o preço disso. Nas bordas os dois problemas se somam.</p><p><strong>Sobre a extrapolação:</strong> a tabela não precisa de comentário longo. A 2.100 μmol — apenas 5% além do maior valor observado — o grau 8 já prevê 26,28 contra 17,70 da verdade, um erro de 48%. A 3.000, prevê 1.024 μmol de fotossíntese, um valor fisiologicamente absurdo: nenhuma folha fixa mais de cerca de 40 μmol CO₂ m⁻² s⁻¹. O grau 2, mais rígido, erra "menos" mas erra para o outro lado, prevendo fotossíntese negativa. A lição é que a extrapolação polinomial não tem sinal nem magnitude previsíveis, e o erro cresce como \(x^g\).</p><p><strong>Sobre ser global:</strong> esta última demonstração dá um resultado mais interessante que a formulação usual dos manuais, e vale enunciá-la com cuidado. Acrescentaram-se 25 pontos deslocados em +4 μmol numa faixa estreita no extremo direito — como se um lote de folhas tivesse sido medido com o equipamento descalibrado — e mediu-se quanto o ajuste mudou a mais de 800 μmol dali.</p><p>Com \(p=5\), o modelo que a validação cruzada escolheu, <strong>não há diferença</strong>: o polinômio se desloca 0,0223 e a spline 0,0342, de modo que a spline chega a se mover mais. A vantagem da base local só aparece com flexibilidade maior, e cresce depressa: a razão vai de 0,7 em \(p=5\) para 2,7, 3,8 e 5,0. No ponto mais distante da perturbação o contraste é muito mais nítido — razão de 100 para 1 com \(p=14\) — porque é ali que os termos de ordem alta, que oscilam ao longo de todo o intervalo, propagam o estrago.</p><p>A leitura honesta, portanto: a objeção "o polinômio é global" é correta, mas só morde quando se precisa de flexibilidade. Com três ou quatro termos, a escolha da base é quase indiferente. É exatamente por isso que o assunto da próxima ficha importa — quando a curva exige muitos graus de liberdade, a base local passa a ser a única opção razoável.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar a base crua em grau alto</td><td><code>poly(x, g)</code>; a crua quebra a partir do grau 4.</td></tr><tr><td>Escolher o grau pelos valores-p da base crua</td><td>Use validação cruzada ou a base ortogonal.</td></tr><tr><td>Escolher o grau pelo R²</td><td>Ele não decresce; não pode escolher.</td></tr><tr><td><strong>Extrapolar</strong></td><td>Confira o domínio de <code>newdata</code>; o erro cresce como xᵍ.</td></tr><tr><td>Interpretar coeficientes de grau alto</td><td>Não têm significado; reporte a curva.</td></tr><tr><td>Incluir x³ sem x e x²</td><td>Quebra a hierarquia; <code>poly</code> evita.</td></tr><tr><td>Ignorar a banda nas bordas</td><td>É onde ela se abre; desenhe-a inteira.</td></tr><tr><td>Usar grau alto para "garantir" flexibilidade</td><td>Prefira <a href="splines.html">splines</a> acima de p = 8.</td></tr><tr><td>Aplicar a dois preditores por interação de potências</td><td>O número de termos explode; veja <a href="gam.html">GAM</a>.</td></tr><tr><td>Reportar a dose ótima sem incerteza</td><td>Use bootstrap ou o método delta.</td></tr><tr><td>Estimar o grau e reportar p do modelo final</td><td>É inferência pós-seleção; veja <a href="stepwise.html">stepwise</a>.</td></tr><tr><td>Usar polinômio quando a curvatura muda de regime</td><td>Uma única forma global não dá conta.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e quando cada uma é preferível</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="splines.html">Splines de regressão</a></td><td>Quando se precisa de mais de 6 ou 8 g.l.: base local.</td></tr><tr><td><a href="smoothing-spline.html">Splines de suavização</a></td><td>Quando não se quer escolher nós.</td></tr><tr><td><a href="loess.html">Regressão local (LOESS)</a></td><td>Exploração, e quando não se precisa de fórmula.</td></tr><tr><td><a href="gam.html">Modelos aditivos (GAM)</a></td><td>Várias preditoras, cada uma com forma própria.</td></tr><tr><td>Modelos não lineares com parâmetros interpretáveis</td><td>Quando a teoria dá a forma: Michaelis-Menten, logística, hipérbole não retangular.</td></tr><tr><td>Transformação da resposta ou da preditora</td><td>Às vezes log(x) lineariza e resolve.</td></tr><tr><td>Polinômio por partes sem continuidade</td><td>Quando há um ponto de quebra conhecido.</td></tr><tr><td>Regressão segmentada</td><td>Quando o ponto de quebra é o parâmetro de interesse.</td></tr><tr><td><a href="ridge.html">Ridge</a> sobre a base polinomial</td><td>Quando se quer grau alto com estabilidade.</td></tr><tr><td>Quadrática simples</td><td>Quando o alvo é a dose ótima e a curva é claramente côncava.</td></tr></tbody></table></div><p>Vale destacar a quarta linha. Para a curva de luz da fotossíntese existe um modelo <em>mecanístico</em>: a hipérbole não retangular \[\begin{aligned}A &= \biggl[\phi I+A_{\max} \\ &\quad -\sqrt{(\phi I+A_{\max})^2-4\theta\phi IA_{\max}}\biggr]/(2\theta) \\ &\quad -R_d,\end{aligned}\] cujos quatro parâmetros — eficiência quântica, assíntota, curvatura e respiração — têm significado fisiológico direto e são comparáveis entre espécies e tratamentos. Quando a teoria oferece uma forma assim, ela é preferível a qualquer suavizador: ajusta-se por mínimos quadrados não lineares (a função <code>nls</code> do R) e o que se reporta são os parâmetros. Os métodos deste grupo são para quando essa forma não existe ou não se quer supô-la.</p><ol class="steps"><li>Desenhe o gráfico antes de ajustar qualquer coisa.</li><li>Pergunte-se se existe um modelo mecanístico para o fenômeno.</li><li>Use sempre <code>poly(x, g)</code>, nunca potências cruas acima do grau 2.</li><li>Varra o grau de 1 a cerca de 10 e avalie por validação cruzada.</li><li>Confirme com o AIC e com os testes F sequenciais.</li><li>Se o grau escolhido passar de 6, considere splines.</li><li>Desenhe o ajuste com banda ao longo de TODO o domínio.</li><li>Não extrapole; se precisar, use um modelo mecanístico.</li><li>Reporte a curva e as quantidades derivadas, não os coeficientes.</li><li>Verifique os resíduos como em qualquer modelo linear.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>NARULA, Subhash C. Orthogonal polynomial regression. <em>International Statistical Review</em>, v. 47, n. 1, p. 31-36, 1979.</li><li>SMITH, Patricia L. Splines as a useful and convenient statistical tool. <em>The American Statistician</em>, v. 33, n. 2, p. 57-62, 1979.</li><li>MAGEE, Lonnie. Nonlocal behavior in polynomial regressions. <em>The American Statistician</em>, v. 52, n. 1, p. 20-22, 1998.</li><li>RUNGE, Carl. Über empirische Funktionen und die Interpolation zwischen äquidistanten Ordinaten. <em>Zeitschrift für Mathematik und Physik</em>, v. 46, p. 224-243, 1901.</li><li>SEBER, G. A. F.; LEE, Alan J. <em>Linear regression analysis.</em> 2. ed. Hoboken: Wiley, 2003.</li><li>DRAPER, Norman R.; SMITH, Harry. <em>Applied regression analysis.</em> 3. ed. New York: Wiley, 1998.</li><li>HIGHAM, Nicholas J. <em>Accuracy and stability of numerical algorithms.</em> 2. ed. Philadelphia: SIAM, 2002.</li><li>MARSCHNER, Ian C. Relative risk regression: reliable and flexible methods. <em>Biostatistics</em>, v. 16, n. 3, p. 539-551, 2015.</li><li>PRIOUL, J. L.; CHARTIER, P. Partitioning of transfer and carboxylation components of intracellular resistance to photosynthetic CO₂ fixation. <em>Annals of Botany</em>, v. 41, n. 4, p. 789-800, 1977. (Hipérbole não retangular da curva de luz.)</li><li>HASTIE, Trevor; TIBSHIRANI, Robert; FRIEDMAN, Jerome. <em>The elements of statistical learning.</em> 2. ed. New York: Springer, 2009.</li><li>JAMES, Gareth; WITTEN, Daniela; HASTIE, Trevor; TIBSHIRANI, Robert. <em>An introduction to statistical learning: with applications in R.</em> 2. ed. New York: Springer, 2021.</li><li>FARAWAY, Julian J. <em>Extending the linear model with R.</em> 2. ed. Boca Raton: Chapman &amp; Hall/CRC, 2016.</li><li>HARRELL, Frank E. <em>Regression modeling strategies.</em> 2. ed. New York: Springer, 2015.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Pacote <code>splines</code>, funções <code>bs</code> e <code>ns</code>; pacote <code>stats</code>, funções <code>poly</code>, <code>smooth.spline</code> e <code>loess</code>.)</li><li>CANTY, Angelo; RIPLEY, Brian D. <em>boot: bootstrap R (S-Plus) functions.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=boot" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=boot</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Aprendizado supervisionado</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Os do modelo linear, base ortogonal no ajuste, grau escolhido por validação cruzada, hierarquia respeitada e nenhuma extrapolação.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>nenhum: poly e lm são do R base</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="pls.html"><span>← ANTERIOR</span>Regressão por mínimos quadrados parciais (PLS)</a><a href="splines.html"><span>PRÓXIMO →</span>Splines de regressão</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

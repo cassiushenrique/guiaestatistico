@@ -4,310 +4,325 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="ANOVA mista: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   ANOVA mista | Estatística e Ciência de Dados
-  </title>
+<meta content="ANOVA mista: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>ANOVA mista | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     ANOVA mista
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 05 · ANÁLISE DE VARIÂNCIA
-    </span>
-<h1>
-     ANOVA mista
-    </h1>
-<p class="detail-lead">
-     Compara grupos e mudanças ao longo de avaliações repetidas nas mesmas unidades.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/aovmista.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Compara grupos e mudanças ao longo de avaliações repetidas nas mesmas unidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Independência entre unidades, medidas correlacionadas dentro da unidade, distribuição de erros adequada, esfericidade no fator intraunidade.</li><li>Examine interação.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ (\alpha\gamma)_{it}=0\quad\forall i,t\\H_1&amp;:\ \exists i,t:(\alpha\gamma)_{it}\neq0\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[Y_{ijt}=\mu+\alpha_i+\gamma_t+(\alpha\gamma)_{it}+b_{j(i)}+\varepsilon_{ijt}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(Y_i\)
-        </dt>
-<dd>
-         resposta observada
-        </dd>
-</div>
-<div>
-<dt>
-         \(\mu\)
-        </dt>
-<dd>
-         média ou efeito médio
-        </dd>
-</div>
-<div>
-<dt>
-         \(F\)
-        </dt>
-<dd>
-         estatística de razão de variâncias baseada nos quadrados médios
-        </dd>
-</div>
-</dl>
-<p>
-       Estatísticas F com diferentes estratos de erro para termos entre e intraunidade; correções de esfericidade.
-      </p>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) para interação indica que perfis temporais/condicionais diferem entre grupos.
-      </p>
-<p>
-       Além da decisão ao nível de 5%, examine a direção e a magnitude do efeito, seu intervalo de confiança e a adequação dos pressupostos. Um valor-p não quantifica a importância prática do resultado.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto CO2 registra medidas repetidas em plantas de diferentes origens.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Separar a variação entre grupos de plantas da variação entre condições observadas na mesma planta.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-aovmista" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-aovmista"><code># ANOVA mista ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>ANOVA mista</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANOVA</span><h1>ANOVA mista</h1><p class="detail-lead">Combina um fator entre participantes e um fator medido dentro de cada participante, com dois termos de erro e foco na interação.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/aovmista.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/aovmista.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é a ANOVA mista</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Um ensaio clínico típico tem a forma: dois grupos de pessoas, cada pessoa medida várias vezes ao longo do tempo. O grupo é um fator <strong>entre</strong> participantes — cada um está em apenas um deles. O tempo é um fator <strong>dentro</strong> de participantes — cada um passa por todos os momentos. A ANOVA mista acomoda os dois no mesmo modelo, e a pergunta que realmente interessa não é nenhum dos dois efeitos principais: é a interação entre eles.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: ANOVA mista" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Um fator entre e um</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">fator dentro, juntos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Dois erros</text><text x="208" y="204.0" text-anchor="end" font-size="10.8" fill="#3d5042">Participante(Grupo)</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">para o fator entre</text><text x="208" y="234.0" text-anchor="end" font-size="10.8" fill="#3d5042">Resíduo para o resto</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A pergunta</text><text x="208" y="359.0" text-anchor="end" font-size="10.8" fill="#3d5042">A interação:</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">os grupos evoluem</text><text x="208" y="389.0" text-anchor="end" font-size="10.8" fill="#3d5042">de forma diferente?</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="832" y="49.0" text-anchor="start" font-size="10.8" fill="#3d5042">Esfericidade</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Covariâncias iguais</text><text x="832" y="79.0" text-anchor="start" font-size="10.8" fill="#3d5042">entre os grupos</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">aov(y ~ G * T +</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">Error(suj/T))</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativa</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Modelo misto</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">lmer()</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">ANOVA mista</text></svg><figcaption>Visão geral da ANOVA mista. Fonte: o autor.</figcaption></figure><div class="callout "><strong>Também chamada de parcela subdividida</strong><p>Na literatura de experimentação agrícola, esse delineamento é o <em>split-plot</em>: a parcela principal recebe um fator e as subparcelas, outro. A estrutura matemática é a mesma — dois estratos de variação, dois termos de erro — e a terminologia muda apenas conforme a área.</p></div></section><section class="detail-panel" id="oque"><h2>O que é a ANOVA mista</h2><p>A variação total se divide primeiro em dois <strong>estratos</strong>. O estrato <em>entre participantes</em> contém o efeito do grupo e, como erro, a variação entre participantes dentro de cada grupo. O estrato <em>dentro de participantes</em> contém o efeito do tempo, a interação grupo × tempo e o seu próprio erro. Cada efeito é testado contra o erro do estrato a que pertence — e é por isso que a tabela traz dois quadrados médios residuais, não um.</p><figure class="fig"><img src="../assets/resultados/aovmista-didatica.png" alt="Esquema da partição em dois estratos e gráfico de interação" loading="lazy"/><figcaption><strong>A estrutura do modelo e a pergunta que ele responde.</strong> À esquerda, o caminho da variação total até os dois termos de erro: o efeito do protocolo é comparado à variação entre participantes (18 gl), enquanto o efeito do momento e a interação são comparados ao erro de dentro (36 gl). À direita, a razão de ser do delineamento: as duas curvas partem de pontos próximos e se afastam ao longo do tempo. Essa diferença entre inclinações é a interação. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que o fator dentro é testado com mais precisão</strong><p>O erro do estrato de dentro (192,20 no exemplo) é muito menor que o de entre (817,71), porque dele já foi retirada a variação entre pessoas. É uma propriedade geral: num delineamento misto, o fator <em>dentro</em> e a <em>interação</em> são estimados com bem mais precisão que o fator <em>entre</em>. Vale lembrar disso ao planejar: o fator que mais interessa deve, sempre que o delineamento permitir, ficar dentro.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Participantes independentes entre si</td><td>A dependência permitida é só dentro do participante.</td><td>Delineamento; alocação aleatória aos grupos.</td></tr><tr><td>Cada participante em um só grupo, medido em todos os momentos</td><td>É o que define o delineamento misto.</td><td><code>table(participante, grupo)</code> e <code>table(grupo, momento)</code>.</td></tr><tr><td>Resíduos aproximadamente normais</td><td>Sustenta a distribuição F.</td><td><code>shapiro.test</code> nos resíduos.</td></tr><tr><td>Variâncias homogêneas entre os grupos</td><td>O erro do estrato de entre é comum aos grupos.</td><td>Levene sobre as médias dos participantes.</td></tr><tr><td>Esfericidade do fator dentro</td><td>Vale para o teste do momento e da interação.</td><td>Teste de <a href="mauchly.html">Mauchly</a>; correções de Greenhouse–Geisser e Huynh–Feldt.</td></tr><tr><td>Matrizes de covariância iguais entre os grupos</td><td>A estrutura de correlação ao longo do tempo deve ser a mesma nos dois grupos.</td><td>Teste M de <a href="boxm.html">Box</a>.</td></tr></tbody></table></div><div class="callout "><strong>Um pressuposto a mais</strong><p>A ANOVA mista exige tudo o que a de <a href="aovrepetida.html">medidas repetidas</a> exige, mais a homogeneidade das <em>matrizes</em> de covariância entre os grupos. Não basta que as variâncias sejam parecidas: o padrão de correlação entre os momentos também precisa ser. Quando esse pressuposto falha — e ele falha com frequência —, o modelo misto, que permite estruturas de covariância diferentes por grupo, é a saída natural.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>Três hipóteses nulas, testadas contra <strong>dois</strong> termos de erro diferentes:</p><div class="hypothesis-block">\[\left\{\begin{aligned}H_0^{G}&:\ \text{as médias dos grupos são } \\ &\quad \text{iguais} \\ &\text{(testada no estrato ENTRE)} \\ H_0^{T}&:\ \text{as médias dos momentos } \\ &\quad \text{são iguais} \\ &\text{(estrato DENTRO)} \\ H_0^{GT}&:\ \text{os perfis dos grupos } \\ &\quad \text{são paralelos} \\ &\text{(estrato DENTRO)}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[F_{G}=\frac{QM_{\text{grupo}}}{QM_{\text{part(grupo)}}},\]\[F_{T}=\frac{QM_{\text{momento}}}{QM_{\text{erro}}},\]\[F_{GT}=\frac{QM_{\text{grupo:momento}}}{QM_{\text{erro}}}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(a\)</dt><dd>número de grupos (fator entre)</dd></div><div><dt>\(k\)</dt><dd>número de momentos (fator dentro)</dd></div><div><dt>\(n\)</dt><dd>participantes por grupo</dd></div><div><dt>\(QM_{\text{part(grupo)}}\)</dt><dd>erro do estrato entre, com a(n−1) graus de liberdade</dd></div><div><dt>\(QM_{\text{erro}}\)</dt><dd>erro do estrato dentro, com a(n−1)(k−1) graus de liberdade</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Dois protocolos (A e B), dez participantes cada, três momentos. Médias em metros:</p><div class="table-wrap"><table class="method-table"><caption>Médias das células</caption><thead><tr><th>Protocolo</th><th>Início</th><th>4 semanas</th><th>8 semanas</th><th>Média</th></tr></thead><tbody><tr><td>A (convencional)</td><td>426,70</td><td>442,60</td><td>446,10</td><td>438,47</td></tr><tr><td>B (intervalado)</td><td>407,90</td><td>457,00</td><td>492,80</td><td>452,57</td></tr><tr><td><strong>Média do momento</strong></td><td><strong>417,30</strong></td><td><strong>449,80</strong></td><td><strong>469,45</strong></td><td><strong>445,52</strong></td></tr></tbody></table></div><div class="worked"><strong>Cálculo</strong><p>\[\begin{aligned}SQ_{\text{protocolo}} &= 3 \\ &\quad \times10\bigl[(438{,}47-445{,}52)^2 \\ &\quad +(452{,}57-445{,}52)^2\bigr] \\ &= 2\,982{,}15,\end{aligned}\] com 1 gl, testada contra \(QM_{\text{part(prot)}}=14\,718{,}83/18=817{,}71\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F_G=\frac{2\,982{,}15}{817{,}71}=3{,}647\]\[(p=0{,}0722).\]</div><p>\[\begin{aligned}SQ_{\text{momento}} &= 20\bigl[(417{,}30-445{,}52)^2 \\ &\quad +(449{,}80-445{,}52)^2 \\ &\quad +(469{,}45-445{,}52)^2\bigr] \\ &= 27\,746{,}63,\end{aligned}\] com 2 gl; \(QM_{\text{erro}}=6\,919{,}07/36=192{,}20\):</p><div class="math-display" role="group" aria-label="Expressão matemática">\[F_T=\frac{27\,746{,}63/2}{192{,}20}=72{,}183\]\[(p=2{,}5\times10^{-13}).\]</div><p>A interação, com \(SQ=10\,726{,}30\) e 2 gl, dá \(F_{GT}=5\,363{,}15/192{,}20=27{,}904\) \((p=4{,}8\times10^{-8})\).</p><p>Repare que o teste do protocolo usa um erro <strong>4,3 vezes maior</strong> que os outros dois. Não é um defeito do método: é o reflexo de que comparar pessoas diferentes é intrinsecamente mais ruidoso do que acompanhar a mesma pessoa.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Com k = 2 momentos, a esfericidade é automática e a interação equivale a comparar os ganhos entre os grupos com um <a href="t2.html">teste t</a> de duas amostras.</li><li>As correções de esfericidade se aplicam ao fator dentro e à interação, nunca ao fator entre.</li><li>O teste do fator entre é matematicamente idêntico a uma <a href="aov1.html">ANOVA de um fator</a> aplicada às médias de cada participante.</li><li>Tamanhos de efeito: \(\eta^2_p\) calculado com o erro do estrato correspondente; \(\eta^2_G\) (generalizado) para comparar entre estudos.</li><li>É equivalente a um modelo misto com intercepto aleatório por participante e covariância composta simétrica.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><ol class="steps"><li><strong>Comece pela interação.</strong> Ela é quase sempre a pergunta do estudo: os grupos evoluíram de forma diferente?</li><li>Se a interação for significativa, não interprete os efeitos principais. Analise os efeitos simples: o fator dentro em cada grupo, e os grupos em cada momento.</li><li>Um efeito principal de grupo não significativo <strong>não</strong> contradiz uma interação significativa: um pode melhorar e o outro piorar, e a média dos momentos esconder tudo.</li><li>Verifique a comparabilidade inicial dos grupos; uma diferença no momento basal pede uma análise com ajuste (ver <a href="ancova.html">ANCOVA</a>).</li><li>Reporte os dois termos de erro e os graus de liberdade de cada teste.</li></ol><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Error: participante</td><td>Estrato entre: aqui está o teste do grupo.</td><td>Graus de liberdade a(n−1).</td></tr><tr><td>Error: participante:momento</td><td>Estrato dentro: aqui estão momento e interação.</td><td>Graus de liberdade a(n−1)(k−1).</td></tr><tr><td>F da interação</td><td>Se os perfis são paralelos.</td><td>A linha mais importante.</td></tr><tr><td>ε de GG e HF</td><td>Severidade da violação da esfericidade.</td><td>Aplicam-se só ao estrato de dentro.</td></tr><tr><td>η² parcial e generalizado</td><td>Magnitude dos efeitos.</td><td>Use o erro do estrato correto.</td></tr><tr><td>Médias das células com erro-padrão</td><td>O resultado observado.</td><td>É o que o gráfico de perfis mostra.</td></tr></tbody></table></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>Em R base, <code>aov()</code> com <code>Error(participante/momento)</code> produz a tabela em dois estratos, mas não traz o teste de esfericidade. <code>ez::ezANOVA()</code> e <code>rstatix::anova_test()</code>, informando <code>within</code> e <code>between</code>, devolvem Mauchly, as correções e os tamanhos de efeito. <code>biotools::boxM()</code> testa a igualdade das matrizes de covariância; <code>emmeans</code> fornece os efeitos simples. Para dados faltantes ou covariáveis, <code>lme4::lmer</code> com <code>lmerTest</code> é a rota preferível.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-aovmista-min" type="button">Copiar código</button></div><pre id="code-aovmista-min"><code>modelo &lt;- aov(distancia ~ protocolo * momento + Error(participante / momento), data = longo)
+summary(modelo)
+ez::ezANOVA(data = longo, dv = distancia, wid = participante,
+            within = momento, between = protocolo, detailed = TRUE)
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados do exemplo são fictícios e foram criados pelo autor. Vinte participantes foram alocados ao acaso em dois protocolos de treinamento — convencional (A) e intervalado (B) — e tiveram a distância no teste de caminhada de seis minutos medida no início, com quatro semanas e com oito semanas.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-aovmista" type="button">Copiar código</button></div><pre id="code-aovmista"><code># ANOVA mista (um fator entre e um fator dentro): exemplo completo ----
+# Pacotes: stats (base), ez ou rstatix (esfericidade), emmeans (efeitos simples)
+# install.packages(c("ez", "rstatix", "emmeans", "lme4"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("ez", quietly = TRUE)) install.packages("ez")
+# 1. Dados fictícios: distância no teste de caminhada de seis minutos (m)
+#    20 participantes alocados ao acaso em dois protocolos, medidos em 3 momentos.
+dist &lt;- c(430,441,473, 457,420,442, 427,438,457, 387,428,393, 440,489,479,
+          442,440,434, 407,421,413, 427,450,448, 429,447,456, 421,452,466,
+          423,451,507, 426,490,496, 410,441,458, 409,458,495, 391,433,485,
+          428,482,523, 396,467,514, 406,442,498, 400,453,469, 390,453,483)
+longo &lt;- data.frame(
+  participante = factor(rep(paste0("p", 1:20), each = 3)),
+  protocolo    = factor(rep(c("A", "B"), each = 30)),      # ENTRE participantes
+  momento      = factor(rep(c("inicio", "sem4", "sem8"), times = 20),
+                        levels = c("inicio", "sem4", "sem8")),   # DENTRO
+  distancia    = dist)
+str(longo)
+with(longo, table(protocolo, momento))
+with(longo, tapply(distancia, list(protocolo, momento), mean))
+with(longo, tapply(distancia, list(protocolo, momento), sd))
+
+# 2. O modelo: Error() declara o participante como unidade do fator ENTRE
+modelo &lt;- aov(distancia ~ protocolo * momento + Error(participante / momento), data = longo)
+summary(modelo)
+
+# 3. Esfericidade e correções, com o pacote ez
 library(ez)
-d &lt;- CO2
-d$conc &lt;- factor(d$conc)
-d$Plant &lt;- factor(d$Plant)
-resultado &lt;- ezANOVA(data = d, dv = .(uptake), wid = .(Plant),
-                     within = .(conc), between = .(Type), detailed = TRUE)
-print(resultado)
+ezANOVA(data = longo, dv = distancia, wid = participante,
+        within = momento, between = protocolo, detailed = TRUE)
+# alternativa: rstatix::anova_test(longo, dv = distancia, wid = participante,
+#                                  within = momento, between = protocolo)
 
-# Visualização e diagnóstico ----
-interaction.plot(CO2$conc, CO2$Type, CO2$uptake, xlab = "Concentração", ylab = "Absorção média de CO2", trace.label = "Origem")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 4. Pressupostos
+#    4a. normalidade dos resíduos
+res &lt;- residuals(lm(distancia ~ protocolo * momento + participante, data = longo))
+shapiro.test(res)
+#    4b. homogeneidade entre os grupos ENTRE participantes
+library(car)
+medias_suj &lt;- aggregate(distancia ~ participante + protocolo, data = longo, FUN = mean)
+leveneTest(distancia ~ protocolo, data = medias_suj, center = median)
+#    4c. homogeneidade das matrizes de covariância: teste M de Box
+largo &lt;- reshape(longo[, c("participante", "protocolo", "momento", "distancia")],
+                 idvar = c("participante", "protocolo"), timevar = "momento",
+                 direction = "wide")
+library(biotools)
+boxM(largo[, 3:5], largo$protocolo)
 
+# 5. Interação significativa: efeitos simples
+library(emmeans)
+mm &lt;- emmeans(modelo, ~momento | protocolo)
+mm
+pairs(mm, adjust = "holm")                      # efeito do momento DENTRO de cada protocolo
+pairs(emmeans(modelo, ~protocolo | momento))    # efeito do protocolo EM CADA momento
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="aovfatorial.html">
-<span>
-      ← ANTERIOR
-     </span>
-     ANOVA fatorial
-    </a>
-<a href="ancova.html">
-<span>
-      PRÓXIMO →
-     </span>
-     ANCOVA
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 6. Alternativa recomendada: modelo misto, que aceita dados faltantes
+library(lme4); library(lmerTest)
+mmisto &lt;- lmer(distancia ~ protocolo * momento + (1 | participante), data = longo)
+anova(mmisto)
+
+# 7. Gráficos
+par(mfrow = c(1, 2))
+cores &lt;- ifelse(longo$protocolo == "A", "darkgreen", "orange")
+matplot(matrix(longo$distancia, nrow = 3), type = "b", pch = 19, lty = 1,
+        col = rep(c("darkgreen", "orange"), each = 10), xaxt = "n",
+        xlab = "Momento", ylab = "Distância (m)")
+axis(1, at = 1:3, labels = c("início", "4 sem", "8 sem"))
+with(longo, interaction.plot(momento, protocolo, distancia, lwd = 3, pch = 19, type = "b",
+                             col = c("darkgreen", "orange"), ylab = "Distância média (m)"))
+par(mfrow = c(1, 1))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-aovmista" type="button">Copiar código</button></div><pre id="code-py-aovmista"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados fictícios: distância no teste de caminhada de seis minutos (m) de 20
+# participantes alocados ao acaso em dois protocolos de treinamento, medidos
+# no início, com 4 semanas e com 8 semanas.
+# Fator ENTRE participantes: protocolo (A = convencional, B = intervalado).
+# Fator DENTRO de participantes: momento (3 medidas na mesma pessoa).
+A = np.array([[430, 441, 473], [457, 420, 442], [427, 438, 457], [387, 428, 393],
+              [440, 489, 479], [442, 440, 434], [407, 421, 413], [427, 450, 448],
+              [429, 447, 456], [421, 452, 466]], dtype=float)
+B = np.array([[423, 451, 507], [426, 490, 496], [410, 441, 458], [409, 458, 495],
+              [391, 433, 485], [428, 482, 523], [396, 467, 514], [406, 442, 498],
+              [400, 453, 469], [390, 453, 483]], dtype=float)
+dados = np.vstack([A, B])
+protocolo = np.repeat([0, 1], len(A))
+rot_prot = ["A (convencional)", "B (intervalado)"]
+momentos = ["início", "4 semanas", "8 semanas"]
+a, k = 2, 3
+n = len(A)                      # participantes por protocolo
+N = a * n
+
+print(f"{N} participantes ({n} por protocolo) x {k} momentos")
+print("protocolo            início   4 sem   8 sem   média")
+cel = np.array([[dados[protocolo == i][:, j].mean() for j in range(k)] for i in range(a)])
+for i in range(a):
+    print(f"{rot_prot[i]:&lt;18}  {cel[i,0]:7.2f} {cel[i,1]:7.2f} {cel[i,2]:7.2f}  {cel[i].mean():7.2f}")
+print(f"{'média do momento':&lt;18}  {dados[:,0].mean():7.2f} {dados[:,1].mean():7.2f} "
+      f"{dados[:,2].mean():7.2f}  {dados.mean():7.2f}")
+print("\nDesvios-padrão das células")
+for i in range(a):
+    print(f"{rot_prot[i]:&lt;18}  " + " ".join(f"{dados[protocolo==i][:,j].std(ddof=1):7.2f}" for j in range(k)))
+print("\nGanho individual (8 semanas - início):")
+for i in range(a):
+    gan = dados[protocolo == i][:, 2] - dados[protocolo == i][:, 0]
+    print(f"  {rot_prot[i]:&lt;18} média = {gan.mean():+7.2f} m | DP = {gan.std(ddof=1):6.2f} | valores: {gan.astype(int)}")
+
+# 1. Decomposição da soma de quadrados em duas partes
+mg = dados.mean()
+m_prot = np.array([dados[protocolo == i].mean() for i in range(a)])
+m_mom = dados.mean(axis=0)
+SQ_total = ((dados - mg)**2).sum()
+# parte ENTRE participantes
+SQ_prot = k * n * ((m_prot - mg)**2).sum()
+SQ_sujdentro = k * sum(((dados[protocolo == i].mean(axis=1) - m_prot[i])**2).sum() for i in range(a))
+# parte DENTRO de participantes
+SQ_mom = N * ((m_mom - mg)**2).sum()
+SQ_inter = n * ((cel - m_prot[:, None] - m_mom[None, :] + mg)**2).sum()
+SQ_erro_d = SQ_total - SQ_prot - SQ_sujdentro - SQ_mom - SQ_inter
+gl_prot, gl_sd = a - 1, a * (n - 1)
+gl_mom, gl_int, gl_ed = k - 1, (a - 1) * (k - 1), a * (n - 1) * (k - 1)
+QM_sd, QM_ed = SQ_sujdentro / gl_sd, SQ_erro_d / gl_ed
+F_prot = (SQ_prot / gl_prot) / QM_sd
+F_mom = (SQ_mom / gl_mom) / QM_ed
+F_int = (SQ_inter / gl_int) / QM_ed
+p_prot = stats.f.sf(F_prot, gl_prot, gl_sd)
+p_mom = stats.f.sf(F_mom, gl_mom, gl_ed)
+p_int = stats.f.sf(F_int, gl_int, gl_ed)
+print(f"\nSQ total = {SQ_total:.2f}")
+print(f"  parte entre participantes: {SQ_prot:.2f} (protocolo) + {SQ_sujdentro:.2f} (participantes no protocolo)")
+print(f"  parte dentro:              {SQ_mom:.2f} (momento) + {SQ_inter:.2f} (interação) + {SQ_erro_d:.2f} (erro)")
+print("\nFonte                        GL        SQ          QM        F      p-valor")
+print("ENTRE participantes")
+print(f"  Protocolo                {gl_prot:3d}  {SQ_prot:9.2f}  {SQ_prot/gl_prot:9.2f}  {F_prot:7.4f}  {p_prot:.5f}")
+print(f"  Participante(Protocolo)  {gl_sd:3d}  {SQ_sujdentro:9.2f}  {QM_sd:9.2f}   &lt;- erro deste teste")
+print("DENTRO de participantes")
+print(f"  Momento                  {gl_mom:3d}  {SQ_mom:9.2f}  {SQ_mom/gl_mom:9.2f}  {F_mom:7.4f}  {p_mom:.3e}")
+print(f"  Protocolo:Momento        {gl_int:3d}  {SQ_inter:9.2f}  {SQ_inter/gl_int:9.2f}  {F_int:7.4f}  {p_int:.3e}")
+print(f"  Erro                     {gl_ed:3d}  {SQ_erro_d:9.2f}  {QM_ed:9.2f}   &lt;- erro dos dois testes acima")
+print(f"Total                      {N*k-1:3d}  {SQ_total:9.2f}")
+print("\nSão DOIS termos de erro: cada efeito é comparado ao erro do seu nível.")
+
+# 2. Esfericidade (matriz de covariâncias agrupada dentro dos protocolos)
+Sp = sum((n - 1) * np.cov(dados[protocolo == i], rowvar=False) for i in range(a)) / (a * (n - 1))
+C = np.array([[1, -1, 0], [1, 1, -2]], dtype=float)
+C = C / np.sqrt((C**2).sum(axis=1, keepdims=True))
+Sc = C @ Sp @ C.T
+pp = k - 1
+W_m = np.linalg.det(Sc) / (np.trace(Sc) / pp)**pp
+f_corr = 1 - (2*pp**2 + pp + 2) / (6 * pp * gl_sd)
+chi2_m = -gl_sd * f_corr * np.log(W_m)
+p_m = stats.chi2.sf(chi2_m, pp*(pp+1)/2 - 1)
+ev = np.linalg.eigvalsh(Sc)
+gg = ev.sum()**2 / (pp * (ev**2).sum())
+hf = min(1.0, (gl_sd * pp * gg - 2) / (pp * (gl_sd - pp * gg)))
+print(f"\nMauchly: W = {W_m:.5f}, qui-quadrado = {chi2_m:.4f}, gl = 2, p-valor = {p_m:.4f}")
+print(f"Epsilon de Greenhouse-Geisser = {gg:.4f} | Huynh-Feldt = {hf:.4f}")
+print("Valores-p corrigidos (a esfericidade está atendida: as correções quase não alteram nada)")
+for nome, Fv, gl1 in [("Momento", F_mom, gl_mom), ("Protocolo:Momento", F_int, gl_int)]:
+    print(f"  {nome:&lt;18} sem correção: {stats.f.sf(Fv, gl1, gl_ed):.3e} | "
+          f"GG: {stats.f.sf(Fv, gg*gl1, gg*gl_ed):.3e} | HF: {stats.f.sf(Fv, hf*gl1, hf*gl_ed):.3e}")
+
+# 3. Pressupostos restantes
+res = np.empty_like(dados)
+for i in range(a):
+    bl = dados[protocolo == i]
+    res[protocolo == i] = bl - bl.mean(axis=1, keepdims=True) - bl.mean(axis=0, keepdims=True) + bl.mean()
+print(f"\nShapiro-Wilk dos resíduos: W = {stats.shapiro(res.ravel())[0]:.4f}, p-valor = {stats.shapiro(res.ravel())[1]:.4f}")
+md = [dados[protocolo == i].mean(axis=1) for i in range(a)]
+print(f"Levene nas médias dos participantes (homogeneidade entre protocolos): "
+      f"p-valor = {stats.levene(*md, center='median')[1]:.4f}")
+for j, mm in enumerate(momentos):
+    gs = [dados[protocolo == i][:, j] for i in range(a)]
+    print(f"  Levene em {mm:&lt;10}: p-valor = {stats.levene(*gs, center='median')[1]:.4f}")
+
+# 4. Tamanho de efeito
+print(f"\neta² parcial do protocolo         = {SQ_prot/(SQ_prot+SQ_sujdentro):.4f}")
+print(f"eta² parcial do momento           = {SQ_mom/(SQ_mom+SQ_erro_d):.4f}")
+print(f"eta² parcial da interação         = {SQ_inter/(SQ_inter+SQ_erro_d):.4f}")
+print(f"eta² generalizado da interação    = {SQ_inter/(SQ_inter+SQ_sujdentro+SQ_erro_d):.4f}")
+
+# 5. Efeitos simples: a interação significativa obriga a olhar dentro de cada nível
+print("\nEfeito do momento DENTRO de cada protocolo")
+for i in range(a):
+    bl = dados[protocolo == i]
+    SQ_s = n * ((bl.mean(axis=0) - bl.mean())**2).sum()
+    SQ_e = ((bl - bl.mean(axis=1, keepdims=True) - bl.mean(axis=0, keepdims=True) + bl.mean())**2).sum()
+    Fv = (SQ_s / (k-1)) / (SQ_e / ((n-1)*(k-1)))
+    print(f"  {rot_prot[i]:&lt;18} F({k-1}; {(n-1)*(k-1)}) = {Fv:7.3f} | "
+          f"p-valor = {stats.f.sf(Fv, k-1, (n-1)*(k-1)):.3e}")
+print("\nDiferença entre protocolos EM CADA momento (teste t de Welch)")
+for j, mm in enumerate(momentos):
+    x, yy = dados[protocolo == 0][:, j], dados[protocolo == 1][:, j]
+    t, pv = stats.ttest_ind(yy, x, equal_var=False)
+    s_p = np.sqrt(((n-1)*x.var(ddof=1) + (n-1)*yy.var(ddof=1)) / (2*n-2))
+    print(f"  {mm:&lt;10} B - A = {yy.mean()-x.mean():+7.2f} m | t = {t:+.4f} | "
+          f"p-valor = {pv:.4f} | d de Cohen = {(yy.mean()-x.mean())/s_p:+.3f}")
+
+# 6. Comparações pareadas dentro de cada protocolo, com ajuste de Holm
+print("\nComparações pareadas dentro de cada protocolo (t pareado, ajuste de Holm)")
+for i in range(a):
+    bl = dados[protocolo == i]
+    pares = list(itertools.combinations(range(k), 2))
+    pv = [stats.ttest_rel(bl[:, jj], bl[:, ii])[1] for ii, jj in pares]
+    ordem = np.argsort(pv); holm = np.empty(len(pv)); acum = 0.0
+    for pos, idx in enumerate(ordem):
+        acum = max(acum, (len(pv) - pos) * pv[idx]); holm[idx] = min(1.0, acum)
+    print(f"  {rot_prot[i]}")
+    for m, (ii, jj) in enumerate(pares):
+        d = bl[:, jj] - bl[:, ii]
+        print(f"    {momentos[jj]} - {momentos[ii]:&lt;10} = {d.mean():+7.2f} m | "
+              f"p bruto = {pv[m]:.3e} | Holm = {holm[m]:.3e}")
+
+# 7. O que aconteceria ignorando a estrutura de medidas repetidas
+Fi, pi = stats.f_oneway(*[dados[:, j] for j in range(k)])
+print(f"\nIgnorando o pareamento, o efeito do momento daria F = {Fi:.3f} "
+      f"(gl = {k-1}; {N*k-k}), p-valor = {pi:.3e}")
+print(f"contra F = {F_mom:.3f} (gl = {gl_mom}; {gl_ed}) no modelo misto: a variabilidade")
+print(f"entre participantes ({100*SQ_sujdentro/SQ_total:.1f}% do total) deixaria de ser isolada.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">20 participantes (10 por protocolo) x 3 momentos
+protocolo            início   4 sem   8 sem   média
+A (convencional)     426.70  442.60  446.10   438.47
+B (intervalado)      407.90  457.00  492.80   452.57
+média do momento     417.30  449.80  469.45   445.52
+
+Desvios-padrão das células
+A (convencional)      19.27   19.82   26.88
+B (intervalado)       14.06   18.07   19.83
+
+Ganho individual (8 semanas - início):
+  A (convencional)   média =  +19.40 m | DP =  21.25 | valores: [ 43 -15  30   6  39  -8   6  21  27  45]
+  B (intervalado)    média =  +84.90 m | DP =  18.96 | valores: [ 84  70  48  86  94  95 118  92  69  93]
+
+SQ total = 63092.98
+  parte entre participantes: 2982.15 (protocolo) + 14718.83 (participantes no protocolo)
+  parte dentro:              27746.63 (momento) + 10726.30 (interação) + 6919.07 (erro)
+
+Fonte                        GL        SQ          QM        F      p-valor
+ENTRE participantes
+  Protocolo                  1    2982.15    2982.15   3.6469  0.07224
+  Participante(Protocolo)   18   14718.83     817.71   &lt;- erro deste teste
+DENTRO de participantes
+  Momento                    2   27746.63   13873.32  72.1831  2.527e-13
+  Protocolo:Momento          2   10726.30    5363.15  27.9045  4.803e-08
+  Erro                      36    6919.07     192.20   &lt;- erro dos dois testes acima
+Total                       59   63092.98
+
+São DOIS termos de erro: cada efeito é comparado ao erro do seu nível.
+
+Mauchly: W = 0.99304, qui-quadrado = 0.1188, gl = 2, p-valor = 0.9423
+Epsilon de Greenhouse-Geisser = 0.9931 | Huynh-Feldt = 1.0000
+Valores-p corrigidos (a esfericidade está atendida: as correções quase não alteram nada)
+  Momento            sem correção: 2.527e-13 | GG: 3.019e-13 | HF: 2.527e-13
+  Protocolo:Momento  sem correção: 4.803e-08 | GG: 5.285e-08 | HF: 4.803e-08
+
+Shapiro-Wilk dos resíduos: W = 0.9901, p-valor = 0.9101
+Levene nas médias dos participantes (homogeneidade entre protocolos): p-valor = 0.9431
+  Levene em início    : p-valor = 0.7499
+  Levene em 4 semanas : p-valor = 0.9738
+  Levene em 8 semanas : p-valor = 0.4496
+
+eta² parcial do protocolo         = 0.1685
+eta² parcial do momento           = 0.8004
+eta² parcial da interação         = 0.6079
+eta² generalizado da interação    = 0.3314
+
+Efeito do momento DENTRO de cada protocolo
+  A (convencional)   F(2; 18) =   4.548 | p-valor = 2.520e-02
+  B (intervalado)    F(2; 18) = 121.666 | p-valor = 3.489e-11
+
+Diferença entre protocolos EM CADA momento (teste t de Welch)
+  início     B - A =  -18.80 m | t = -2.4923 | p-valor = 0.0237 | d de Cohen = -1.115
+  4 semanas  B - A =  +14.40 m | t = +1.6975 | p-valor = 0.1070 | d de Cohen = +0.759
+  8 semanas  B - A =  +46.70 m | t = +4.4214 | p-valor = 0.0004 | d de Cohen = +1.977
+
+Comparações pareadas dentro de cada protocolo (t pareado, ajuste de Holm)
+  A (convencional)
+    4 semanas - início     =  +15.90 m | p bruto = 6.554e-02 | Holm = 1.311e-01
+    8 semanas - início     =  +19.40 m | p bruto = 1.796e-02 | Holm = 5.387e-02
+    8 semanas - 4 semanas  =   +3.50 m | p bruto = 5.858e-01 | Holm = 5.858e-01
+  B (intervalado)
+    4 semanas - início     =  +49.10 m | p bruto = 2.188e-06 | Holm = 4.377e-06
+    8 semanas - início     =  +84.90 m | p bruto = 1.858e-07 | Holm = 5.573e-07
+    8 semanas - 4 semanas  =  +35.80 m | p bruto = 1.398e-04 | Holm = 1.398e-04
+
+Ignorando o pareamento, o efeito do momento daria F = 22.372 (gl = 2; 57), p-valor = 6.735e-08
+contra F = 72.183 (gl = 2; 36) no modelo misto: a variabilidade
+entre participantes (23.3% do total) deixaria de ser isolada.</pre></div><figure class="fig"><img src="../assets/resultados/aovmista.png" alt="Perfis individuais por protocolo e ganhos em oito semanas" loading="lazy"/><figcaption><strong>Os dados e a interação.</strong> À esquerda, os vinte perfis individuais com as médias de cada protocolo em destaque: as linhas do protocolo B abrem em leque, enquanto as de A permanecem quase horizontais. À direita, o ganho individual entre o início e as oito semanas: nenhum participante de B perdeu distância e a média foi de 84,9 m, contra 19,4 m em A, com três participantes que chegaram a piorar. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Tabela de ANOVA</caption><thead><tr><th>Fonte</th><th>GL</th><th>SQ</th><th>QM</th><th>F</th><th>p</th></tr></thead><tbody><tr><td><strong>ENTRE participantes</strong></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>  Protocolo</td><td>1</td><td>2 982,15</td><td>2 982,15</td><td>3,647</td><td>0,0722</td></tr><tr><td>  Participante(Protocolo)</td><td>18</td><td>14 718,83</td><td>817,71</td><td>—</td><td>erro do teste acima</td></tr><tr><td><strong>DENTRO de participantes</strong></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>  Momento</td><td>2</td><td>27 746,63</td><td>13 873,32</td><td>72,183</td><td>2,5 × 10⁻¹³</td></tr><tr><td>  Protocolo : Momento</td><td>2</td><td>10 726,30</td><td>5 363,15</td><td>27,904</td><td>4,8 × 10⁻⁸</td></tr><tr><td>  Erro</td><td>36</td><td>6 919,07</td><td>192,20</td><td>—</td><td>erro dos dois testes acima</td></tr><tr><td>Total</td><td>59</td><td>63 092,98</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Complementos</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Mauchly</td><td>W = 0,993; p = 0,9423</td><td>Esfericidade atendida.</td></tr><tr><td>ε de GG / HF</td><td>0,9931 / 1,0000</td><td>As correções praticamente não alteram nada.</td></tr><tr><td>p da interação com GG</td><td>5,3 × 10⁻⁸</td><td>Igual, na prática.</td></tr><tr><td>Shapiro–Wilk dos resíduos</td><td>W = 0,990; p = 0,9101</td><td>Normalidade atendida.</td></tr><tr><td>Levene entre protocolos</td><td>p = 0,9431</td><td>Homogeneidade atendida.</td></tr><tr><td>η² parcial (protocolo / momento / interação)</td><td>0,169 / 0,800 / 0,608</td><td>A interação é um efeito grande.</td></tr><tr><td>η² generalizado da interação</td><td>0,331</td><td>Medida comparável entre estudos.</td></tr><tr><td>Efeito simples do momento em A</td><td>F(2; 18) = 4,548; p = 0,0252</td><td>Melhora modesta.</td></tr><tr><td>Efeito simples do momento em B</td><td>F(2; 18) = 121,666; p = 3,5 × 10⁻¹¹</td><td>Melhora acentuada.</td></tr><tr><td>B − A no início</td><td>−18,80 m; p = 0,0237</td><td>B começa <strong>abaixo</strong> de A.</td></tr><tr><td>B − A em 4 semanas</td><td>+14,40 m; p = 0,1070</td><td>Já ultrapassou, sem significância.</td></tr><tr><td>B − A em 8 semanas</td><td>+46,70 m; d = 1,98; p = 0,0004</td><td>Vantagem nítida.</td></tr><tr><td>Comparações em B (Holm)</td><td>todas com p ≤ 1,4 × 10⁻⁴</td><td>A melhora continua entre 4 e 8 semanas.</td></tr><tr><td>Comparações em A (Holm)</td><td>p ≥ 0,054</td><td>Nenhuma diferença sustenta o ajuste.</td></tr></tbody></table></div><p><strong>Leitura:</strong> o resultado do estudo está na interação (F = 27,90; p = 4,8 × 10⁻⁸). Os dois protocolos não evoluem do mesmo modo: o intervalado ganha 84,9 m em oito semanas e continua melhorando entre a quarta e a oitava semana, enquanto o convencional ganha 19,4 m e estaciona após a quarta semana.</p><p>O efeito principal do protocolo, isolado, não é significativo (p = 0,072) — e esse é exatamente o tipo de resultado que seria mal reportado como “não houve diferença entre os protocolos”. A afirmação é falsa. Ela resulta de uma média entre um momento em que B estava <em>atrás</em> e um momento em que estava bem à frente; ao mediar os três momentos, as duas situações se cancelam. O efeito principal de um fator entre, num delineamento com interação, quase nunca é a quantidade de interesse.</p><p>Um detalhe do delineamento merece registro: no momento basal o grupo B estava 18,8 m <em>abaixo</em> do grupo A, com p = 0,024. Com dez participantes por grupo, desequilíbrios assim ocorrem por acaso com frequência. Como a medida inicial é anterior à intervenção, a conduta usual é incluí-la como covariável, analisando a medida final ajustada pelo basal — uma <a href="ancova.html">ANCOVA</a>. Aqui, isso só reforçaria a conclusão, já que B partiu de um ponto mais baixo; mas o raciocínio vale para o caso contrário.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Usar um único termo de erro</td><td>São dois estratos e dois quadrados médios residuais.</td></tr><tr><td>Interpretar o efeito principal do grupo havendo interação</td><td>Ele pode ser não significativo mesmo com os grupos evoluindo de forma oposta.</td></tr><tr><td>Aplicar correção de esfericidade ao fator entre</td><td>As correções valem só para o estrato de dentro.</td></tr><tr><td>Esquecer o teste M de Box</td><td>A ANOVA mista exige covariâncias iguais entre os grupos.</td></tr><tr><td>Excluir participantes com uma medida faltante</td><td><code>aov()</code> descarta o participante inteiro; prefira um modelo misto.</td></tr><tr><td>Ignorar diferenças no momento basal</td><td>Considere a análise ajustada pelo basal (<a href="ancova.html">ANCOVA</a>).</td></tr><tr><td>Fazer todas as comparações pareadas sem ajuste</td><td>Ajuste dentro de cada família de comparações.</td></tr><tr><td>Confundir fator entre com fator dentro na sintaxe</td><td>Só o fator dentro entra em <code>Error(participante/...)</code>.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Modelo misto (<code>lme4::lmer</code>)</td><td>Dados faltantes, momentos irregulares, covariáveis ou covariâncias diferentes entre grupos. É hoje a rota preferida em ensaios clínicos.</td></tr><tr><td><a href="ancova.html">ANCOVA</a></td><td>Interesse na medida final ajustada pela basal; costuma ter mais poder que analisar ganhos.</td></tr><tr><td><a href="aovrepetida.html">ANOVA de medidas repetidas</a></td><td>Não há fator entre participantes.</td></tr><tr><td><a href="aovfatorial.html">ANOVA fatorial</a></td><td>Os dois fatores são entre participantes.</td></tr><tr><td><a href="manova.html">MANOVA</a></td><td>Perfil tratado como vetor de respostas, sem supor esfericidade.</td></tr><tr><td><a href="gee.html">GEE</a></td><td>Interesse no efeito médio populacional, com resposta não normal.</td></tr><tr><td>Modelo de curvas de crescimento</td><td>O tempo é contínuo e a trajetória individual interessa.</td></tr><tr><td>ANOVA alinhada por postos (<code>ARTool</code>)</td><td>Resposta ordinal, mantendo a estrutura mista.</td></tr></tbody></table></div><ol class="steps"><li>Confirme a estrutura: quem está em qual grupo, quem foi medido quando.</li><li>Faça o gráfico de perfis separado por grupo, com as médias em destaque.</li><li>Verifique a comparabilidade dos grupos no momento basal.</li><li>Ajuste o modelo com o termo de erro correto.</li><li>Teste a esfericidade e a homogeneidade das covariâncias.</li><li>Leia a interação primeiro; se significativa, passe aos efeitos simples.</li><li>Reporte os dois termos de erro, os tamanhos de efeito e as médias com erros-padrão.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>MAXWELL, Scott E.; DELANEY, Harold D.; KELLEY, Ken. <em>Designing experiments and analyzing data: a model comparison perspective.</em> 3. ed. New York: Routledge, 2018.</li><li>MONTGOMERY, Douglas C. <em>Design and analysis of experiments.</em> 10. ed. Hoboken: Wiley, 2019.</li><li>KUTNER, Michael H. et al. <em>Applied linear statistical models.</em> 5. ed. Boston: McGraw-Hill Irwin, 2005.</li><li>WINER, B. J.; BROWN, Donald R.; MICHELS, Kenneth M. <em>Statistical principles in experimental design.</em> 3. ed. New York: McGraw-Hill, 1991.</li><li>GREENHOUSE, Samuel W.; GEISSER, Seymour. On methods in the analysis of profile data. <em>Psychometrika</em>, v. 24, n. 2, p. 95-112, 1959.</li><li>BOX, George E. P. A general distribution theory for a class of likelihood criteria. <em>Biometrika</em>, v. 36, n. 3-4, p. 317-346, 1949.</li><li>VICKERS, Andrew J.; ALTMAN, Douglas G. Analysing controlled trials with baseline and follow up measurements. <em>BMJ</em>, v. 323, p. 1123-1124, 2001.</li><li>OLEJNIK, Stephen; ALGINA, James. Generalized eta and omega squared statistics: measures of effect size for some common research designs. <em>Psychological Methods</em>, v. 8, n. 4, p. 434-447, 2003.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Função <code>aov</code> com <code>Error()</code>, pacote <code>stats</code>.)</li><li>LAWRENCE, Michael A. <em>ez: easy analysis and visualization of factorial experiments.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=ez" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=ez</a>.</li><li>BATES, Douglas et al. Fitting linear mixed-effects models using lme4. <em>Journal of Statistical Software</em>, v. 67, n. 1, p. 1-48, 2015.</li><li>LENTH, Russell V. <em>emmeans: estimated marginal means, aka least-squares means.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=emmeans" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=emmeans</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Participantes independentes, delineamento completo, resíduos normais, variâncias homogêneas entre os grupos, esfericidade do fator dentro e matrizes de covariância iguais entre os grupos.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>ez, rstatix, emmeans, lme4</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="aovfatorial.html"><span>← ANTERIOR</span>ANOVA fatorial</a><a href="ancova.html"><span>PRÓXIMO →</span>ANCOVA</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

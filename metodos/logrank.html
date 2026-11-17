@@ -4,304 +4,342 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Teste log-rank: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Teste log-rank | Estatística e Ciência de Dados
-  </title>
+<meta content="Teste log-rank: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Teste log-rank | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Teste log-rank
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 10 · SOBREVIVÊNCIA
-    </span>
-<h1>
-     Teste log-rank
-    </h1>
-<p class="detail-lead">
-     Verifica se dois ou mais grupos apresentam curvas de sobrevivência diferentes.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/logrank.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Verifica se dois ou mais grupos apresentam curvas de sobrevivência diferentes.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes.</li><li>Censura independente condicional.</li><li>Interpretação de potência favorece alternativas com riscos proporcionais.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ S_1(t)=S_2(t)\quad\forall t\\ H_1&amp;:\ \exists\,t:S_1(t)\neq S_2(t)\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[X^2=\frac{(O_1-E_1)^2}{V_1}\quad\text{(dois grupos)}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(O_1\)
-        </dt>
-<dd>
-         quantidade observada de eventos no grupo 1
-        </dd>
-</div>
-<div>
-<dt>
-         \(E_1\)
-        </dt>
-<dd>
-         quantidade esperada de eventos no grupo 1 sob igualdade das curvas
-        </dd>
-</div>
-<div>
-<dt>
-         \(V_1\)
-        </dt>
-<dd>
-         variância estimada da diferença O1-E1
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p&lt;0{,}05\) : evidência de diferenças entre grupos; não estima direção nem HR e não garante proporcionalidade.
-      </p>
-<p>
-       Considere a censura, a quantidade de unidades sob risco e a precisão das estimativas ao longo do tempo. Em regressão de Cox, interprete razões de taxas instantâneas, não razões de probabilidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        Os tempos em survival::lung podem ser divididos por grupos definidos por uma covariável.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar curvas de sobrevivência entre grupos, considerando observações censuradas.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-logrank" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-logrank"><code># Teste log-rank ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Teste log-rank</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANÁLISE DE SOBREVIVÊNCIA</span><h1>Teste log-rank</h1><p class="detail-lead">Compara curvas de sobrevivência somando, em cada tempo de evento, a diferença entre os eventos observados e os esperados sob a hipótese de curvas iguais.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/logrank.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/logrank.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o teste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>O teste log-rank compara as curvas de sobrevivência de dois ou mais grupos. Ele não compara as curvas ponto a ponto: percorre os tempos em que houve evento e, em cada um, confronta o número de eventos observados em um grupo com o número esperado se as curvas fossem iguais. A soma dessas diferenças, padronizada, é a estatística.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Teste log-rank" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que compara</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Curvas de sobrevivência</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">de 2 ou mais grupos</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Em cada tempo de evento:</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">observado − esperado</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A estatística</text><text x="208" y="374.0" text-anchor="end" font-size="10.8" fill="#3d5042">(O − E)² / V ~ χ² com k − 1 gl</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Censura não informativa</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Riscos proporcionais (para poder)</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">survdiff()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Família</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Peso w(t) = 1</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">Gehan, Peto, Tarone–Ware</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Teste log-rank</text></svg><figcaption>Visão geral do teste log-rank. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A intuição em uma frase</strong><p>Em cada tempo de evento, se as duas curvas fossem iguais, a proporção de eventos vindos de cada grupo deveria igualar a proporção de pessoas em risco naquele grupo. Nos dados desta ficha, o grupo tratado teve 9 recaídas onde se esperariam 19,25; é esse déficit de 10,25 que a estatística mede.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o teste</h2><p>A cada tempo de evento \(t_j\), monte a tabela \(2\times2\) que cruza grupo e desfecho entre os que estão em risco. Condicionando nas margens — \(n_j\) em risco, \(d_j\) eventos, \(n_{1j}\) no grupo 1 — o número de eventos do grupo 1 segue uma distribuição hipergeométrica, com esperança e variância conhecidas. A estatística soma os desvios de todas essas tabelas.</p><figure class="fig"><img src="../assets/resultados/logrank-didatica.png" alt="As duas curvas, a contribuição de cada tempo de evento, e a distribuição de referência" loading="lazy"/><figcaption><strong>Como a estatística é montada.</strong> À esquerda, as duas curvas a comparar. No centro, a contribuição de cada um dos 17 tempos de evento: barras verdes para cima quando o grupo 6-MP teve mais recaídas que o esperado, vermelhas para baixo quando teve menos; a soma é −10,25. À direita, a distribuição qui-quadrado com 1 grau de liberdade, com o valor observado Q = 16,79 muito à direita do valor crítico de 3,84. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout "><strong>É o mesmo teste de Mantel–Haenszel</strong><p>A construção — somar tabelas \(2\times2\) estratificadas, cada uma condicionada nas suas margens — é exatamente a do procedimento de Mantel–Haenszel que aparece na ficha do <a href="qui-independencia.html">qui-quadrado de independência</a>. A diferença é que ali os estratos eram departamentos e aqui são tempos de evento, construídos pelos próprios dados.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Censura não informativa</td><td>Igual ao <a href="kaplan.html">Kaplan–Meier</a>: quem sai deve ter o mesmo risco de quem fica.</td><td>Não há teste; examine os motivos de saída.</td></tr><tr><td>Observações independentes</td><td>A variância hipergeométrica pressupõe isso.</td><td>Delineamento; para dados agrupados, teste estratificado ou de fragilidade.</td></tr><tr><td>Grupos definidos antes do acompanhamento</td><td>Definir grupos por algo medido depois gera viés imortal.</td><td>Protocolo.</td></tr><tr><td><strong>Riscos proporcionais</strong></td><td><strong>Não é exigido para a validade</strong>, mas é quando o teste tem poder máximo.</td><td>Curvas de log(−log S) aproximadamente paralelas; <code>cox.zph()</code>; curvas que se cruzam são o sinal de alerta.</td></tr><tr><td>Eventos em número suficiente</td><td>O poder depende dos eventos, não de n.</td><td>Conte os eventos por grupo, não os pacientes.</td></tr><tr><td>Censura com padrão semelhante nos grupos</td><td>Padrões muito diferentes distorcem a comparação.</td><td>Compare as distribuições dos tempos de censura.</td></tr></tbody></table></div><div class="callout warn"><strong>Proporcionalidade: validade contra poder</strong><p>É uma distinção que se perde com frequência. O log-rank <strong>continua válido</strong> sem riscos proporcionais: sob a hipótese nula de curvas idênticas, ele mantém a taxa de erro de 5%. O que se perde é poder. A simulação desta ficha mostra o log-rank com 82,65% de poder sob riscos proporcionais, 43,35% quando a diferença está só no início, e 22,45% quando está só no fim. Curvas que se cruzam são o caso extremo: as contribuições de sinais opostos se cancelam, e o teste pode não detectar nada — é o que mostra o exemplo da ficha do <a href="gehan.html">Wilcoxon–Gehan</a>.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ S_1(t)=S_2(t)=\dots=S_k(t) \\ &\quad \text{para todo }t \\ H_1&:\ S_i(t)\neq S_{i^{\prime}}(t)\ \\ &\quad \text{para algum }t\text{ e algum par}\end{aligned}\right.\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[E_{1j}=\frac{d_j\,n_{1j}}{n_j},\]\[V_{1j}=\frac{d_j\,n_{1j}(n_j-n_{1j})(n_j-d_j)}{n_j^{2}\,(n_j-1)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{\left(\sum_{j} \left[d_{1j}-E_{1j}\right]\right)^{2}}{\sum_{j} V_{1j}} \\ &= \frac{(O_1-E_1)^{2}}{V}\ \dot\sim \ \chi^{2}_{1}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(t_j\)</dt><dd>\(j\)-ésimo tempo de evento, considerando os dois grupos juntos</dd></div><div><dt>\(n_j,\ d_j\)</dt><dd>em risco e eventos em \(t_j\), no total</dd></div><div><dt>\(n_{1j},\ d_{1j}\)</dt><dd>em risco e eventos em \(t_j\) no grupo 1</dd></div><div><dt>\(E_{1j}\)</dt><dd>eventos esperados no grupo 1 sob \(H_0\)</dd></div><div><dt>\(V_{1j}\)</dt><dd>variância hipergeométrica de \(d_{1j}\)</dd></div><div><dt>\(O_1,\ E_1\)</dt><dd>totais observado e esperado no grupo 1</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>A tabela do log-rank (dados de Freireich; grupo 1 = 6-MP)</caption><thead><tr><th>tⱼ</th><th>nⱼ</th><th>dⱼ</th><th>n₁ⱼ</th><th>d₁ⱼ</th><th>E₁ⱼ</th><th>d₁ⱼ − E₁ⱼ</th><th>V₁ⱼ</th></tr></thead><tbody><tr><td>1</td><td>42</td><td>2</td><td>21</td><td>0</td><td>1,0000</td><td>−1,0000</td><td>0,4878</td></tr><tr><td>2</td><td>40</td><td>2</td><td>21</td><td>0</td><td>1,0500</td><td>−1,0500</td><td>0,4860</td></tr><tr><td>3</td><td>38</td><td>1</td><td>21</td><td>0</td><td>0,5526</td><td>−0,5526</td><td>0,2472</td></tr><tr><td>4</td><td>37</td><td>2</td><td>21</td><td>0</td><td>1,1351</td><td>−1,1351</td><td>0,4772</td></tr><tr><td>5</td><td>35</td><td>2</td><td>21</td><td>0</td><td>1,2000</td><td>−1,2000</td><td>0,4659</td></tr><tr><td><strong>6</strong></td><td>33</td><td>3</td><td>21</td><td><strong>3</strong></td><td>1,9091</td><td><strong>+1,0909</strong></td><td>0,6508</td></tr><tr><td>7</td><td>29</td><td>1</td><td>17</td><td>1</td><td>0,5862</td><td>+0,4138</td><td>0,2426</td></tr><tr><td>8</td><td>28</td><td>4</td><td>16</td><td>0</td><td>2,2857</td><td>−2,2857</td><td>0,8707</td></tr><tr><td>10</td><td>23</td><td>1</td><td>15</td><td>1</td><td>0,6522</td><td>+0,3478</td><td>0,2268</td></tr><tr><td>11</td><td>21</td><td>2</td><td>13</td><td>0</td><td>1,2381</td><td>−1,2381</td><td>0,4481</td></tr><tr><td>12</td><td>18</td><td>2</td><td>12</td><td>0</td><td>1,3333</td><td>−1,3333</td><td>0,4183</td></tr><tr><td>13</td><td>16</td><td>1</td><td>12</td><td>1</td><td>0,7500</td><td>+0,2500</td><td>0,1875</td></tr><tr><td>15</td><td>15</td><td>1</td><td>11</td><td>0</td><td>0,7333</td><td>−0,7333</td><td>0,1956</td></tr><tr><td>16</td><td>14</td><td>1</td><td>11</td><td>1</td><td>0,7857</td><td>+0,2143</td><td>0,1684</td></tr><tr><td>17</td><td>13</td><td>1</td><td>10</td><td>0</td><td>0,7692</td><td>−0,7692</td><td>0,1775</td></tr><tr><td>22</td><td>9</td><td>2</td><td>7</td><td>1</td><td>1,5556</td><td>−0,5556</td><td>0,3025</td></tr><tr><td>23</td><td>7</td><td>2</td><td>6</td><td>1</td><td>1,7143</td><td>−0,7143</td><td>0,2041</td></tr><tr><td><strong>Soma</strong></td><td>—</td><td><strong>30</strong></td><td>—</td><td><strong>9</strong></td><td><strong>19,2505</strong></td><td><strong>−10,2505</strong></td><td><strong>6,2570</strong></td></tr></tbody></table></div><div class="worked"><strong>Duas linhas em detalhe, e a estatística</strong><p>Em \(t=1\) há 42 pacientes em risco, 21 em cada grupo, e 2 recaídas, ambas no placebo. O esperado no 6-MP é \(E=2\times21/42=1{,}0000\), de modo que a contribuição é \(0-1=-1\).</p><p>Em \(t=8\) restam 28 em risco, dos quais 16 no 6-MP, e há 4 recaídas, todas no placebo. O esperado é \(E=4\times16/28=2{,}2857\), e a contribuição, \(-2{,}2857\): é a maior do estudo.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}Q &= \frac{(9-19{,}2505)^{2}}{6{,}2570} \\ &= \frac{(-10{,}2505)^{2}}{6{,}2570} \\ &= \frac{105{,}0727}{6{,}2570} \\ &= 16{,}793.\end{aligned}\]</div><p>Com 1 grau de liberdade, \(p=4{,}17\times10^{-5}\). O grupo tratado teve 9 recaídas onde se esperariam 19,25.</p></div><h3>Razão de riscos</h3><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\widehat{\text{RR}} &= \frac{O_2/E_2}{O_1/E_1} \\ &= \frac{21/10{,}7495}{9/19{,}2505} = 4{,}179,\end{aligned}\]\[\begin{aligned}\widehat{\text{RR}}_{\text{Peto}} &= \exp\!\left(\frac{-(O_1-E_1)}{V}\right) = 5{,}146\end{aligned}\]</div><p>O intervalo de confiança de 95% da estimativa de Peto, obtido de \(\exp\!\left(\ln\widehat{\text{RR}}\pm1{,}96/\sqrt{V}\right)\), é [2,351; 11,266]. A <a href="cox.html">regressão de Cox</a> estima a mesma quantidade por verossimilhança parcial e chega a um valor próximo.</p><h3>Propriedades</h3><ul class="checklist"><li>É o teste de escore da <a href="cox.html">regressão de Cox</a> com uma covariável indicadora de grupo: os dois dão a mesma estatística.</li><li>É a extensão do procedimento de Mantel–Haenszel a tabelas \(2\times2\) estratificadas por tempo de evento.</li><li>Com \(k\) grupos, a estatística tem \(k-1\) graus de liberdade.</li><li>Tem poder assintoticamente ótimo quando os riscos são proporcionais, isto é, quando \(h_2(t)/h_1(t)\) é constante.</li><li>É válido sem riscos proporcionais, mas perde poder; com curvas que se cruzam, pode perder quase todo ele.</li><li>Pertence à família \(G^\rho\) de Harrington–Fleming com \(\rho=0\); \(\rho=1\) dá o teste de Peto–Peto.</li><li>Admite versão estratificada, que soma as estatísticas dentro de cada estrato e é o análogo do ajuste por confundidores.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>Observed / Expected</td><td>Eventos vistos e esperados por grupo.</td><td>A razão O/E dá uma primeira ideia do efeito.</td></tr><tr><td>Chisq</td><td>A estatística do teste.</td><td>Com k − 1 graus de liberdade.</td></tr><tr><td>p-value</td><td>Evidência contra curvas iguais.</td><td>Não mede o tamanho da diferença.</td></tr><tr><td>(O−E)²/V</td><td>A forma correta da estatística.</td><td><code>(O−E)²/E</code> é apenas auxiliar.</td></tr><tr><td>Razão de riscos</td><td>O tamanho do efeito.</td><td>Só é interpretável com riscos proporcionais.</td></tr><tr><td>Curvas de log(−log S)</td><td>Diagnóstico de proporcionalidade.</td><td>Paralelas: proporcionais.</td></tr></tbody></table></div><div class="callout "><strong>O valor-p não substitui a curva</strong><p>Um log-rank significativo diz que as curvas diferem em algum ponto; não diz onde, nem quanto. Apresente sempre a curva de <a href="kaplan.html">Kaplan–Meier</a> com a tabela de número em risco, as medianas com intervalo, e uma medida de efeito — razão de riscos se os riscos forem proporcionais, diferença de tempo médio restrito se não forem.</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>A função é <code>survdiff()</code> do pacote <code>survival</code>, com a mesma sintaxe de fórmula de <code>survfit()</code>. A saída traz, por grupo, o número de observados e de esperados, além de <code>(O−E)²/E</code> e <code>(O−E)²/V</code>; a estatística do teste é a soma da última coluna. O argumento <code>rho</code> dá a família de Harrington–Fleming: <code>rho = 0</code> é o log-rank e <code>rho = 1</code> é o Peto–Peto. Para estratificar, acrescente <code>+ strata(variável)</code> à fórmula. Para o diagnóstico de proporcionalidade, <code>cox.zph()</code> e o gráfico de log(−log S).</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-logrank-min" type="button">Copiar código</button></div><pre id="code-logrank-min"><code>library(survival)
+survdiff(Surv(tempo, evento) ~ grupo, data = dados)             # log-rank
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 1)    # Peto-Peto
+cox.zph(coxph(Surv(tempo, evento) ~ grupo, data = dados))       # proporcionalidade
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são de Freireich et al. (1963): 42 pacientes com leucemia aguda em remissão induzida por esteroides, pareados por estado clínico e divididos entre 6-mercaptopurina e placebo. Registrou-se o tempo, em semanas, até a recaída. No grupo do 6-MP, 12 dos 21 pacientes ainda estavam em remissão quando o estudo terminou: são as observações censuradas. No placebo, todos os 21 recaíram. É o conjunto clássico da área, e acompanha o pacote <code>survival</code> do R. A ficha do <a href="kaplan.html">Kaplan–Meier</a> estimou as curvas destes mesmos dados; aqui elas são comparadas formalmente, e a ficha do <a href="gehan.html">Wilcoxon–Gehan</a> mostra o que acontece quando a escolha do peso passa a importar.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-logrank" type="button">Copiar código</button></div><pre id="code-logrank"><code># Teste log-rank: exemplo completo ----
+# Pacotes: survival (base/recomendado), survminer (gráficos)
 
-# Ajuste e resultados ----
-if (!requireNamespace("survival", quietly = TRUE)) install.packages("survival")
 library(survival)
-resultado &lt;- survdiff(Surv(time, status == 2) ~ sex,
-                     data = lung, rho = 0)
-print(resultado)
-p &lt;- pchisq(resultado$chisq, df = length(resultado$n) - 1,
-            lower.tail = FALSE)
-print(p)
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+tempo  &lt;- c(6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35,
+            1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23)
+evento &lt;- c(0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+            rep(1, 21))
+grupo  &lt;- factor(rep(c("6-MP", "placebo"), each = 21))
+dados  &lt;- data.frame(tempo, evento, grupo)
 
+# O teste
+survdiff(Surv(tempo, evento) ~ grupo, data = dados)
+# N, Observed, Expected, (O-E)^2/E e (O-E)^2/V, com o qui-quadrado e o valor-p
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="kaplan.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Estimador Kaplan–Meier
-    </a>
-<a href="gehan.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste generalizado de Wilcoxon–Gehan
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+sd &lt;- survdiff(Surv(tempo, evento) ~ grupo, data = dados)
+sd$obs; sd$exp                       # observados e esperados por grupo
+sd$chisq
+pchisq(sd$chisq, df = 1, lower.tail = FALSE)
+
+# A tabela, tempo a tempo, feita à mão
+tev &lt;- sort(unique(dados$tempo[dados$evento == 1]))
+tab &lt;- t(sapply(tev, function(x) {
+  n  &lt;- sum(dados$tempo &gt;= x);  d  &lt;- sum(dados$tempo == x &amp; dados$evento == 1)
+  n1 &lt;- sum(dados$tempo &gt;= x &amp; dados$grupo == "6-MP")
+  d1 &lt;- sum(dados$tempo == x &amp; dados$evento == 1 &amp; dados$grupo == "6-MP")
+  E1 &lt;- d * n1 / n
+  V1 &lt;- d * (n1/n) * (1 - n1/n) * (n - d) / max(n - 1, 1)
+  c(t = x, n = n, d = d, n1 = n1, d1 = d1, E1 = E1, dif = d1 - E1, V = V1)
+}))
+round(tab, 4)
+colSums(tab[, c("d", "d1", "E1", "dif", "V")])
+sum(tab[, "dif"])^2 / sum(tab[, "V"])            # a estatística Q
+
+# Razão de riscos
+sd$obs / sd$exp                                  # O/E por grupo
+(sd$obs[2]/sd$exp[2]) / (sd$obs[1]/sd$exp[1])    # razão O/E
+# Estimativa de Peto, a partir do próprio log-rank:
+OE &lt;- sum(tab[, "dif"]); V &lt;- sum(tab[, "V"])
+exp(-OE/V); exp(-OE/V + c(-1, 1) * 1.96 / sqrt(V))
+# Comparação com a regressão de Cox (verossimilhança parcial):
+summary(coxph(Surv(tempo, evento) ~ grupo, data = dados))
+
+# A família de testes ponderados: rho = 0 é o log-rank, rho = 1 é Peto-Peto
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 0)
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 1)
+survdiff(Surv(tempo, evento) ~ grupo, data = dados, rho = 0.5)
+
+# Mais de dois grupos e versão estratificada
+# survdiff(Surv(tempo, evento) ~ grupo + strata(centro), data = dados)
+
+# Verificar riscos proporcionais, que é quando o log-rank tem poder máximo
+fit &lt;- survfit(Surv(tempo, evento) ~ grupo, data = dados)
+plot(fit, fun = "cloglog", col = c("darkgreen", "firebrick"), lwd = 2,
+     xlab = "Semanas (log)", ylab = "log(-log S(t))")
+# Linhas aproximadamente paralelas indicam riscos proporcionais.
+cox.zph(coxph(Surv(tempo, evento) ~ grupo, data = dados))
+
+library(survminer)
+ggsurvplot(fit, data = dados, pval = TRUE, pval.method = TRUE,
+           risk.table = TRUE, conf.int = TRUE, xlab = "Semanas")
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-logrank" type="button">Copiar código</button></div><pre id="code-py-logrank"><code># Bibliotecas: numpy, scipy e matplotlib (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Os mesmos dados da ficha do Kaplan-Meier: Freireich et al. (1963),
+# 42 pacientes com leucemia, 6-mercaptopurina contra placebo.
+# ===================================================================
+t6  = np.array([6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35])
+e6  = np.array([0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0])
+tpl = np.array([1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23])
+epl = np.ones(21, int)
+t = np.r_[t6, tpl]; e = np.r_[e6, epl]
+gr = np.r_[np.zeros(21), np.ones(21)].astype(int)   # 0 = 6-MP, 1 = placebo
+rot = ["6-MP", "placebo"]
+
+def tabela_tempos(t, e, gr):
+    """Para cada tempo de evento: n em risco e eventos, no total e por grupo."""
+    T = np.unique(t[e == 1])
+    linhas = []
+    for x in T:
+        n_ = np.sum(t &gt;= x); d_ = np.sum((t == x) &amp; (e == 1))
+        n1 = np.sum((t &gt;= x) &amp; (gr == 0)); d1 = np.sum((t == x) &amp; (e == 1) &amp; (gr == 0))
+        linhas.append((x, n_, d_, n1, d1))
+    return np.array(linhas, float)
+
+def testes(t, e, gr, rho=0.0):
+    """Família G-rho de Harrington-Fleming: rho = 0 é log-rank,
+       rho = 1 é o Peto-Peto, a versão do Wilcoxon para dados censurados."""
+    L = tabela_tempos(t, e, gr)
+    x, n_, d_, n1, d1 = L.T
+    E1 = d_ * n1 / n_                                   # esperado no grupo 1
+    V1 = d_ * (n1/n_) * (1 - n1/n_) * (n_ - d_) / np.maximum(n_ - 1, 1)
+    # peso: S(t-) elevado a rho, com S o Kaplan-Meier combinado
+    Sc = np.r_[1.0, np.cumprod(1 - d_/n_)[:-1]]
+    w = Sc ** rho
+    O_E = np.sum(w * (d1 - E1)); V = np.sum(w**2 * V1)
+    Q = O_E**2 / V
+    return L, E1, V1, w, O_E, V, Q, stats.chi2.sf(Q, 1)
+
+print("Freireich et al. (1963): tempo até a recaída, em semanas")
+for j in [0, 1]:
+    print(f"  {rot[j]:&lt;8} n = {np.sum(gr==j)}, eventos = {int(np.sum(e[gr==j]))}, "
+          f"censuras = {int(np.sum(1-e[gr==j]))}")
+
+# ===================================================================
+# PARTE 1 - a tabela do teste log-rank, tempo a tempo
+# ===================================================================
+L, E1, V1, w, O_E, V, Q, p = testes(t, e, gr, rho=0.0)
+x, n_, d_, n1, d1 = L.T
+print("\nTabela do log-rank: a cada tempo de evento, compara-se o observado no")
+print("grupo 6-MP com o esperado sob a hipótese de curvas iguais.")
+print(f"{'tempo':&gt;7}{'n total':&gt;9}{'d total':&gt;9}{'n 6-MP':&gt;9}{'d 6-MP':&gt;9}"
+      f"{'E(d 6-MP)':&gt;12}{'d - E':&gt;10}{'Var':&gt;10}")
+for j in range(len(x)):
+    print(f"{x[j]:&gt;7.0f}{n_[j]:&gt;9.0f}{d_[j]:&gt;9.0f}{n1[j]:&gt;9.0f}{d1[j]:&gt;9.0f}"
+          f"{E1[j]:&gt;12.4f}{d1[j]-E1[j]:&gt;10.4f}{V1[j]:&gt;10.4f}")
+print(f"{'soma':&gt;7}{'':&gt;9}{d_.sum():&gt;9.0f}{'':&gt;9}{d1.sum():&gt;9.0f}"
+      f"{E1.sum():&gt;12.4f}{O_E:&gt;10.4f}{V:&gt;10.4f}")
+print(f"\nObservado no 6-MP: O1 = {d1.sum():.0f}   |   Esperado: E1 = {E1.sum():.4f}")
+print(f"O - E = {O_E:.4f}  |  Variância = {V:.4f}")
+print(f"Q = (O - E)² / V = {O_E:.4f}² / {V:.4f} = {Q:.4f}")
+print(f"gl = 1  |  valor-p = {p:.4e}")
+print("\nO grupo 6-MP teve 9 recaídas onde se esperariam 19,25 sob a hipótese de")
+print("que os dois tratamentos são equivalentes. A diferença é grande demais")
+print("para ser atribuída ao acaso.")
+
+# ===================================================================
+# PARTE 2 - razão de riscos
+# ===================================================================
+print("\n" + "=" * 70)
+O2 = int(np.sum(e[gr == 1])); E2 = d_.sum() - E1.sum()
+print("Razão de riscos (hazard ratio), placebo em relação ao 6-MP")
+hr_oe = (O2/E2) / (d1.sum()/E1.sum())
+print(f"  pela razão O/E:            {O2}/{E2:.4f} dividido por "
+      f"{d1.sum():.0f}/{E1.sum():.4f} = {hr_oe:.4f}")
+lhr = -O_E / V                                   # estimativa de Peto, log(HR)
+ep_lhr = 1/np.sqrt(V)
+print(f"  estimativa de Peto:        exp({lhr:.4f}) = {np.exp(lhr):.4f}")
+print(f"  IC 95%: [{np.exp(lhr-1.96*ep_lhr):.4f}; {np.exp(lhr+1.96*ep_lhr):.4f}]")
+print("  (a ficha da regressão de Cox estima a mesma quantidade por máxima")
+print("   verossimilhança parcial e chega a um valor próximo)")
+print(f"  Interpretação: a cada instante, quem está no placebo tem cerca de")
+print(f"  {np.exp(lhr):.1f} vezes o risco instantâneo de recair de quem está no 6-MP.")
+
+# ===================================================================
+# PARTE 3 - log-rank, Gehan e Peto-Peto nos mesmos dados
+# ===================================================================
+print("\n" + "=" * 70)
+print("A família de testes ponderados: o peso decide onde o teste 'olha'.")
+def gehan(t, e, gr):
+    """Wilcoxon-Gehan: peso igual ao número em risco."""
+    L = tabela_tempos(t, e, gr); x, n_, d_, n1, d1 = L.T
+    E1 = d_*n1/n_
+    V1 = d_*(n1/n_)*(1-n1/n_)*(n_-d_)/np.maximum(n_-1, 1)
+    O_E = np.sum(n_*(d1-E1)); V = np.sum(n_**2*V1)
+    Q = O_E**2/V
+    return O_E, V, Q, stats.chi2.sf(Q, 1)
+
+print(f"\n{'teste':&lt;26}{'peso w(t)':&lt;22}{'Q':&gt;10}{'valor-p':&gt;14}")
+_, _, _, _, oe0, v0, q0, p0 = testes(t, e, gr, 0.0)
+print(f"{'log-rank (Mantel-Cox)':&lt;26}{'1':&lt;22}{q0:&gt;10.4f}{p0:&gt;14.4e}")
+_, _, _, _, oe1, v1, q1, p1 = testes(t, e, gr, 1.0)
+print(f"{'Peto-Peto (G-rho, rho=1)':&lt;26}{'S(t-)':&lt;22}{q1:&gt;10.4f}{p1:&gt;14.4e}")
+oeg, vg, qg, pg = gehan(t, e, gr)
+print(f"{'Wilcoxon-Gehan':&lt;26}{'n em risco':&lt;22}{qg:&gt;10.4f}{pg:&gt;14.4e}")
+_, _, _, _, oe5, v5, q5, p5 = testes(t, e, gr, 0.5)
+print(f"{'G-rho com rho = 0,5':&lt;26}{'raiz de S(t-)':&lt;22}{q5:&gt;10.4f}{p5:&gt;14.4e}")
+print("\nAqui os quatro concordam: a diferença entre os tratamentos é grande e")
+print("persiste em toda a faixa de tempo, de modo que nenhuma escolha de peso")
+print("muda a conclusão. A ficha do Wilcoxon-Gehan mostra o caso em que muda.")
+
+# ===================================================================
+# PARTE 4 - o pressuposto de riscos proporcionais
+# ===================================================================
+print("\n" + "=" * 70)
+print("O log-rank tem poder MÁXIMO quando os riscos são proporcionais, e perde")
+print("poder quando não são. Simulação com 2.000 experimentos por cenário,")
+print("n = 60 por grupo, 20% de censura administrativa.")
+
+def pwexp(rng, n, a, b, c):
+    """Tempos de um risco CONSTANTE POR PARTES: a até c, b depois de c."""
+    E = rng.exponential(1, n)                 # risco acumulado até o evento
+    return np.where(E &lt;= a*c, E/a, c + (E - a*c)/b)
+
+def simula(cenario, rep=2000, n=60, semente=3):
+    rng = np.random.default_rng(semente); cont = np.zeros(3)
+    for _ in range(rep):
+        T1 = rng.exponential(10, n)                       # risco 0,10 sempre
+        if cenario == "nulo":
+            T2 = rng.exponential(10, n)                   # idêntico
+        elif cenario == "prop":
+            T2 = rng.exponential(10/1.8, n)               # risco 0,18 sempre
+        elif cenario == "cedo":
+            T2 = pwexp(rng, n, 0.20, 0.10, 4.0)           # 0,20 até t = 4
+        else:
+            T2 = pwexp(rng, n, 0.10, 0.20, 8.0)           # 0,20 depois de t = 8
+        C = rng.exponential(40, 2*n)
+        TT = np.r_[T1, T2]; X = np.minimum(TT, C); E = (TT &lt;= C).astype(int)
+        G = np.r_[np.zeros(n), np.ones(n)].astype(int)
+        cont[0] += testes(X, E, G, 0.0)[7] &lt; 0.05
+        cont[1] += gehan(X, E, G)[3] &lt; 0.05
+        cont[2] += testes(X, E, G, 1.0)[7] &lt; 0.05
+    return 100*cont/rep
+
+print(f"\n{'cenário':&lt;46}{'log-rank':&gt;11}{'Gehan':&gt;9}{'Peto-Peto':&gt;12}")
+for cen, nome in [("nulo", "H0 verdadeira: risco 0,10 nos dois"),
+                  ("prop", "riscos proporcionais: 0,10 contra 0,18"),
+                  ("cedo", "risco maior SÓ ATÉ t = 4 (0,20 e depois 0,10)"),
+                  ("tardio", "risco maior SÓ APÓS t = 8 (0,10 e depois 0,20)")]:
+    a, b, c = simula(cen)
+    print(f"{nome:&lt;46}{a:&gt;10.2f}%{b:&gt;8.2f}%{c:&gt;11.2f}%")
+print("\nNa primeira linha os três controlam o nível em 5%, como devem. Na")
+print("segunda, com riscos proporcionais, o log-rank tem o maior poder: é para")
+print("esse caso que ele foi construído, e nenhum teste ponderado o supera ali.")
+print("Nas duas últimas a ordem se inverte de forma nítida. Quando a diferença")
+print("está no INÍCIO, Gehan e Peto-Peto chegam a 61% e 60% contra 43% do")
+print("log-rank, porque dão mais peso aos tempos em que há mais gente em risco.")
+print("Quando a diferença está no FIM, o log-rank fica em 22% e os dois ponderados")
+print("caem para 7,5% e 8,4% - quase o nível nominal, ou seja, praticamente cegos")
+print("à diferença, porque os seus pesos já decaíram quando ela aparece. Note")
+print("ainda que o poder é baixo nos três: detectar uma separação tardia exige")
+print("acompanhamento longo. Nenhum dos três é o melhor em toda parte, e por isso a")
+print("escolha do teste deve ser declarada ANTES de ver os dados.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Freireich et al. (1963): tempo até a recaída, em semanas
+  6-MP     n = 21, eventos = 9, censuras = 12
+  placebo  n = 21, eventos = 21, censuras = 0
+
+Tabela do log-rank: a cada tempo de evento, compara-se o observado no
+grupo 6-MP com o esperado sob a hipótese de curvas iguais.
+  tempo  n total  d total   n 6-MP   d 6-MP   E(d 6-MP)     d - E       Var
+      1       42        2       21        0      1.0000   -1.0000    0.4878
+      2       40        2       21        0      1.0500   -1.0500    0.4860
+      3       38        1       21        0      0.5526   -0.5526    0.2472
+      4       37        2       21        0      1.1351   -1.1351    0.4772
+      5       35        2       21        0      1.2000   -1.2000    0.4659
+      6       33        3       21        3      1.9091    1.0909    0.6508
+      7       29        1       17        1      0.5862    0.4138    0.2426
+      8       28        4       16        0      2.2857   -2.2857    0.8707
+     10       23        1       15        1      0.6522    0.3478    0.2268
+     11       21        2       13        0      1.2381   -1.2381    0.4481
+     12       18        2       12        0      1.3333   -1.3333    0.4183
+     13       16        1       12        1      0.7500    0.2500    0.1875
+     15       15        1       11        0      0.7333   -0.7333    0.1956
+     16       14        1       11        1      0.7857    0.2143    0.1684
+     17       13        1       10        0      0.7692   -0.7692    0.1775
+     22        9        2        7        1      1.5556   -0.5556    0.3025
+     23        7        2        6        1      1.7143   -0.7143    0.2041
+   soma                30                 9     19.2505  -10.2505    6.2570
+
+Observado no 6-MP: O1 = 9   |   Esperado: E1 = 19.2505
+O - E = -10.2505  |  Variância = 6.2570
+Q = (O - E)² / V = -10.2505² / 6.2570 = 16.7929
+gl = 1  |  valor-p = 4.1688e-05
+
+O grupo 6-MP teve 9 recaídas onde se esperariam 19,25 sob a hipótese de
+que os dois tratamentos são equivalentes. A diferença é grande demais
+para ser atribuída ao acaso.
+
+======================================================================
+Razão de riscos (hazard ratio), placebo em relação ao 6-MP
+  pela razão O/E:            21/10.7495 dividido por 9/19.2505 = 4.1786
+  estimativa de Peto:        exp(1.6383) = 5.1462
+  IC 95%: [2.3506; 11.2663]
+  (a ficha da regressão de Cox estima a mesma quantidade por máxima
+   verossimilhança parcial e chega a um valor próximo)
+  Interpretação: a cada instante, quem está no placebo tem cerca de
+  5.1 vezes o risco instantâneo de recair de quem está no 6-MP.
+
+======================================================================
+A família de testes ponderados: o peso decide onde o teste 'olha'.
+
+teste                     peso w(t)                      Q       valor-p
+log-rank (Mantel-Cox)     1                        16.7929    4.1688e-05
+Peto-Peto (G-rho, rho=1)  S(t-)                    14.4572    1.4338e-04
+Wilcoxon-Gehan            n em risco               13.4579    2.4398e-04
+G-rho com rho = 0,5       raiz de S(t-)            15.7064    7.3974e-05
+
+Aqui os quatro concordam: a diferença entre os tratamentos é grande e
+persiste em toda a faixa de tempo, de modo que nenhuma escolha de peso
+muda a conclusão. A ficha do Wilcoxon-Gehan mostra o caso em que muda.
+
+======================================================================
+O log-rank tem poder MÁXIMO quando os riscos são proporcionais, e perde
+poder quando não são. Simulação com 2.000 experimentos por cenário,
+n = 60 por grupo, 20% de censura administrativa.
+
+cenário                                          log-rank    Gehan   Peto-Peto
+H0 verdadeira: risco 0,10 nos dois                  5.75%    5.65%       5.45%
+riscos proporcionais: 0,10 contra 0,18             82.65%   71.80%      73.75%
+risco maior SÓ ATÉ t = 4 (0,20 e depois 0,10)      43.35%   60.95%      59.70%
+risco maior SÓ APÓS t = 8 (0,10 e depois 0,20)     22.45%    7.50%       8.40%
+
+Na primeira linha os três controlam o nível em 5%, como devem. Na
+segunda, com riscos proporcionais, o log-rank tem o maior poder: é para
+esse caso que ele foi construído, e nenhum teste ponderado o supera ali.
+Nas duas últimas a ordem se inverte de forma nítida. Quando a diferença
+está no INÍCIO, Gehan e Peto-Peto chegam a 61% e 60% contra 43% do
+log-rank, porque dão mais peso aos tempos em que há mais gente em risco.
+Quando a diferença está no FIM, o log-rank fica em 22% e os dois ponderados
+caem para 7,5% e 8,4% - quase o nível nominal, ou seja, praticamente cegos
+à diferença, porque os seus pesos já decaíram quando ela aparece. Note
+ainda que o poder é baixo nos três: detectar uma separação tardia exige
+acompanhamento longo. Nenhum dos três é o melhor em toda parte, e por isso a
+escolha do teste deve ser declarada ANTES de ver os dados.</pre></div><figure class="fig"><img src="../assets/resultados/logrank.png" alt="Os pesos dos quatro testes, o acúmulo do déficit de recaídas, e o poder em quatro cenários" loading="lazy"/><figcaption><strong>A aplicação e os limites do teste.</strong> À esquerda, o peso que cada teste da família atribui a cada tempo: o log-rank usa peso constante, e os demais decaem à medida que o estudo avança. No centro, a soma acumulada de observado menos esperado no grupo 6-MP: ela desce de forma sustentada até −10,25, o que indica uma vantagem persistente e compatível com riscos proporcionais. À direita, o poder dos três testes em quatro cenários de simulação. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Resultado do teste</caption><thead><tr><th>Elemento</th><th>Valor</th></tr></thead><tbody><tr><td>Eventos: 6-MP / placebo</td><td>9 / 21</td></tr><tr><td>Esperados sob H₀: 6-MP / placebo</td><td>19,2505 / 10,7495</td></tr><tr><td>O − E no grupo 6-MP</td><td>−10,2505</td></tr><tr><td>Variância</td><td>6,2570</td></tr><tr><td><strong>Q de log-rank</strong></td><td><strong>16,7929; gl = 1; p = 4,17 × 10⁻⁵</strong></td></tr><tr><td>Razão de riscos pela razão O/E</td><td>4,179</td></tr><tr><td>Razão de riscos de Peto</td><td>5,146; IC 95% [2,351; 11,266]</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>A família de testes ponderados, nos mesmos dados</caption><thead><tr><th>Teste</th><th>Peso w(t)</th><th>Q</th><th>Valor-p</th></tr></thead><tbody><tr><td><strong>Log-rank (Mantel–Cox)</strong></td><td>1</td><td><strong>16,7929</strong></td><td>4,17 × 10⁻⁵</td></tr><tr><td>G-ρ com ρ = 0,5</td><td>√S(t−)</td><td>15,7064</td><td>7,40 × 10⁻⁵</td></tr><tr><td>Tarone–Ware</td><td>√(n em risco)</td><td>15,1236</td><td>1,01 × 10⁻⁴</td></tr><tr><td>Peto–Peto (G-ρ, ρ = 1)</td><td>S(t−)</td><td>14,4572</td><td>1,43 × 10⁻⁴</td></tr><tr><td><a href="gehan.html">Wilcoxon–Gehan</a></td><td>n em risco</td><td>13,4579</td><td>2,44 × 10⁻⁴</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Poder por cenário (2 000 experimentos, n = 60 por grupo)</caption><thead><tr><th>Cenário</th><th>Log-rank</th><th>Gehan</th><th>Peto–Peto</th></tr></thead><tbody><tr><td>H₀ verdadeira: risco 0,10 nos dois</td><td>5,75%</td><td>5,65%</td><td>5,45%</td></tr><tr><td>Riscos proporcionais: 0,10 contra 0,18</td><td><strong>82,65%</strong></td><td>71,80%</td><td>73,75%</td></tr><tr><td>Risco maior só até t = 4</td><td>43,35%</td><td><strong>60,95%</strong></td><td>59,70%</td></tr><tr><td>Risco maior só após t = 8</td><td><strong>22,45%</strong></td><td>7,50%</td><td>8,40%</td></tr></tbody></table></div><p><strong>Leitura:</strong> o grupo tratado teve 9 recaídas onde se esperariam 19,25 sob a hipótese de equivalência entre os tratamentos. A estatística de 16,79 com 1 grau de liberdade dá \(p=4{,}17\times10^{-5}\): a diferença é grande demais para ser atribuída ao acaso. A razão de riscos de Peto, 5,15 com intervalo [2,35; 11,27], traduz o resultado em uma escala interpretável — a cada instante, um paciente no placebo tem cerca de cinco vezes o risco instantâneo de recair de um paciente tratado.</p><p>O gráfico central é o diagnóstico informal de proporcionalidade. A soma acumulada de \((O-E)\) desce de forma sustentada ao longo de todo o acompanhamento: as poucas subidas, nas semanas em que houve recaída no grupo tratado, são pequenas e nunca trazem o acumulado de volta a zero. A vantagem do 6-MP existe em toda a faixa de tempo, e não apenas em um trecho — que é exatamente a situação em que o log-rank é o teste de maior poder.</p><p><strong>Sobre a família de testes:</strong> os cinco procedimentos diferem apenas pelo peso que atribuem a cada tempo de evento, e aqui todos rejeitam com folga. A ordem das estatísticas — log-rank no topo, Gehan na base — é consistente com uma diferença que persiste: quanto mais peso o teste dá aos tempos tardios, mais evidência ele acumula. Em dados assim, a escolha do peso é irrelevante para a conclusão.</p><p><strong>Sobre o poder:</strong> a simulação é construída com riscos constantes por partes, de modo que se sabe exatamente onde está a diferença. Na primeira linha os três testes controlam o nível em 5%, como devem. Na segunda, com riscos proporcionais, o log-rank tem o maior poder — é a situação para a qual foi construído, e nenhum teste ponderado o supera ali. Nas duas últimas a ordem se inverte de forma nítida: quando a diferença está só no início, Gehan e Peto–Peto chegam a 61% e 60% contra 43% do log-rank; quando está só no fim, o log-rank fica em 22% e os dois ponderados caem para 7,5% e 8,4%, praticamente cegos. Nenhum é o melhor em toda parte, e por isso a escolha do teste pertence ao protocolo, não à análise.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Escolher o teste depois de ver as curvas</td><td>Fixe o teste no protocolo.</td></tr><tr><td>Supor que o log-rank exige riscos proporcionais</td><td>Ele é válido sem eles; o que se perde é poder.</td></tr><tr><td>Aplicar a curvas que se cruzam</td><td>As contribuições se cancelam; use um teste ponderado ou o RMST.</td></tr><tr><td>Reportar só o valor-p</td><td>Acrescente curva, medianas e medida de efeito.</td></tr><tr><td>Interpretar a razão de riscos sem proporcionalidade</td><td>Ela não é constante no tempo; prefira a diferença de RMST.</td></tr><tr><td>Contar pacientes em vez de eventos</td><td>O poder depende dos eventos.</td></tr><tr><td>Definir grupos por algo medido depois do início</td><td>Gera viés de tempo imortal.</td></tr><tr><td>Fazer muitas comparações par a par sem ajuste</td><td>Com k grupos, ajuste para multiplicidade.</td></tr><tr><td>Ignorar estratos relevantes</td><td>Use <code>+ strata()</code> para centros ou blocos.</td></tr><tr><td>Usar com riscos competitivos</td><td>Nesse caso, o teste de Gray sobre a incidência acumulada.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td><a href="gehan.html">Wilcoxon–Gehan</a></td><td>Diferença concentrada no início do acompanhamento.</td></tr><tr><td>Peto–Peto (G-ρ com ρ = 1)</td><td>Idem, com peso menos sensível ao padrão de censura.</td></tr><tr><td>Tarone–Ware</td><td>Meio-termo, quando não se sabe onde a diferença estará.</td></tr><tr><td>G-ρ de Harrington–Fleming</td><td>Quando se quer ajustar o peso a uma hipótese prévia explícita.</td></tr><tr><td>Log-rank estratificado</td><td>Há um confundidor categórico a controlar.</td></tr><tr><td><a href="cox.html">Regressão de Cox</a></td><td>Há covariáveis contínuas a ajustar.</td></tr><tr><td>Diferença de tempo médio restrito (RMST)</td><td>Riscos não proporcionais; medida de efeito interpretável.</td></tr><tr><td>Teste de Gray</td><td>Riscos competitivos.</td></tr><tr><td>Testes de máximo combinado</td><td>Robustez a vários padrões de afastamento.</td></tr></tbody></table></div><ol class="steps"><li>Fixe o teste e o horizonte no protocolo, antes de ver os dados.</li><li>Estime e apresente as curvas de <a href="kaplan.html">Kaplan–Meier</a> com a tabela de número em risco.</li><li>Examine a proporcionalidade pelo gráfico de log(−log S) e por <code>cox.zph()</code>.</li><li>Aplique o teste escolhido e relate Q, graus de liberdade e valor-p.</li><li>Acrescente O e E por grupo, que tornam o resultado legível.</li><li>Reporte uma medida de efeito com intervalo.</li><li>Se as curvas se cruzarem, não force a razão de riscos: use o RMST.</li><li>Com mais de dois grupos, planeje as comparações e o ajuste.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>MANTEL, Nathan. Evaluation of survival data and two new rank order statistics arising in its consideration. <em>Cancer Chemotherapy Reports</em>, v. 50, n. 3, p. 163-170, 1966.</li><li>MANTEL, Nathan; HAENSZEL, William. Statistical aspects of the analysis of data from retrospective studies of disease. <em>Journal of the National Cancer Institute</em>, v. 22, n. 4, p. 719-748, 1959.</li><li>COX, D. R. Regression models and life-tables. <em>Journal of the Royal Statistical Society: Series B</em>, v. 34, n. 2, p. 187-220, 1972.</li><li>PETO, Richard; PETO, Julian. Asymptotically efficient rank invariant test procedures. <em>Journal of the Royal Statistical Society: Series A</em>, v. 135, n. 2, p. 185-207, 1972.</li><li>PETO, Richard et al. Design and analysis of randomized clinical trials requiring prolonged observation of each patient. II. Analysis and examples. <em>British Journal of Cancer</em>, v. 35, n. 1, p. 1-39, 1977.</li><li>HARRINGTON, David P.; FLEMING, Thomas R. A class of rank test procedures for censored survival data. <em>Biometrika</em>, v. 69, n. 3, p. 553-566, 1982.</li><li>TARONE, Robert E.; WARE, James. On distribution-free tests for equality of survival distributions. <em>Biometrika</em>, v. 64, n. 1, p. 156-160, 1977.</li><li>SCHOENFELD, David. The asymptotic properties of nonparametric tests for comparing survival distributions. <em>Biometrika</em>, v. 68, n. 1, p. 316-319, 1981.</li><li>ROYSTON, Patrick; PARMAR, Mahesh K. B. Restricted mean survival time: an alternative to the hazard ratio for the design and analysis of randomized trials with a time-to-event outcome. <em>BMC Medical Research Methodology</em>, v. 13, art. 152, 2013.</li><li>GRAY, Robert J. A class of K-sample tests for comparing the cumulative incidence of a competing risk. <em>The Annals of Statistics</em>, v. 16, n. 3, p. 1141-1154, 1988.</li><li>FREIREICH, Emil J. et al. The effect of 6-mercaptopurine on the duration of steroid-induced remissions in acute leukemia: a model for evaluation of other potentially useful therapy. <em>Blood</em>, v. 21, n. 6, p. 699-716, 1963.</li><li>KLEIN, John P.; MOESCHBERGER, Melvin L. <em>Survival analysis: techniques for censored and truncated data.</em> 2. ed. New York: Springer, 2003.</li><li>COLLETT, David. <em>Modelling survival data in medical research.</em> 3. ed. Boca Raton: CRC Press, 2015.</li><li>COLOSIMO, Enrico A.; GIOLO, Suely R. <em>Análise de sobrevivência aplicada.</em> São Paulo: Blucher, 2006.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>THERNEAU, Terry M.; GRAMBSCH, Patricia M. <em>Modeling survival data: extending the Cox model.</em> New York: Springer, 2000. (Pacote <code>survival</code>.)</li><li>KASSAMBARA, Alboukadel; KOSINSKI, Marcin; BIECEK, Przemyslaw. <em>survminer: drawing survival curves using ggplot2.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=survminer" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=survminer</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Censura não informativa, observações independentes, grupos definidos antes do acompanhamento e eventos em número suficiente; riscos proporcionais não são exigidos para a validade, mas são a condição de poder máximo.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>survival, survminer</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="kaplan.html"><span>← ANTERIOR</span>Estimador Kaplan–Meier</a><a href="gehan.html"><span>PRÓXIMO →</span>Teste generalizado de Wilcoxon–Gehan</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

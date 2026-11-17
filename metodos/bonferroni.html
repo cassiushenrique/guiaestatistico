@@ -4,310 +4,290 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Ajuste de Bonferroni: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Ajuste de Bonferroni | Estatística e Ciência de Dados
-  </title>
+<meta content="Ajuste de Bonferroni: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Ajuste de Bonferroni | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Ajuste de Bonferroni
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 06 · COMPARAÇÕES MÚLTIPLAS
-    </span>
-<h1>
-     Ajuste de Bonferroni
-    </h1>
-<p class="detail-lead">
-     Reduz o risco de conclusões falsas ao realizar várias comparações estatísticas.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/bonferroni.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Reduz o risco de conclusões falsas ao realizar várias comparações estatísticas.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Família de hipóteses definida antes da análise.</li><li>P-valores individuais válidos.</li><li>O controle FWER dispensa independência entre testes.</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<div class="hypothesis-block">
-       \[\left\{\begin{aligned}H_0&amp;:\ \mu_{i}=\mu_{j}\\ H_1&amp;:\ \mu_{i}\neq\mu_{j}\end{aligned}\right.\]
-      </div>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[p_{j,\mathrm{aj}}=\min\{mp_j,1\},\qquad \alpha_j=\frac{0{,}05}{m}\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(i,j\)
-        </dt>
-<dd>
-         índices dos grupos comparados
-        </dd>
-</div>
-<div>
-<dt>
-         \(\bar Y_i\)
-        </dt>
-<dd>
-         média amostral do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_i\)
-        </dt>
-<dd>
-         tamanho do grupo i
-        </dd>
-</div>
-<div>
-<dt>
-         \(\alpha\)
-        </dt>
-<dd>
-         nível de significância por família ou contraste, conforme o procedimento
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       \(p_{\mathrm{aj}}&lt;0{,}05\) indica diferença detectada com controle FWER de 5%; IC simultâneos exigem ajuste coerente.
-      </p>
-<p>
-       Examine as comparações específicas, as diferenças estimadas e o ajuste de multiplicidade. Um teste global significativo não identifica, sozinho, os pares distintos.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto warpbreaks reúne contagens de quebras de fios sob diferentes tensões e tipos de lã. É usado para estudar condições de produção têxtil.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Comparar pares de tensões de fiação para contagem média de quebras (warpbreaks).
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-bonferroni" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-bonferroni"><code># Ajuste de Bonferroni ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Ajuste de Bonferroni</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · COMPARAÇÕES MÚLTIPLAS</span><h1>Ajuste de Bonferroni</h1><p class="detail-lead">Divide o nível de significância pelo número de testes, controlando a taxa de erro do conjunto sem supor nada sobre a dependência entre eles.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/bonferroni.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/bonferroni.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o ajuste</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Hipóteses e estatística de teste</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Um teste a 5% erra uma vez em vinte. Quinze testes a 5% erram com muito mais frequência — e o erro que interessa deixa de ser o de cada teste e passa a ser o do <strong>conjunto</strong>: a chance de que ao menos uma das conclusões esteja errada. O ajuste de Bonferroni é a resposta mais simples possível a esse problema: divida o nível por quantos testes você fez.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Bonferroni" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Divide o nível</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">pelo número de testes</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Protege</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">A taxa de erro do</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">conjunto (FWER)</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Vantagem</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Vale sempre, sem</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">supor nada</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Custo</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">Conservador: perde</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">poder com m grande</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">p.adjust(p, "bonferroni")</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">pairwise.t.test()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Melhor opção</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">Holm: mesma proteção,</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">mais poder</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Bonferroni</text></svg><figcaption>Visão geral do ajuste de Bonferroni. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A regra em uma linha</strong><p>Com \(m\) testes e nível global \(\alpha\), cada teste é avaliado a \(\alpha/m\). Na prática é mais cômodo multiplicar cada valor-p por \(m\) e comparar com \(\alpha\) — é o que <code>p.adjust()</code> faz, truncando em 1.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o ajuste</h2><p>A desigualdade de Boole garante que a probabilidade da união de \(m\) eventos nunca excede a soma de suas probabilidades. Se cada teste rejeita indevidamente com probabilidade \(\alpha/m\), a chance de ao menos um falso positivo é no máximo \(m\times\alpha/m=\alpha\). O resultado vale <strong>qualquer que seja a dependência</strong> entre os testes — e essa generalidade é, ao mesmo tempo, a força e a fraqueza do método.</p><figure class="fig"><img src="../assets/resultados/bonferroni-didatica.png" alt="Crescimento do risco do conjunto e taxas simuladas" loading="lazy"/><figcaption><strong>O problema e a solução.</strong> À esquerda, a chance de ao menos um falso positivo em função do número de testes, supondo independência: com três grupos (3 comparações) já são 14%; com seis grupos (15 comparações), 54%. O losango marca a taxa <em>real</em> medida por simulação nas comparações pareadas de seis grupos — 36,5%, menor que a curva porque as comparações compartilham grupos e não são independentes. À direita, 10.000 experimentos em que todas as médias populacionais são iguais: sem ajuste, 36,5% dos experimentos produzem ao menos uma conclusão falsa; com Bonferroni, 3,8%. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout try"><strong>Por que Bonferroni fica abaixo de 5%</strong><p>A desigualdade de Boole é um <em>limite superior</em>, atingido só quando os eventos são disjuntos. Com testes correlacionados, a soma superestima a união, e sobra erro não gasto: no exemplo, 3,82% em vez dos 5% disponíveis. Essa folga é poder desperdiçado — diferenças reais que deixam de ser detectadas. É o preço de um método que não supõe nada sobre a estrutura dos testes.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td>Cada valor-p individual é válido</td><td>O ajuste corrige a multiplicidade, não um teste mal especificado.</td><td>Verifique os pressupostos de cada teste.</td></tr><tr><td>A família de testes está definida <em>antes</em> de ver os dados</td><td>Ajustar só pelos testes que deram significativos não protege nada.</td><td>Registre o plano de análise.</td></tr><tr><td>Independência entre os testes</td><td><strong>Não é exigida</strong>: a desigualdade de Boole vale sempre.</td><td>—</td></tr><tr><td>Mesma distribuição ou mesmo tipo de teste</td><td><strong>Não é exigido</strong>: a família pode misturar testes diferentes.</td><td>—</td></tr><tr><td>m não ser grande demais</td><td>Com m na casa das centenas, o nível individual fica impraticável.</td><td>Considere controlar a taxa de falsas descobertas (FDR).</td></tr></tbody></table></div><div class="callout "><strong>O que é uma "família"</strong><p>A decisão mais importante não é técnica, é de julgamento: <em>quais</em> testes formam a família. As comparações de um mesmo experimento, sim. Todos os testes de uma tese, provavelmente não. A convenção usual é agrupar os testes que respondem a uma mesma pergunta científica e sobre os quais se fará uma afirmação conjunta.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Hipóteses e estatística de teste</h2><p>Bonferroni não é um teste: é um ajuste aplicado a uma família de testes quaisquer. A hipótese que ele controla é a da família inteira.</p><div class="hypothesis-block">\[\begin{aligned}\text{FWER} &= P\!\bigl(\text{rejeitar ao menos uma }H_{0i} \\ &\quad \text{ verdadeira}\bigr) \\ &\leq \alpha\end{aligned}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{rejeitar }H_{0i}\ \text{se}\ p_i\leq\frac{\alpha}{m}\]\[\Longleftrightarrow\]\[p_i^{\text{aj}}=\min\!\left(1,\ m\,p_i\right)\leq\alpha\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}P\!\left(\bigcup_{i=1}^{m}A_i\right) &\leq \sum_{i=1}^{m}P(A_i) \\ &= m\cdot\frac{\alpha}{m} = \alpha\end{aligned}\]\[\text{(desigualdade de Boole)}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(m\)</dt><dd>número de testes da família</dd></div><div><dt>\(p_i\)</dt><dd>valor-p bruto do i-ésimo teste</dd></div><div><dt>\(p_i^{\text{aj}}\)</dt><dd>valor-p ajustado</dd></div><div><dt>\(A_i\)</dt><dd>evento "o i-ésimo teste rejeita indevidamente"</dd></div><div><dt>\(\alpha\)</dt><dd>taxa de erro do conjunto pretendida</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><p>Com seis rações há \(m=6\times5/2=15\) comparações, e o nível individual passa a \(0{,}05/15=0{,}003333\).</p><div class="table-wrap"><table class="method-table"><caption>Cinco das quinze comparações</caption><thead><tr><th>Comparação</th><th>Diferença (g)</th><th>p bruto</th><th>× 15</th><th>Ajustado</th><th>Decisão</th></tr></thead><tbody><tr><td>casein − soybean</td><td>+77,15</td><td>0,00067</td><td>0,00998</td><td>0,00998</td><td>significativa</td></tr><tr><td>meatmeal − linseed</td><td>+58,16</td><td>0,01348</td><td>0,20218</td><td>0,20218</td><td>não significativa</td></tr><tr><td>linseed − horsebean</td><td>+58,55</td><td>0,01522</td><td>0,22833</td><td>0,22833</td><td>não significativa</td></tr><tr><td>casein − meatmeal</td><td>+46,67</td><td>0,04557</td><td>0,68350</td><td>0,68350</td><td>não significativa</td></tr><tr><td>meatmeal − soybean</td><td>+30,48</td><td>0,17255</td><td>2,58825</td><td>1,00000</td><td>não significativa</td></tr></tbody></table></div><div class="worked"><strong>Leitura do cálculo</strong><p>O valor-p bruto de <em>casein − soybean</em> é 0,00067; multiplicado por 15 dá 0,00998, ainda abaixo de 0,05: a comparação sobrevive ao ajuste.</p><p>O de <em>casein − meatmeal</em> é 0,04557, significativo isoladamente. Multiplicado por 15 vira 0,684, e a conclusão se desfaz. Era exatamente o tipo de resultado que, num conjunto de quinze testes, se espera encontrar por acaso.</p><p>O último exemplo mostra o truncamento: 15 × 0,17255 = 2,588, que não é um valor-p; por isso o ajustado é 1.</p><p>Na escala do teste t com 65 graus de liberdade, o valor crítico bilateral passa de 1,9971 para 3,0476 — uma exigência 53% maior em termos de erros-padrão.</p></div><h3>Holm: a melhoria que não custa nada</h3><p>O procedimento de Holm aplica Bonferroni de forma <em>sequencial</em>. Ordenam-se os valores-p, \(p_{(1)}\leq\cdots\leq p_{(m)}\), e compara-se \(p_{(i)}\) com \(\alpha/(m-i+1)\): o menor enfrenta \(\alpha/m\), o segundo \(\alpha/(m-1)\), e assim por diante, parando na primeira falha. A proteção da taxa de erro do conjunto é exatamente a mesma, e o poder é sempre maior ou igual.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[p_{(i)}^{\text{aj}}=\max_{j\leq i}\ \min\!\left[1,\ (m-j+1)\,p_{(j)}\right]\]</div><p><strong>Não há razão prática para preferir Bonferroni a Holm</strong> quando o objetivo é apenas decidir quais testes rejeitar. Bonferroni continua útil porque é simples de explicar, porque fornece intervalos de confiança simultâneos diretos e porque muita literatura o usa.</p><h3>Propriedades</h3><ul class="checklist"><li>Controla a taxa de erro do conjunto no sentido forte: vale qualquer que seja o subconjunto de hipóteses nulas verdadeiras.</li><li>Não supõe independência nem distribuição comum; aplica-se a famílias heterogêneas de testes.</li><li>É conservador, e tanto mais quanto maiores a dependência e o valor de m.</li><li>Fornece intervalos simultâneos trocando \(t_{\alpha/2}\) por \(t_{\alpha/(2m)}\).</li><li>Holm domina Bonferroni; Šidák é ligeiramente menos conservador, ao custo de supor independência.</li><li>Para m muito grande, controlar a FDR (Benjamini–Hochberg) costuma ser mais sensato que controlar a FWER.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>p ajustado</td><td>Compare diretamente com α.</td><td>Truncado em 1; não é uma probabilidade do teste individual.</td></tr><tr><td>Nível individual α/m</td><td>A exigência imposta a cada teste.</td><td>Caindo muito, o poder desaba.</td></tr><tr><td>IC simultâneos</td><td>Cobertura conjunta de 95%.</td><td>Mais largos que os individuais.</td></tr><tr><td>Número de significativas</td><td>Quantas sobrevivem.</td><td>Compare com o número sem ajuste.</td></tr><tr><td>Holm</td><td>Mesma proteção, mais poder.</td><td>Prefira-o quando só se quer decidir.</td></tr><tr><td>BH (FDR)</td><td>Controla a proporção de falsas descobertas.</td><td>Outro objetivo; não é FWER.</td></tr></tbody></table></div><p>Reporte sempre: qual era a família, quantos testes ela tinha, qual o método de ajuste e os valores-p ajustados — nunca só os brutos.</p></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p><code>p.adjust()</code> e <code>pairwise.t.test()</code> estão no pacote <code>stats</code>, já instalado com o R. <code>p.adjust()</code> aceita um vetor de valores-p de qualquer origem e os métodos <code>"bonferroni"</code>, <code>"holm"</code>, <code>"hochberg"</code>, <code>"hommel"</code>, <code>"BH"</code> e <code>"BY"</code>. Para contrastes definidos pelo usuário, <code>multcomp::glht()</code> com <code>test = adjusted("bonferroni")</code>; <code>emmeans</code> aceita <code>adjust = "bonferroni"</code> em qualquer comparação.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-bonferroni-min" type="button">Copiar código</button></div><pre id="code-bonferroni-min"><code>p.adjust(p, method = "bonferroni")
+with(chickwts, pairwise.t.test(weight, feed, p.adjust.method = "bonferroni"))
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p><code>chickwts</code> registra o peso, aos seis dias, de 71 pintinhos alimentados com seis rações diferentes. Os grupos têm tamanhos ligeiramente desiguais (de 10 a 14 aves), os resíduos passam no teste de normalidade (p = 0,627) e as variâncias são homogêneas (Brown–Forsythe p = 0,590). A ANOVA devolve F(5; 65) = 15,365 com p = 5,9 × 10⁻¹⁰: há diferença, e a pergunta passa a ser <em>onde</em>. Com seis rações são quinze comparações — e é esse número que cria o problema de multiplicidade. As fichas de <a href="bonferroni.html">Bonferroni</a>, <a href="sidak.html">Šidák</a>, <a href="tukey.html">Tukey</a> e <a href="games-howell.html">Games–Howell</a> usam este mesmo conjunto, para que os resultados possam ser comparados diretamente.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-bonferroni" type="button">Copiar código</button></div><pre id="code-bonferroni"><code># Ajuste de Bonferroni: exemplo completo ----
+# Pacotes: stats (base). Opcionais: multcomp, emmeans, rstatix
+# install.packages(c("multcomp", "emmeans"))
 
-# Ajuste e resultados ----
-print(pairwise.t.test(warpbreaks$breaks, warpbreaks$tension,
-                      pool.sd = FALSE, p.adjust.method = "bonferroni"))
+# 1. Dados: chickwts, peso de pintinhos por tipo de ração
+data(chickwts)
+table(chickwts$feed)
+modelo &lt;- aov(weight ~ feed, data = chickwts)
+summary(modelo)
 
-# Visualização e diagnóstico ----
-boxplot(breaks ~ tension, data = warpbreaks, main = "Quebras de fios por tensão", xlab = "Tensão", ylab = "Quebras")
-stripchart(breaks ~ tension, data = warpbreaks, vertical = TRUE, method = "jitter", pch = 19, xlab = "Tensão", ylab = "Quebras")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
+# 2. A conta que justifica o ajuste
+k &lt;- nlevels(chickwts$feed); m &lt;- k * (k - 1) / 2
+m                                   # 15 comparações
+1 - 0.95^m                          # risco do conjunto SE os testes fossem independentes
 
+# 3. A forma mais direta: p.adjust() sobre valores-p brutos
+with(chickwts, pairwise.t.test(weight, feed, p.adjust.method = "none"))
+with(chickwts, pairwise.t.test(weight, feed, p.adjust.method = "bonferroni"))
+with(chickwts, pairwise.t.test(weight, feed, p.adjust.method = "holm"))
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="mancova.html">
-<span>
-      ← ANTERIOR
-     </span>
-     MANCOVA
-    </a>
-<a href="tukey.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Tukey HSD / Tukey–Kramer
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# 4. p.adjust() funciona com QUALQUER vetor de valores-p
+p &lt;- c(0.001, 0.013, 0.021, 0.049, 0.310)
+p.adjust(p, method = "bonferroni")
+p.adjust(p, method = "holm")        # mais poderoso, mesma proteção
+data.frame(bruto = p,
+           bonferroni = p.adjust(p, "bonferroni"),
+           holm = p.adjust(p, "holm"),
+           BH_fdr = p.adjust(p, "BH"))
+
+# 5. Intervalos de confiança simultâneos de Bonferroni
+alfa &lt;- 0.05
+gl &lt;- df.residual(modelo); QM &lt;- sum(residuals(modelo)^2) / gl
+tcrit &lt;- qt(1 - alfa / (2 * m), gl)
+medias &lt;- tapply(chickwts$weight, chickwts$feed, mean)
+ns &lt;- table(chickwts$feed)
+pares &lt;- combn(levels(chickwts$feed), 2)
+ic &lt;- t(apply(pares, 2, function(p_) {
+  d &lt;- medias[p_[2]] - medias[p_[1]]
+  ep &lt;- sqrt(QM * (1/ns[p_[1]] + 1/ns[p_[2]]))
+  c(diferenca = d, inferior = d - tcrit * ep, superior = d + tcrit * ep)
+}))
+rownames(ic) &lt;- apply(pares, 2, paste, collapse = " - ")
+round(ic, 2)
+
+# 6. Bonferroni não é só para comparações pareadas: contrastes planejados
+library(multcomp)
+levels(chickwts$feed)   # a ordem das colunas: casein horsebean linseed meatmeal soybean sunflower
+contrastes &lt;- rbind(
+  "vegetais - animais"     = c(-1/2,  1/3,  1/3, -1/2,  1/3,  0  ),
+  "sunflower - as demais"  = c(-1/5, -1/5, -1/5, -1/5, -1/5,  1  ),
+  "horsebean - as demais"  = c(-1/5,  1,   -1/5, -1/5, -1/5, -1/5))
+rowSums(contrastes)      # cada linha deve somar zero
+summary(glht(modelo, linfct = mcp(feed = contrastes)), test = adjusted("bonferroni"))
+confint(glht(modelo, linfct = mcp(feed = contrastes)))
+
+# 7. Comparação com Tukey, construído para este conjunto de comparações
+TukeyHSD(modelo)
+
+# 8. Gráfico
+par(mar = c(5, 10, 4, 2))
+plot(TukeyHSD(modelo), las = 1, cex.axis = 0.7)
+par(mar = c(5, 4, 4, 2))
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-bonferroni" type="button">Copiar código</button></div><pre id="code-py-bonferroni"><code># Bibliotecas: numpy, scipy e matplotlib (já instaladas no Google Colab)
+import numpy as np
+from scipy import stats
+import itertools
+
+# Dados: chickwts (R). Peso (g) de 71 pintinhos aos 6 dias, segundo seis rações.
+# Fonte original: Anonymous (1948), Biometrika 35, p. 214; ver McNeil (1977).
+dados = {
+ "horsebean": [179,160,136,227,217,168,108,124,143,140],
+ "linseed":   [309,229,181,141,260,203,148,169,213,257,244,271],
+ "soybean":   [243,230,248,327,329,250,193,271,316,267,199,171,158,248],
+ "sunflower": [423,340,392,339,341,226,320,295,334,322,297,318],
+ "meatmeal":  [325,257,303,315,380,153,263,242,206,344,258],
+ "casein":    [368,390,379,260,404,318,352,359,216,222,283,332]}
+nomes = list(dados)
+gs = [np.array(v, float) for v in dados.values()]
+k = len(gs)
+ns = np.array([len(g) for g in gs], float)
+N = int(ns.sum())
+medias = np.array([g.mean() for g in gs])
+
+print("ração        n    média     DP")
+for i, nm in enumerate(nomes):
+    print(f"{nm:&lt;12}{int(ns[i]):2d}  {medias[i]:7.3f}  {gs[i].std(ddof=1):6.2f}")
+F, pF = stats.f_oneway(*gs)
+QM = np.sum((ns - 1) * np.array([g.var(ddof=1) for g in gs])) / (N - k)
+gl = N - k
+print(f"\nANOVA: F({k-1}; {gl}) = {F:.4f}, p-valor = {pF:.4e}")
+print(f"QM do resíduo = {QM:.3f} | DP residual = {np.sqrt(QM):.3f} g")
+print(f"Shapiro-Wilk dos resíduos: p = {stats.shapiro(np.concatenate([g-g.mean() for g in gs]))[1]:.4f}")
+print(f"Brown-Forsythe: p = {stats.levene(*gs, center='median')[1]:.4f}")
+
+# 1. O problema que o ajuste resolve
+m = k * (k - 1) // 2
+print(f"\nCom {k} grupos há m = {m} comparações duas a duas.")
+print("Se cada uma fosse testada a 5%, a chance de ao menos um falso positivo seria")
+print(f"  1 - 0,95^{m} = {1 - 0.95**m:.4f}, ou seja {100*(1-0.95**m):.1f}%, e não 5%.")
+print("\nComo essa taxa cresce com o número de comparações:")
+print(" k grupos   comparações   1 - 0,95^m")
+for kk in (2, 3, 4, 5, 6, 8, 10, 20):
+    mm = kk*(kk-1)//2
+    print(f"   {kk:3d}        {mm:4d}          {1-0.95**mm:.4f}")
+
+# 2. Simulação: a taxa de erro do conjunto, com e sem ajuste
+print("\nSimulação: 10.000 experimentos com SEIS grupos de médias IGUAIS (n = 12 cada).")
+rng = np.random.default_rng(2026)
+M = 10000
+falso_sem = falso_bonf = falso_holm = 0
+pares = list(itertools.combinations(range(6), 2))
+for _ in range(M):
+    g6 = [rng.normal(0, 1, 12) for _ in range(6)]
+    pv = np.array([stats.ttest_ind(g6[a], g6[b]).pvalue for a, b in pares])
+    if (pv &lt; 0.05).any(): falso_sem += 1
+    if (np.minimum(1, len(pv)*pv) &lt; 0.05).any(): falso_bonf += 1
+    ordem = np.argsort(pv); holm = np.empty(len(pv)); ac = 0.0
+    for pos, idx in enumerate(ordem):
+        ac = max(ac, (len(pv) - pos) * pv[idx]); holm[idx] = min(1.0, ac)
+    if (holm &lt; 0.05).any(): falso_holm += 1
+print(f"  sem ajuste:  {100*falso_sem/M:.2f}% dos experimentos tiveram ao menos um falso positivo")
+print(f"  Bonferroni:  {100*falso_bonf/M:.2f}%")
+print(f"  Holm:        {100*falso_holm/M:.2f}%")
+print("\n  O alvo é 5%. Sem ajuste, 36,5% dos experimentos produzem ao menos um falso")
+print("  positivo - bem acima de 5%, mas ABAIXO dos 53,7% da conta anterior. A conta")
+print("  1 - 0,95^15 supõe testes independentes, e as 15 comparações não são: cada")
+print("  grupo entra em cinco delas. Essa dependência é o que torna o Bonferroni")
+print("  conservador aqui: ele fica em 3,82%, gastando menos que os 5% disponíveis.")
+
+# 3. As 15 comparações dos dados reais
+print(f"\nAs {m} comparações (teste t com variância agrupada, {gl} gl)")
+brutos = []; difs = []; rotulos = []
+for a, b in itertools.combinations(range(k), 2):
+    dif = medias[b] - medias[a]
+    ep = np.sqrt(QM * (1/ns[a] + 1/ns[b]))
+    t = dif / ep
+    brutos.append(2 * stats.t.sf(abs(t), gl)); difs.append(dif); rotulos.append(f"{nomes[b]} - {nomes[a]}")
+brutos = np.array(brutos); difs = np.array(difs)
+bonf = np.minimum(1, m * brutos)
+ordem = np.argsort(brutos); holm = np.empty(m); ac = 0.0
+for pos, idx in enumerate(ordem):
+    ac = max(ac, (m - pos) * brutos[idx]); holm[idx] = min(1.0, ac)
+tuk = np.array([stats.studentized_range.sf(abs(d)/np.sqrt(QM/2*(1/ns[a]+1/ns[b])), k, gl)
+                for d, (a, b) in zip(difs, itertools.combinations(range(k), 2))])
+print(f"{'comparação':&lt;26}{'dif.':&gt;9}{'p bruto':&gt;11}{'Bonferroni':&gt;12}{'Holm':&gt;11}{'Tukey':&gt;11}")
+for i in np.argsort(brutos):
+    marca = lambda v: "*" if v &lt; 0.05 else " "
+    print(f"{rotulos[i]:&lt;26}{difs[i]:9.2f}{brutos[i]:11.5f}{bonf[i]:11.5f}{marca(bonf[i])}"
+          f"{holm[i]:10.5f}{marca(holm[i])}{tuk[i]:10.5f}{marca(tuk[i])}")
+print(f"\nSignificativas: sem ajuste {np.sum(brutos&lt;0.05)} | Bonferroni {np.sum(bonf&lt;0.05)}"
+      f" | Holm {np.sum(holm&lt;0.05)} | Tukey {np.sum(tuk&lt;0.05)}")
+
+# 4. O nível individual e o intervalo de confiança correspondentes
+alfa = 0.05
+print(f"\nNível individual sob Bonferroni: {alfa}/{m} = {alfa/m:.6f}")
+tcrit = stats.t.ppf(1 - alfa/(2*m), gl)
+print(f"t crítico bilateral correspondente: {tcrit:.4f} (contra {stats.t.ppf(1-alfa/2, gl):.4f} sem ajuste)")
+print(f"q crítico de Tukey: {stats.studentized_range.ppf(1-alfa, k, gl)/np.sqrt(2):.4f} na mesma escala")
+print("\nIntervalos de confiança simultâneos de 95% (Bonferroni)")
+for i in np.argsort(-np.abs(difs))[:5]:
+    a, b = list(itertools.combinations(range(k), 2))[i]
+    ep = np.sqrt(QM*(1/ns[a] + 1/ns[b]))
+    print(f"  {rotulos[i]:&lt;26}{difs[i]:8.2f}  IC = [{difs[i]-tcrit*ep:8.2f}; {difs[i]+tcrit*ep:8.2f}]")
+
+# 5. Bonferroni fora das comparações pareadas: três contrastes planejados
+print("\nBonferroni não é só para comparações pareadas. Três contrastes planejados:")
+contr = {
+ "vegetais (horsebean, linseed, soybean) vs animais (meatmeal, casein)":
+     np.array([1/3, 1/3, 1/3, 0, -1/2, -1/2]),
+ "sunflower vs a média de todas as outras":
+     np.array([-1/5, -1/5, -1/5, 1, -1/5, -1/5]),
+ "horsebean vs a média de todas as outras":
+     np.array([1, -1/5, -1/5, -1/5, -1/5, -1/5])}
+pc = []
+for nome, c in contr.items():
+    L = float(c @ medias); ep = float(np.sqrt(QM * np.sum(c**2 / ns)))
+    t = L / ep; pv = 2 * stats.t.sf(abs(t), gl); pc.append(pv)
+    print(f"  {nome}\n    L = {L:+8.3f} g | EP = {ep:6.3f} | t({gl}) = {t:+7.3f} | p = {pv:.3e} | "
+          f"Bonferroni (3 testes) = {min(1, 3*pv):.3e}")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">ração        n    média     DP
+horsebean   10  160.200   38.63
+linseed     12  218.750   52.24
+soybean     14  246.429   54.13
+sunflower   12  328.917   48.84
+meatmeal    11  276.909   64.90
+casein      12  323.583   64.43
+
+ANOVA: F(5; 65) = 15.3648, p-valor = 5.9364e-10
+QM do resíduo = 3008.554 | DP residual = 54.850 g
+Shapiro-Wilk dos resíduos: p = 0.6272
+Brown-Forsythe: p = 0.5896
+
+Com 6 grupos há m = 15 comparações duas a duas.
+Se cada uma fosse testada a 5%, a chance de ao menos um falso positivo seria
+  1 - 0,95^15 = 0.5367, ou seja 53.7%, e não 5%.
+
+Como essa taxa cresce com o número de comparações:
+ k grupos   comparações   1 - 0,95^m
+     2           1          0.0500
+     3           3          0.1426
+     4           6          0.2649
+     5          10          0.4013
+     6          15          0.5367
+     8          28          0.7622
+    10          45          0.9006
+    20         190          0.9999
+
+Simulação: 10.000 experimentos com SEIS grupos de médias IGUAIS (n = 12 cada).
+  sem ajuste:  36.54% dos experimentos tiveram ao menos um falso positivo
+  Bonferroni:  3.82%
+  Holm:        3.82%
+
+  O alvo é 5%. Sem ajuste, 36,5% dos experimentos produzem ao menos um falso
+  positivo - bem acima de 5%, mas ABAIXO dos 53,7% da conta anterior. A conta
+  1 - 0,95^15 supõe testes independentes, e as 15 comparações não são: cada
+  grupo entra em cinco delas. Essa dependência é o que torna o Bonferroni
+  conservador aqui: ele fica em 3,82%, gastando menos que os 5% disponíveis.
+
+As 15 comparações (teste t com variância agrupada, 65 gl)
+comparação                     dif.    p bruto  Bonferroni       Holm      Tukey
+sunflower - horsebean        168.72    0.00000    0.00000*   0.00000*   0.00000*
+casein - horsebean           163.38    0.00000    0.00000*   0.00000*   0.00000*
+sunflower - linseed          110.17    0.00001    0.00009*   0.00008*   0.00009*
+meatmeal - horsebean         116.71    0.00001    0.00011*   0.00009*   0.00011*
+casein - linseed             104.83    0.00001    0.00022*   0.00016*   0.00021*
+sunflower - soybean           82.49    0.00030    0.00447*   0.00298*   0.00388*
+soybean - horsebean           86.23    0.00032    0.00487*   0.00298*   0.00422*
+casein - soybean              77.15    0.00067    0.00998*   0.00532*   0.00837*
+meatmeal - linseed            58.16    0.01348    0.20218    0.09435    0.12770 
+linseed - horsebean           58.55    0.01522    0.22833    0.09435    0.14133 
+meatmeal - sunflower         -52.01    0.02644    0.39653    0.13218    0.22070 
+casein - meatmeal             46.67    0.04557    0.68350    0.18227    0.33246 
+meatmeal - soybean            30.48    0.17255    1.00000    0.51766    0.73914 
+soybean - linseed             27.68    0.20414    1.00000    0.51766    0.79329 
+casein - sunflower            -5.33    0.81249    1.00000    0.81249    0.99989 
+
+Significativas: sem ajuste 12 | Bonferroni 8 | Holm 8 | Tukey 8
+
+Nível individual sob Bonferroni: 0.05/15 = 0.003333
+t crítico bilateral correspondente: 3.0476 (contra 1.9971 sem ajuste)
+q crítico de Tukey: 2.9364 na mesma escala
+
+Intervalos de confiança simultâneos de 95% (Bonferroni)
+  sunflower - horsebean       168.72  IC = [   97.14;   240.29]
+  casein - horsebean          163.38  IC = [   91.81;   234.96]
+  meatmeal - horsebean        116.71  IC = [   43.67;   189.75]
+  sunflower - linseed         110.17  IC = [   41.92;   178.41]
+  casein - linseed            104.83  IC = [   36.59;   173.08]
+
+Bonferroni não é só para comparações pareadas. Três contrastes planejados:
+  vegetais (horsebean, linseed, soybean) vs animais (meatmeal, casein)
+    L =  -91.787 g | EP = 14.704 | t(65) =  -6.242 | p = 3.695e-08 | Bonferroni (3 testes) = 1.108e-07
+  sunflower vs a média de todas as outras
+    L =  +83.742 g | EP = 17.388 | t(65) =  +4.816 | p = 9.119e-06 | Bonferroni (3 testes) = 2.736e-05
+  horsebean vs a média de todas as outras
+    L = -118.718 g | EP = 18.721 | t(65) =  -6.341 | p = 2.484e-08 | Bonferroni (3 testes) = 7.451e-08</pre></div><figure class="fig"><img src="../assets/resultados/bonferroni.png" alt="Valores-p brutos e ajustados e os intervalos de confiança" loading="lazy"/><figcaption><strong>O efeito do ajuste.</strong> À esquerda, cada valor-p bruto (círculo) ligado ao seu ajustado (losango), em escala logarítmica: o ajuste desloca todos os pontos por um fator constante de 15. Quatro comparações cruzam a linha de 0,05 e perdem a significância. À direita, os intervalos de confiança: a faixa larga e clara é o intervalo individual de 95%, e a linha fina sobre ela é o simultâneo de Bonferroni. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>As quinze comparações</caption><thead><tr><th>Comparação</th><th>Dif. (g)</th><th>p bruto</th><th>Bonferroni</th><th>Holm</th><th>Tukey</th></tr></thead><tbody><tr><td>sunflower − horsebean</td><td>+168,72</td><td>&lt; 0,00001</td><td>&lt; 0,00001 *</td><td>&lt; 0,00001 *</td><td>&lt; 0,00001 *</td></tr><tr><td>casein − horsebean</td><td>+163,38</td><td>&lt; 0,00001</td><td>&lt; 0,00001 *</td><td>&lt; 0,00001 *</td><td>&lt; 0,00001 *</td></tr><tr><td>sunflower − linseed</td><td>+110,17</td><td>0,00001</td><td>0,00009 *</td><td>0,00008 *</td><td>0,00009 *</td></tr><tr><td>meatmeal − horsebean</td><td>+116,71</td><td>0,00001</td><td>0,00011 *</td><td>0,00009 *</td><td>0,00011 *</td></tr><tr><td>casein − linseed</td><td>+104,83</td><td>0,00001</td><td>0,00022 *</td><td>0,00016 *</td><td>0,00021 *</td></tr><tr><td>sunflower − soybean</td><td>+82,49</td><td>0,00030</td><td>0,00447 *</td><td>0,00298 *</td><td>0,00388 *</td></tr><tr><td>soybean − horsebean</td><td>+86,23</td><td>0,00032</td><td>0,00487 *</td><td>0,00298 *</td><td>0,00422 *</td></tr><tr><td>casein − soybean</td><td>+77,15</td><td>0,00067</td><td>0,00998 *</td><td>0,00532 *</td><td>0,00837 *</td></tr><tr><td>meatmeal − linseed</td><td>+58,16</td><td>0,01348</td><td>0,20218</td><td>0,09435</td><td>0,12770</td></tr><tr><td>linseed − horsebean</td><td>+58,55</td><td>0,01522</td><td>0,22833</td><td>0,09435</td><td>0,14133</td></tr><tr><td>meatmeal − sunflower</td><td>−52,01</td><td>0,02644</td><td>0,39653</td><td>0,13218</td><td>0,22070</td></tr><tr><td>casein − meatmeal</td><td>+46,67</td><td>0,04557</td><td>0,68350</td><td>0,18227</td><td>0,33246</td></tr><tr><td>meatmeal − soybean</td><td>+30,48</td><td>0,17255</td><td>1,00000</td><td>0,51766</td><td>0,73914</td></tr><tr><td>soybean − linseed</td><td>+27,68</td><td>0,20414</td><td>1,00000</td><td>0,51766</td><td>0,79329</td></tr><tr><td>casein − sunflower</td><td>−5,33</td><td>0,81249</td><td>1,00000</td><td>0,81249</td><td>0,99989</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Resumo</caption><thead><tr><th>Elemento</th><th>Valor</th><th>Leitura</th></tr></thead><tbody><tr><td>Significativas sem ajuste</td><td>12 de 15</td><td>Inflacionado pela multiplicidade.</td></tr><tr><td>Significativas com Bonferroni</td><td>8</td><td>As mesmas 8 do Tukey e do Holm.</td></tr><tr><td>Nível individual</td><td>0,05 / 15 = 0,003333</td><td>A exigência por teste.</td></tr><tr><td>t crítico</td><td>3,0476 (contra 1,9971)</td><td>53% mais exigente.</td></tr><tr><td>Simulação sem ajuste</td><td>36,54% de falsos positivos no conjunto</td><td>O problema.</td></tr><tr><td>Simulação com Bonferroni</td><td>3,82%</td><td>Abaixo de 5%: conservador.</td></tr><tr><td>Simulação com Holm</td><td>3,82%</td><td>Mesma proteção.</td></tr><tr><td>IC de sunflower − horsebean</td><td>[97,14; 240,29] g</td><td>Simultâneo; o individual seria [121,81; 215,62].</td></tr></tbody></table></div><p><strong>Leitura:</strong> oito das quinze comparações sobrevivem ao ajuste, e as quatro que se perdem são justamente as que tinham valores-p entre 0,013 e 0,046 — a faixa em que, com quinze testes, resultados assim são esperados por acaso. As rações de sementes de girassol e de caseína produziram os maiores pesos; a de feijão-de-cavalo, o menor, e difere de todas as outras exceto da linhaça.</p><p>Vale observar que, neste exemplo, Bonferroni, Holm e Tukey chegam exatamente às mesmas oito conclusões, embora com valores-p diferentes. Isso é comum quando os efeitos são claros. A diferença entre os métodos aparece nas comparações de fronteira: <em>meatmeal − linseed</em>, por exemplo, tem p ajustado de 0,202 por Bonferroni, 0,094 por Holm e 0,128 por Tukey. Nenhum chega a 0,05 — mas, com uma amostra um pouco maior, o método escolhido decidiria o resultado.</p><h3>Onde Bonferroni é insubstituível</h3><p>Tukey só serve para comparações pareadas entre médias de um mesmo modelo. Bonferroni serve para qualquer família, inclusive uma que misture contrastes de naturezas diferentes. Nestes dados, três contrastes planejados sobre a origem da ração:</p><div class="table-wrap"><table class="method-table"><caption>Três contrastes planejados</caption><thead><tr><th>Contraste</th><th>Estimativa (g)</th><th>EP</th><th>t(65)</th><th>p bruto</th><th>p ajustado (3 testes)</th></tr></thead><tbody><tr><td>vegetais (horsebean, linseed, soybean) − animais (meatmeal, casein)</td><td>−91,79</td><td>14,70</td><td>−6,242</td><td>3,7 × 10⁻⁸</td><td>1,1 × 10⁻⁷</td></tr><tr><td>sunflower − média das demais</td><td>+83,74</td><td>17,39</td><td>+4,816</td><td>9,1 × 10⁻⁶</td><td>2,7 × 10⁻⁵</td></tr><tr><td>horsebean − média das demais</td><td>−118,72</td><td>18,72</td><td>−6,341</td><td>2,5 × 10⁻⁸</td><td>7,5 × 10⁻⁸</td></tr></tbody></table></div><p>Aqui a família tem três elementos, não quinze, e o ajuste é por 3. As rações de origem animal superam as vegetais em 91,8 g em média, e o girassol — vegetal — é a exceção que puxa o grupo para cima. Note que a família encolheu porque as perguntas foram definidas <em>antes</em> de olhar os dados: é o principal benefício prático de planejar os contrastes.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Ajustar só pelos testes que deram significativos</td><td>A família é definida antes, não depois.</td></tr><tr><td>Reportar só os valores-p brutos</td><td>Informe sempre qual ajuste foi usado e por quantos testes.</td></tr><tr><td>Usar Bonferroni quando Holm serviria</td><td>Holm dá a mesma proteção com mais poder.</td></tr><tr><td>Aplicar a famílias enormes sem pensar</td><td>Com m na casa dos milhares, considere FDR.</td></tr><tr><td>Tratar o p ajustado como probabilidade do teste individual</td><td>Ele é uma ferramenta de decisão sobre a família.</td></tr><tr><td>Dividir α e depois comparar o p bruto com α</td><td>Ou divide o nível, ou multiplica o p — nunca os dois.</td></tr><tr><td>Usar Bonferroni para todas as comparações pareadas</td><td>Tukey é mais poderoso nesse caso específico.</td></tr><tr><td>Esquecer que o ajuste não corrige um teste inválido</td><td>Ele só trata a multiplicidade.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Holm</td><td>Praticamente sempre que o objetivo é decidir; domina Bonferroni.</td></tr><tr><td><a href="sidak.html">Šidák</a></td><td>Testes aproximadamente independentes; ganho pequeno.</td></tr><tr><td><a href="tukey.html">Tukey–Kramer</a></td><td>Todas as comparações pareadas entre médias.</td></tr><tr><td>Dunnett</td><td>Todos os tratamentos contra um controle.</td></tr><tr><td><a href="games-howell.html">Games–Howell</a></td><td>Comparações pareadas com variâncias heterogêneas.</td></tr><tr><td>Scheffé</td><td>Contrastes decididos depois de ver os dados.</td></tr><tr><td>Benjamini–Hochberg (FDR)</td><td>Muitos testes exploratórios; aceita-se uma proporção de falsas descobertas.</td></tr><tr><td>Hochberg e Hommel</td><td>Testes com dependência positiva; mais poderosos que Holm.</td></tr></tbody></table></div><ol class="steps"><li>Defina a família de testes antes de ver os dados.</li><li>Conte quantos testes ela tem.</li><li>Pergunte se o objetivo é controlar a FWER ou a FDR.</li><li>Se for FWER e as comparações forem pareadas entre médias, prefira Tukey.</li><li>Caso contrário, use Holm; use Bonferroni quando precisar de intervalos simultâneos simples.</li><li>Reporte família, m, método e valores-p ajustados.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>BONFERRONI, Carlo E. Teoria statistica delle classi e calcolo delle probabilità. <em>Pubblicazioni del R Istituto Superiore di Scienze Economiche e Commerciali di Firenze</em>, v. 8, p. 3-62, 1936.</li><li>DUNN, Olive Jean. Multiple comparisons among means. <em>Journal of the American Statistical Association</em>, v. 56, n. 293, p. 52-64, 1961.</li><li>HOLM, Sture. A simple sequentially rejective multiple test procedure. <em>Scandinavian Journal of Statistics</em>, v. 6, n. 2, p. 65-70, 1979.</li><li>BENJAMINI, Yoav; HOCHBERG, Yosef. Controlling the false discovery rate: a practical and powerful approach to multiple testing. <em>Journal of the Royal Statistical Society, Series B</em>, v. 57, n. 1, p. 289-300, 1995.</li><li>PERNEGER, Thomas V. What is wrong with Bonferroni adjustments. <em>BMJ</em>, v. 316, p. 1236-1238, 1998.</li><li>RODRÍGUEZ DEL ÁGUILA, M. M.; GONZÁLEZ-RAMÍREZ, A. R. Sample size calculation. <em>Allergologia et Immunopathologia</em>, v. 42, n. 5, p. 485-492, 2014.</li><li>HOCHBERG, Yosef; TAMHANE, Ajit C. <em>Multiple comparison procedures.</em> New York: Wiley, 1987.</li><li>BRETZ, Frank; HOTHORN, Torsten; WESTFALL, Peter. <em>Multiple comparisons using R.</em> Boca Raton: Chapman and Hall/CRC, 2010.</li><li>MILLER JR., Rupert G. <em>Simultaneous statistical inference.</em> 2. ed. New York: Springer, 1981.</li><li>ANÓNIMO. Biometrika table. <em>Biometrika</em>, v. 35, p. 214, 1948; ver McNEIL, Donald R. <em>Interactive data analysis.</em> New York: Wiley, 1977. (Fonte dos dados <code>chickwts</code>.)</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>. (Funções <code>p.adjust</code> e <code>pairwise.t.test</code>, pacote <code>stats</code>.)</li><li>HOTHORN, Torsten; BRETZ, Frank; WESTFALL, Peter. Simultaneous inference in general parametric models. <em>Biometrical Journal</em>, v. 50, n. 3, p. 346-363, 2008. (Pacote <code>multcomp</code>.)</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Cada teste individual deve ser válido e a família de testes deve estar definida antes da análise; não exige independência.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>multcomp, emmeans</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="mancova.html"><span>← ANTERIOR</span>MANCOVA</a><a href="tukey.html"><span>PRÓXIMO →</span>Tukey HSD / Tukey–Kramer</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>

@@ -4,320 +4,410 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="#12372A" name="theme-color"/>
-<meta content="Estimador Kaplan–Meier: conceitos, pressupostos, hipóteses, resultados e exemplo prático em R." name="description"/>
-<title>
-   Estimador Kaplan–Meier | Estatística e Ciência de Dados
-  </title>
+<meta content="Estimador Kaplan–Meier: conceito, pressupostos, hipóteses, estatística de teste com exemplo numérico, valor-p, interpretação, execução no R e em Python, erros comuns e alternativas." name="description"/>
+<title>Estimador Kaplan–Meier | Estatística e Ciência de Dados</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="../assets/style.css" rel="stylesheet"/>
-<script>
-   window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};
-  </script>
-<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']],processEscapes:true},svg:{fontCache:'global'},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']}};</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-<header class="topbar">
-<a aria-label="Página inicial" class="brand" href="../index.html#inicio">
-<span class="brand-mark">
-     Σ
-    </span>
-<span>
-<strong>
-      Estatística &amp; Ciência de Dados
-     </strong>
-<small>
-      Modelos, inferência e aplicações em R · UFLA
-     </small>
-</span>
-</a>
-<button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">
-    ☰
-   </button>
-<nav aria-label="Navegação principal" class="nav">
-<a href="../index.html#catalogo">
-     Modelos
-    </a><a href="../glossario.html">Glossário</a>
-<a href="../index.html#catalogo">
-     Catálogo
-    </a>
-<a href="../index.html#referencias">
-     Referências
-    </a>
-<a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-     Professor ↗
-    </a>
-</nav>
-</header>
+<header class="topbar"><a aria-label="Página inicial" class="brand" href="../index.html#inicio"><span class="brand-mark">Σ</span><span><strong>Estatística &amp; Ciência de Dados</strong> <small>Modelos, inferência e aplicações em R · UFLA</small></span></a><button aria-expanded="false" aria-label="Abrir menu" class="menu-btn" type="button">☰</button>
+<nav aria-label="Navegação principal" class="nav"><a href="../index.html#catalogo">Modelos</a><a href="../glossario.html">Glossário</a><a href="../index.html#referencias">Referências</a><a href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">Professor ↗</a></nav></header>
 <main class="detail-main">
-<div class="breadcrumbs">
-<a href="../index.html#catalogo">
-     Catálogo de modelos
-    </a>
-<span>
-     ›
-    </span>
-<span>
-     Estatística clássica
-    </span>
-<span>
-     ›
-    </span>
-<span>
-     Estimador Kaplan–Meier
-    </span>
-</div>
-<section class="detail-intro">
-<span class="eyebrow">
-     Estatística clássica · 10 · SOBREVIVÊNCIA
-    </span>
-<h1>
-     Estimador Kaplan–Meier
-    </h1>
-<p class="detail-lead">
-     Estima a proporção de unidades que permanecem em funcionamento após determinado tempo.
-    </p>
-<div class="quick-actions">
-<a class="btn primary" href="#exemplo">
-      Ver exemplo em R ↓
-     </a>
-<a class="btn secondary" download="" href="../scripts/kaplan.R">
-      Baixar script .R ↓
-     </a>
-</div>
-</section>
-<div class="detail-grid">
-<div class="detail-body">
-<section class="detail-panel">
-<h2>
-       01 · O que é?
-      </h2>
-<p>
-       Estima a proporção de unidades que permanecem em funcionamento após determinado tempo.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       02 · Pressupostos e como verificá-los
-      </h2>
-<ul class="checklist"><li>Unidades independentes (confira o delineamento e a identificação de cada unidade).</li><li>Censura independente do tempo até o evento, condicionalmente às covariáveis consideradas (avalie os mecanismos de saída do acompanhamento).</li><li>Origem temporal e codificação dos eventos corretamente definidas (inspecione tempos, censuras e estados de evento).</li><li>Número de unidades sob risco adequado em cada instante (consulte a tabela de indivíduos sob risco; evite conclusões nas caudas com poucos indivíduos).</li></ul>
-<p>
-       Confira o delineamento da pesquisa e os gráficos exploratórios. A validade inferencial depende dos pressupostos do modelo, não apenas do resultado de um teste diagnóstico.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       03 · Hipóteses e estatística de teste
-      </h2>
-<h3>
-       Hipóteses
-      </h3>
-<p>
-       Não há teste de hipótese nula intrínseco a este procedimento. A avaliação deve considerar o objetivo de estimação, a incerteza apropriada ou o desempenho em dados não utilizados no ajuste.
-      </p>
-<h3>
-       Estatística, estimador ou critério de ajuste
-      </h3>
-<div aria-label="Expressão matemática do procedimento" class="math-display" role="group">
-       \[\widehat S(t)=\prod_{t_j\leq t}\left(1-\frac{d_j}{n_j}\right)\]
-      </div>
-<p class="formula-caption">
-<strong>
-        Em que:
-       </strong>
-</p>
-<dl class="formula-terms">
-<div>
-<dt>
-         \(\widehat S(t)\)
-        </dt>
-<dd>
-         probabilidade estimada de sobreviver além de t
-        </dd>
-</div>
-<div>
-<dt>
-         \(t_j\)
-        </dt>
-<dd>
-         instante j com ocorrência de evento
-        </dd>
-</div>
-<div>
-<dt>
-         \(d_j\)
-        </dt>
-<dd>
-         quantidade de eventos em t_j
-        </dd>
-</div>
-<div>
-<dt>
-         \(n_j\)
-        </dt>
-<dd>
-         número de unidades sob risco imediatamente antes de t_j
-        </dd>
-</div>
-</dl>
-<p>
-       Os valores amostrais são obtidos diretamente dos dados; os estimadores, pesos ou coeficientes específicos são calculados pelas funções do R indicadas no exemplo. Não substitua parâmetros desconhecidos por valores arbitrários.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       04 · Como interpretar os resultados?
-      </h2>
-<p>
-       Interprete Ŝ(t) como fração esperada sem evento após t sob condições de amostragem. \(IC_{95\%}\) quantifica incerteza, não é teste por si só.
-      </p>
-<p>
-       Considere a censura, a quantidade de unidades sob risco e a precisão das estimativas ao longo do tempo. Em regressão de Cox, interprete razões de taxas instantâneas, não razões de probabilidades.
-      </p>
-</section>
-<section class="detail-panel">
-<h2>
-       05 · Como executar no R?
-      </h2>
-<p>Examine os dados, execute a análise e compare os resultados com os valores e gráficos apresentados a seguir.</p>
-<p>Copie o código para o RStudio ou baixe o arquivo .R para executar o exemplo completo.</p>
-</section>
-<section class="detail-panel example-panel" id="exemplo">
-<h2>
-       06 · Exemplo de aplicação
-      </h2>
-<div class="example-context-rich">
-<h3>
-        Contexto dos dados
-       </h3>
-<p>
-        O conjunto survival::lung registra tempos de acompanhamento e ocorrência ou censura de eventos.
-       </p>
-<h3>
-        Objetivo da análise
-       </h3>
-<p>
-        Estimar a probabilidade de um indivíduo permanecer sem o evento além de cada instante observado. Em engenharia, o mesmo estimador descreve a sobrevivência de componentes.
-       </p>
-</div>
-<div class="code-toolbar">
-<span>
-        R · executar o bloco completo
-       </span>
-<button class="copy-code" data-copy="code-kaplan" type="button">
-        Copiar código
-       </button>
-</div>
-<pre id="code-kaplan"><code># Estimador Kaplan–Meier ----
+<div class="breadcrumbs"><a href="../index.html#catalogo">Catálogo de modelos</a><span>›</span><span>Estatística clássica</span><span>›</span><span>Estimador Kaplan–Meier</span></div>
+<section class="detail-intro"><span class="eyebrow">Estatística clássica · ANÁLISE DE SOBREVIVÊNCIA</span><h1>Estimador Kaplan–Meier</h1><p class="detail-lead">Estima a função de sobrevivência a partir de dados com censura, usando o produto das probabilidades condicionais de sobreviver a cada tempo de evento.</p>
+<div class="quick-actions"><a class="btn primary" href="#exemplo">Ver exemplo ↓</a><a class="btn secondary" download="" href="../scripts/kaplan.R">Baixar script .R ↓</a><a class="btn secondary" download="" href="../scripts/kaplan.py">Baixar script .py ↓</a><a class="btn secondary" href="../glossario.html">Glossário ↗</a></div>
+<div class="toc-chips"><a href="#introducao">Comece por aqui</a><a href="#oque">O que é o estimador</a><a href="#pressupostos">Pressupostos e como verificá-los</a><a href="#hipoteses">Formulação e cálculo</a><a href="#interpretacao">Como interpretar os resultados</a><a href="#executar">Como executar no R e em Python</a><a href="#exemplo">Exemplo de aplicação</a><a href="#erros">Erros comuns</a><a href="#alternativas">Alternativas e fluxo de trabalho</a><a href="#referencias-pagina">Referências desta ficha</a></div></section>
+<div class="detail-grid"><div class="detail-body"><section class="detail-panel" id="introducao"><h2>Comece por aqui</h2><p>Em estudos de tempo até um evento, parte das unidades ainda não teve o evento quando o acompanhamento termina. Descartá-las enviesa o resultado para baixo, porque são justamente as que foram melhor; tratá-las como se o evento tivesse ocorrido enviesa na mesma direção. O estimador de Kaplan–Meier resolve isso usando a informação parcial que cada uma carrega: <em>sobreviveu ao menos até aqui</em>.</p><figure class="mindmap"><svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Estimador de Kaplan–Meier" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O problema</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Censura: o evento</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">ainda não ocorreu</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">A ideia</text><text x="208" y="211.5" text-anchor="end" font-size="10.8" fill="#3d5042">Produto de probabilidades</text><text x="208" y="226.5" text-anchor="end" font-size="10.8" fill="#3d5042">condicionais de sobreviver</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que produz</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">Curva em escada</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">mediana, S(t), RMST</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressuposto</text><text x="832" y="64.0" text-anchor="start" font-size="10.8" fill="#3d5042">Censura NÃO informativa</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="219.0" text-anchor="start" font-size="10.8" fill="#3d5042">Surv() + survfit()</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Comparar grupos</text><text x="832" y="366.5" text-anchor="start" font-size="10.8" fill="#3d5042">&lt;a href="logrank.html"&gt;log-rank&lt;/a&gt;</text><text x="832" y="381.5" text-anchor="start" font-size="10.8" fill="#3d5042">&lt;a href="gehan.html"&gt;Wilcoxon–Gehan&lt;/a&gt;</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Estimador de Kaplan–Meier</text></svg><figcaption>Visão geral do estimador de Kaplan–Meier. Fonte: o autor.</figcaption></figure><div class="callout "><strong>A intuição em uma frase</strong><p>Sobreviver até a semana 20 é sobreviver à semana 1, <em>e depois</em> à semana 2, e assim por diante. O estimador escreve isso como um produto de fatores \((1-d_j/n_j)\), um por tempo de evento, e a censura entra apenas reduzindo o \(n_j\) dos fatores seguintes — sem nunca produzir um degrau na curva.</p></div></section><section class="detail-panel" id="oque"><h2>O que é o estimador</h2><p>Nos tempos de evento \(t_1&lt;t_2&lt;\dots&lt;t_m\), sejam \(d_j\) o número de eventos em \(t_j\) e \(n_j\) o número de unidades ainda sob risco imediatamente antes. A probabilidade de sobreviver a \(t_j\), dado que se chegou até ali, é estimada por \(1-d_j/n_j\), e a probabilidade de sobreviver até \(t\) é o produto dessas probabilidades condicionais.</p><figure class="fig"><img src="../assets/resultados/kaplan-didatica.png" alt="Linhas de acompanhamento com censura, a curva construída degrau a degrau, e o efeito de tratar a censura errado" loading="lazy"/><figcaption><strong>Do acompanhamento à curva.</strong> À esquerda, os 21 pacientes do grupo 6-MP: cada linha é um acompanhamento, os círculos marcam recaídas observadas e as setas marcam pacientes que ainda estavam em remissão quando o estudo terminou. No centro, a curva montada degrau a degrau, com o fator multiplicativo de cada tempo de evento; as marcas verticais são censuras, que não geram degrau. À direita, a mesma curva confrontada com os dois atalhos errados: descartar os censurados e tratá-los como recaídas, que dão medianas de 10 e 16 semanas contra as 23 corretas. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="callout warn"><strong>Por que a curva pode não chegar a zero</strong><p>No grupo 6-MP, o último evento ocorre na semana 23 e a curva para em \(S=0{,}4482\): há cinco pacientes censurados depois disso, e o que teria acontecido com eles não foi observado. A consequência prática é que a <strong>média</strong> de sobrevivência não é estimável — ela exigiria a área sob uma curva que nunca se completa. A saída é o tempo médio restrito, a área até um horizonte \(\tau\) declarado.</p></div></section><section class="detail-panel" id="pressupostos"><h2>Pressupostos e como verificá-los</h2><div class="table-wrap"><table class="method-table"><caption>Checklist</caption><thead><tr><th>Pressuposto</th><th>Por que importa</th><th>Como verificar</th></tr></thead><tbody><tr><td><strong>Censura não informativa</strong></td><td>Quem sai em t deve ter o mesmo risco de quem fica.</td><td><strong>Não há teste.</strong> Examine os motivos de saída e compare as características de quem saiu e de quem ficou.</td></tr><tr><td>Origem do tempo bem definida</td><td>A escala do tempo precisa ser a mesma para todos.</td><td>Protocolo: data do diagnóstico, da randomização, da cirurgia.</td></tr><tr><td>Evento definido sem ambiguidade</td><td>Tempos dependem do critério de desfecho.</td><td>Definição operacional no protocolo.</td></tr><tr><td>Observações independentes</td><td>A variância de Greenwood pressupõe isso.</td><td>Delineamento; para dados agrupados, modelos de fragilidade.</td></tr><tr><td>Ausência de truncamento à esquerda não tratado</td><td>Entradas tardias distorcem o conjunto em risco.</td><td>Use a forma de contagem: <code>Surv(início, fim, evento)</code>.</td></tr><tr><td>Risco estável ao longo do recrutamento</td><td>Comparar coortes de épocas distintas pode confundir.</td><td>Estratifique por período de entrada.</td></tr></tbody></table></div><div class="callout warn"><strong>Censura informativa: o viés medido</strong><p>Na simulação desta ficha, com tempos exponenciais de média 10 e \(S(10)=0{,}3679\) verdadeiro, os dois mecanismos não informativos — fim do estudo e perda aleatória — devolvem 0,3680 e 0,3669. Quando quem iria bem abandona cedo, a estimativa cai para 0,2651; quando quem iria mal é retirado, sobe para 0,5339. O erro chega a 45% do valor verdadeiro, e <strong>nenhum teste nos dados o detecta</strong>, porque o que teria acontecido depois da censura não foi observado. É uma suposição sobre o delineamento, a ser defendida com argumento substantivo.</p></div></section><section class="detail-panel" id="hipoteses"><h2>Formulação e cálculo</h2><p>O estimador é não paramétrico e de máxima verossimilhança: não há hipótese nula a testar, mas há uma quantidade a estimar e uma variância a calcular.</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\hat S(t)=\prod_{j:\,t_j\leq t}\left(1-\frac{d_j}{n_j}\right)\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\widehat{\operatorname{Var}}\!\left[\hat S(t)\right] &= \hat S(t)^{2}\sum_{j:\,t_j\leq t}\frac{d_j}{n_j\,(n_j-d_j)}\end{aligned}\]\[\text{(fórmula de Greenwood)}\]</div><div class="math-display" role="group" aria-label="Expressão matemática">\[\text{IC}_{95\%}:\]\[\hat S(t)\,\exp\!\left(\pm\,1{,}96\,\sqrt{\textstyle\sum_j \frac{d_j}{n_j(n_j-d_j)}}\right)\]\[\begin{aligned}&\text{(transformação log, padrão do } \\ &\quad \text{R)}\end{aligned}\]</div><p class="formula-caption"><strong>Em que:</strong></p><dl class="formula-terms"><div><dt>\(t_j\)</dt><dd>\(j\)-ésimo tempo em que houve ao menos um evento</dd></div><div><dt>\(d_j\)</dt><dd>número de eventos em \(t_j\)</dd></div><div><dt>\(n_j\)</dt><dd>número de unidades sob risco imediatamente antes de \(t_j\)</dd></div><div><dt>\(\hat S(t)\)</dt><dd>probabilidade estimada de sobreviver além de \(t\)</dd></div><div><dt>\(\tau\)</dt><dd>horizonte declarado para o tempo médio restrito</dd></div></dl><h3>Exemplo numérico, passo a passo</h3><div class="table-wrap"><table class="method-table"><caption>Tabela de vida do grupo 6-MP (21 pacientes, 9 recaídas, 12 censuras)</caption><thead><tr><th>tⱼ</th><th>nⱼ</th><th>dⱼ</th><th>Censuras</th><th>1 − dⱼ/nⱼ</th><th>Ŝ(tⱼ)</th><th>EP</th><th>IC 95%</th></tr></thead><tbody><tr><td>6</td><td>21</td><td>3</td><td>1</td><td>0,8571</td><td>0,8571</td><td>0,0764</td><td>[0,7198; 1,0000]</td></tr><tr><td>7</td><td>17</td><td>1</td><td>0</td><td>0,9412</td><td>0,8067</td><td>0,0869</td><td>[0,6531; 0,9964]</td></tr><tr><td>10</td><td>15</td><td>1</td><td>2</td><td>0,9333</td><td>0,7529</td><td>0,0963</td><td>[0,5859; 0,9676]</td></tr><tr><td>13</td><td>12</td><td>1</td><td>1</td><td>0,9167</td><td>0,6902</td><td>0,1068</td><td>[0,5096; 0,9348]</td></tr><tr><td>16</td><td>11</td><td>1</td><td>0</td><td>0,9091</td><td>0,6275</td><td>0,1141</td><td>[0,4394; 0,8960]</td></tr><tr><td>22</td><td>7</td><td>1</td><td>3</td><td>0,8571</td><td>0,5378</td><td>0,1282</td><td>[0,3370; 0,8582]</td></tr><tr><td><strong>23</strong></td><td>6</td><td>1</td><td>0</td><td>0,8333</td><td><strong>0,4482</strong></td><td>0,1346</td><td>[0,2488; 0,8074]</td></tr></tbody></table></div><div class="worked"><strong>Como se lê a tabela</strong><p>Em \(t=6\) há 21 pacientes sob risco e 3 recaídas, logo o primeiro fator é \(1-3/21=0{,}8571\). Há também uma censura em 6, que não produz degrau mas sai do conjunto em risco.</p><p>Em \(t=7\) restam 17 sob risco — 21 menos as 3 recaídas e menos a censura — e há 1 recaída:</p><div class="math-display" role="group" aria-label="Expressão matemática">\[\begin{aligned}\hat S(7) &= 0{,}8571\times\left(1-\tfrac{1}{17}\right) \\ &= 0{,}8571\times0{,}9412 \\ &= 0{,}8067.\end{aligned}\]</div><p>O processo segue até \(t=23\), onde \(\hat S=0{,}4482\). Restam ainda 5 censuras depois disso, de modo que a curva termina ali, sem chegar a zero.</p><p>A mediana é o primeiro tempo em que a curva atinge ou cruza 0,5. Como \(\hat S(22)=0{,}5378\) e \(\hat S(23)=0{,}4482\), a mediana é <strong>23 semanas</strong>. No placebo, pelo mesmo critério, são 8 semanas.</p></div><h3>Propriedades</h3><ul class="checklist"><li>Sem censura, \(\hat S(t)\) coincide com a proporção amostral de sobreviventes: no placebo, \(\hat S(8)=8/21=0{,}3810\).</li><li>É o estimador não paramétrico de máxima verossimilhança da função de sobrevivência.</li><li>É consistente e assintoticamente normal; a variância de Greenwood é a estimativa usual.</li><li>A curva é uma escada contínua à direita, com degraus apenas nos tempos de evento.</li><li>Se a maior observação for censurada, \(\hat S\) não chega a zero e a média não é estimável.</li><li>O estimador de Nelson–Aalen do risco acumulado, \(\hat H(t)=\sum_j d_j/n_j\), é a alternativa, com \(\hat S(t)=e^{-\hat H(t)}\).</li><li>A mediana é muito mais estável que a média sob censura, e é por isso que é a medida de posição usual na área.</li></ul></section><section class="detail-panel" id="interpretacao"><h2>Como interpretar os resultados</h2><div class="table-wrap"><table class="method-table"><caption>Guia de leitura</caption><thead><tr><th>Elemento</th><th>O que informa</th><th>Cuidado</th></tr></thead><tbody><tr><td>n, events</td><td>Tamanho e número de eventos.</td><td>O poder depende dos eventos, não de n.</td></tr><tr><td>median</td><td>Primeiro tempo com S(t) ≤ 0,5.</td><td>Pode não ser atingida: o R imprime NA.</td></tr><tr><td>0.95LCL / 0.95UCL</td><td>IC da mediana.</td><td>Depende de <code>conf.type</code>.</td></tr><tr><td>survival em t</td><td>Probabilidade acumulada.</td><td>Sempre com o intervalo.</td></tr><tr><td>Marcas na curva</td><td>Censuras.</td><td>Muitas censuras cedo pedem cautela.</td></tr><tr><td>rmean</td><td>Tempo médio restrito.</td><td>Só interpretável com o τ declarado.</td></tr><tr><td>Tabela de risco</td><td>Quantos restam em cada tempo.</td><td>A cauda da curva é instável quando restam poucos.</td></tr></tbody></table></div><div class="callout "><strong>O intervalo da mediana depende da transformação</strong><p>No grupo 6-MP, a mediana de 23 semanas tem IC 95% de [16; não atingido] com a transformação log, que é o padrão de <code>survfit()</code>, e de [13; não atingido] com a transformação log-log. No placebo, [4; 12] e [4; 11]. Não há resposta única: declare qual <code>conf.type</code> foi usado. A transformação log-log tem a vantagem de nunca produzir limites fora do intervalo \([0,1]\).</p></div></section><section class="detail-panel" id="executar"><h2>Como executar no R e em Python</h2><div class="rstudio-box"><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer"><small>PASSO 1 · LINGUAGEM</small><b>Baixar o R (CRAN) ↗</b><span>Instale primeiro. Escolha seu sistema operacional (Windows, macOS ou Linux).</span></a><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer"><small>PASSO 2 · INTERFACE</small><b>Baixar o RStudio Desktop ↗</b><span>Ambiente gratuito para editar e executar o código. Instale depois do R.</span></a></div><h3>Onde executar o código em Python</h3><p>Não é preciso instalar nada: o <strong>Google Colab</strong> é um computador na nuvem, gratuito, que executa Python pelo navegador e já traz as bibliotecas usadas aqui (<code>numpy</code>, <code>scipy</code> e <code>matplotlib</code>).</p><div class="rstudio-box"><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><small>SEM INSTALAÇÃO · NAVEGADOR</small><b>Abrir o Google Colab ↗</b><span>Entre com uma conta Google, clique em “Novo notebook”, cole o código e pressione Shift + Enter.</span></a><a href="https://www.anaconda.com/download" target="_blank" rel="noopener noreferrer"><small>NO SEU COMPUTADOR</small><b>Baixar o Anaconda (Python + Jupyter) ↗</b><span>Alternativa para trabalhar sem internet; inclui as mesmas bibliotecas.</span></a></div><div class="callout try"><strong>Pacote e função</strong><p>São duas funções do pacote <code>survival</code>, que vem com o R. <code>Surv(tempo, evento)</code> monta o objeto de resposta, com <code>evento = 1</code> para evento observado e <code>0</code> para censura à direita. <code>survfit()</code> ajusta a curva, e <code>summary()</code> devolve a tabela de vida completa. O argumento <code>conf.type</code> escolhe a transformação do intervalo, e <code>print(fit, rmean = tau)</code> dá o tempo médio restrito. Para os gráficos, <code>survminer::ggsurvplot()</code> produz curva, bandas e tabela de risco em uma só chamada.</p></div><div class="code-toolbar"><span>R · bloco mínimo</span><button class="copy-code" data-copy="code-kaplan-min" type="button">Copiar código</button></div><pre id="code-kaplan-min"><code>library(survival)
+fit &lt;- survfit(Surv(tempo, evento) ~ grupo, data = dados)
+fit                       # mediana e IC
+summary(fit)              # a tabela de vida
+print(fit, rmean = 23)    # tempo médio restrito
+</code></pre></section><section class="detail-panel example-panel" id="exemplo"><h2>Exemplo de aplicação</h2><h3>Contexto dos dados</h3><p>Os dados são de Freireich et al. (1963): 42 pacientes com leucemia aguda em remissão induzida por esteroides, pareados por estado clínico e divididos entre 6-mercaptopurina e placebo. Registrou-se o tempo, em semanas, até a recaída. No grupo do 6-MP, 12 dos 21 pacientes ainda estavam em remissão quando o estudo terminou: são as observações censuradas. No placebo, todos os 21 recaíram. É o conjunto clássico da área, e acompanha o pacote <code>survival</code> do R. Os mesmos dados são usados nas fichas do <a href="logrank.html">teste log-rank</a> e do <a href="gehan.html">teste de Wilcoxon–Gehan</a>, para que a estimação e a comparação possam ser acompanhadas sobre o mesmo material.</p><h3>Código em R</h3><div class="code-toolbar"><span>R · executar o bloco completo</span><button class="copy-code" data-copy="code-kaplan" type="button">Copiar código</button></div><pre id="code-kaplan"><code># Estimador de Kaplan-Meier: exemplo completo ----
+# Pacotes: survival (base/recomendado), survminer (gráficos)
+# install.packages(c("survminer"))
 
-# Ajuste e resultados ----
-if (!requireNamespace("survival", quietly = TRUE)) install.packages("survival")
 library(survival)
-modelo &lt;- survfit(Surv(time, status == 2) ~ sex,
-                 data = lung, conf.type = "log-log")
-print(modelo)
-print(summary(modelo, times = c(180, 365)))
-plot(modelo, col = c("#12372A", "#C68A3B"), lwd = 2, conf.int = TRUE,
-     xlab = "Tempo", ylab = "Sobrevivência estimada")
-</code></pre><p class="pending-execution">A saída numérica e os gráficos deste exemplo devem ser conferidos na execução do script R; não foram reproduzidos neste ambiente.</p>
-<h3>Resultados e interpretação</h3>
 
+# Freireich et al. (1963): tempo até a recaída, em semanas.
+# O sinal + na impressão marca as observações CENSURADAS.
+tempo  &lt;- c(6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35,
+            1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23)
+evento &lt;- c(0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+            rep(1, 21))
+grupo  &lt;- factor(rep(c("6-MP", "placebo"), each = 21))
+dados  &lt;- data.frame(tempo, evento, grupo)
+table(dados$grupo, dados$evento)
 
-<p class="application-note">O código apresenta uma sugestão de aplicação; a análise deve ser adaptada aos dados e ao objetivo do estudo.</p></section>
-<aside class="technical-note">
-<strong>
-       Nota metodológica
-      </strong>
-<p>
-       A base lung é clínica; seu uso é metodológico, não uma descrição de falhas mecânicas.
-      </p>
-</aside>
-</div>
-<aside class="detail-aside">
-<div class="aside-card">
-<span class="aside-label">
-       TIPO DE MÉTODO
-      </span>
-<p>
-       Estatística clássica
-      </p>
-<a href="../index.html#referencias">
-       Referências científicas →
-      </a>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       CRITÉRIO DE DECISÃO
-      </span>
-<p>
-       Interprete os resultados conforme o objetivo: teste de hipóteses, estimativa ou predição. A decisão depende do delineamento, dos pressupostos e da relevância prática.
-      </p>
-</div>
-<div class="aside-card">
-<span class="aside-label">
-       NAVEGAÇÃO
-      </span>
-<a href="../index.html#catalogo">
-       Ver todos os 97 métodos →
-      </a>
-</div>
-</aside>
-</div>
-<nav aria-label="Navegação entre métodos" class="method-pager">
-<a href="qda.html">
-<span>
-      ← ANTERIOR
-     </span>
-     Análise discriminante quadrática (QDA)
-    </a>
-<a href="logrank.html">
-<span>
-      PRÓXIMO →
-     </span>
-     Teste log-rank
-    </a>
-</nav>
-<section class="profile-section">
-<a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank">
-<img alt="Retrato do professor" src="../assets/img/cassius.jpg"/>
-<div>
-<span>
-       SOBRE O PROFESSOR
-      </span>
-<h2>
-       Prof. Dr. Cássius Henrique Xavier Oliveira
-      </h2>
-<p>
-       Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.
-      </p>
-<b>
-       Conheça minha trajetória e projetos →
-      </b>
-</div>
-</a>
-</section>
+# O objeto Surv: tempo + indicador de evento
+Surv(dados$tempo, dados$evento)[1:10]
+
+# O ajuste
+fit &lt;- survfit(Surv(tempo, evento) ~ grupo, data = dados)
+fit                       # n, eventos, mediana e IC da mediana
+summary(fit)              # a tabela de vida completa, linha a linha
+summary(fit, times = c(5, 10, 15, 20, 23))   # S(t) em tempos escolhidos
+
+# A conta à mão, no grupo 6-MP
+d6 &lt;- subset(dados, grupo == "6-MP")
+tev &lt;- sort(unique(d6$tempo[d6$evento == 1]))
+nj  &lt;- sapply(tev, function(x) sum(d6$tempo &gt;= x))
+dj  &lt;- sapply(tev, function(x) sum(d6$tempo == x &amp; d6$evento == 1))
+data.frame(tempo = tev, n = nj, d = dj,
+           fator = round(1 - dj/nj, 4), S = round(cumprod(1 - dj/nj), 4))
+
+# Erro-padrão de Greenwood e intervalos de confiança
+summary(survfit(Surv(tempo, evento) ~ 1, data = d6))$std.err
+survfit(Surv(tempo, evento) ~ grupo, data = dados, conf.type = "log")      # padrão
+survfit(Surv(tempo, evento) ~ grupo, data = dados, conf.type = "log-log")
+survfit(Surv(tempo, evento) ~ grupo, data = dados, conf.type = "plain")
+
+# Quantis de sobrevivência, com intervalo
+quantile(fit, probs = c(0.25, 0.50, 0.75))
+
+# Tempo médio restrito de sobrevivência (RMST) até tau = 23
+print(fit, rmean = 23)
+
+# O que acontece quando a censura é tratada errado
+median(d6$tempo[d6$evento == 1])          # descartar os censurados
+median(d6$tempo)                          # censura tratada como recaída
+# A mediana correta, 23, sai do Kaplan-Meier e de mais nenhum desses atalhos.
+
+# Gráficos
+plot(fit, col = c("darkgreen", "firebrick"), lwd = 2, mark.time = TRUE,
+     xlab = "Semanas", ylab = "S(t)", conf.int = TRUE)
+legend("topright", levels(dados$grupo), col = c("darkgreen", "firebrick"), lwd = 2)
+abline(h = 0.5, lty = 2)
+
+library(survminer)
+ggsurvplot(fit, data = dados, conf.int = TRUE, risk.table = TRUE,
+           pval = TRUE, surv.median.line = "hv",
+           xlab = "Semanas", legend.title = "Tratamento")
+ggsurvplot(fit, data = dados, fun = "cumhaz")   # risco acumulado
+</code></pre><h3>A mesma análise em Python, com os resultados</h3><p>Cole o código em um notebook do <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer"><strong>Google Colab ↗</strong></a> e execute com <kbd>Shift</kbd>+<kbd>Enter</kbd>. Os valores abaixo são a saída desse código.</p><div class="code-toolbar"><span>Python · executar no Google Colab</span><button class="copy-code" data-copy="code-py-kaplan" type="button">Copiar código</button></div><pre id="code-py-kaplan"><code># Bibliotecas: numpy, scipy e matplotlib (todas já no Google Colab)
+import numpy as np
+from scipy import stats
+
+# ===================================================================
+# Os dados de Freireich et al. (1963): 42 pacientes com leucemia,
+# pareados, metade recebendo 6-mercaptopurina e metade placebo.
+# O desfecho é o tempo até a recaída, em semanas. O sinal + marca
+# observações CENSURADAS (o paciente ainda estava em remissão no fim
+# do acompanhamento). Os dados acompanham o pacote survival do R.
+# ===================================================================
+t6  = np.array([6,6,6,6,7,9,10,10,11,13,16,17,19,20,22,23,25,32,32,34,35])
+e6  = np.array([0,1,1,1,1,0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0])
+tpl = np.array([1,1,2,2,3,4,4,5,5,8,8,8,8,11,11,12,12,15,17,22,23])
+epl = np.ones(21, int)
+
+def km(t, e):
+    """Estimador de Kaplan-Meier com erro-padrão de Greenwood."""
+    t = np.asarray(t, float); e = np.asarray(e, int)
+    tempos = np.unique(t[e == 1])                    # só os tempos de evento
+    n_risco = np.array([np.sum(t &gt;= x) for x in tempos])
+    d = np.array([np.sum((t == x) &amp; (e == 1)) for x in tempos])
+    S = np.cumprod(1 - d / n_risco)
+    # Greenwood: Var(S) = S² * soma d / (n (n - d))
+    soma = np.cumsum(d / (n_risco * (n_risco - d)))
+    ep = S * np.sqrt(soma)
+    return tempos, n_risco, d, S, ep, soma
+
+def ic_log(S, soma, alfa=0.05):
+    """IC pela transformação log, que é o padrão de survfit() no R."""
+    z = stats.norm.ppf(1 - alfa/2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        sig = np.sqrt(soma)
+        lo = np.clip(S*np.exp(-z*sig), 0, 1); hi = np.clip(S*np.exp(+z*sig), 0, 1)
+    return np.nan_to_num(lo), np.nan_to_num(hi)
+
+def ic_loglog(S, soma, alfa=0.05):
+    """IC pela transformação log(-log S); é a opção conf.type = 'log-log'."""
+    z = stats.norm.ppf(1 - alfa/2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        ep_ll = np.sqrt(soma) / np.abs(np.log(S))
+        lo = S ** np.exp(+z * ep_ll); hi = S ** np.exp(-z * ep_ll)
+    return np.nan_to_num(lo), np.nan_to_num(hi)
+
+def mediana(tempos, S):
+    idx = np.where(S &lt;= 0.5)[0]
+    return float(tempos[idx[0]]) if len(idx) else np.nan
+
+def ic_mediana(tempos, lo, hi):
+    """Limites do IC da mediana: o primeiro tempo em que cada banda cruza 0,5."""
+    a = np.where(lo &lt;= 0.5)[0]; b = np.where(hi &lt;= 0.5)[0]
+    return (float(tempos[a[0]]) if len(a) else np.nan,
+            float(tempos[b[0]]) if len(b) else np.nan)
+
+def rmst(t, e, tau):
+    """Tempo médio restrito de sobrevivência: área sob a curva até tau."""
+    tempos, nr, d, S, ep, soma = km(t, e)
+    x = np.r_[0.0, tempos[tempos &lt;= tau], tau]
+    y = np.r_[1.0, S[tempos &lt;= tau]]
+    return float(np.sum(np.diff(x) * y))
+
+print("Freireich et al. (1963): tempo até a recaída, em semanas")
+print(f"  6-MP:    n = {len(t6)}, eventos = {e6.sum()}, "
+      f"censuras = {len(t6)-e6.sum()} ({100*(len(t6)-e6.sum())/len(t6):.1f}%)")
+print(f"  placebo: n = {len(tpl)}, eventos = {epl.sum()}, censuras = 0")
+
+# ===================================================================
+# PARTE 1 - a tabela de vida do grupo 6-MP, linha a linha
+# ===================================================================
+tempos, nr, d, S, ep, soma = km(t6, e6)
+lo, hi = ic_log(S, soma)
+print("\nTabela de Kaplan-Meier, grupo 6-MP")
+print("(a coluna 'censuras' conta as saídas ocorridas DESDE o tempo da linha")
+print(" anterior, inclusive as do próprio tempo da linha)")
+print(f"{'tempo':&gt;7}{'em risco':&gt;10}{'eventos':&gt;9}{'censuras':&gt;10}"
+      f"{'1 - d/n':&gt;10}{'S(t)':&gt;10}{'EP':&gt;9}{'IC 95%':&gt;20}")
+ant = -1.0
+for j, x in enumerate(tempos):
+    cj = int(np.sum((t6 &gt; ant) &amp; (t6 &lt;= x) &amp; (e6 == 0)))
+    print(f"{x:&gt;7.0f}{nr[j]:&gt;10d}{d[j]:&gt;9d}{cj:&gt;10d}"
+          f"{1-d[j]/nr[j]:&gt;10.4f}{S[j]:&gt;10.4f}{ep[j]:&gt;9.4f}"
+          f"   [{lo[j]:.4f}; {hi[j]:.4f}]")
+    ant = x
+resto = int(np.sum((t6 &gt; tempos[-1]) &amp; (e6 == 0)))
+print(f"Depois do último evento (t = {tempos[-1]:.0f}) restam {resto} censuras, que não")
+print("geram linha: a curva permanece em S = {:.4f} e simplesmente termina ali.".format(S[-1]))
+print("As censuras não produzem degrau na curva, mas REDUZEM o número em risco")
+print("das linhas seguintes, e é assim que elas entram na conta.")
+
+tp, nrp, dp, Sp_, epp, somap = km(tpl, epl)
+lop, hip = ic_log(Sp_, somap)
+print("\nTabela de Kaplan-Meier, grupo placebo (sem censuras)")
+print(f"{'tempo':&gt;7}{'em risco':&gt;10}{'eventos':&gt;9}{'S(t)':&gt;10}{'EP':&gt;9}{'IC 95%':&gt;20}")
+for j, x in enumerate(tp):
+    e_ = "-" if not np.isfinite(epp[j]) else f"{epp[j]:.4f}"
+    print(f"{x:&gt;7.0f}{nrp[j]:&gt;10d}{dp[j]:&gt;9d}{Sp_[j]:&gt;10.4f}{e_:&gt;9}"
+          f"   [{lop[j]:.4f}; {hip[j]:.4f}]")
+print("Sem censuras, o estimador coincide com a proporção simples de sobreviventes:")
+print(f"em t = 8, por exemplo, S = {Sp_[tp==8][0]:.4f} = 8/21 = {8/21:.4f}.")
+
+# ===================================================================
+# PARTE 2 - as quantidades que se reportam
+# ===================================================================
+print("\n" + "=" * 70)
+m6 = mediana(tempos, S); mpl = mediana(tp, Sp_)
+i6 = ic_mediana(tempos, lo, hi); ipl = ic_mediana(tp, lop, hip)
+l6b, h6b = ic_loglog(S, soma); lpb, hpb = ic_loglog(Sp_, somap)
+i6b = ic_mediana(tempos, l6b, h6b); iplb = ic_mediana(tp, lpb, hpb)
+print("Mediana de sobrevivência (primeiro tempo em que S(t) &lt;= 0,5)")
+print(f"  6-MP:    {m6:.0f} semanas   IC 95% [{i6[0]:.0f}; "
+      f"{'não atingido' if np.isnan(i6[1]) else format(i6[1],'.0f')}]")
+print(f"  placebo: {mpl:.0f} semanas    IC 95% [{ipl[0]:.0f}; {ipl[1]:.0f}]")
+print(f"  Razão das medianas = {m6/mpl:.2f}")
+print("  (IC pela transformação log, que é o padrão de survfit() no R; com a")
+print(f"   transformação log-log sairia 6-MP [{i6b[0]:.0f}; "
+      f"{'não atingido' if np.isnan(i6b[1]) else format(i6b[1],'.0f')}] e placebo "
+      f"[{iplb[0]:.0f}; {iplb[1]:.0f}])")
+
+for q in [0.75, 0.50, 0.25]:
+    a = tempos[S &lt;= q]; b = tp[Sp_ &lt;= q]
+    print(f"  tempo em que S(t) &lt;= {q:.2f}:  6-MP "
+          f"{(str(int(a[0])) + ' sem') if len(a) else 'não atingido':&gt;14}"
+          f"   | placebo {int(b[0]):&gt;3d} sem")
+
+print("\nProbabilidade de ainda estar em remissão")
+for x in [5, 10, 15, 20, 23]:
+    s6 = S[tempos &lt;= x][-1] if np.any(tempos &lt;= x) else 1.0
+    sp = Sp_[tp &lt;= x][-1] if np.any(tp &lt;= x) else 1.0
+    print(f"  em {x:&gt;2d} semanas:  6-MP {100*s6:6.2f}%   placebo {100*sp:6.2f}%")
+
+tau = 23.0
+print(f"\nTempo médio restrito de sobrevivência até tau = {tau:.0f} semanas")
+print("(a área sob a curva; é a medida a usar quando a mediana não é atingida)")
+r6 = rmst(t6, e6, tau); rpl = rmst(tpl, epl, tau)
+print(f"  6-MP:    {r6:.3f} semanas")
+print(f"  placebo: {rpl:.3f} semanas")
+print(f"  diferença = {r6-rpl:.3f} semanas em favor do 6-MP")
+print("  tau = 23 porque é o último tempo observado no placebo: comparar além")
+print("  dele exigiria extrapolar a curva que termina primeiro.")
+
+# ===================================================================
+# PARTE 3 - o que acontece quando a censura é tratada errado
+# ===================================================================
+print("\n" + "=" * 70)
+print("Três maneiras ERRADAS de lidar com a censura, no grupo 6-MP")
+print(f"\n{'procedimento':&lt;42}{'mediana':&gt;12}{'média':&gt;12}")
+print(f"{'Kaplan-Meier (correto)':&lt;42}{m6:&gt;10.0f} sem{'não estimável':&gt;14}")
+print(f"{'descartar os 12 censurados':&lt;42}"
+      f"{np.median(t6[e6==1]):&gt;10.1f} sem{np.mean(t6[e6==1]):&gt;10.2f} sem")
+print(f"{'tratar censura como recaída':&lt;42}"
+      f"{np.median(t6):&gt;10.1f} sem{np.mean(t6):&gt;10.2f} sem")
+print(f"{'tratar censura como acompanhamento completo':&lt;42}"
+      f"{'nunca recai':&gt;14}{'-':&gt;12}")
+print("\nDescartar os 12 censurados dá mediana de 10 semanas, menos da metade das")
+print("23 corretas: os pacientes descartados são justamente os que foram melhor.")
+print("Tratar a censura como recaída dá 16 semanas e subestima da mesma forma,")
+print("porque supõe que todos recaíram no dia em que saíram do estudo. A média")
+print("aritmética não é estimável pelo Kaplan-Meier aqui, porque a curva termina")
+print("em S = 0,4482 e não chega a zero; é para isso que serve o tempo médio")
+print("restrito até um tau declarado. O Kaplan-Meier")
+print("usa a informação parcial de cada censurado - 'sobreviveu ao menos até t' -")
+print("sem inventar o que veio depois.")
+
+# ===================================================================
+# PARTE 4 - a censura precisa ser NÃO INFORMATIVA
+# ===================================================================
+print("\n" + "=" * 70)
+print("O pressuposto central: a censura deve ser NÃO INFORMATIVA, isto é,")
+print("quem sai do estudo em t deve ter o mesmo risco de quem fica.")
+print("Simulação: n = 300, tempos exponenciais com média 10, acompanhamento")
+print("até 15. Quatro mecanismos de censura, 2.000 repetições cada.")
+rng = np.random.default_rng(17)
+verdade = 1 - np.exp(-10/10)        # P(T &lt;= 10) com média 10
+print(f"\nValor verdadeiro de S(10) = {np.exp(-1):.4f}")
+print(f"{'mecanismo de censura':&lt;46}{'S(10) estimado':&gt;16}{'viés':&gt;10}")
+for nome, modo in [("administrativa (fim do estudo em t = 15)", "adm"),
+                   ("aleatória, independente do risco", "ind"),
+                   ("INFORMATIVA: abandona cedo quem iria bem", "bom"),
+                   ("INFORMATIVA: é retirado quem iria mal", "mal")]:
+    est = []
+    for _ in range(2000):
+        T = rng.exponential(10, 300)
+        if modo == "adm":
+            C = np.full(300, 15.0)
+        elif modo == "ind":
+            C = rng.exponential(15, 300)
+        elif modo == "bom":
+            # metade dos que teriam T grande abandona cedo o estudo
+            C = np.where((rng.random(300) &lt; 0.5) &amp; (T &gt; 8),
+                         rng.uniform(0.5, 5.0, 300), 99.0)
+        else:
+            # metade dos que teriam T pequeno é retirada antes do evento
+            C = np.where((rng.random(300) &lt; 0.5) &amp; (T &lt; 8),
+                         T * rng.uniform(0.3, 0.9, 300), 99.0)
+        X = np.minimum(T, C); E = (T &lt;= C).astype(int)
+        tt, nn_, dd, SS, _, _ = km(X, E)
+        est.append(SS[tt &lt;= 10][-1] if np.any(tt &lt;= 10) else 1.0)
+    m = np.mean(est)
+    print(f"{nome:&lt;46}{m:&gt;16.4f}{m-np.exp(-1):&gt;10.4f}")
+print("\nOs dois primeiros mecanismos são não informativos e o estimador é")
+print("praticamente não viesado: o viés fica em um milésimo, que é ruído de")
+print("simulação. Os dois últimos ligam a saída ao prognóstico, e o viés aparece")
+print("com sinal oposto em cada um - para BAIXO quando abandonam cedo os que")
+print("iriam bem (0,2651 contra 0,3679), para CIMA quando são retirados os que")
+print("iriam mal (0,5339). A magnitude chega a 45% do valor verdadeiro.")
+print("Nenhum teste detecta isso nos dados, porque o que teria acontecido depois")
+print("da censura não foi observado: é uma suposição sobre o DELINEAMENTO, que")
+print("precisa ser defendida com argumento substantivo, não com estatística.")
+</code></pre><div class="verified-example"><h3>Resultados da execução</h3><pre class="output-r">Freireich et al. (1963): tempo até a recaída, em semanas
+  6-MP:    n = 21, eventos = 9, censuras = 12 (57.1%)
+  placebo: n = 21, eventos = 21, censuras = 0
+
+Tabela de Kaplan-Meier, grupo 6-MP
+(a coluna 'censuras' conta as saídas ocorridas DESDE o tempo da linha
+ anterior, inclusive as do próprio tempo da linha)
+  tempo  em risco  eventos  censuras   1 - d/n      S(t)       EP              IC 95%
+      6        21        3         1    0.8571    0.8571   0.0764   [0.7198; 1.0000]
+      7        17        1         0    0.9412    0.8067   0.0869   [0.6531; 0.9964]
+     10        15        1         2    0.9333    0.7529   0.0963   [0.5859; 0.9676]
+     13        12        1         1    0.9167    0.6902   0.1068   [0.5096; 0.9348]
+     16        11        1         0    0.9091    0.6275   0.1141   [0.4394; 0.8960]
+     22         7        1         3    0.8571    0.5378   0.1282   [0.3370; 0.8582]
+     23         6        1         0    0.8333    0.4482   0.1346   [0.2488; 0.8074]
+Depois do último evento (t = 23) restam 5 censuras, que não
+geram linha: a curva permanece em S = 0.4482 e simplesmente termina ali.
+As censuras não produzem degrau na curva, mas REDUZEM o número em risco
+das linhas seguintes, e é assim que elas entram na conta.
+
+Tabela de Kaplan-Meier, grupo placebo (sem censuras)
+  tempo  em risco  eventos      S(t)       EP              IC 95%
+      1        21        2    0.9048   0.0641   [0.7875; 1.0000]
+      2        19        2    0.8095   0.0857   [0.6579; 0.9962]
+      3        17        1    0.7619   0.0929   [0.5999; 0.9677]
+      4        16        2    0.6667   0.1029   [0.4927; 0.9021]
+      5        14        2    0.5714   0.1080   [0.3945; 0.8276]
+      8        12        4    0.3810   0.1060   [0.2208; 0.6571]
+     11         8        2    0.2857   0.0986   [0.1453; 0.5619]
+     12         6        2    0.1905   0.0857   [0.0789; 0.4600]
+     15         4        1    0.1429   0.0764   [0.0501; 0.4073]
+     17         3        1    0.0952   0.0641   [0.0255; 0.3559]
+     22         2        1    0.0476   0.0465   [0.0070; 0.3225]
+     23         1        1    0.0000        -   [0.0000; 0.0000]
+Sem censuras, o estimador coincide com a proporção simples de sobreviventes:
+em t = 8, por exemplo, S = 0.3810 = 8/21 = 0.3810.
+
+======================================================================
+Mediana de sobrevivência (primeiro tempo em que S(t) &lt;= 0,5)
+  6-MP:    23 semanas   IC 95% [16; não atingido]
+  placebo: 8 semanas    IC 95% [4; 12]
+  Razão das medianas = 2.88
+  (IC pela transformação log, que é o padrão de survfit() no R; com a
+   transformação log-log sairia 6-MP [13; não atingido] e placebo [4; 11])
+  tempo em que S(t) &lt;= 0.75:  6-MP         13 sem   | placebo   4 sem
+  tempo em que S(t) &lt;= 0.50:  6-MP         23 sem   | placebo   8 sem
+  tempo em que S(t) &lt;= 0.25:  6-MP   não atingido   | placebo  12 sem
+
+Probabilidade de ainda estar em remissão
+  em  5 semanas:  6-MP 100.00%   placebo  57.14%
+  em 10 semanas:  6-MP  75.29%   placebo  38.10%
+  em 15 semanas:  6-MP  69.02%   placebo  14.29%
+  em 20 semanas:  6-MP  62.75%   placebo   9.52%
+  em 23 semanas:  6-MP  44.82%   placebo   0.00%
+
+Tempo médio restrito de sobrevivência até tau = 23 semanas
+(a área sob a curva; é a medida a usar quando a mediana não é atingida)
+  6-MP:    17.909 semanas
+  placebo: 8.667 semanas
+  diferença = 9.243 semanas em favor do 6-MP
+  tau = 23 porque é o último tempo observado no placebo: comparar além
+  dele exigiria extrapolar a curva que termina primeiro.
+
+======================================================================
+Três maneiras ERRADAS de lidar com a censura, no grupo 6-MP
+
+procedimento                                   mediana       média
+Kaplan-Meier (correto)                            23 sem não estimável
+descartar os 12 censurados                      10.0 sem     12.11 sem
+tratar censura como recaída                     16.0 sem     17.10 sem
+tratar censura como acompanhamento completo   nunca recai           -
+
+Descartar os 12 censurados dá mediana de 10 semanas, menos da metade das
+23 corretas: os pacientes descartados são justamente os que foram melhor.
+Tratar a censura como recaída dá 16 semanas e subestima da mesma forma,
+porque supõe que todos recaíram no dia em que saíram do estudo. A média
+aritmética não é estimável pelo Kaplan-Meier aqui, porque a curva termina
+em S = 0,4482 e não chega a zero; é para isso que serve o tempo médio
+restrito até um tau declarado. O Kaplan-Meier
+usa a informação parcial de cada censurado - 'sobreviveu ao menos até t' -
+sem inventar o que veio depois.
+
+======================================================================
+O pressuposto central: a censura deve ser NÃO INFORMATIVA, isto é,
+quem sai do estudo em t deve ter o mesmo risco de quem fica.
+Simulação: n = 300, tempos exponenciais com média 10, acompanhamento
+até 15. Quatro mecanismos de censura, 2.000 repetições cada.
+
+Valor verdadeiro de S(10) = 0.3679
+mecanismo de censura                            S(10) estimado      viés
+administrativa (fim do estudo em t = 15)                0.3680    0.0001
+aleatória, independente do risco                        0.3669   -0.0010
+INFORMATIVA: abandona cedo quem iria bem                0.2651   -0.1027
+INFORMATIVA: é retirado quem iria mal                   0.5339    0.1660
+
+Os dois primeiros mecanismos são não informativos e o estimador é
+praticamente não viesado: o viés fica em um milésimo, que é ruído de
+simulação. Os dois últimos ligam a saída ao prognóstico, e o viés aparece
+com sinal oposto em cada um - para BAIXO quando abandonam cedo os que
+iriam bem (0,2651 contra 0,3679), para CIMA quando são retirados os que
+iriam mal (0,5339). A magnitude chega a 45% do valor verdadeiro.
+Nenhum teste detecta isso nos dados, porque o que teria acontecido depois
+da censura não foi observado: é uma suposição sobre o DELINEAMENTO, que
+precisa ser defendida com argumento substantivo, não com estatística.</pre></div><figure class="fig"><img src="../assets/resultados/kaplan.png" alt="As duas curvas com bandas de confiança, o número em risco ao longo do tempo, e a área sob as curvas" loading="lazy"/><figcaption><strong>A aplicação em três vistas.</strong> À esquerda, as duas curvas de Kaplan–Meier com bandas de 95%: as marcas verticais são censuras e as linhas pontilhadas indicam as medianas, 8 semanas no placebo e 23 no 6-MP. No centro, o número de pacientes ainda em risco: no placebo ele cai só por recaída, no 6-MP também por censura, e é por isso que a curva do 6-MP termina na semana 25 com apenas cinco pacientes. À direita, a área sob cada curva até τ = 23 semanas, que é o tempo médio restrito de sobrevivência. <span class="source-line">Fonte: o autor.</span></figcaption></figure><div class="table-wrap"><table class="method-table"><caption>Medianas e quantis</caption><thead><tr><th>Quantidade</th><th>6-MP</th><th>Placebo</th></tr></thead><tbody><tr><td>n / eventos / censuras</td><td>21 / 9 / 12</td><td>21 / 21 / 0</td></tr><tr><td><strong>Mediana</strong></td><td><strong>23 semanas</strong> · IC [16; não atingido]</td><td><strong>8 semanas</strong> · IC [4; 12]</td></tr><tr><td>Tempo com S(t) ≤ 0,75</td><td>13 semanas</td><td>4 semanas</td></tr><tr><td>Tempo com S(t) ≤ 0,25</td><td>não atingido</td><td>12 semanas</td></tr><tr><td>Razão das medianas</td><td>2,88</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Probabilidade de ainda estar em remissão</caption><thead><tr><th>Semana</th><th>6-MP</th><th>Placebo</th></tr></thead><tbody><tr><td>5</td><td>100,00%</td><td>57,14%</td></tr><tr><td>10</td><td>75,29%</td><td>38,10%</td></tr><tr><td>15</td><td>69,02%</td><td>14,29%</td></tr><tr><td>20</td><td>62,75%</td><td>9,52%</td></tr><tr><td>23</td><td>44,82%</td><td>0,00%</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Tempo médio restrito até τ = 23 semanas</caption><thead><tr><th>Grupo</th><th>Área sob a curva</th></tr></thead><tbody><tr><td>6-MP</td><td>17,909 semanas</td></tr><tr><td>Placebo</td><td>8,667 semanas</td></tr><tr><td><strong>Diferença</strong></td><td><strong>9,243 semanas</strong></td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Três maneiras erradas de lidar com a censura, no grupo 6-MP</caption><thead><tr><th>Procedimento</th><th>Mediana</th><th>Média</th></tr></thead><tbody><tr><td><strong>Kaplan–Meier (correto)</strong></td><td><strong>23 semanas</strong></td><td>não estimável</td></tr><tr><td>Descartar os 12 censurados</td><td>10,0 semanas</td><td>12,11 semanas</td></tr><tr><td>Tratar censura como recaída</td><td>16,0 semanas</td><td>17,10 semanas</td></tr><tr><td>Tratar censura como acompanhamento completo</td><td>nunca recai</td><td>—</td></tr></tbody></table></div><div class="table-wrap"><table class="method-table"><caption>Censura informativa: o viés, medido por simulação (S(10) verdadeiro = 0,3679)</caption><thead><tr><th>Mecanismo de censura</th><th>S(10) estimado</th><th>Viés</th></tr></thead><tbody><tr><td>Administrativa (fim do estudo em t = 15)</td><td>0,3680</td><td>+0,0001</td></tr><tr><td>Aleatória, independente do risco</td><td>0,3669</td><td>−0,0010</td></tr><tr><td><strong>Informativa: abandona cedo quem iria bem</strong></td><td><strong>0,2651</strong></td><td><strong>−0,1027</strong></td></tr><tr><td><strong>Informativa: é retirado quem iria mal</strong></td><td><strong>0,5339</strong></td><td><strong>+0,1660</strong></td></tr></tbody></table></div><p><strong>Leitura:</strong> a mediana de remissão passa de 8 semanas no placebo para 23 no 6-MP, quase três vezes mais. A separação entre as curvas é visível desde a primeira semana e se mantém em todo o acompanhamento, o que é um bom sinal para a suposição de riscos proporcionais que a ficha do <a href="logrank.html">log-rank</a> vai explorar. As bandas de confiança se alargam à direita, como sempre acontece: com menos gente em risco, a estimativa fica menos precisa.</p><p>O intervalo da mediana do 6-MP é [16; não atingido]. O limite superior não existe porque a banda de confiança superior nunca desce abaixo de 0,5 — é uma informação legítima, e não uma falha do método: os dados não permitem descartar que a mediana verdadeira seja muito maior que 23 semanas.</p><p><strong>Sobre a censura mal tratada:</strong> os dois atalhos erram na mesma direção, e por razões opostas. Descartar os 12 censurados deixa apenas os 9 pacientes que recaíram — isto é, exatamente os que foram pior — e devolve mediana de 10 semanas, menos da metade da correta. Tratar a censura como recaída supõe que todos recaíram no dia em que saíram do estudo, o que dá 16 semanas. O Kaplan–Meier usa a informação parcial de cada censurado, "sobreviveu ao menos até t", sem inventar o que veio depois.</p><p><strong>Sobre a censura informativa:</strong> a simulação separa o que é e o que não é aceitável. Censura administrativa, em que o estudo simplesmente termina, e perda aleatória de seguimento não enviesam nada — o erro fica na terceira casa decimal. Mas quando a saída do estudo depende do prognóstico, o viés é grande e tem o sinal do mecanismo: para baixo se quem estava indo bem abandona cedo, para cima se quem estava indo mal é retirado. Como esse viés não deixa rastro nos dados observados, a defesa do pressuposto tem de vir do conhecimento do estudo: por que cada paciente saiu, e se os que saíram se pareciam com os que ficaram.</p></section><section class="detail-panel" id="erros"><h2>Erros comuns</h2><div class="table-wrap"><table class="method-table"><caption>Armadilhas frequentes</caption><thead><tr><th>Erro</th><th>Como evitar</th></tr></thead><tbody><tr><td>Descartar as observações censuradas</td><td>É o erro mais grave: enviesa fortemente para baixo.</td></tr><tr><td>Tratar censura como evento</td><td>Enviesa na mesma direção.</td></tr><tr><td>Reportar a média quando a curva não chega a zero</td><td>Use a mediana ou o tempo médio restrito com τ declarado.</td></tr><tr><td>Interpretar a cauda da curva sem olhar o n em risco</td><td>Com poucos restantes, os degraus são enormes.</td></tr><tr><td>Esquecer de informar o <code>conf.type</code></td><td>O IC da mediana muda com a transformação.</td></tr><tr><td>Supor censura não informativa sem argumento</td><td>Examine os motivos de saída.</td></tr><tr><td>Comparar curvas só pelo olho</td><td>Use o <a href="logrank.html">log-rank</a> ou um teste ponderado.</td></tr><tr><td>Ignorar truncamento à esquerda</td><td>Com entradas tardias, use <code>Surv(início, fim, evento)</code>.</td></tr><tr><td>Confundir censura à direita com à esquerda ou intervalar</td><td>Cada tipo exige tratamento próprio.</td></tr><tr><td>Comparar S(t) em um tempo escolhido depois de ver o gráfico</td><td>Fixe os tempos de interesse no protocolo.</td></tr></tbody></table></div></section><section class="detail-panel" id="alternativas"><h2>Alternativas e fluxo de trabalho</h2><div class="table-wrap"><table class="method-table"><caption>Alternativas e quando cada uma é preferível</caption><thead><tr><th>Procedimento</th><th>Quando preferir</th></tr></thead><tbody><tr><td>Estimador de Nelson–Aalen</td><td>Interesse no risco acumulado; mais estável com poucos eventos.</td></tr><tr><td>Tabela de vida atuarial</td><td>Tempos agrupados em intervalos largos.</td></tr><tr><td><a href="cox.html">Regressão de Cox</a></td><td>Há covariáveis a ajustar.</td></tr><tr><td>Modelos paramétricos (Weibull, log-normal)</td><td>Interesse em extrapolar além do acompanhamento.</td></tr><tr><td><a href="logrank.html">Teste log-rank</a></td><td>Comparar dois ou mais grupos, com riscos proporcionais.</td></tr><tr><td><a href="gehan.html">Teste de Wilcoxon–Gehan</a></td><td>Comparar grupos quando a diferença se concentra no início.</td></tr><tr><td>Tempo médio restrito (RMST)</td><td>Quando a mediana não é atingida ou os riscos não são proporcionais.</td></tr><tr><td>Modelos de fragilidade</td><td>Observações agrupadas (centros, famílias).</td></tr><tr><td>Riscos competitivos (Aalen–Johansen)</td><td>Há mais de um tipo de desfecho possível.</td></tr></tbody></table></div><ol class="steps"><li>Defina a origem do tempo, o evento e o critério de censura antes de coletar.</li><li>Monte o objeto <code>Surv</code> e confira a contagem de eventos e censuras por grupo.</li><li>Ajuste a curva e examine a tabela de vida.</li><li>Reporte a mediana com intervalo e S(t) em tempos fixados no protocolo.</li><li>Apresente sempre a tabela de número em risco junto à curva.</li><li>Se a mediana não for atingida, use o tempo médio restrito com τ declarado.</li><li>Argumente por que a censura é não informativa.</li><li>Para comparar grupos, escolha o teste antes de ver as curvas.</li></ol></section><section class="detail-panel" id="referencias-pagina"><h2>Referências desta ficha</h2><ol class="refs-list"><li>KAPLAN, E. L.; MEIER, Paul. Nonparametric estimation from incomplete observations. <em>Journal of the American Statistical Association</em>, v. 53, n. 282, p. 457-481, 1958.</li><li>GREENWOOD, Major. <em>The natural duration of cancer.</em> Reports on Public Health and Medical Subjects, n. 33. London: His Majesty’s Stationery Office, 1926.</li><li>EFRON, Bradley. The two sample problem with censored data. In: <em>Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability.</em> Berkeley: University of California Press, 1967. v. 4, p. 831-853.</li><li>NELSON, Wayne. Theory and applications of hazard plotting for censored failure data. <em>Technometrics</em>, v. 14, n. 4, p. 945-966, 1972.</li><li>AALEN, Odd. Nonparametric inference for a family of counting processes. <em>The Annals of Statistics</em>, v. 6, n. 4, p. 701-726, 1978.</li><li>ROYSTON, Patrick; PARMAR, Mahesh K. B. Restricted mean survival time: an alternative to the hazard ratio for the design and analysis of randomized trials with a time-to-event outcome. <em>BMC Medical Research Methodology</em>, v. 13, art. 152, 2013.</li><li>FREIREICH, Emil J. et al. The effect of 6-mercaptopurine on the duration of steroid-induced remissions in acute leukemia: a model for evaluation of other potentially useful therapy. <em>Blood</em>, v. 21, n. 6, p. 699-716, 1963.</li><li>KLEIN, John P.; MOESCHBERGER, Melvin L. <em>Survival analysis: techniques for censored and truncated data.</em> 2. ed. New York: Springer, 2003.</li><li>COLLETT, David. <em>Modelling survival data in medical research.</em> 3. ed. Boca Raton: CRC Press, 2015.</li><li>HOSMER, David W.; LEMESHOW, Stanley; MAY, Susanne. <em>Applied survival analysis.</em> 2. ed. Hoboken: Wiley, 2008.</li><li>COLOSIMO, Enrico A.; GIOLO, Suely R. <em>Análise de sobrevivência aplicada.</em> São Paulo: Blucher, 2006.</li><li>R CORE TEAM. <em>R: a language and environment for statistical computing.</em> Vienna: R Foundation for Statistical Computing, 2026. Disponível em: <a href="https://www.r-project.org/" target="_blank" rel="noopener noreferrer">https://www.r-project.org/</a>.</li><li>THERNEAU, Terry M.; GRAMBSCH, Patricia M. <em>Modeling survival data: extending the Cox model.</em> New York: Springer, 2000. (Pacote <code>survival</code>.)</li><li>KASSAMBARA, Alboukadel; KOSINSKI, Marcin; BIECEK, Przemyslaw. <em>survminer: drawing survival curves using ggplot2.</em> R package. Disponível em: <a href="https://CRAN.R-project.org/package=survminer" target="_blank" rel="noopener noreferrer">https://CRAN.R-project.org/package=survminer</a>.</li><li>POSIT TEAM. <em>RStudio: integrated development environment for R.</em> Boston: Posit Software, PBC. Disponível em: <a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">https://posit.co/download/rstudio-desktop/</a>.</li><li>VIRTANEN, Pauli et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <em>Nature Methods</em>, v. 17, p. 261-272, 2020. DOI: <a href="https://doi.org/10.1038/s41592-019-0686-2" target="_blank" rel="noopener noreferrer">10.1038/s41592-019-0686-2</a>. (Funções do módulo <code>scipy.stats</code>.)</li><li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357-362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2" target="_blank" rel="noopener noreferrer">10.1038/s41586-020-2649-2</a>.</li><li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90-95, 2007.</li><li>GOOGLE. <em>Google Colaboratory.</em> Disponível em: <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">https://colab.research.google.com/</a>.</li><li>As figuras desta ficha foram elaboradas pelo autor.</li></ol></section></div>
+<aside class="detail-aside"><div class="aside-card"><span class="aside-label">TIPO DE MÉTODO</span><p>Estatística clássica</p><a href="#referencias-pagina">Referências desta ficha →</a></div>
+<div class="aside-card"><span class="aside-label">REQUISITOS</span><p>Censura não informativa, origem do tempo e evento bem definidos, observações independentes e ausência de truncamento não tratado.</p></div>
+<div class="aside-card"><span class="aside-label">PACOTES</span><p>survival, survminer</p></div>
+<div class="aside-card"><span class="aside-label">INSTALAÇÃO</span><p><a href="https://cran.r-project.org/" target="_blank" rel="noopener noreferrer">Baixar o R ↗</a><br/><a href="https://posit.co/download/rstudio-desktop/" target="_blank" rel="noopener noreferrer">Baixar o RStudio ↗</a><br/><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Python no Google Colab ↗</a></p></div>
+<div class="aside-card"><span class="aside-label">NAVEGAÇÃO</span><a href="../index.html#catalogo">Ver todos os métodos →</a></div></aside></div>
+<nav aria-label="Navegação entre métodos" class="method-pager"><a href="qda.html"><span>← ANTERIOR</span>Análise discriminante quadrática (QDA)</a><a href="logrank.html"><span>PRÓXIMO →</span>Teste log-rank</a></nav>
+<section class="profile-section"><a class="profile-card" href="https://cassiushenrique.github.io/sitePessoal/#inicio" rel="noopener noreferrer" target="_blank"><img alt="Retrato do professor" src="../assets/img/cassius.jpg"/><div><span>SOBRE O PROFESSOR</span><h2>Prof. Dr. Cássius Henrique Xavier Oliveira</h2><p>Professor · ICTIN/UFLA · Estatística, Confiabilidade e Ciência de Dados.</p><b>Conheça minha trajetória e projetos →</b></div></a></section>
 </main>
-<footer class="site-footer">
-<div>
-<strong>
-     Estatística &amp; Ciência de Dados
-    </strong>
-<div>
-     Material acadêmico de consulta · ICTIN/UFLA
-    </div>
-</div>
-<div>
-    Prof. Dr. Cássius Henrique Xavier Oliveira
-    <br/>
-    ©
-    <span class="year">
-     2026
-    </span>
-</div>
-</footer>
-<script defer="" src="../assets/script.js">
-</script>
+<footer class="site-footer"><div><strong>Estatística &amp; Ciência de Dados</strong> <div>Material acadêmico de consulta · ICTIN/UFLA</div></div><div>Prof. Dr. Cássius Henrique Xavier Oliveira<br/>© <span class="year">2026</span></div></footer>
+<script defer="" src="../assets/script.js"></script>
 </body>
 </html>
