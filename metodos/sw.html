@@ -70,11 +70,12 @@
             </figure>
             <div class="callout "><strong>Curiosidade</strong>O artigo original (SHAPIRO; WILK, 1965) foi publicado na <em>Biometrika</em> e a tabela de valores críticos cobria apenas amostras de até 50 observações. A extensão para n = 5000, que o R utiliza, é de Royston (1982, 1995).</div>
             <h3>
-     Quando usar</h3>
+     Quando usar?</h3>
             <div class="table-wrap">
               <table class="method-table">
-                <caption>
-               Resumo de uso</caption>
+                <!-- <caption>
+               Resumo de uso
+              </caption> -->
                 <thead>
                   <tr>
                     <th>Situação</th>
@@ -98,13 +99,14 @@
                               Sim.</td>
                   </tr>
                   <tr>
-                    <!-- <td> -->
-                         <!-- Decidir automaticamente entre teste t e 
+                    <!-- <td>
+                        Decidir automaticamente entre teste t e 
                          Mann–Whitney</td><td>
                               Não recomendado (veja Erros comuns) </td></tr><tr><td>
                          Escalas Likert, contagens ou dados binários
                               </td><td>Não: dados discretos 
-                                   violam o pressuposto</td></tr> -->
+                                   violam o pressuposto</td>
+                  </tr> -->
                     
                     
                 </tbody>
@@ -112,45 +114,69 @@
             </div>
           </section>
           <section class="detail-panel" id="oque">
-            <h2>O que é o teste</h2>
-            <p>O teste de Shapiro–Wilk é um teste de hipóteses de aderência (<em>goodness-of-fit</em>) proposto por Samuel S. Shapiro e Martin B. Wilk em 1965. Ele responde a uma única pergunta: é razoável supor que esta amostra foi extraída de uma população com distribuição normal?</p>
-            <p>A ideia central é comparar os dados <strong>ordenados</strong> com os valores que seriam esperados, na mesma posição, em uma amostra normal. Se os pontos acompanham essa referência, a estatística fica próxima de 1; se há assimetria, caudas pesadas, truncamento ou valores extremos, ela diminui. Em essência, o teste mede, em um único número, o que o gráfico Q–Q mostra visualmente: a proximidade dos pontos a uma reta.</p>
+            <h2>O que é o teste?</h2>
+            <p>O teste de Shapiro–Wilk é um teste de hipóteses de 
+              aderência (<em>goodness-of-fit</em>) proposto por Samuel S. 
+              Shapiro e Martin B. Wilk em 1965. Ele responde a uma 
+              única pergunta: é razoável supor que esta amostra 
+              foi extraída de uma população com distribuição normal?</p>
+            <p>A ideia é comparar os dados <strong>ordenados</strong> 
+              com os valores que seriam esperados, na mesma posição, 
+              em uma amostra normal. Se os pontos acompanham 
+              essa referência, a estatística fica próxima de 1; 
+              se há assimetria, caudas pesadas, truncamento 
+              ou valores extremos, ela diminui. 
+              Em essência, o teste mede, em um único número, 
+              o que o gráfico Q–Q mostra visualmente: 
+              a proximidade dos pontos a uma reta.</p>
             <figure class="fig">
               <img src="../assets/resultados/sw-didatica.png" alt="Dois histogramas e dois gráficos Q-Q: amostra simétrica e amostra assimétrica" loading="lazy"/>
               <figcaption><strong>Duas amostras de n = 40, lado a lado.</strong> Na primeira linha, os quantis de uma normal: o histograma acompanha a curva e os pontos do Q–Q ficam sobre a reta (W ≈ 1). Na segunda, os quantis de uma exponencial: o histograma é assimétrico, os pontos se afastam da reta nas extremidades e W cai. Reproduza com <code>qnorm(ppoints(40))</code> e <code>qexp(ppoints(40))</code>. <span class="source-line">Fonte: o autor.</span></figcaption>
             </figure>
             <div class="callout warn">
-              <strong>O que o teste não faz</strong>
-              <p>Não prova normalidade, não indica qual é a distribuição correta quando rejeita, não verifica independência e não substitui a inspeção gráfica. É um diagnóstico entre vários.</p>
+              <strong>O que o teste não faz?</strong>
+              <p>Não prova normalidade, não indica qual é a 
+                distribuição correta quando rejeita, 
+                não verifica independência e não substitui a 
+                inspeção gráfica. É um diagnóstico entre vários.</p>
             </div>
           </section>
           <section class="detail-panel" id="pressupostos">
             <h2>Pressupostos e como verificá-los</h2>
             <div class="table-wrap">
               <table class="method-table">
-                <caption>Checklist de pressupostos</caption>
+                <!-- <caption>Checklist de pressupostos</caption> -->
                 <thead>
                   <tr>
                     <th>Pressuposto</th>
-                    <th>Por que importa</th>
-                    <th>Como verificar</th>
+                    <th>Por que importa?</th>
+                    <th>Como verificar?</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Dados quantitativos (contínuos ou quase)</td>
-                    <td>A distribuição nula de W foi deduzida para variáveis contínuas.</td>
-                    <td>Observe o tipo da variável e a quantidade de valores repetidos: <code>length(unique(x)) / length(x)</code>.</td>
+                    <td>A distribuição nula de W foi deduzida 
+                      para variáveis contínuas.</td>
+                    <td>Observe o tipo da variável e a quantidade 
+                      de valores repetidos: <code>length(unique(x)) / length(x)</code>.</td>
                   </tr>
                   <tr>
                     <td>Observações independentes</td>
-                    <td>Dependência altera a variabilidade real e gera rejeições sem relação com a forma da distribuição.</td>
-                    <td>Avalie o delineamento: medidas repetidas, agrupamentos e séries temporais violam o pressuposto. Para séries, use <code>acf(x)</code>.</td>
+                    <td>Dependência altera a variabilidade 
+                      real e gera rejeições sem relação com 
+                      a forma da distribuição.</td>
+                    <td>Avalie o delineamento: medidas repetidas, 
+                      agrupamentos e séries temporais violam o 
+                      pressuposto. Para séries, 
+                      use <code>acf(x)</code>.</td>
                   </tr>
                   <tr>
                     <td>Poucos empates</td>
-                    <td>Empates distorcem o valor-p; o R avisa com <code>may not be accurate</code>.</td>
-                    <td><code>anyDuplicated(x)</code> e <code>table(x)</code>.</td>
+                    <td>Empates distorcem o valor-p; 
+                      o R avisa com <code>may not be accurate</code>.</td>
+                    <td><code>anyDuplicated(x)</code> e 
+                      <code>table(x)</code>.</td>
                   </tr>
                   <tr>
                     <td>3 ≤ n ≤ 5000 no R</td>
@@ -159,7 +185,9 @@
                   </tr>
                   <tr>
                     <td>Variável correta</td>
-                    <td>Em regressão e ANOVA, a normalidade exigida é a dos <strong>erros</strong>.</td>
+                    <td>Em regressão e ANOVA, 
+                      a normalidade exigida é a 
+                      dos <strong>erros</strong>.</td>
                     <td>Ajuste o modelo e teste <code>residuals(modelo)</code>.</td>
                   </tr>
                 </tbody>
@@ -167,14 +195,25 @@
             </div>
             <div class="callout try">
               <strong>Antes do teste, o gráfico</strong>
-              <p>Faça histograma e Q–Q. O Q–Q mostra <em>onde</em> está o desvio: curva em S indica caudas diferentes da normal; curva em J indica assimetria; degraus indicam dados discretos. O valor-p diz que existe desvio; o gráfico diz qual.</p>
+              <p>Faça histograma e Q–Q. O Q–Q mostra <em>onde</em> 
+                está o desvio: curva em S indica caudas diferentes 
+                da normal; curva em J indica assimetria; 
+                degraus indicam dados discretos. 
+                O valor-p diz que existe desvio; 
+                o gráfico diz qual.</p>
             </div>
           </section>
           <section class="detail-panel" id="hipoteses">
             <h2>Hipóteses e estatística de teste</h2>
             <h3>Hipóteses</h3>
             <div class="hypothesis-block">\[\left\{\begin{aligned}H_0&:\ X_1,\ldots,X_n\sim\mathcal N(\mu,\sigma^2) \\ H_1&:\ \text{a distribuição } \\ &\quad \text{populacional não é normal}\end{aligned}\right.\]</div>
-            <p>A hipótese nula é <strong>composta</strong>: não fixa \(\mu\) nem \(\sigma^2\), que são estimados pela amostra. Por isso a distribuição de \(W\) sob \(H_0\) depende apenas de \(n\). O teste é sempre unilateral à esquerda: rejeita-se \(H_0\) para valores <em>pequenos</em> de \(W\).</p>
+            <p>A hipótese nula é <strong>composta</strong>: 
+              não fixa \(\mu\) nem \(\sigma^2\), 
+              que são estimados pela amostra. 
+              Por isso a distribuição de \(W\) sob \(H_0\) 
+              depende apenas de \(n\). O teste é sempre 
+              unilateral à esquerda: rejeita-se \(H_0\) 
+              para valores <em>pequenos</em> de \(W\).</p>
             <h3>Estatística de teste</h3>
             <div class="math-display" role="group" aria-label="Expressão matemática">\[W=\frac{\left(\sum_{i=1}^{n}a_i\,x_{(i)}\right)^2}{\sum_{i=1}^{n}\left(x_i-\bar x\right)^2}=\frac{b^2}{S^2},\]\[b=\sum_{i=1}^{\lfloor n/2\rfloor}a_{n-i+1}\left(x_{(n-i+1)}-x_{(i)}\right)\]</div>
             <p class="formula-caption"><strong>Em que:</strong></p>
@@ -259,7 +298,9 @@
               <strong>Conclusão do cálculo</strong>
               <p>\(b=1{,}2219+0{,}3087+0{,}0350=1{,}5656\) e \(b^2=2,4509\).</p>
               <p>A média é \(\bar x=3{,}2\) e \[\begin{aligned}S^2 &= (-1{,}1)^2+(-0{,}4)^2 \\ &\quad +(-0{,}2)^2+0{,}2^2+0{,}7^2 \\ &\quad +0{,}8^2 \\ &= 2,58.\end{aligned}\]</p>
-              <p>\(W=2{,}4509/2{,}58\approx0,950\). O cálculo computacional retorna 0,9502; a diferença vem do arredondamento dos coeficientes tabulados. Com \(p=0,742\), não há evidência contra a normalidade (e, com n = 6, o poder é muito baixo).</p>
+              <p>\(W=2{,}4509/2{,}58\approx0,950\). O cálculo computacional retorna 0,9502; a diferença vem do arredondamento dos 
+                coeficientes tabulados. Com \(p=0,742\) não há evidência contra 
+                a normalidade (e, com n = 6, o poder é muito baixo).</p>
             </div>
             <h3>Propriedades de W</h3>
             <ul class="checklist">
@@ -298,34 +339,34 @@
             <h2>Como interpretar os resultados</h2>
             <div class="table-wrap">
               <table class="method-table">
-                <caption>Guia de leitura</caption>
+                <!-- <caption>Guia de leitura</caption> -->
                 <thead>
                   <tr>
                     <th>Resultado</th>
                     <th>Leitura correta</th>
-                    <th>O que NÃO concluir</th>
+                    <!-- <th>O que NÃO concluir?</th> -->
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>p < 0,05</td>
                     <td>Há evidência de que a distribuição não é normal.</td>
-                    <td>Que o desvio seja grande ou relevante para a sua análise.</td>
+                    <!-- <td>Que o desvio seja grande ou relevante para a sua análise.</td> -->
                   </tr>
                   <tr>
                     <td>p ≥ 0,05</td>
                     <td>Não há evidência suficiente contra a normalidade.</td>
-                    <td>Que os dados sejam normais (ausência de evidência não é evidência de ausência).</td>
+                    <!-- <td>Que os dados sejam normais (ausência de evidência não é evidência de ausência).</td> -->
                   </tr>
                   <tr>
                     <td>W próximo de 1 e p pequeno (n grande)</td>
                     <td>Desvio estatisticamente detectável, porém pequeno.</td>
-                    <td>Que seja necessário abandonar os métodos paramétricos.</td>
+                    <!-- <td>Que seja necessário abandonar os métodos paramétricos.</td> -->
                   </tr>
                   <tr>
                     <td>W afastado de 1 (por exemplo, 0,85)</td>
                     <td>Desvio substancial; investigue assimetria e outliers.</td>
-                    <td>Que uma única transformação resolva sem avaliar o Q–Q.</td>
+                    <!-- <td>Que uma única transformação resolva sem avaliar o Q–Q.</td> -->
                   </tr>
                 </tbody>
               </table>
@@ -334,7 +375,7 @@
             <h3>O efeito do tamanho da amostra</h3>
             <div class="table-wrap">
               <table class="method-table">
-                <caption>Comportamento do teste em função de n</caption>
+                <!-- <caption>Comportamento do teste em função de n</caption> -->
                 <thead>
                   <tr>
                     <th>Situação</th>
@@ -592,7 +633,18 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
                 </tbody>
               </table>
             </div>
-            <p>A rejeição é real, mas o desvio não é dramático: os valores centrais ficam próximos da reta e a cauda superior é puxada pelos motores de maior cilindrada (por exemplo, Cadillac Fleetwood, Lincoln Continental e Chrysler Imperial, com mais de 400 pol³). Para descrever a distribuição, o histograma já basta. Para comparar médias entre grupos com esses dados, a transformação logarítmica, um teste não paramétrico ou <em>bootstrap</em> são escolhas defensáveis, não porque o valor-p mandou, mas porque o gráfico mostrou o tipo de assimetria.</p>
+            <p>Os valores centrais ficam próximos da reta e a cauda superior
+              é puxada pelos motores de maior cilindrada 
+              (por exemplo, Cadillac Fleetwood, Lincoln Continental e 
+              Chrysler Imperial, com mais de 400 pol³). 
+              Para descrever a distribuição, o histograma já basta. 
+              Para comparar médias entre grupos com esses dados, 
+              a transformação logarítmica, um teste não paramétrico 
+              ou <em>bootstrap</em> são escolhas defensáveis.
+              <!-- , 
+              não porque o valor-p mandou, mas porque o gráfico mostrou o 
+              tipo de assimetria. -->
+            </p>
             <p><span class="source-line">O código é uma sugestão de aplicação e deve ser adaptado aos dados e ao objetivo de cada estudo.</span></p>
           </section>
           <section class="detail-panel" id="erros">
@@ -608,11 +660,11 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <!-- <tr>
                     <td>Usar como “porteiro” (p &gt; 0,05 ⇒ teste t; senão, Mann–Whitney)</td>
                     <td>A escolha pelo resultado dos dados altera a taxa de erro tipo I.</td>
                     <td>Decida o método pelo desenho do estudo e pelo que se quer estimar.</td>
-                  </tr>
+                  </tr> -->
                   <tr>
                     <td>Ignorar a magnitude</td>
                     <td>W = 0,998 e W = 0,85 rejeitam, mas pedem condutas diferentes.</td>
@@ -651,12 +703,12 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
             <h2>Alternativas e fluxo de trabalho</h2>
             <div class="table-wrap">
               <table class="method-table">
-                <caption>Alternativas e quando cada uma é preferível</caption>
+                <!-- <caption>Alternativas e quando cada uma é preferível</caption> -->
                 <thead>
                   <tr>
                     <th>Teste</th>
                     <th>Base</th>
-                    <th>Quando preferir</th>
+                    <th>Quando preferir?</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -665,11 +717,11 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
                     <td>Combinação linear das estatísticas de ordem</td>
                     <td>Padrão para n pequeno e médio; maior poder geral.</td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <td>Shapiro–Francia</td>
                     <td>Correlação com escores normais</td>
                     <td>Alternativa leve para 5 ≤ n ≤ 5000 (pacote <code>nortest</code>).</td>
-                  </tr>
+                  </tr> -->
                   <tr>
                     <td><a href="ad.html">Anderson–Darling</a></td>
                     <td>Distância entre distribuições, com peso nas caudas</td>
@@ -678,9 +730,10 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
                   <tr>
                     <td><a href="ks.html">Kolmogorov–Smirnov (Lilliefors)</a></td>
                     <td>Distância máxima entre distribuições acumuladas</td>
-                    <td>Parâmetros estimados da amostra; menos potente que SW e AD.</td>
+                    <td>Parâmetros estimados da amostra; menos 
+                      potente que Shapiro-Wilk e Anderson-Darling.</td>
                   </tr>
-                  <tr>
+                  <!-- <tr>
                     <td>D’Agostino–Pearson</td>
                     <td>Assimetria e curtose</td>
                     <td>Amostras médias a grandes, com leitura em termos de forma.</td>
@@ -689,7 +742,7 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
                     <td>Jarque–Bera</td>
                     <td>Assimetria e curtose (assintótico)</td>
                     <td>n grande, comum em econometria.</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>
@@ -702,13 +755,15 @@ Royston: mu = -3.5073, sigma = 0.4817, Z = 2.037, p = 0.0208</pre>
               <li>Se rejeitar: transformação (log, raiz, Box–Cox), método não paramétrico, <em>bootstrap</em> ou modelo com outra distribuição.</li>
               <li>Se não rejeitar com n pequeno, registre que o poder era limitado.</li>
             </ol>
-            <div class="callout ">
-              <strong>Regra de bolso</strong>
-              <p>Trate o Shapiro–Wilk como um segundo par de olhos sobre o gráfico Q–Q, não como um juiz que decide qual teste você pode usar.</p>
-            </div>
+            <!-- <div class="callout ">
+              <!-- <strong>Regra de bolso</strong> -->
+              <p>Trate o Shapiro–Wilk como um "segundo par de olhos" 
+                sobre o gráfico Q–Q, não como um juiz que decide 
+                qual teste você pode usar.</p>
+            </div> -->
           </section>
           <section class="detail-panel" id="referencias-pagina">
-            <h2>Referências desta ficha</h2>
+            <h2>Referências desta seção</h2>
             <ol class="refs-list">
               <li>SHAPIRO, Samuel S.; WILK, Martin B. An analysis of variance test for normality (complete samples). <em>Biometrika</em>, v. 52, n. 3-4, p. 591-611, 1965. DOI: <a href="https://doi.org/10.1093/biomet/52.3-4.591" target="_blank" rel="noopener noreferrer">10.1093/biomet/52.3-4.591</a>.</li>
               <li>ROYSTON, J. Patrick. An extension of Shapiro and Wilk’s W test for normality to large samples. <em>Applied Statistics</em>, v. 31, n. 2, p. 115-124, 1982.</li>
