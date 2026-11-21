@@ -29,7 +29,9 @@
       <section class="detail-intro">
         <span class="eyebrow">Estatística clássica · DIAGNÓSTICOS</span>
         <h1>Shapiro–Wilk</h1>
-        <p class="detail-lead">Verifica se os dados apresentam desvios significativos da distribuição normal, e mostra como ler o resultado junto com o gráfico Q–Q.</p>
+        <p class="detail-lead">Esta seção mostra como verificar se os 
+          dados apresentam desvios significativos da distribuição normal, 
+          e como ler o resultado junto com o gráfico Q–Q.</p>
         <div class="quick-actions">
           <a class="btn primary" href="#exemplo">Ver exemplo ↓</a>
           <a class="btn secondary" download="" href="../scripts/sw.R">Baixar script .R ↓</a>
@@ -53,7 +55,15 @@
         <div class="detail-body">
           <section class="detail-panel" id="introducao">
             <h2>Comece por aqui</h2>
-            <p>Antes de aplicar qualquer teste que assuma uma curva em forma de sino, vale perguntar: <strong>os dados se comportam como uma normal?</strong> O Shapiro–Wilk é a ferramenta mais usada para responder a essa pergunta. Nesta ficha você vai entender a lógica do teste, calcular a estatística à mão em um exemplo pequeno, executar tudo no R ou em Python e aprender a ler o resultado sem cair nas armadilhas mais comuns.</p>
+            <p>Antes de aplicar qualquer teste que assuma uma curva 
+              em forma de sino, vale perguntar: <strong>os dados 
+              se comportam como uma normal?</strong> 
+              O Shapiro–Wilk é uma ferramenta útil para 
+              responder a essa pergunta. 
+              Nesta seção você vai entender a lógica do teste, 
+              calcular a estatística à mão em um exemplo pequeno, 
+              executar tudo no R ou em Python e aprender a ler o 
+              resultado sem cair nas armadilhas mais comuns.</p>
             <figure class="mindmap">
               <svg viewBox="0 0 1040 430" role="img" aria-label="Mapa mental: Shapiro–Wilk" xmlns="http://www.w3.org/2000/svg" font-family="DM Sans,Arial,sans-serif"><path d="M520.0,215.0 C400.0,215.0 410,60.0 378,60.0" stroke="#1f5b43" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,215.0 378,215.0" stroke="#bf924c" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C400.0,215.0 410,370.0 378,370.0" stroke="#4c6b1e" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,60.0 662,60.0" stroke="#6a4c93" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,215.0 662,215.0" stroke="#b5442f" stroke-width="2.4" fill="none"/><path d="M520.0,215.0 C640.0,215.0 630,370.0 662,370.0" stroke="#2f6f8f" stroke-width="2.4" fill="none"/><rect x="222" y="43.0" width="156" height="34" rx="17" fill="#1f5b43"/><text x="300" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">O que é</text><text x="208" y="56.5" text-anchor="end" font-size="10.8" fill="#3d5042">Teste de aderência</text><text x="208" y="71.5" text-anchor="end" font-size="10.8" fill="#3d5042">à distribuição normal</text><rect x="222" y="198.0" width="156" height="34" rx="17" fill="#bf924c"/><text x="300" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Pressupostos</text><text x="208" y="204.0" text-anchor="end" font-size="10.8" fill="#3d5042">Independência</text><text x="208" y="219.0" text-anchor="end" font-size="10.8" fill="#3d5042">Dados contínuos</text><text x="208" y="234.0" text-anchor="end" font-size="10.8" fill="#3d5042">3 ≤ n ≤ 5000</text><rect x="222" y="353.0" width="156" height="34" rx="17" fill="#4c6b1e"/><text x="300" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Estatística W</text><text x="208" y="366.5" text-anchor="end" font-size="10.8" fill="#3d5042">0 &lt; W ≤ 1</text><text x="208" y="381.5" text-anchor="end" font-size="10.8" fill="#3d5042">Perto de 1: ajuste bom</text><rect x="662" y="43.0" width="156" height="34" rx="17" fill="#6a4c93"/><text x="740" y="64.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Interpretar</text><text x="832" y="56.5" text-anchor="start" font-size="10.8" fill="#3d5042">p &lt; 0,05: rejeita H₀</text><text x="832" y="71.5" text-anchor="start" font-size="10.8" fill="#3d5042">Sempre ver o Q–Q</text><rect x="662" y="198.0" width="156" height="34" rx="17" fill="#b5442f"/><text x="740" y="219.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">No R</text><text x="832" y="211.5" text-anchor="start" font-size="10.8" fill="#3d5042">shapiro.test(x)</text><text x="832" y="226.5" text-anchor="start" font-size="10.8" fill="#3d5042">Pacote stats</text><rect x="662" y="353.0" width="156" height="34" rx="17" fill="#2f6f8f"/><text x="740" y="374.0" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">Alternativas</text><text x="832" y="359.0" text-anchor="start" font-size="10.8" fill="#3d5042">Anderson–Darling</text><text x="832" y="374.0" text-anchor="start" font-size="10.8" fill="#3d5042">Lilliefors</text><text x="832" y="389.0" text-anchor="start" font-size="10.8" fill="#3d5042">Shapiro–Francia</text><ellipse cx="520.0" cy="215.0" rx="92" ry="40" fill="#12372A"/><text x="520.0" y="220.0" text-anchor="middle" fill="#dff36a" font-size="14" font-weight="800">Shapiro–Wilk</text></svg>
               <figcaption>Visão geral do teste: o que é, o que exige, o que informa e quais são as alternativas. Fonte: o autor.</figcaption>
@@ -88,7 +98,7 @@
                               Sim.</td>
                   </tr>
                   <tr>
-                    <td>
+                    <!-- <td> -->
                          <!-- Decidir automaticamente entre teste t e 
                          Mann–Whitney</td><td>
                               Não recomendado (veja Erros comuns) </td></tr><tr><td>
